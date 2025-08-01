@@ -1,5 +1,7 @@
 # prompts
 
+See also [Claude docs](https://docs.anthropic.com/en/docs/claude-code/common-workflows).
+
 ## Thinking Mode
 
 * The goal of this project is *goal*. Think deeply, and initialize CLAUDE.md with this information.
