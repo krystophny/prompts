@@ -5,7 +5,7 @@
 - Always keep functions, subroutines and modules small and manageable.
 - Always keep work units small and manageable.
 - Always work sequentially. Never do multiple things in parallel.
-- Never be lazy. Don't take shortcuts. Fulfill every task fully to 100%
+- Never be lazy. Don't take shortcuts. Don't stub code. Don't write placeholders. Fulfill every task fully to 100%
 - Delete things that are obsolete if they are under version control. Don't hamster old messy stuff.
 - Always write code that speaks for itself and avoid comments where possible.
 - Never leave commented out sections of code in source files.
