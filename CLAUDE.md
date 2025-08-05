@@ -1,4 +1,3 @@
-simplify this to have less redundant information and be more targetted for prompt design for the points that really count.
 ## Development Principles
 
 - Strictly follow TDD, SOLID, KISS, SRP and DRY as strict requirements in the development process.
