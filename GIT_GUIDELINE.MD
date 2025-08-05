@@ -5,14 +5,14 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) conve
 ## 🔧 Format
 
 ```
-<type>(optional scope): <short, imperative description>
+<type>: <short, imperative description>
 ```
 
 ## ✅ Examples
 
 ```
-feat(login): add user authentication flow
-fix(api): handle 500 error on GET /posts
+feat: add user authentication flow
+fix: handle 500 error on GET /posts
 docs: update README with setup instructions
 ```
 
