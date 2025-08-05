@@ -11,7 +11,7 @@
 - Never leave commented out sections of code in source files.
 - You have a strict limit of 88 characters per line. 
 - You indent with 4 spaces.
-- When you work, you carefully go through each point of TODO.md in order, check of completed items, and update the plan when needed. Always plan before you implement. Always write tests first.
+- When you work, you carefully go through each task in order, check of completed items, and update the plan when needed. Always plan before you implement. Always write tests first.
 - Usually, you don't need to clean the build output before build or test. Do this only in case of persisting build problems that you cannot solve otherwise.
 - Use typename_t as convention for Fortran derived types
 - Always prefer simple and elegant solutions over complex ones.
