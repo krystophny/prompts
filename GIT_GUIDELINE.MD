@@ -1,34 +1,36 @@
-# Git Commit Message Guidelines
+# Git Commit Guidelines for Claude
 
-We follow the Conventional Commits convention for all Git commit messages. This helps keep our history clean, readable, and automatable.
+Follow **Conventional Commits** format: `<type>: <description>`
 
-## Format
-
-```
-<type>: <short, imperative description>
-```
-
-## Examples
-
-```
-feat: add user authentication flow
-fix: handle 500 error on GET /posts
-docs: update README with setup instructions
-```
+## Types to Use
+- `feat`: new feature/functionality
+- `fix`: bug fix
+- `docs`: documentation changes
+- `style`: formatting/whitespace (no logic change)
+- `refactor`: code restructuring (no behavior change)
+- `test`: adding/updating tests
+- `chore`: maintenance, dependencies, tooling
 
 ## Rules
+- **Imperative mood**: "add" not "added"
+- **No period** at end
+- **Be specific**: what changed and why
+- **One logical change** per commit
 
-- Use the **imperative mood** (e.g., "add", not "added" or "adds")
-- Keep messages as **short as possible, but as long as necessary**
-- Capitalize the first word; **no period** at the end
-- Prefer clarity over brevity
+## Examples
+```
+feat: implement database version constraint resolution
+fix: handle missing studentTemplates in workflow
+docs: update example dependency documentation
+refactor: extract template processing to separate function
+test: add coverage for version resolver service
+chore: update alembic to latest version
+```
 
-## Common Types
+## When Making Commits
+1. Stage related changes together
+2. Write clear, specific message
+3. Reference issues if applicable: `fixes #123`
+4. Keep first line under 72 chars
 
-- `feat`: a new feature
-- `fix`: a bug fix
-- `docs`: documentation-only changes
-- `style`: formatting, whitespace, etc.
-- `refactor`: code change that doesn’t add features or fix bugs
-- `test`: adding or updating tests
-- `chore`: tooling, CI, build-related changes
+Remember: Each commit should leave the codebase working.
