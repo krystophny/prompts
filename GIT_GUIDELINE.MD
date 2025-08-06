@@ -1,4 +1,4 @@
-# Git Commit Guidelines for Claude
+# Git Commit Guidelines
 
 Follow **Conventional Commits** format: `<type>: <description>`
 
