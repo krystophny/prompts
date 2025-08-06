@@ -1,6 +1,6 @@
 # Git Commit Message Guidelines
 
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) convention for all Git commit messages. This helps keep our history clean, readable, and automatable.
+We follow the Conventional Commits convention for all Git commit messages. This helps keep our history clean, readable, and automatable.
 
 ## Format
 
