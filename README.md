@@ -14,12 +14,14 @@ See also [Claude docs](https://docs.anthropic.com/en/docs/claude-code/common-wor
 ## Review
 * Review the changes of the current PR in a constructively critical way based on the following criteria.
   - Objectives of the underlying issue are completely fulfilled and in line with project goals and scope.
+  - Code is correct.
+  - No race conditions or concurrency issues.
   - No dead, legacy or duplicated code remains.
   - Test coverage is adequate and tests are targetted, non-shallow, non-tautological and as fast as possible to run.
   - No files added that shouldn't be in git. 
   - File and directory names and structure are consistent and meaningful.
   - Documentation is up to date. 
-  - Conventions of CLAUDE.md and ~/.claude/CLAUDE.md are fulfilled. 
+  - Conventions of CLAUDE.md and ~/.claude/CLAUDE.md are fulfilled.
   - Then revise according to the review, ensure tests pass, commit, and push.
 
 ## Thinking Mode
