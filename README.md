@@ -12,7 +12,7 @@ See also [Claude docs](https://docs.anthropic.com/en/docs/claude-code/common-wor
 
 ## Review
 * Review the changes of the current PR in a constructively critical way based on the following criteria:
-  - Goals of the underlying issue are completely fulfilled and in line with project goals and scope.
+  - Objectives of the underlying issue are completely fulfilled and in line with project goals and scope.
   - No dead, legacy or duplicated code remains.
   - Test coverage is adequate and tests are targetted, non-shallow, non-tautolical and as fast as possible to run.
   - No files added that shouldn't be in git. 
