@@ -16,7 +16,7 @@ See also [Claude docs](https://docs.anthropic.com/en/docs/claude-code/common-wor
   - No dead, legacy or duplicated code remains.
   - Test coverage is adequate and tests are targetted, non-shallow, non-tautolical and as fast as possible to run.
   - No files added that shouldn't be in git. 
-  - File and Directory names and structure are consistent and meaningful.
+  - File and directory names and structure are consistent and meaningful.
   - Documentation is up to date. 
   - Conventions of CLAUDE.md and ~/.claude/CLAUDE.md are fulfilled. 
 
