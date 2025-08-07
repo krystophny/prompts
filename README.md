@@ -2,6 +2,7 @@
 
 See also [Claude docs](https://docs.anthropic.com/en/docs/claude-code/common-workflows).
 
+* Assess situation, plan, decide, execute, review, iterate. Finally, evaluate what can be done better next time.
 * The goal of this project is *goal*. Initialize CLAUDE.md with this information.
 * *Insert requirements and goals here*. Devise an architectural plan in DESIGN.md and derive a detailed backlog for execution in RED/GREEN/REFACTOR test-driven development with non-shallow and non-tautological tests in a set of well and detailed issues on GitHub. Emphasize that no cheating and no shortcuts, simplifications, stubs or placeholders are allowed. Then commit and push.
 * Consider the current failing tests and problems, devise a solution strategy, and add a list of issues with a detailed checklist what to do to resolve it.
