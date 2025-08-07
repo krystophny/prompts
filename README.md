@@ -8,7 +8,7 @@ See also [Claude docs](https://docs.anthropic.com/en/docs/claude-code/common-wor
 * Take the next issue on GitHub and get it done in a new branch. No cheating, no shortcuts, no simplifications, no stubs, no placeholders. Write targetted tests that initially fail (RED phase), implement full functionality to make them pass (GREEN phase), clean up implementation (REFACTOR phase), see that all tests still pass. Do this in small steps. After each step, update issue description, commit, push. Once finished, open a PR.
 * Check qodo comments in PR, CI and coverage and fix anything that pops up.
 * Merge PR into main. Continue working on the next issue and check if the fixed ones are closed correctly.
-* Check the whole codebase and all tests if you cheated or took a shortcut or wrote a stub just to get something to look like it works superficially. Then fix all honestly in small steps covered by tests.
+* Audit the whole codebase and all tests if you cheated or took a shortcut or wrote a stub just to get something to look like it works superficially. Check also if all criteria of CLAUDE.md and ~/.claude/CLAUDE.md are fulfilled. Then fix all honestly in small steps covered by tests.
 
 ## Thinking Mode
 
