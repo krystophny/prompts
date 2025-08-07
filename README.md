@@ -11,7 +11,7 @@ See also [Claude docs](https://docs.anthropic.com/en/docs/claude-code/common-wor
 * Audit the whole codebase and all tests if you cheated or took a shortcut or wrote a stub just to get something to look like it works superficially. Check for duplicate, legacy, and dead code up for elimination. Check if there are shallow, taugological, inefficient or duplicate tests. Check if all criteria of CLAUDE.md and ~/.claude/CLAUDE.md are fulfilled. Then fix all honestly in small steps covered by tests.
 
 ## Review
-* Review the changes of the current PR in a constructively critical way based on the following criteria:
+* Review the changes of the current PR in a constructively critical way based on the following criteria. Then revise according to the review, ensure tests pass, commit, and push.
   - Objectives of the underlying issue are completely fulfilled and in line with project goals and scope.
   - No dead, legacy or duplicated code remains.
   - Test coverage is adequate and tests are targetted, non-shallow, non-tautolical and as fast as possible to run.
