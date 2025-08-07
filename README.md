@@ -13,6 +13,7 @@ See also [Claude docs](https://docs.anthropic.com/en/docs/claude-code/common-wor
 ## Review
 * Review the changes of the current PR in a constructively critical way based on the following criteria:
   - Goals of the underlying issue are completely fulfilled.
+  - No dead, legacy or duplicated code remains.
   - No files added that shouldn't be in git. 
   - File and Directory names and structure are consistent and meaningful.
   - Documentation is up to date. 
