@@ -7,7 +7,7 @@ See also [Claude docs](https://docs.anthropic.com/en/docs/claude-code/common-wor
 * Consider the current failing tests and problems, devise a solution strategy, and add a list of issues with a detailed checklist what to do to resolve it.
 * Check if all issues that are solved have been closed. Identify the best issue to work on next on GitHub and get it done in a new branch. No cheating, no shortcuts, no simplifications, no stubs, no placeholders. Write targetted tests that initially fail (RED phase), implement full functionality to make them pass (GREEN phase), clean up implementation (REFACTOR phase), see that all tests still pass. Do this in small steps. After each step, update issue description, commit, push. Once finished, open a PR.
 * Check qodo comments in PR, CI and coverage and fix anything that pops up.
-* Merge PR into main. Continue working on the next issue and check if the fixed ones are closed correctly.
+* Merge PR into main, checkout and pull main. Check if all issues that are solved have been closed. Identify the best issue to work on. Continue working in a new branch and file PR in the end.
 * Audit the whole codebase and all tests if you cheated or took a shortcut or wrote a stub just to get something to look like it works superficially. Check for duplicate, legacy, and dead code up for elimination. Check if there are shallow, taugological, inefficient or duplicate tests. Check if all criteria of CLAUDE.md and ~/.claude/CLAUDE.md are fulfilled. Then fix all honestly in small steps covered by tests.
 
 ## Review
