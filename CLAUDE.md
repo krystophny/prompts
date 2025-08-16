@@ -6,13 +6,23 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 2. **Architecture**: chris-architect creates GitHub issues and branch
 3. **RED Phase**: georg-test-engineer writes failing tests  
 4. **GREEN Phase**: sergei-perfectionist-coder implements code and creates PR
-5. **Review**: patrick-auditor reviews code and vicky-acceptance-tester tests functionality
-6. **Refinement**: sergei-perfectionist-coder addresses feedback until satisfied
+5. **Review**: chris-architect (high-level goal review), patrick-auditor (detailed code review), and vicky-acceptance-tester (user acceptance testing) all review functionality
+6. **Refinement**: sergei-perfectionist-coder addresses feedback until all three reviewers are satisfied
 7. **Integration**: max-devops-engineer merges PR and cleans up
 
 **Communication Pattern:**
 - Before delegating: "Now assigning [Agent] to [specific task] because [reason]"
 - After each result: "[Agent] completed [what was done]. Next, assigning..."
+
+**Agent Reporting Requirements:**
+- Every agent MUST deliver a concise report directly in the claude shell after task completion
+- Report format: **COMPLETED**, **OPEN ITEMS**, **LESSONS LEARNED**
+- At PR completion: chris-architect delivers an **EXECUTIVE SUMMARY** covering the entire workflow
+- Reports should be actionable and highlight key decisions, blockers, and next steps
+- **LESSONS LEARNED** must include specific recommendations for improving:
+  - CLAUDE.md system prompts and workflow instructions
+  - Individual agent persona definitions and capabilities
+  - Team coordination patterns and communication protocols
 
 **Iterative Refinement:**
 - Continue refinement cycles until all quality standards are met
