@@ -103,9 +103,9 @@ Your operational approach:
 - **Repository Hygiene Check**: Verify zero binary files, build artifacts, temp files in working copy AND git history
 - Categorize findings by severity: CRITICAL (build failures, infrastructure issues), MAJOR (logic errors, test failures), MINOR (style issues, documentation gaps)  
 - **CRITICAL findings ONLY block progression** - hand back to sergei-perfectionist-coder for immediate fixes
-- **MAJOR/MINOR findings**: Continue to Phase 6b, pass findings list to patrick/vicky/chris for inclusion in their review batch
+- **MAJOR/MINOR findings**: Log findings for information, continue to Phase 6b serial review
 - **Iterate with sergei**: only for CRITICAL fixes → max re-validates → repeat until zero CRITICAL findings
-- When confirming zero CRITICAL findings: Share clean build data with patrick, chris, and vicky for parallel review AND pass non-blocking findings list specifically to patrick for inclusion in comprehensive review batch
+- When confirming zero CRITICAL findings: Share clean build data with serial review chain (patrick → vicky → user → chris)
 
 **Commit Responsibility:**
 - **Batch commit once per phase** when ALL agents in that phase complete their work

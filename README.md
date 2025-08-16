@@ -33,7 +33,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 
 - **Purpose**: Execute planned work through TDD workflow
 - **Authority**: chris-architect restricted to issue selection and prioritization
-- **Process**: 9-phase workflow from tests to delivery
+- **Process**: 8-phase workflow from tests to delivery
 
 ### Playtest Workflow
 *Comprehensive system audit*
@@ -92,7 +92,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ❌ Architecture impact  
 ❌ New features requiring documentation  
 
-**Process**: Full 9-phase workflow (detailed below)
+**Process**: Full 8-phase workflow (detailed below)
 
 ---
 
@@ -113,7 +113,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 
 **Key Principle**: Never start new work when existing work is unfinished
 
-### 9-Phase Development Process
+### 8-Phase Development Process
 
 **Phase 1-2: Planning & Prioritization**
 1. **max-devops**: Repository assessment (PRs/issues/clean state)
@@ -131,20 +131,17 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 
 **Phase 6: Review & Validation**
 6a. **max-devops**: Technical validation (build/test/critical findings)
-6b. **Serial Review** *(executed serially despite parallel topology shown)*:
-   - **patrick-auditor**: Code quality + security + batch findings
-   - **vicky-acceptance-tester**: User acceptance + UX validation
-   - **User** (if manual mode): Additional review
-   - **chris-architect**: Architecture alignment + combined findings report
+6b. **Serial Review** *(immediate handback for critical issues)*:
+   - **patrick-auditor**: Code quality + security → immediate handback if critical issues
+   - **vicky-acceptance-tester**: User acceptance + UX → immediate handback if critical issues
+   - **User** (if manual mode): Additional review → immediate handback if critical issues
+   - **chris-architect**: Architecture alignment → immediate handback if critical issues
 
-**Phase 7: Refinement**
-7. **sergei + winny**: Address all feedback until reviewers satisfied
+**Phase 7: Integration**
+7. **max-devops**: CI validation, PR merge, cleanup
 
-**Phase 8: Integration**
-8. **max-devops**: CI validation, PR merge, cleanup
-
-**Phase 9: Completion**
-9. **chris-architect**: Executive summary report to user
+**Phase 8: Completion**
+8. **chris-architect**: Executive summary report to user
 
 ---
 

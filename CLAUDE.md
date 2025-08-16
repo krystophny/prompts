@@ -66,7 +66,7 @@ Use this **decision tree** to choose the appropriate workflow:
 - ❌ Estimated >2 hours work
 - ❌ Architecture impact
 - ❌ New features requiring documentation
-→ **Complex Workflow**: Full 9-phase workflow below
+→ **Complex Workflow**: Full 8-phase workflow below
 
 For complex tasks requiring multiple agents, follow this stepwise delegation workflow:
 
@@ -143,19 +143,15 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
    - **When max confirms zero CRITICAL findings**: Pass clean build data AND non-blocking findings list to serial review chain
    **6b. Serial Review (Only if 6a has zero CRITICAL findings)**:
    - **Step 6b-1**: patrick-auditor performs deep code quality analysis + security review + API/developer documentation verification + incorporates max's non-blocking findings
-   - **COMMIT**: patrick commits any immediate fixes (<30min) or documents findings for batch handoff
+   - **IMMEDIATE HANDBACK**: If critical issues found → hand back to sergei immediately for fixes before continuing
    - **Step 6b-2**: vicky-acceptance-tester performs user acceptance testing + user documentation validation  
-   - **COMMIT**: vicky commits any immediate fixes (<30min) or documents findings for batch handoff
+   - **IMMEDIATE HANDBACK**: If critical issues found → hand back to sergei/winny immediately for fixes before continuing
    - **Step 6b-3**: **MANUAL MODE ONLY** - User performs review if "manual mode" requested
-   - **Step 6b-4**: chris-architect performs architecture alignment review using all previous findings (including user findings if manual mode)
-   - **COMMIT**: chris commits any immediate fixes (<30min) or documents findings for batch handoff
-   - **Combined Findings Report**: chris compiles comprehensive findings from all reviewers for single batch handoff to sergei/winny
-   - **If critical issues found**: Return to appropriate agent for immediate fixes before proceeding
-7. **Refinement**: sergei-perfectionist-coder addresses comprehensive feedback batch, winny-technical-writer addresses documentation feedback, until all reviewers satisfied
-   - **COMMIT**: sergei commits code fixes after each refinement cycle  
-   - **COMMIT**: winny commits documentation fixes after each refinement cycle
-8. **Integration**: max-devops-engineer waits for CI to pass, autonomously fixes any CI failures, merges PR (squash if needed), validates final repository cleanliness, and cleans up
-9. **Executive Summary**: chris-architect delivers final EXECUTIVE SUMMARY report directly to user covering project completion, strategic insights, and future recommendations
+   - **IMMEDIATE HANDBACK**: If critical issues found by user → hand back to sergei/winny immediately for fixes before continuing
+   - **Step 6b-4**: chris-architect performs architecture alignment review
+   - **IMMEDIATE HANDBACK**: If critical issues found → hand back to sergei immediately for fixes before continuing
+7. **Integration**: max-devops-engineer waits for CI to pass, autonomously fixes any CI failures, merges PR (squash if needed), validates final repository cleanliness, and cleans up
+8. **Executive Summary**: chris-architect delivers final EXECUTIVE SUMMARY report directly to user covering project completion, strategic insights, and future recommendations
 
 ## PLAYTEST WORKFLOW (System Audit)
 
