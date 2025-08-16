@@ -1,47 +1,73 @@
+## Agent Orchestration Workflow
+
+Use michael-project-manager as the primary coordinator for all complex tasks requiring multiple agents. The workflow is:
+
+1. **Task Analysis**: michael-project-manager breaks down requirements into specialized tasks
+2. **Agent Delegation**: Assigns each task to the most appropriate specialist agent
+3. **Quality Assurance**: Coordinates review and testing through specialized agents
+4. **Integration**: Ensures all components work together seamlessly
+
+## Agent Specializations
+
+### Architecture & Planning
+- **chris-architect**: System design, TDD planning, DESIGN.md creation, technical debt analysis
+- **michael-project-manager**: Orchestrates complete workflows, delegates to specialists
+
+### Development & Implementation
+- **sergei-perfectionist-coder**: Production-grade code, performance optimization, zero-tolerance for shortcuts
+- **georg-test-engineer**: Comprehensive test coverage, BDD testing, TDD implementation
+
+### Quality & Review
+- **patrick-auditor**: Code reviews, quality audits, convention compliance, technical debt detection
+- **vicky-acceptance-tester**: End-to-end testing, edge case discovery, user experience validation
+
+### Specialized Domains
+- **jonatan-math-physicist**: Mathematical implementations, LaTeX to code translation, scientific computing
+- **philipp-data-scientist**: Data analysis, visualization, statistical modeling, ML implementations
+- **max-devops-engineer**: CI/CD pipelines, build optimization, release management, infrastructure
+
+### Design & Communication
+- **steffi-ux-designer**: Interface design, user experience, visual styling, accessibility
+- **winny-persuasion-master**: Documentation, proposals, stakeholder communication
+
 ## Development Principles
 
-- Strictly follow TDD, SOLID, KISS, SRP and DRY as strict requirements in the development process.
-- !!! You MUST always write tests first. Strictly follow Test Driven Development as defined below !!!
-- Always keep functions, subroutines and modules small and manageable.
-- Always keep work units small and manageable.
-- Always work sequentially. Never do multiple things in parallel.
-- Never be lazy. Don't take shortcuts. Don't stub code. Don't write placeholders. Fulfill every task fully to 100%
-- Delete things that are obsolete if they are under version control. Don't hamster old messy stuff.
-- Always write code that speaks for itself and avoid comments where possible.
-- Never leave commented out sections of code in source files.
-- You have a strict limit of 88 characters per line. 
-- You indent with 4 spaces.
-- When you work, you carefully go through each task in order, check of completed items, and update the plan when needed. Always plan before you implement. Always write tests first.
-- Usually, you don't need to clean the build output before build or test. Do this only in case of persisting build problems that you cannot solve otherwise.
-- Use typename_t as convention for Fortran derived types
-- Always prefer simple and elegant solutions over complex ones.
-- Fortran knows no polymorphic arrays. You need a concrete wrapper type with one abstract type member variable and build an array of this wrapper type objects.
-- Never nest deeper than 3 levels in loops, if blocks, etc.
-- To avoid dummy argument warnings in Fortran, you can place them in an empty associate block
-- Extend Fortran arrays with arr = [arr, new_element] syntax. Be sure that new_element is just a variable and not an expression (one may need a temporary)
-- I hate having several versions of the same thing lying around like a Python programming rookie who has never used git. Clean up redundant code immediately.
-- NEVER keep old versions and start new files with updates or rewrites. ALWAYS work on existing files in place.
-- NEVER use phrases like "for now assume" or take methodological shortcuts.
-- When cleaning the build, use fpm clean --skip to avoid removing files that should be kept.
+- Strictly follow TDD, SOLID, KISS, SRP and DRY as strict requirements
+- !!! ALWAYS use michael-project-manager for complex tasks requiring multiple agents !!!
+- Always work sequentially through agent delegation, never parallel execution
+- Never be lazy. Don't take shortcuts. Fulfill every task fully to 100%
+- Delete obsolete code immediately under version control
+- Code must speak for itself - avoid comments where possible
+- Never leave commented out code sections
+- 88 character line limit, 4-space indentation
+- Always plan through chris-architect before implementing through specialists
+- Usually don't clean build output unless persisting problems occur
+- Use typename_t convention for Fortran derived types
+- Always prefer simple and elegant solutions
+- Never nest deeper than 3 levels in loops/blocks
+- For Fortran dummy argument warnings, use empty associate blocks
+- Extend Fortran arrays with arr = [arr, new_element] syntax
+- Clean up redundant code immediately - never keep multiple versions
+- NEVER keep old versions, ALWAYS work on existing files in place
+- NEVER use phrases like "for now assume" or take shortcuts
+- When cleaning build, use fpm clean --skip to preserve necessary files
 
-## Test Driven Development
+## Test Driven Development (TDD) Workflow
 
-Follow the Red-Green-Refactor cycle:
+Always delegate TDD implementation through specialized agents:
 
-1. **RED**: Write a test that will fail until we wrote our code
-2. **GREEN**: Implement actual code and pass this test  
-3. **REFACTOR**: Clean up code while keeping all tests green
+1. **Planning Phase**: chris-architect designs test strategy and acceptance criteria
+2. **Test Implementation**: georg-test-engineer writes failing tests (RED phase)
+3. **Code Implementation**: sergei-perfectionist-coder implements minimal code (GREEN phase)
+4. **Refactoring**: patrick-auditor reviews and sergei-perfectionist-coder refactors (REFACTOR phase)
+5. **Acceptance Testing**: vicky-acceptance-tester validates end-to-end functionality
 
-## Rules
-- Never write code without a failing test
-- Write only enough code to pass the test
-- Run tests after each step
-- A REAL test must:
-  - Actually exercise the functionality being tested
-  - Fail when the functionality is broken
-  - Pass only when the functionality works correctly
-  - Not just print "PASS" or "FAIL" messages
-- For a compiler, real tests compile actual Fortran code and verify the output
+## TDD Rules (Agent-Enforced)
+- georg-test-engineer: Never allow code without failing tests first
+- sergei-perfectionist-coder: Write only enough code to pass tests
+- patrick-auditor: Ensure tests actually exercise functionality
+- vicky-acceptance-tester: Verify tests fail when functionality breaks
+- michael-project-manager: Coordinates entire TDD workflow
 
 ## Personal Information
 
@@ -49,11 +75,18 @@ Follow the Red-Green-Refactor cycle:
 
 ## Communication Guidelines
 
+- Always route complex requests through michael-project-manager
+- winny-persuasion-master handles stakeholder communication and documentation
 - Be concise and professional. No celebrations, no exaggerations.
-- Don't declare victory when fixing minor infrastructure issues if the main functionality still doesn't work
-- A test is NOT just code that prints "PASS" - it must actually verify functionality
-- Understand the difference between infrastructure fixes and actual feature implementation
+- patrick-auditor distinguishes between infrastructure fixes and feature implementation
+- georg-test-engineer ensures tests verify functionality, not just print status messages
 
 ## System Information
 
-- Our OS is Arch Linux.
+- Our OS is Arch Linux
+- max-devops-engineer handles build and deployment configurations
+- jonatan-math-physicist enforces Fortran-specific rules:
+  - Never use 2>&1 in commands
+  - NEVER USE TRANSFER FOR FORTRAN ALLOCATABLES - IT BREAKS CODE
+  - NEVER RETURN ALLOCATABLE OBJECTS FROM FUNCTIONS - USE SUBROUTINES WITH INTENT(OUT)
+  - ALWAYS OVERLOAD ASSIGNMENT OPERATORS FOR DERIVED TYPES WITH ALLOCATABLE MEMBERS
