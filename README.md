@@ -102,10 +102,10 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 
 **Steps:**
 1. **sergei-perfectionist-coder** implements changes
-2. **Serial Review Chain**: max-devops validation → patrick-auditor review → **User review (manual mode only)**
+2. **Serial Review Chain**: max validation → patrick review → **User review (manual mode only)**
 3. **Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Now (<30min) or File Issue
 4. **Iterate** until all findings resolved
-5. **max-devops** cleanup and completion
+5. **max** cleanup and completion
 
 **Batch Behavior:**
 - **Single Issue** (default): Complete one issue → stop
@@ -118,7 +118,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ### 7-Phase Development Process
 
 **Phase 1-2: Planning & Prioritization**
-1. **max-devops**: Repository assessment (PRs/issues/clean state)
+1. **max**: Repository assessment (PRs/issues/clean state)
 2. **chris-architect**: Issue selection and prioritization
 
 **Phase 3: Architecture Documentation**
@@ -132,14 +132,14 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 5b. **sergei-perfectionist-coder**: Code + API documentation using winny's docs as guide
 
 **Phase 6: Serial Review Chain** *(fully serial execution)*:
-   - **max-devops**: Technical validation → immediate handback if critical issues
+   - **max**: Technical validation → immediate handback if critical issues
    - **patrick-auditor**: Code quality + security → immediate handback if critical issues
    - **vicky-acceptance-tester**: User acceptance + UX → immediate handback if critical issues
    - **chris-architect**: Architecture alignment → immediate handback if critical issues
    - **User**: Final review (manual mode only) → immediate handback if critical issues
 
 **Phase 7: Completion** *(combined final phase)*
-7a. **max-devops**: CI validation, PR merge, cleanup
+7a. **max**: CI validation, PR merge, cleanup
 7b. **chris-architect**: Executive summary report to user
 
 ---
@@ -207,7 +207,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ### Simple Workflow Flow
 ```
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   sergei    │──▶│ max-devops  │──▶│  patrick    │
+│   sergei    │──▶│     max     │──▶│  patrick    │
 │ implements  │    │ validates   │    │  reviews    │
 └─────────────┘    └─────────────┘    └─────────────┘
                                               │
@@ -237,7 +237,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
                                                   NO
                                                    ▼
                                            ┌─────────────┐
-                                           │ max-devops  │
+                                           │     max     │
                                            │  cleanup    │
                                            └─────────────┘
 ```
@@ -247,7 +247,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ```
 Phase 1-2: Planning (Serial)
 ┌─────────────┐    ┌─────────────┐
-│ max-devops  │──▶│    chris    │
+│     max     │──▶│    chris    │
 │ repo check  │    │ prioritizes │
 └─────────────┘    └─────────────┘
 
@@ -265,7 +265,7 @@ Phase 5: Docs → Implementation (Serial, Docs-First)
 
 Phase 6: Serial Review Chain
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│ max-devops  │──▶│   patrick   │──▶│    vicky    │──▶│    chris    │
+│     max     │──▶│   patrick   │──▶│    vicky    │──▶│    chris    │
 │build & test │    │code quality │    │  UAT & UX   │    │architecture │
 └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
                                                                   │
@@ -295,7 +295,7 @@ Phase 6: Serial Review Chain
 
 Phase 7: Completion (Combined)
 ┌─────────────┐    ┌─────────────┐
-│ max-devops  │──▶│    chris    │
+│     max     │──▶│    chris    │
 │integration  │    │  summary    │
 └─────────────┘    └─────────────┘
 ```
