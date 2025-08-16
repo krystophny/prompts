@@ -3,16 +3,25 @@
 For complex tasks requiring multiple agents, follow this stepwise delegation workflow:
 
 1. **Clean State**: max-devops-engineer verifies clean repo state
-2. **Architecture**: chris-architect creates GitHub issues and branch
-3. **RED Phase**: georg-test-engineer writes failing tests  
-4. **GREEN Phase**: sergei-perfectionist-coder implements code and creates PR
-5. **Review**: chris-architect (high-level goal review), patrick-auditor (detailed code review), and vicky-acceptance-tester (user acceptance testing) all review functionality
-6. **Refinement**: sergei-perfectionist-coder addresses feedback until all three reviewers are satisfied
-7. **Integration**: max-devops-engineer merges PR and cleans up
+2. **Architecture**: chris-architect creates GitHub issues, branch, and risk assessment
+3. **User Checkpoint**: Present architecture plan to user for approval before implementation
+4. **RED Phase**: georg-test-engineer writes failing tests (parallel: chris-architect refines details)
+5. **GREEN Phase**: sergei-perfectionist-coder implements code and creates PR
+6. **Review**: chris-architect (goal alignment), patrick-auditor (code quality), vicky-acceptance-tester (user acceptance) review in parallel
+7. **Refinement**: sergei-perfectionist-coder addresses feedback until all reviewers satisfied
+8. **Integration**: max-devops-engineer merges PR and cleans up
 
 **Communication Pattern:**
 - Before delegating: "Now assigning [Agent] to [specific task] because [reason]"
 - After each result: "[Agent] completed [what was done]. Next, assigning..."
+- Include **Context Transfer**: Each agent must summarize key decisions/constraints for the next agent
+
+**Definition of Done (Per Phase):**
+- Architecture: Issues created, branch exists, risks identified, user approved
+- RED: Tests fail as expected, cover all requirements, properly documented
+- GREEN: All tests pass, CI green, PR created and ready for review
+- Review: All three reviewers approve with no blocking issues
+- Integration: PR merged, branch deleted, repository clean
 
 **Agent Reporting Requirements:**
 - Every agent MUST deliver a concise report directly in the claude shell after task completion
