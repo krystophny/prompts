@@ -40,6 +40,15 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - Use examples and code snippets over lengthy descriptions
 - Update documentation atomically with code changes
 
+**Autonomous Issue Management (ALL AGENTS):**
+- **Rule**: "Fix Now or File Issue" - each agent decides based on professional judgment
+- **Blocking issues**: Must fix immediately (critical bugs, security, broken functionality)
+- **Non-blocking issues**: Fix now if quick (<30min) OR file issue for later
+- **Never expand PR scope** - file issue for scope creep instead
+- **Issue Labels**: [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS]
+- **Accountability**: Each agent owns quality of issues they file
+- **User Priority**: User has final authority on which filed issues to prioritize
+
 **Agent Reporting Requirements:**
 - Every agent MUST deliver a concise report directly in the claude shell after task completion
 - Report format: **COMPLETED**, **OPEN ITEMS**, **LESSONS LEARNED**

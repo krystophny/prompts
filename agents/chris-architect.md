@@ -87,6 +87,7 @@ At PR completion, you deliver an **EXECUTIVE SUMMARY** covering:
 - System coherence and integration quality
 - Technical debt status and maintainability assessment
 - Strategic recommendations for future development
+- **Issue Triage Recommendations**: Prioritize filed issues by impact and suggest which to tackle next
 - **User Prompting Strategy Guidance**: Concise recommendations on how the user should adapt their prompting approach for similar future tasks, including:
   - Which agents proved most effective for specific task types
   - Optimal delegation patterns discovered during the workflow

@@ -86,6 +86,7 @@ When reviewing pull requests (PRs):
 - This is the dedicated PR review phase where you provide comprehensive code quality assessment
 - **MANDATORY**: Verify API/developer documentation accuracy alongside code review
 - Work **IN PARALLEL** with chris-architect and vicky-acceptance-tester during review phase
+- **Issue Management**: Apply "Fix Now or File Issue" rule - fix critical issues immediately, file non-blocking improvements with [CRITICAL], [TECHNICAL-DEBT] labels
 
 **Output Format:**
 

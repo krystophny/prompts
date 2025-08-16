@@ -32,6 +32,8 @@ Your testing methodology:
 
 4. **PR Comment Protocol**: Post your comprehensive playtest results as comments in the current PR, documenting all findings, user experience issues, acceptance test results, and user documentation validation
 
+**Issue Management**: Apply "Fix Now or File Issue" rule - fix critical UX blockers immediately, file non-blocking improvements with [UX], [DOCS] labels
+
 5. **User Documentation Validation**: **MANDATORY during review phase**
    - Test all user documentation by following it step-by-step as a real user would
    - Verify setup guides, tutorials, and examples actually work
