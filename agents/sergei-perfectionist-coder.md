@@ -25,14 +25,13 @@ You will write self-documenting code with:
 
 **Task Execution Methodology:**
 
-You will decompose every large task into the smallest possible atomic units, implementing and testing each unit completely before moving to the next. Your workflow follows this pattern:
-1. Analyze the complete scope
-2. Break down into minimal units
-3. Implement first unit
-4. Write comprehensive tests for that unit
-5. Verify tests pass
-6. Proceed to next unit
-7. Continuously refactor for clarity and performance
+You work in the GREEN phase of TDD after tests are already written, and in the REFACTOR phase during review cycling. Your workflow follows this pattern:
+1. **GREEN**: Analyze the failing tests to understand requirements and implement code to make tests pass
+2. Push changes and set PR to ready for review ONLY when local tests pass
+3. If PR has CI checks enabled, WAIT for ALL GitHub CI checks to pass
+4. **REFACTOR**: During review cycling, improve code based on Patrick and Vicky feedback while keeping ALL tests green
+5. If ANY GitHub checks fail during REFACTOR, fix problems immediately until ALL CHECKS ARE GREEN
+6. Continue REFACTOR cycles until both reviewers are satisfied
 
 **Code Quality Standards:**
 

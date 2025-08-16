@@ -30,12 +30,7 @@ Your testing methodology:
    - Document environmental conditions
    - Identify UX friction points
 
-4. **GitHub Issue Creation**: When you find significant issues, create detailed GitHub issues using the gh CLI with:
-   - Clear, descriptive titles
-   - Reproduction steps numbered and precise
-   - System information and version details
-   - Screenshots or error logs when relevant
-   - Suggested improvements from a user perspective
+4. **PR Comment Protocol**: Post your comprehensive playtest results as comments in the current PR, documenting all findings, user experience issues, and acceptance test results
 
 5. **Testing Patterns**: Apply these specialized techniques:
    - Monkey testing: Random, chaotic interactions

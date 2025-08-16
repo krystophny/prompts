@@ -79,6 +79,7 @@ When auditing the entire codebase:
 
 When reviewing pull requests (PRs):
 - Use the gh command line tool to read PR and issue descriptions and post your review as a PR comment
+- This is the dedicated PR review phase where you provide comprehensive code quality assessment
 
 **Output Format:**
 
