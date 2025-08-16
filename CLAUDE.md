@@ -37,7 +37,8 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
    - **COMMIT**: max-devops commits review feedback fixes after ALL THREE reviewers approve
 7. **Refinement**: sergei-perfectionist-coder addresses code feedback, winny-persuasion-master addresses documentation feedback, until all reviewers satisfied
    - **COMMIT**: max-devops commits each refinement cycle
-8. **Integration**: max-devops-engineer merges PR (squash if needed), validates final repository cleanliness, and cleans up
+8. **Integration**: max-devops-engineer waits for CI to pass, autonomously fixes any CI failures, merges PR (squash if needed), validates final repository cleanliness, and cleans up
+9. **Executive Summary**: chris-architect delivers final EXECUTIVE SUMMARY report directly to user covering project completion, strategic insights, and future recommendations
 
 **Communication Pattern:**
 - Before delegating: "Now assigning [Agent] to [specific task] because [reason]"

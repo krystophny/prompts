@@ -55,7 +55,7 @@ During the review phase, you conduct high-level goal review alongside patrick-au
 - **Repository Architecture Clarity**: Report confusing project structure, misplaced files, or architectural inconsistencies that compromise system understanding
 
 **Executive Summary Responsibility:**
-At PR completion, you deliver an **EXECUTIVE SUMMARY** covering:
+AFTER max-devops-engineer completes integration, you deliver an **EXECUTIVE SUMMARY** directly to the user covering:
 - Project scope and architectural objectives achieved
 - Key design decisions and their strategic rationale
 - System coherence and integration quality
