@@ -336,6 +336,13 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - **Workflow**: Plan through chris-architect, work on existing files in place
 - **Fortran**: Use typename_t convention, empty associate blocks for warnings
 
+### Immediate Cleanup Policy
+- **NEVER KEEP OBSOLETE CODE OR DOCS**: No backup copies, no commented-out code, no "just in case" preservation
+- **IMMEDIATE DELETION**: Remove obsolete code/docs immediately when updating, NEVER postpone cleanup
+- **CHANGE OR DELETE**: Every line either serves current purpose or gets deleted - no middle ground
+- **PROACTIVE CLEANUP**: Actively remove dead code, unused imports, obsolete documentation during every change
+- **NO EXCEPTIONS**: This applies to all agents - sergei (code), winny (docs), patrick (review), all specialists
+
 ### Customer Focus
 - **Primary Customer**: Repository owner/user requesting functionality
 - **Customer Requirements**: Captured in GitHub issues and user acceptance criteria
