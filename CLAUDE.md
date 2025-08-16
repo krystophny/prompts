@@ -119,19 +119,20 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 **REVIEW MODES:**
 - **AUTOMATIC REVIEW (DEFAULT)**: patrick, chris, vicky complete review autonomously
 - **MANUAL MODE (USER REQUESTS)**: When user says "manual mode" or "let the team work in manual mode":
-  - **USER AS FOURTH REVIEWER**: User participates as additional parallel reviewer in Phase 6b
-  - **WORKFLOW PAUSE**: Workflow pauses after patrick/chris/vicky complete review, waits for user input
+  - **USER AS THIRD REVIEWER**: User participates as additional reviewer in Phase 6b-3
+  - **WORKFLOW PAUSE**: Workflow pauses after patrick/vicky complete review, waits for user input
   - **USER APPROVAL REQUIRED**: Progression requires user approval alongside all other reviewers
   - **FINDINGS HANDBACK**: User findings are handed back to appropriate agents (sergei/winny) same as other reviewers
   - **BATCH INTEGRATION**: User review findings included in comprehensive batch handoff alongside patrick's findings
   - **INDEPENDENT OF BATCH MODE**: Manual mode works in both single issue and batch modes
 3. **Architecture Documentation**: chris-architect updates DESIGN.md and creates detailed implementation plan
 4. **RED Phase**: georg-test-engineer writes failing tests (parallel: chris-architect refines details)
-   - **COMMIT**: max-devops commits test suite after georg completes
-5. **Implementation + Documentation Phase**: **PARALLEL EXECUTION MANDATORY**
-   - sergei-perfectionist-coder implements code + updates API/developer docs
-   - winny-technical-writer writes user documentation using test specifications
-   - **COMMIT**: max-devops commits BOTH implementation AND documentation after BOTH agents complete
+   - **COMMIT**: georg commits test suite after completion
+5. **Implementation + Documentation Phase**: **SERIAL EXECUTION**
+   - **Step 5a**: winny-technical-writer writes user documentation using test specifications
+   - **COMMIT**: winny commits user documentation after completion
+   - **Step 5b**: sergei-perfectionist-coder implements code + updates API/developer docs  
+   - **COMMIT**: sergei commits implementation and API documentation after completion
 6. **Review + Documentation Validation**: 
    **6a. Technical Validation (max-devops-engineer)**: Run build, tests, gather CI artifacts, categorize findings
    - **Repository Hygiene Check**: Verify zero binary files, build artifacts, temp files in working copy AND git history
@@ -139,19 +140,20 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
    - **MAJOR/MINOR findings**: Continue to Phase 6b, pass findings list to patrick for inclusion in comprehensive review batch
    - **Iterate**: sergei fixes only CRITICAL issues → max re-validates → repeat until zero CRITICAL findings
    - **COMMIT**: max-devops commits fixes after each iteration
-   - **When max confirms zero CRITICAL findings**: Share clean build data AND non-blocking findings list with patrick, chris, and vicky for parallel review
-   **6b. Parallel Review (Only if 6a has zero CRITICAL findings)**:
-   - patrick-auditor: deep code quality analysis + security review + API/developer documentation verification + batches max's non-blocking findings into comprehensive review
-   - chris-architect: architecture alignment review using max's clean build data
-   - vicky-acceptance-tester: user acceptance testing + user documentation validation using max's clean build
-   - **MANUAL MODE**: If user requests "manual mode", workflow pauses here for user review as fourth parallel reviewer
-   - **If vicky finds user documentation issues**: Hand back directly to winny-technical-writer for fixes
-   - **If user finds issues in MANUAL mode**: Hand back issues to appropriate agents (sergei for code, winny for docs, etc.) same as other reviewers
-   - **Batch Review Protocol**: patrick creates comprehensive issue list combining max's non-blocking findings with own review findings for single batch handoff to sergei/winny
-   - **User findings integration**: User review findings are included in the comprehensive batch handoff alongside patrick's findings
-   - **COMMIT**: max-devops commits review feedback fixes after ALL reviewers approve (including user in MANUAL mode)
-7. **Refinement**: sergei-perfectionist-coder addresses comprehensive feedback batch from patrick, winny-technical-writer addresses documentation feedback from vicky, until all reviewers satisfied
-   - **COMMIT**: max-devops commits each refinement cycle
+   - **When max confirms zero CRITICAL findings**: Pass clean build data AND non-blocking findings list to serial review chain
+   **6b. Serial Review (Only if 6a has zero CRITICAL findings)**:
+   - **Step 6b-1**: patrick-auditor performs deep code quality analysis + security review + API/developer documentation verification + incorporates max's non-blocking findings
+   - **COMMIT**: patrick commits any immediate fixes (<30min) or documents findings for batch handoff
+   - **Step 6b-2**: vicky-acceptance-tester performs user acceptance testing + user documentation validation  
+   - **COMMIT**: vicky commits any immediate fixes (<30min) or documents findings for batch handoff
+   - **Step 6b-3**: **MANUAL MODE ONLY** - User performs review if "manual mode" requested
+   - **Step 6b-4**: chris-architect performs architecture alignment review using all previous findings (including user findings if manual mode)
+   - **COMMIT**: chris commits any immediate fixes (<30min) or documents findings for batch handoff
+   - **Combined Findings Report**: chris compiles comprehensive findings from all reviewers for single batch handoff to sergei/winny
+   - **If critical issues found**: Return to appropriate agent for immediate fixes before proceeding
+7. **Refinement**: sergei-perfectionist-coder addresses comprehensive feedback batch, winny-technical-writer addresses documentation feedback, until all reviewers satisfied
+   - **COMMIT**: sergei commits code fixes after each refinement cycle  
+   - **COMMIT**: winny commits documentation fixes after each refinement cycle
 8. **Integration**: max-devops-engineer waits for CI to pass, autonomously fixes any CI failures, merges PR (squash if needed), validates final repository cleanliness, and cleans up
 9. **Executive Summary**: chris-architect delivers final EXECUTIVE SUMMARY report directly to user covering project completion, strategic insights, and future recommendations
 
@@ -160,12 +162,12 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 **When**: Clean repository state (all PRs merged, all issues closed)
 **Purpose**: Comprehensive system exploration to discover defects and improvements that escaped normal review
 
-**Protocol** (Parallel execution like Phase 6a/6b):
+**Protocol** (Serial execution):
 1. **max-devops-engineer**: Repository health check, build system validation, CI verification, findings categorization
-2. **PARALLEL AUDIT (only if max confirms clean build state)**:
-   - **vicky-acceptance-tester**: Exhaustive user acceptance testing, stress testing, edge case exploration
-   - **patrick-auditor**: Security audit, code quality review, technical debt identification  
-   - **chris-architect**: Architecture review, design consistency validation, strategic assessment
+2. **SERIAL AUDIT (only if max confirms clean build state)**:
+   - **Step 2a**: patrick-auditor performs security audit, code quality review, technical debt identification
+   - **Step 2b**: vicky-acceptance-tester performs exhaustive user acceptance testing, stress testing, edge case exploration  
+   - **Step 2c**: chris-architect performs architecture review, design consistency validation, strategic assessment
 3. **All agents**: File issues for discovered defects/improvements at appropriate severity levels
    - Labels: [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS], [SECURITY]
 4. **max-devops-engineer**: Ensure all findings are properly documented as GitHub issues
@@ -186,10 +188,13 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - **Technical Data**: `BUILD: [status] | FINDINGS: [critical/major/minor] | ARTIFACTS: [key results]`
 
 **Commit Protocol:**
-- max commits once per phase when ALL agents complete
+- Each agent commits their own work immediately after completion
+- ALL agents must follow strict git hygiene: manually specify files with `git add <file>`, NEVER use `git add .` or `git add -A`
+- MANDATORY workspace cleanup after each task: remove temp files, artifacts (except build folders for faster rebuilds)
 - Conventional Commits format: `<type>: <description>` 
 - Imperative mood, no period, under 72 chars, one logical change per commit
 - NO EMOJIS, NO ROBOT SIGNATURES - clean, precise commits only
+- NEVER commit binary files, build artifacts, or temporary files
 
 **Issue Management:**
 - **"Fix Now (<30min) or File Issue"** decision protocol:
@@ -216,64 +221,80 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 **UNIQUE RESPONSIBILITIES - NO OVERLAP:**
 
 **max-devops-engineer (Development Manager)** OWNS:
-- ALL repository state assessment and PR triage (MANDATORY first step)
-- ALL build execution, CI/CD operations, repository state management
-- ALL git operations: branch creation, checkout, merging, push/pull
-- Technical validation (6a), findings categorization, .gitignore, dirty files cleanup
-- Final integration and PR merging
-- ALL git hygiene: filter-branch/squash to eliminate artifacts, keep branches rebased on main
-- ALL merge conflict resolution, push --force only after rebase/squash operations
-- MANDATORY: Zero binary files, build artifacts, temp files in working copy AND git history
+- Repository state assessment and PR triage (MANDATORY first step)
+- Build execution, CI/CD operations, repository state management
+- Technical validation (6a), findings categorization, CI monitoring
+- Final integration and PR merging, merge conflict resolution
+- Advanced git operations: filter-branch/squash, rebase, push --force after rebase/squash
+- Repository cleanliness validation: zero binary files, build artifacts, temp files in working copy AND git history
 - MANDATORY: NEVER push directly to main - all work in feature branches until PR merge
 - MANDATORY: BLOCK new work when unmerged PRs exist - clean up first
-- NOT code quality, NOT security analysis, NOT test quality review
+- NOT code quality, NOT security analysis, NOT test quality review, NOT individual agent commits
 
 **patrick-auditor (Code Reviewer/QA)** OWNS:  
 - ALL security analysis (input validation, injection vulnerabilities, auth/authorization)
 - Code quality review, test quality review, convention compliance verification
+- Git operations for own work: add, commit, push, workspace cleanup
 - MANDATORY: Verify repository cleanliness (no binaries/artifacts/bloat) in review
-- NOT build operations, NOT repository hygiene, NOT .gitignore management
+- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
+- NOT build operations, NOT advanced git operations (rebase/squash)
 
 **chris-architect (Chief Architect)** OWNS:
 - **FEATURE PLANNING**: Full authority to create/update DESIGN.md and issues based on user requirements
 - **MVP DELIVERY**: Prioritize highest quality minimum viable product, prevent feature creep and overengineering
 - **FEATURE DEVELOPMENT**: Issue selection, prioritization, closure only
 - **FEATURE DEVELOPMENT**: DESIGN.md/issue updates ONLY in review phase for >30min findings
+- Git operations for own work: add, commit, push, workspace cleanup  
 - System architecture, strategic planning
-- NOT implementation, NOT build systems, NOT test writing, NOT git operations
+- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
+- NOT implementation, NOT build systems, NOT test writing, NOT advanced git operations
 
 **georg-test-engineer (Test Engineer)** OWNS:
 - ALL test creation (unit, integration, system), test implementation
-- NOT test quality review (patrick does this), NOT build execution
+- Git operations for own work: add, commit, push, workspace cleanup
+- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
+- NOT test quality review (patrick does this), NOT build execution, NOT advanced git operations
 
 **sergei-perfectionist-coder (Chief Programmer)** OWNS:
 - ALL production code implementation, API/developer documentation
 - Addressing CRITICAL findings from max-devops-engineer immediately (block progression)
 - Addressing comprehensive review batch from patrick-auditor (includes max's non-blocking + patrick's findings)
 - Addressing documentation/UX findings from vicky-acceptance-tester (handed directly to winny-technical-writer, but sergei may need code changes)
-- NOT user documentation, NOT build systems, NOT issue management
+- Git operations for own work: add, commit, push, workspace cleanup
+- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
+- NOT user documentation, NOT build systems, NOT issue management, NOT advanced git operations
 
 **vicky-acceptance-tester (Customer/Tester)** OWNS:
-- ALL user acceptance testing, UX validation, user documentation validation  
-- NOT code review, NOT build operations, NOT test creation
+- ALL user acceptance testing, UX validation, user documentation validation
+- Git operations for own work: add, commit, push, workspace cleanup
+- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
+- NOT code review, NOT build operations, NOT test creation, NOT advanced git operations
 
 **winny-technical-writer (Technical Writer)** OWNS:
 - ALL user documentation, technical content creation
-- NOT API/developer documentation, NOT code implementation
+- Git operations for own work: add, commit, push, workspace cleanup
+- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
+- NOT API/developer documentation, NOT code implementation, NOT advanced git operations
 
 **Domain Experts (Consult when specialized knowledge needed):**
 
 **steffi-ux-designer** OWNS:
 - ALL UI/UX design, interface optimization, visual styling
-- NOT code implementation, NOT user documentation content
+- Git operations for own work: add, commit, push, workspace cleanup
+- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
+- NOT code implementation, NOT user documentation content, NOT advanced git operations
 
 **philipp-data-scientist** OWNS:
 - ALL data analysis, visualization, statistical modeling, data pipeline architecture
-- NOT UI/UX design, NOT mathematical formulation
+- Git operations for own work: add, commit, push, workspace cleanup
+- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
+- NOT UI/UX design, NOT mathematical formulation, NOT advanced git operations
 
 **jonatan-math-physicist** OWNS:
 - ALL mathematical formulation, LaTeX-to-code translation, symbolic mathematics
-- NOT data analysis/statistics, NOT system architecture
+- Git operations for own work: add, commit, push, workspace cleanup
+- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
+- NOT data analysis/statistics, NOT system architecture, NOT advanced git operations
 
 ## Core Principles
 - **Quality**: TDD, SOLID, KISS, SRP, DRY - no shortcuts, 100% completion

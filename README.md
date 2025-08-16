@@ -125,17 +125,17 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 **Phase 4: RED Phase (Test-Driven Development)**
 4. **georg-test-engineer**: Writes failing tests (parallel with chris refinements)
 
-**Phase 5: Implementation + Documentation** *(Parallel Execution)*
-5. **sergei-perfectionist-coder**: Code + API documentation
-   **winny-technical-writer**: User documentation
+**Phase 5: Implementation + Documentation** *(Serial Execution - docs first)*
+5a. **winny-technical-writer**: User documentation  
+5b. **sergei-perfectionist-coder**: Code + API documentation
 
 **Phase 6: Review & Validation**
 6a. **max-devops**: Technical validation (build/test/critical findings)
-6b. **Parallel Review** (only if 6a passes):
+6b. **Serial Review** *(executed serially despite parallel topology shown)*:
    - **patrick-auditor**: Code quality + security + batch findings
    - **vicky-acceptance-tester**: User acceptance + UX validation
-   - **chris-architect**: Architecture alignment
    - **User** (if manual mode): Additional review
+   - **chris-architect**: Architecture alignment + combined findings report
 
 **Phase 7: Refinement**
 7. **sergei + winny**: Address all feedback until reviewers satisfied
@@ -231,6 +231,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ```
 
 ### Complex Workflow Flow
+*Note: Diagrams show parallel topology for clarity, but execution is currently serial*
 ```
 Phase 1-2: Planning
 ┌─────────────┐    ┌─────────────┐
