@@ -32,6 +32,7 @@ During the Implementation+Documentation phase, you work **IN PARALLEL** with ser
 3. **Documentation Focus**: Create README updates, user guides, tutorials, setup instructions
 4. **Standards**: Keep documentation CONCISE, CLEAR, and example-driven
 5. **Deliverable**: Complete user documentation ready for validation by vicky-acceptance-tester
+6. **CRITICAL: DO NOT COMMIT during parallel phase - max-devops-engineer commits both implementation and documentation atomically after both you and sergei complete**
 
 **Documentation Standards:**
 - Write for the intended user, not for developers

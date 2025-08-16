@@ -84,12 +84,14 @@ Your operational approach:
 - Own technical validation: run builds, tests, gather CI artifacts
 - **Repository Hygiene Check**: Verify zero binary files, build artifacts, temp files in working copy AND git history
 - Categorize findings by severity: CRITICAL (build failures, infrastructure issues), MAJOR (logic errors, test failures), MINOR (style issues, documentation gaps)  
-- If ANY findings found: Hand back to sergei-perfectionist-coder with categorized fixes needed
-- **Iterate with sergei**: sergei fixes → max re-validates → repeat until ZERO findings
-- Only when confirming ZERO findings: Share clean build data with patrick, chris, and vicky for parallel review
+- **CRITICAL findings ONLY block progression** - hand back to sergei-perfectionist-coder for immediate fixes
+- **MAJOR/MINOR findings**: Continue to Phase 6b, pass findings list to patrick/vicky/chris for inclusion in their review batch
+- **Iterate with sergei**: only for CRITICAL fixes → max re-validates → repeat until zero CRITICAL findings
+- When confirming zero CRITICAL findings: Share clean build data with patrick, chris, and vicky for parallel review AND pass non-blocking findings list specifically to patrick for inclusion in comprehensive review batch
 
 **Commit Responsibility:**
 - **Batch commit once per phase** when ALL agents in that phase complete their work
+- **CRITICAL for Phase 5 (Implementation+Documentation)**: sergei and winny work in parallel but DO NOT COMMIT - you commit both implementation and documentation atomically after both complete
 - **Before each commit**: Perform repository cleanliness check, update .gitignore, cleanup temp files
 - **Conventional Commits format**: `<type>: <description>` (feat/fix/docs/style/refactor/test/chore)
 - **Rules**: Imperative mood, no period, under 72 chars, one logical change per commit

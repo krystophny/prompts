@@ -41,12 +41,13 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 6. **Review + Documentation Validation**: 
    **6a. Technical Validation (max-devops-engineer)**: Run build, tests, gather CI artifacts, categorize findings
    - **Repository Hygiene Check**: Verify zero binary files, build artifacts, temp files in working copy AND git history
-   - **If ANY findings found** (critical/major/minor): Hand back to sergei-perfectionist-coder with categorized fixes needed
-   - **Iterate**: sergei fixes issues → max re-validates → repeat until ZERO findings
+   - **CRITICAL findings ONLY block progression** (build failures, infrastructure issues): Hand back to sergei-perfectionist-coder for immediate fixes
+   - **MAJOR/MINOR findings**: Continue to Phase 6b, pass findings list to patrick for inclusion in comprehensive review batch
+   - **Iterate**: sergei fixes only CRITICAL issues → max re-validates → repeat until zero CRITICAL findings
    - **COMMIT**: max-devops commits fixes after each iteration
-   - **Only when max confirms ZERO findings**: Share clean build data and proceed to 6b
-   **6b. Parallel Review (Only if 6a has zero findings)**:
-   - patrick-auditor: deep code quality analysis + security review + API/developer documentation verification
+   - **When max confirms zero CRITICAL findings**: Share clean build data AND non-blocking findings list with patrick, chris, and vicky for parallel review
+   **6b. Parallel Review (Only if 6a has zero CRITICAL findings)**:
+   - patrick-auditor: deep code quality analysis + security review + API/developer documentation verification + batches max's non-blocking findings into comprehensive review
    - chris-architect: architecture alignment review using max's clean build data
    - vicky-acceptance-tester: user acceptance testing + user documentation validation using max's clean build
    - **If vicky finds user documentation issues**: Hand back directly to winny-persuasion-master for fixes

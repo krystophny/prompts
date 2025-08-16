@@ -149,24 +149,29 @@ Phase 5: IMPLEMENTATION + DOCS (PARALLEL MANDATORY)
 
 Phase 6a: TECHNICAL VALIDATION
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   max-devops    │ ──▶ │ Build, test,    │ ──▶ │ FINDINGS?       │
-│    engineer     │     │ categorize      │     │                 │
+│   max-devops    │ ──▶ │ Build, test,    │ ──▶ │ CRITICAL        │
+│    engineer     │     │ categorize      │     │ FINDINGS?       │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
          ▲                                               │
          │                                             YES│
          │              ┌─────────────────┐               ▼
          └──────────────│ sergei-coder    │◄──┌─────────────────┐
-                        │ fixes issues    │   │ BACK TO SERGEI  │
-                        └─────────────────┘   │ ITERATE UNTIL   │
-                                              │ ZERO FINDINGS   │
+                        │ fixes CRITICAL  │   │ BACK TO SERGEI  │
+                        └─────────────────┘   │ CRITICAL ONLY   │
                                               └─────────────────┘
                                                        │
                                                      NO │
                                                        ▼
-Phase 6b: PARALLEL REVIEW (Only if 6a = ZERO findings)
+                                              ┌─────────────────┐
+                                              │ MAJOR/MINOR to  │
+                                              │ patrick batch   │
+                                              └─────────────────┘
+                                                       │
+                                                       ▼
+Phase 6b: PARALLEL REVIEW (Only if 6a = ZERO CRITICAL findings)
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
 │ patrick-auditor │ ──▶ │ Code quality +  │     │ vicky-tester    │
-│                 │     │ security review │     │ UAT + UX + docs │
+│ + max findings  │     │ security review │     │ UAT + UX + docs │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
                                 │                         │
                                 │                         ▼
