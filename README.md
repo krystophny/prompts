@@ -211,7 +211,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ### Simple Workflow Flow
 ```
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   Agent     │───▶│ max-devops  │───▶│  patrick    │
+│   Agent     │──▶ │ max-devops  │──▶ │  patrick    │
 │ implements  │    │ validates   │    │  reviews    │
 └─────────────┘    └─────────────┘    └─────────────┘
                            │                   │
@@ -234,13 +234,13 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ```
 Phase 1-2: Planning
 ┌─────────────┐    ┌─────────────┐
-│ max-devops  │───▶│    chris    │
+│ max-devops  │──▶ │    chris    │
 │ repo check  │    │ prioritizes │
 └─────────────┘    └─────────────┘
 
 Phase 3-4: Design & Tests  
 ┌─────────────┐    ┌─────────────┐
-│    chris    │───▶│    georg    │
+│    chris    │──▶ │    georg    │
 │architecture │    │writes tests │
 └─────────────┘    └─────────────┘
 
@@ -252,7 +252,7 @@ Phase 5: Implementation (Parallel)
 
 Phase 6a: Technical Validation
 ┌─────────────┐    ┌─────────────┐
-│ max-devops  │───▶│  Critical   │
+│ max-devops  │──▶ │  Critical   │
 │build & test │    │ findings?   │
 └─────────────┘    └─────────────┘
                            │
@@ -278,7 +278,7 @@ Phase 6b: Parallel Review
 
 Phase 7-9: Completion
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│sergei+winny │───▶│ max-devops  │───▶│    chris    │
+│sergei+winny │──▶ │ max-devops  │──▶ │    chris    │
 │ refinements │    │integration  │    │  summary    │
 └─────────────┘    └─────────────┘    └─────────────┘
 ```
