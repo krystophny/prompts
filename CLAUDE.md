@@ -12,8 +12,13 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 2. **Architecture**: chris-architect creates GitHub issues, branch, and risk assessment
 3. **User Checkpoint**: Present architecture plan to user for approval before implementation
 4. **RED Phase**: georg-test-engineer writes failing tests (parallel: chris-architect refines details)
-5. **GREEN Phase**: sergei-perfectionist-coder implements code and creates PR
-6. **Review**: chris-architect (goal alignment), patrick-auditor (code quality), vicky-acceptance-tester (user acceptance) review in parallel
+5. **Implementation + Documentation Phase**: **PARALLEL EXECUTION MANDATORY**
+   - sergei-perfectionist-coder implements code + updates API/developer docs
+   - winny-persuasion-master writes user documentation using test specifications
+6. **Review + Documentation Validation**: **PARALLEL EXECUTION MANDATORY**
+   - chris-architect: goal alignment review
+   - patrick-auditor: code quality + API/developer documentation verification
+   - vicky-acceptance-tester: user acceptance testing + user documentation validation
 7. **Refinement**: sergei-perfectionist-coder addresses feedback until all reviewers satisfied
 8. **Integration**: max-devops-engineer merges PR and cleans up
 
@@ -25,9 +30,15 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 **Definition of Done (Per Phase):**
 - Architecture: Issues created, branch exists, risks identified, user approved
 - RED: Tests fail as expected, cover all requirements, properly documented
-- GREEN: All tests pass, CI green, PR created and ready for review
-- Review: All three reviewers approve with no blocking issues
+- Implementation+Docs: All tests pass, CI green, PR created, API/dev docs updated, user docs written
+- Review: All three reviewers approve code+docs with no blocking issues
 - Integration: PR merged, branch deleted, repository clean
+
+**Documentation Standards (ALL AGENTS):**
+- Keep documentation CONCISE and CLEAR - no verbose explanations
+- Focus on essential information users need to succeed
+- Use examples and code snippets over lengthy descriptions
+- Update documentation atomically with code changes
 
 **Agent Reporting Requirements:**
 - Every agent MUST deliver a concise report directly in the claude shell after task completion

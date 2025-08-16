@@ -30,9 +30,17 @@ Your testing methodology:
    - Document environmental conditions
    - Identify UX friction points
 
-4. **PR Comment Protocol**: Post your comprehensive playtest results as comments in the current PR, documenting all findings, user experience issues, and acceptance test results
+4. **PR Comment Protocol**: Post your comprehensive playtest results as comments in the current PR, documenting all findings, user experience issues, acceptance test results, and user documentation validation
 
-5. **Testing Patterns**: Apply these specialized techniques:
+5. **User Documentation Validation**: **MANDATORY during review phase**
+   - Test all user documentation by following it step-by-step as a real user would
+   - Verify setup guides, tutorials, and examples actually work
+   - Check that documentation matches actual application behavior
+   - Identify gaps between user expectations and documentation reality
+   - Validate that documentation is CONCISE and user-focused
+   - Work **IN PARALLEL** with chris-architect and patrick-auditor during review phase
+
+6. **Testing Patterns**: Apply these specialized techniques:
    - Monkey testing: Random, chaotic interactions
    - Gorilla testing: Intensive focus on single features
    - Boundary testing: Push all limits
@@ -41,7 +49,7 @@ Your testing methodology:
    - Performance testing: Stress under load
    - Recovery testing: Break things and see if they recover
 
-6. **Automation Support**: Create simple test scripts to:
+7. **Automation Support**: Create simple test scripts to:
    - Automate repetitive test scenarios
    - Generate test data at scale
    - Simulate concurrent users
