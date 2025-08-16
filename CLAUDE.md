@@ -34,6 +34,11 @@ USER ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 **Participants**: All team members following structured TDD development activities
 **Purpose**: Implementation, testing, review, delivery
 
+### 3. PLAYTEST WORKFLOW (System-wide audit)
+**When**: Comprehensive system audit, typically when all PRs/issues are closed (clean slate)
+**Participants**: All agents contribute audit findings, max-devops handles builds/git operations
+**Purpose**: Discover defects and improvements through thorough system exploration, build comprehensive bug backlog
+
 **chris-architect (Chief Architect) authority in FEATURE DEVELOPMENT:**
 - **RESTRICTED**: Issue selection, prioritization, closure only
 - **RESTRICTED**: DESIGN.md/issue updates ONLY in review phase for >30min findings
@@ -78,7 +83,9 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - After chris selects issue: create/checkout feature branch for that issue → continue to step 4 (RED Phase)
 
 **C. If NO PRs, NO ISSUES (clean slate):**
-- **IMMEDIATE HANDOFF** to chris for work prioritization (user-requested work or defer)
+- **INITIATE PLAYTEST WORKFLOW** automatically (comprehensive system audit)
+- **SINGLE MODE (DEFAULT)**: After playtest completion → chris-architect delivers Executive Summary → STOP
+- **BATCH MODE (USER REQUESTS)**: After playtest completion → continue with main development workflow using newly created issues until repository is completely clean again
 
 **Key Principle**: For clean repositories, avoid over-analysis - immediate handoff after basic status check
 
@@ -128,6 +135,31 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
    - **COMMIT**: max-devops commits each refinement cycle
 8. **Integration**: max-devops-engineer waits for CI to pass, autonomously fixes any CI failures, merges PR (squash if needed), validates final repository cleanliness, and cleans up
 9. **Executive Summary**: chris-architect delivers final EXECUTIVE SUMMARY report directly to user covering project completion, strategic insights, and future recommendations
+
+## PLAYTEST WORKFLOW (System Audit)
+
+**When**: Clean repository state (all PRs merged, all issues closed)
+**Purpose**: Comprehensive system exploration to discover defects and improvements that escaped normal review
+
+**Protocol** (Parallel execution like Phase 6a/6b):
+1. **max-devops-engineer**: Repository health check, build system validation, CI verification, findings categorization
+2. **PARALLEL AUDIT (only if max confirms clean build state)**:
+   - **vicky-acceptance-tester**: Exhaustive user acceptance testing, stress testing, edge case exploration
+   - **patrick-auditor**: Security audit, code quality review, technical debt identification  
+   - **chris-architect**: Architecture review, design consistency validation, strategic assessment
+3. **All agents**: File issues for discovered defects/improvements at appropriate severity levels
+   - Labels: [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS], [SECURITY]
+4. **max-devops-engineer**: Ensure all findings are properly documented as GitHub issues
+5. **CONDITIONAL CONTINUATION**: 
+   - **SINGLE MODE (DEFAULT)**: After playtest completion → chris-architect delivers Executive Summary → STOP
+   - **BATCH MODE (USER REQUESTS)**: After playtest completion → immediately continue with main development workflow using newly created issues until repository is completely clean again
+
+**Key Principles**:
+- **PARALLEL EXECUTION**: Like Phase 6b, all non-max agents work simultaneously
+- **AUDIT MINDSET**: Thorough exploration without time pressure of active development
+- **ISSUE CREATION ENCOURAGED**: Build comprehensive backlog of improvements
+- **max-devops RESPONSIBILITY**: Build operations, git hygiene, repository management only
+- **CONDITIONAL CONTINUATION**: Only proceed to resolve discovered issues if user explicitly requests batch mode
 
 **Communication Pattern:**
 - **Streamlined Handoffs**: Direct task delegation without verbose explanations

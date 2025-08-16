@@ -21,6 +21,13 @@ USER ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 **Purpose**: Implementation, testing, review, delivery of planned work
 **Authority**: chris-architect (Chief Architect) restricted to selection, prioritization, review adjustments only
 
+### 3. PLAYTEST WORKFLOW (System-wide audit)
+**Purpose**: Comprehensive system audit automatically triggered when repository is clean
+**Authority**: max-devops validates build, then parallel audit by vicky/patrick/chris, comprehensive bug backlog creation
+**State**: Automatically initiated when all PRs closed and issues resolved
+- **SINGLE MODE (DEFAULT)**: Stop after playtest with chris Executive Summary
+- **BATCH MODE (USER REQUESTS)**: Continue with development of discovered issues until clean
+
 ---
 
 ## AGENT ROSTER
@@ -268,6 +275,28 @@ Phase 9: EXECUTIVE SUMMARY
 │                 │     │ to stakeholder  │
 └─────────────────┘     └─────────────────┘
 ```
+
+---
+
+## ISSUE MANAGEMENT
+
+**Three Main Sources of Issues:**
+
+1. **FEATURE PLANNING Issues**
+   - Created by chris-architect during Feature Planning workflow with user
+   - Strategic user requirements translated into actionable development tasks
+   - Source: User goals → chris-architect analysis → GitHub issues
+
+2. **REVIEW & TESTING Process Issues**
+   - Created during Feature Development workflow (Phase 6b-7) when findings require >30min work
+   - Discovered by max/patrick/vicky/chris during technical validation and review phases
+   - Source: Review findings → GitHub issues (scope creep prevention)
+
+3. **PLAYTEST WORKFLOW Issues** 
+   - Created during comprehensive system audit by all agents
+   - Defects and improvements discovered through thorough system exploration
+   - Source: max/vicky/patrick/chris audit findings → GitHub issues (various severity levels)
+   - Generated when all PRs/issues are typically closed (clean slate audit state)
 
 ---
 
