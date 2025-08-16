@@ -19,10 +19,14 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 5. **Implementation + Documentation Phase**: **PARALLEL EXECUTION MANDATORY**
    - sergei-perfectionist-coder implements code + updates API/developer docs
    - winny-persuasion-master writes user documentation using test specifications
-6. **Review + Documentation Validation**: **PARALLEL EXECUTION MANDATORY**
-   - chris-architect: goal alignment review
-   - patrick-auditor: code quality + API/developer documentation verification
-   - vicky-acceptance-tester: user acceptance testing + user documentation validation
+6. **Review + Documentation Validation**: 
+   **6a. Technical Setup & Critical Blocker Check (Sequential)**: patrick-auditor runs build, tests, checks for CRITICAL blockers
+   - **If critical blockers found**: Immediately escalate to sergei-perfectionist-coder with specific fixes, skip 6b
+   - **If no critical blockers**: Share technical data and proceed to 6b
+   **6b. Parallel Review (Only if 6a passes)**:
+   - chris-architect: goal alignment review using patrick's technical data
+   - patrick-auditor: deep code quality analysis + API/developer documentation verification  
+   - vicky-acceptance-tester: user acceptance testing + user documentation validation using patrick's build
 7. **Refinement**: sergei-perfectionist-coder addresses feedback until all reviewers satisfied
 8. **Integration**: max-devops-engineer merges PR and cleans up
 
@@ -30,12 +34,14 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - Before delegating: "Now assigning [Agent] to [specific task] because [reason]"
 - After each result: "[Agent] completed [what was done]. Next, assigning..."
 - **Context Handoff Template**: `CONSTRAINTS: [architectural/technical limits] | DECISIONS: [key choices made] | BLOCKERS: [dependencies/risks]`
+- **Technical Data Sharing**: `BUILD_STATUS: [passing/failing] | ARTIFACTS: [test results, coverage, build logs] | ISSUES: [critical blockers found]`
 
 **Definition of Done (Per Phase):**
 - Architecture: Issues created, branch exists, risks identified, user approved
 - RED: Tests fail as expected, cover all requirements, properly documented
 - Implementation+Docs: All tests pass, CI green, PR created, API/dev docs updated, user docs written
-- Review: All three reviewers approve code+docs with no blocking issues
+- Review 6a: Build passes, no critical blockers, technical data shared OR escalated to sergei with fixes
+- Review 6b: All three reviewers approve code+docs with no blocking issues
 - Integration: PR merged, branch deleted, repository clean
 
 **Documentation Standards (ALL AGENTS):**
