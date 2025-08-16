@@ -114,7 +114,7 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 
 **Batch Behavior:**
 - **Single Issue** (default): Complete one issue → stop
-- **Batch Mode**: Continue automatically until ALL issues resolved
+- **Batch Mode**: Continue automatically until ALL issues resolved (⚠️ Can run indefinitely - see Batch Mode section)
 
 ## Complex Workflow Process
 
@@ -185,7 +185,7 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 | Mode | Trigger | Behavior |
 |------|---------|----------|
 | **Single Issue** (default) | Standard operation | Complete one issue → stop |
-| **Batch Mode** | User says "solve all issues" | Continue until ALL issues resolved |
+| **Batch Mode** ⚠️ | User says "solve all issues" | Continue until ALL issues resolved (typically infinite due to playtest) |
 | **Manual Mode** | User says "manual mode" | User participates as reviewer in workflow |
 
 ### Definition of Done
@@ -240,11 +240,13 @@ $ gh issue list
 
 **Completion Modes**:
 - **Single Mode** (default): After playtest → chris-architect Executive Summary → STOP
-- **Batch Mode**: After playtest → immediately continue resolving ALL discovered issues
+- **Batch Mode**: After playtest → immediately continue resolving ALL discovered issues → triggers new playtest when clean → potentially infinite cycle
 
 ---
 
 ## Batch Mode Behavior
+
+⚠️ **CRITICAL WARNING**: Batch mode typically runs indefinitely because the playtest workflow discovers new issues each time the repository becomes clean. Only use batch mode when you have significant time available.
 
 **Activation**: User explicitly requests `"solve all open issues"` or `"fix all issues"`
 
@@ -256,27 +258,49 @@ $ gh issue list
 
 **Batch Mode Logic**:
 
+⚠️ **WARNING**: Batch mode can run indefinitely because playtest workflow usually discovers new issues
+
 1. **Workflow Continuation**: After completing ANY issue → return to STEP 1 (max-devops assessment)
-2. **No Stopping**: Continue workflow cycles until zero open issues remain  
-3. **Final Summary Only**: Executive Summary delivered only after ALL issues completed
-4. **Persistence Required**: Must not stop until all issues fixed - no exceptions
+2. **Automatic Playtest Trigger**: When repository is clean (zero issues), playtest workflow automatically runs
+3. **Issue Replenishment**: Playtest typically discovers new issues and files them as GitHub issues
+4. **Infinite Cycle Potential**: New issues → batch continues → clean repository → playtest → more issues → repeat
+5. **Rare Termination**: Batch only stops when playtest discovers ZERO issues (very rare)
+6. **Final Summary Only**: Executive Summary delivered only after playtest finds zero issues
 
 **Works With All Workflows**:
 - **Simple Workflow Batch**: Complete simple issue → assess repository → continue if issues remain
 - **Complex Workflow Batch**: Complete complex issue → assess repository → continue if issues remain  
-- **Playtest + Batch**: Clean repository triggers playtest → creates issues → immediately resolves ALL issues
+- **Playtest + Batch**: Clean repository triggers playtest → creates issues → immediately resolves ALL issues → clean repository → playtest again → potentially infinite
 
 **Batch Mode Flow**:
 ```
+⚠️ WARNING: Can run indefinitely due to playtest replenishment
+
 Start → Complete Issue → Repository Assessment → Issues Remain? 
   ▲                                                      │
   │                                                   YES│NO
   │                                                      │
-  └────────── Continue Workflow Cycle ◄─────────────────┘
-                                                         │
-                                                        NO
-                                                         ▼
-                                               Executive Summary
+  │            Continue Workflow Cycle ◄─────────────────┘
+  │                     ▲                               │
+  │                     │                              NO
+  │                     │                               ▼
+  │               ┌─────────────┐              ┌─────────────────┐
+  │               │New Issues   │              │  PLAYTEST       │
+  │               │Created      │              │  WORKFLOW       │
+  │               │(Usually)    │              │  (Automatic)    │
+  │               └─────────────┘              └─────────────────┘
+  │                     ▲                               │
+  │                     │                               ▼
+  │               ┌─────────────────────────────────────────────┐
+  │               │  Playtest Discovers Issues?                 │
+  │               │          USUALLY YES │ RARELY NO            │
+  │               └─────────────────────────────────────────────┘
+  │                                      │
+  └──────────────────────────────────────┘        RARELY NO
+                                                       │
+                                                       ▼
+                                              Executive Summary
+                                              (VERY RARE END)
 ```
 
 ---
@@ -426,6 +450,8 @@ Repository State Check
         │ Continue │         │ Executive Summary│
         │ Workflow │         │     & STOP       │
         │  Cycles  │         └──────────────────┘
+        │(INFINITE)│
+        │ ⚠️ Loop │
         └──────────┘
 ```
 

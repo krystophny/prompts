@@ -92,7 +92,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 **C. If NO PRs, NO ISSUES (clean slate):**
 - **INITIATE PLAYTEST WORKFLOW** automatically (comprehensive system audit)
 - **SINGLE MODE (DEFAULT)**: After playtest completion → chris-architect delivers Executive Summary → STOP
-- **BATCH MODE (USER REQUESTS)**: After playtest completion → continue with main development workflow using newly created issues until repository is completely clean again
+- **BATCH MODE (USER REQUESTS)**: After playtest completion → continue with main development workflow using newly created issues → clean repository triggers playtest again → potentially infinite cycle
 
 **Key Principle**: For clean repositories, avoid over-analysis - immediate handoff after basic status check
 
@@ -113,11 +113,13 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 **EXECUTION MODES:**
 - **SINGLE ISSUE MODE (DEFAULT)**: Complete full workflow for one issue → Executive Summary → STOP
 - **BATCH MODE (USER REQUESTS)**: When user explicitly asks to "solve all open issues" or "fix all issues":
+  - **⚠️ INFINITE DURATION WARNING**: Batch mode typically runs indefinitely because playtest workflow discovers new issues
   - **MANDATORY**: Apply workflow repeatedly until ALL issues are resolved
-  - **NO STOPPING**: Continue through complete workflow cycles until zero open issues remain
+  - **AUTOMATIC PLAYTEST**: When repository becomes clean (zero issues), playtest workflow automatically triggers
+  - **ISSUE REPLENISHMENT**: Playtest usually discovers new issues and files them as GitHub issues
   - **WORKFLOW CONTINUATION**: After each issue completion, immediately return to STEP 1 (max-devops repository assessment) 
-  - **FINAL SUMMARY ONLY**: Executive Summary delivered only after ALL issues are completed
-  - **PERSISTENCE REQUIRED**: Must not stop until all issues are fixed - no exceptions
+  - **RARE TERMINATION**: Batch only stops when playtest discovers ZERO issues (very rare)
+  - **FINAL SUMMARY ONLY**: Executive Summary delivered only after playtest finds zero issues
 
 **REVIEW MODES:**
 - **AUTOMATIC REVIEW (DEFAULT)**: patrick, vicky, chris complete review autonomously → workflow completes
@@ -161,7 +163,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 4. **max-devops-engineer**: Ensure all findings are properly documented as GitHub issues
 5. **CONDITIONAL CONTINUATION**: 
    - **SINGLE MODE (DEFAULT)**: After playtest completion → chris-architect delivers Executive Summary → STOP
-   - **BATCH MODE (USER REQUESTS)**: After playtest completion → immediately continue with main development workflow using newly created issues until repository is completely clean again
+   - **BATCH MODE (USER REQUESTS)**: After playtest completion → immediately continue with main development workflow using newly created issues → clean repository triggers new playtest → potentially infinite cycle
 
 **Key Principles**:
 - **PARALLEL EXECUTION**: Like Phase 6b, all non-max agents work simultaneously
