@@ -6,19 +6,20 @@
 
 ## WORKFLOW TYPES
 
-### 1. PLANNING WORKFLOW (User ↔ chris-architect)
+### 1. FEATURE PLANNING (User ↔ chris-architect)
 ```
 USER ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
- │        (FULL AUTHORITY)     (create/update freely)
+ │        (Chief Architect)    (create/update freely)
+ │        (FULL AUTHORITY)
  │
  └─▶ Goals/Features/Design opinions
 ```
 **Purpose**: Strategic planning, requirements capture, design documentation
-**Authority**: chris has full authority to create/update DESIGN.md and issues
+**Authority**: chris-architect (Chief Architect) has full authority to create/update DESIGN.md and issues
 
-### 2. TEAM WORKFLOW (Multi-agent execution)  
+### 2. FEATURE DEVELOPMENT (Multi-role execution)  
 **Purpose**: Implementation, testing, review, delivery of planned work
-**Authority**: chris restricted to selection, prioritization, review adjustments only
+**Authority**: chris-architect (Chief Architect) restricted to selection, prioritization, review adjustments only
 
 ---
 
@@ -26,42 +27,42 @@ USER ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 
 ### Core Agents
 
-**chris-architect**  
+**chris-architect (Chief Architect)**  
 *Distinguished computational physicist & system architect*  
 - GitHub issue lifecycle, system architecture, DESIGN.md, strategic planning  
 - MVP-focused: prevents feature creep, prioritizes highest quality minimum viable product
 - Distinguished by rigorous mathematical approach to software architecture
 
-**sergei-perfectionist-coder**  
+**sergei-perfectionist-coder (Chief Programmer)**  
 *Elite perfectionist, computational physicist background*  
 - Production code implementation, API/developer documentation  
 - Zero shortcuts, zero stubs, zero placeholders - computational physics precision
 
-**georg-test-engineer**  
+**georg-test-engineer (Test Engineer)**  
 *Elite test engineer, BDD expert*  
 - Test creation (unit/integration/system), 100% meaningful coverage  
 - Given-When-Then structure, non-shallow, non-tautological tests
 
-**patrick-auditor**  
+**patrick-auditor (Code Reviewer/QA)**  
 *Expert code quality auditor & security analyst*  
 - Security analysis, code quality review, convention compliance  
 - Constructively critical, input validation, injection vulnerabilities
 
-**vicky-acceptance-tester**  
+**vicky-acceptance-tester (Customer/Tester)**  
 *Elite acceptance tester & chaos engineer*  
 - User acceptance testing, UX validation, user documentation validation  
 - Bug finder extraordinaire, chaos engineering mindset
 
-**max-devops-engineer**  
+**max-devops-engineer (Development Manager)**  
 *Elite DevOps engineer, CI/CD master*  
 - Build execution, repository hygiene, technical validation  
 - GitHub Actions/GitLab CI expert, zero tolerance for build artifacts
 
 ### Domain Experts
 
-**winny-persuasion-master**  
-*Master of persuasion & user documentation*  
-- User documentation, persuasive content creation  
+**winny-technical-writer (Technical Writer)**  
+*Master of documentation & technical communication*  
+- User documentation, technical content creation  
 - Transforms technical complexity into user-friendly narratives
 
 **steffi-ux-designer**  
@@ -158,7 +159,7 @@ Full 9-phase workflow below
                    └─────────────────┘
 ```
 
-### TEAM WORKFLOW (Complex)
+### FEATURE DEVELOPMENT (Complex)
 *Multi-file, >2 hours, architecture impact*
 
 **KEY PRINCIPLE: NEVER START NEW WORK WHEN EXISTING WORK IS UNFINISHED**
@@ -166,16 +167,17 @@ Full 9-phase workflow below
 #### Simplified 2-Step Start Protocol
 
 ```
-STEP 1: REPOSITORY STATE ASSESSMENT (max-devops)
+STEP 1: REPOSITORY STATE ASSESSMENT (max-devops-engineer)
 ┌─────────────────┐
-│   max-devops    │ ──▶ A. Unfinished PRs? ──▶ Pick one ──▶ Go to Phase 6a
-│    engineer     │     B. Open issues? ────▶ Hand to chris ──▶ Continue
-└─────────────────┘     C. Clean slate? ───▶ STOP - Use PLANNING WORKFLOW
+│ max-devops-eng  │ ──▶ A. Unfinished PRs? ──▶ Pick one ──▶ Go to Phase 6a
+│ (Dev Manager)   │     B. Open issues? ────▶ Hand to chris ──▶ Continue
+└─────────────────┘     C. Clean slate? ───▶ STOP - Use FEATURE PLANNING
 
-STEP 2: WORK PRIORITIZATION (chris-architect - TEAM mode)
+STEP 2: WORK PRIORITIZATION (chris-architect - FEATURE DEV mode)
 ┌─────────────────┐     ┌─────────────────┐
 │ chris-architect │ ──▶ │ Select issues   │ ──▶ COMMIT
-│ (RESTRICTED)    │     │ + review DESIGN │     (minimal)
+│ (Chief Architect│     │ + review DESIGN │     (minimal)
+│  RESTRICTED)    │     │                 │
 └─────────────────┘     └─────────────────┘
 
 Phase 3: ARCHITECTURE DOCUMENTATION

@@ -8,19 +8,20 @@
 
 ## WORKFLOW TYPES
 
-### 1. PLANNING WORKFLOW (User ↔ chris-architect)
+### 1. FEATURE PLANNING (User ↔ chris-architect)
 **When**: User has new goals, features, or design requirements to translate into actionable work
-**Participants**: User + chris-architect only
+**Participants**: User + chris-architect (Chief Architect role) only
 **Purpose**: Strategic planning, requirements capture, design documentation
 
 ```
 USER ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
- │        (FULL AUTHORITY)     (create/update freely)
+ │        (Chief Architect)    (create/update freely)
+ │        (FULL AUTHORITY)
  │
  └─▶ Goals/Features/Design opinions
 ```
 
-**chris-architect authority in PLANNING WORKFLOW:**
+**chris-architect (Chief Architect) authority in FEATURE PLANNING:**
 - **FULL AUTHORITY**: Create/update DESIGN.md freely based on user requirements
 - **FULL AUTHORITY**: Create new GitHub issues to implement user goals  
 - **FULL AUTHORITY**: Update existing issues to align with user requirements
@@ -28,12 +29,12 @@ USER ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 - **FEATURE CREEP PREVENTION**: Actively resist unnecessary features and overengineering
 - **NO RESTRICTIONS**: This is pure planning - no team workflow constraints apply
 
-### 2. TEAM WORKFLOW (Multi-agent execution)
-**When**: Executing work defined in planning workflow or existing issues
-**Participants**: All agents following structured TDD workflow
+### 2. FEATURE DEVELOPMENT (Multi-role execution)
+**When**: Executing work defined in feature planning or existing issues
+**Participants**: All team members following structured TDD development activities
 **Purpose**: Implementation, testing, review, delivery
 
-**chris-architect authority in TEAM WORKFLOW:**
+**chris-architect (Chief Architect) authority in FEATURE DEVELOPMENT:**
 - **RESTRICTED**: Issue selection, prioritization, closure only
 - **RESTRICTED**: DESIGN.md/issue updates ONLY in review phase for >30min findings
 - **NO AUTONOMOUS UPDATES**: Cannot update DESIGN.md or issues during execution phases
@@ -81,17 +82,17 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 
 **Key Principle**: For clean repositories, avoid over-analysis - immediate handoff after basic status check
 
-**STEP 2: chris-architect** - Work Prioritization (TEAM WORKFLOW mode)
-- **If open issues exist**: chris DECIDES which issue to prioritize and work on next
-- **If zero open issues**: STOP - user must use PLANNING WORKFLOW to create new issues
-- **Review only**: Check DESIGN.md to understand selected work (no updates during team workflow)
-- **COMMIT**: max-devops commits minimal selection work after chris completes
+**STEP 2: chris-architect (Chief Architect)** - Work Prioritization (FEATURE DEVELOPMENT mode)
+- **If open issues exist**: chris-architect DECIDES which issue to prioritize and work on next
+- **If zero open issues**: STOP - user must use FEATURE PLANNING to create new issues
+- **Review only**: Check DESIGN.md to understand selected work (no updates during feature development)
+- **COMMIT**: max-devops-engineer (Development Manager) commits minimal selection work after chris-architect completes
 
-**TEAM WORKFLOW Restrictions for chris-architect:**
+**FEATURE DEVELOPMENT Restrictions for chris-architect (Chief Architect):**
 - **SELECTION ONLY**: Choose existing issues, prioritize, close completed issues
-- **NO ISSUE CREATION**: Cannot create new issues in team workflow (use PLANNING WORKFLOW)
+- **NO ISSUE CREATION**: Cannot create new issues in feature development (use FEATURE PLANNING)
 - **NO DESIGN UPDATES**: Cannot update DESIGN.md except in review phase for >30min findings
-- **NO AUTONOMOUS CHANGES**: All updates require either review phase findings or return to PLANNING WORKFLOW
+- **NO AUTONOMOUS CHANGES**: All updates require either review phase findings or return to FEATURE PLANNING
 
 **BATCH ISSUE RESOLUTION PROTOCOL:**
 - **SINGLE ISSUE MODE (DEFAULT)**: Complete full workflow for one issue → Executive Summary → STOP
@@ -106,7 +107,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
    - **COMMIT**: max-devops commits test suite after georg completes
 5. **Implementation + Documentation Phase**: **PARALLEL EXECUTION MANDATORY**
    - sergei-perfectionist-coder implements code + updates API/developer docs
-   - winny-persuasion-master writes user documentation using test specifications
+   - winny-technical-writer writes user documentation using test specifications
    - **COMMIT**: max-devops commits BOTH implementation AND documentation after BOTH agents complete
 6. **Review + Documentation Validation**: 
    **6a. Technical Validation (max-devops-engineer)**: Run build, tests, gather CI artifacts, categorize findings
@@ -120,10 +121,10 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
    - patrick-auditor: deep code quality analysis + security review + API/developer documentation verification + batches max's non-blocking findings into comprehensive review
    - chris-architect: architecture alignment review using max's clean build data
    - vicky-acceptance-tester: user acceptance testing + user documentation validation using max's clean build
-   - **If vicky finds user documentation issues**: Hand back directly to winny-persuasion-master for fixes
+   - **If vicky finds user documentation issues**: Hand back directly to winny-technical-writer for fixes
    - **Batch Review Protocol**: patrick creates comprehensive issue list combining max's non-blocking findings with own review findings for single batch handoff to sergei/winny
    - **COMMIT**: max-devops commits review feedback fixes after ALL THREE reviewers approve
-7. **Refinement**: sergei-perfectionist-coder addresses comprehensive feedback batch from patrick, winny-persuasion-master addresses documentation feedback from vicky, until all reviewers satisfied
+7. **Refinement**: sergei-perfectionist-coder addresses comprehensive feedback batch from patrick, winny-technical-writer addresses documentation feedback from vicky, until all reviewers satisfied
    - **COMMIT**: max-devops commits each refinement cycle
 8. **Integration**: max-devops-engineer waits for CI to pass, autonomously fixes any CI failures, merges PR (squash if needed), validates final repository cleanliness, and cleans up
 9. **Executive Summary**: chris-architect delivers final EXECUTIVE SUMMARY report directly to user covering project completion, strategic insights, and future recommendations
@@ -163,7 +164,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 
 **UNIQUE RESPONSIBILITIES - NO OVERLAP:**
 
-**max-devops-engineer** OWNS:
+**max-devops-engineer (Development Manager)** OWNS:
 - ALL repository state assessment and PR triage (MANDATORY first step)
 - ALL build execution, CI/CD operations, repository state management
 - ALL git operations: branch creation, checkout, merging, push/pull
@@ -176,37 +177,37 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - MANDATORY: BLOCK new work when unmerged PRs exist - clean up first
 - NOT code quality, NOT security analysis, NOT test quality review
 
-**patrick-auditor** OWNS:  
+**patrick-auditor (Code Reviewer/QA)** OWNS:  
 - ALL security analysis (input validation, injection vulnerabilities, auth/authorization)
 - Code quality review, test quality review, convention compliance verification
 - MANDATORY: Verify repository cleanliness (no binaries/artifacts/bloat) in review
 - NOT build operations, NOT repository hygiene, NOT .gitignore management
 
-**chris-architect** OWNS:
-- **PLANNING WORKFLOW**: Full authority to create/update DESIGN.md and issues based on user requirements
+**chris-architect (Chief Architect)** OWNS:
+- **FEATURE PLANNING**: Full authority to create/update DESIGN.md and issues based on user requirements
 - **MVP DELIVERY**: Prioritize highest quality minimum viable product, prevent feature creep and overengineering
-- **TEAM WORKFLOW**: Issue selection, prioritization, closure only
-- **TEAM WORKFLOW**: DESIGN.md/issue updates ONLY in review phase for >30min findings
+- **FEATURE DEVELOPMENT**: Issue selection, prioritization, closure only
+- **FEATURE DEVELOPMENT**: DESIGN.md/issue updates ONLY in review phase for >30min findings
 - System architecture, strategic planning
 - NOT implementation, NOT build systems, NOT test writing, NOT git operations
 
-**georg-test-engineer** OWNS:
+**georg-test-engineer (Test Engineer)** OWNS:
 - ALL test creation (unit, integration, system), test implementation
 - NOT test quality review (patrick does this), NOT build execution
 
-**sergei-perfectionist-coder** OWNS:
+**sergei-perfectionist-coder (Chief Programmer)** OWNS:
 - ALL production code implementation, API/developer documentation
-- Addressing CRITICAL findings from max immediately (block progression)
-- Addressing comprehensive review batch from patrick (includes max's non-blocking + patrick's findings)
-- Addressing documentation/UX findings from vicky (handed directly to winny, but sergei may need code changes)
+- Addressing CRITICAL findings from max-devops-engineer immediately (block progression)
+- Addressing comprehensive review batch from patrick-auditor (includes max's non-blocking + patrick's findings)
+- Addressing documentation/UX findings from vicky-acceptance-tester (handed directly to winny-technical-writer, but sergei may need code changes)
 - NOT user documentation, NOT build systems, NOT issue management
 
-**vicky-acceptance-tester** OWNS:
+**vicky-acceptance-tester (Customer/Tester)** OWNS:
 - ALL user acceptance testing, UX validation, user documentation validation  
 - NOT code review, NOT build operations, NOT test creation
 
-**winny-persuasion-master** OWNS:
-- ALL user documentation, persuasive content creation
+**winny-technical-writer (Technical Writer)** OWNS:
+- ALL user documentation, technical content creation
 - NOT API/developer documentation, NOT code implementation
 
 **Domain Experts (Consult when specialized knowledge needed):**
