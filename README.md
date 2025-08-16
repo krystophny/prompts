@@ -271,6 +271,11 @@ Phase 9: EXECUTIVE SUMMARY
 - max-devops handles repository state, chris-architect decides work priorities
 - Finish all PRs before starting new issues
 
+**BATCH RESOLUTION MODES**
+- **SINGLE ISSUE (DEFAULT)**: Complete one issue → Executive Summary → STOP
+- **BATCH MODE**: When user requests "solve all issues" → Continue until ALL issues resolved
+- **NO STOPPING RULE**: In batch mode, MUST persist through all issues without stopping
+
 **COMMIT PROTOCOL** 
 - Conventional Commits: `<type>: <description>`
 - Imperative mood, no period, <72 chars

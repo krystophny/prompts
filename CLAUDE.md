@@ -54,6 +54,15 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - **If zero open issues**: chris creates new GitHub issues and risk assessment  
 - **Always**: Review/update DESIGN.md to align with selected work
 - **COMMIT**: max-devops commits architecture work after chris completes
+
+**BATCH ISSUE RESOLUTION PROTOCOL:**
+- **SINGLE ISSUE MODE (DEFAULT)**: Complete full workflow for one issue → Executive Summary → STOP
+- **BATCH MODE (USER REQUESTS)**: When user explicitly asks to "solve all open issues" or "fix all issues":
+  - **MANDATORY**: Apply workflow repeatedly until ALL issues are resolved
+  - **NO STOPPING**: Continue through complete workflow cycles until zero open issues remain
+  - **WORKFLOW CONTINUATION**: After each issue completion, immediately return to STEP 1 (max-devops repository assessment) 
+  - **FINAL SUMMARY ONLY**: Executive Summary delivered only after ALL issues are completed
+  - **PERSISTENCE REQUIRED**: Must not stop until all issues are fixed - no exceptions
 3. **Architecture Documentation**: chris-architect updates DESIGN.md and creates detailed implementation plan
 4. **RED Phase**: georg-test-engineer writes failing tests (parallel: chris-architect refines details)
    - **COMMIT**: max-devops commits test suite after georg completes
