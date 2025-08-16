@@ -125,7 +125,9 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
   - **FINDINGS HANDBACK**: User findings are handed back to appropriate agents (sergei/winny) same as other reviewers
   - **BATCH INTEGRATION**: User review findings included in comprehensive batch handoff alongside patrick's findings
   - **INDEPENDENT OF BATCH MODE**: Manual mode works in both single issue and batch modes
-3. **Architecture Documentation**: chris-architect updates DESIGN.md and creates detailed implementation plan
+3. **Architecture Documentation**: chris-architect updates DESIGN.md, creates detailed implementation plan, and conducts risk assessment
+   - **Risk Assessment**: Identify technical, schedule, and quality risks with mitigation strategies
+   - **Opportunity Analysis**: Identify performance, efficiency, and innovation opportunities
 4. **RED Phase**: georg-test-engineer writes failing tests (parallel: chris-architect refines details)
    - **COMMIT**: georg commits test suite after completion
 5. **Documentation → Implementation Phase**: **SERIAL EXECUTION (Docs-First)**
@@ -200,6 +202,37 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - Every agent MUST deliver: **COMPLETED**, **OPEN ITEMS**, **LESSONS LEARNED**
 - chris-architect delivers **EXECUTIVE SUMMARY** at PR completion
 - **LESSONS LEARNED** must include CLAUDE.md workflow improvement recommendations
+
+## Quality Management System Controls
+
+### Performance Monitoring
+- **Quality Metrics**: Test coverage, build success rate, review findings resolution time
+- **Process Metrics**: Phase completion time, handback frequency, workflow efficiency  
+- **Customer Satisfaction**: User acceptance rate, issue resolution satisfaction
+- **Continuous Monitoring**: Tracked through GitHub metrics and chris-architect executive summaries
+
+### Internal Audit Process
+- **PLAYTEST WORKFLOW** serves as systematic internal audit
+- **Audit Scope**: Comprehensive system review when repository is clean
+- **Audit Findings**: Documented as GitHub issues with severity labels
+- **Audit Follow-up**: Issues addressed through normal development workflow
+
+### Management Review
+- **chris-architect Executive Summaries** serve as management review
+- **Review Input**: Performance data, audit results, customer feedback, improvement opportunities
+- **Review Output**: Decisions on improvements, resource allocation, policy updates
+
+### Corrective Action
+- **Immediate Handback Protocol**: Corrective action for critical findings
+- **Root Cause Analysis**: Performed by receiving agent (sergei/winny) 
+- **Effectiveness Review**: Verified by next reviewer in chain
+- **Documentation**: Lessons learned capture corrective actions taken
+
+### Change Management
+- **Planned Changes**: Managed through Feature Planning workflow
+- **Emergency Changes**: Handled through immediate handback protocol
+- **Change Approval**: chris-architect architectural review authority
+- **Change Documentation**: DESIGN.md updates and commit messages
 
 ## Agent Ownership Matrix
 
@@ -282,12 +315,23 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - NOT data analysis/statistics, NOT system architecture, NOT advanced git operations
 
 ## Core Principles
+
+### Quality Policy Statement
+**Our commitment**: Deliver computational physics-grade software through structured TDD workflows that exceed user expectations while maintaining zero-defect precision and continuous improvement.
+
+### Quality Standards
 - **Quality**: TDD, SOLID, KISS, SRP, DRY - no shortcuts, 100% completion
 - **MVP Focus**: Deliver highest quality minimum viable product, resist feature creep and overengineering
 - **Code Style**: 88 char limit, 4-space indent, self-documenting, no commented code
 - **NO DEFENSIVE PROGRAMMING**: Write clean, straightforward code without excessive error checking or validation
 - **Workflow**: Plan through chris-architect, work on existing files in place
 - **Fortran**: Use typename_t convention, empty associate blocks for warnings
+
+### Customer Focus
+- **Primary Customer**: Repository owner/user requesting functionality
+- **Customer Requirements**: Captured in GitHub issues and user acceptance criteria
+- **Customer Satisfaction**: Measured through vicky-acceptance-tester validation and chris-architect executive summaries
+- **Customer Communication**: Direct interaction during manual mode review phases
 
 ## System Context
 - **OS**: Arch Linux
