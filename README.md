@@ -81,7 +81,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ✅ Estimated <2 hours work  
 ✅ **Manual Override**: User says "use simple workflow"  
 
-**Process**: Agent → Serial Review Chain → fixes → max cleanup
+**Process**: sergei-perfectionist-coder → Serial Review Chain → fixes → max cleanup
 - **Serial Review Chain**: max validation → patrick review → User review (manual mode only)
 
 ### Complex Workflow  
@@ -101,7 +101,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ## Simple Workflow Process
 
 **Steps:**
-1. **Agent** implements changes
+1. **sergei-perfectionist-coder** implements changes
 2. **Serial Review Chain**: max-devops validation → patrick-auditor review → **User review (manual mode only)**
 3. **Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Now (<30min) or File Issue
 4. **Iterate** until all findings resolved
@@ -207,7 +207,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ### Simple Workflow Flow
 ```
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   Agent     │──▶│ max-devops  │──▶│  patrick    │
+│   sergei    │──▶│ max-devops  │──▶│  patrick    │
 │ implements  │    │ validates   │    │  reviews    │
 └─────────────┘    └─────────────┘    └─────────────┘
                                               │
@@ -230,7 +230,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
                                     │             │                │
                                     │        ┌────▼────┐          │
                                     │        │Hand back│          │
-                                    │        │to Agent │          │
+                                    │        │to sergei│          │
                                     │        │& retry  │          │
                                     │        └─────────┘          │
                                     └──────────────┼───────────────┘

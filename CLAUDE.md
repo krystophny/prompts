@@ -54,7 +54,7 @@ Use this **decision tree** to choose the appropriate workflow:
 - ✅ No new dependencies
 - ✅ Estimated <2 hours work
 - ✅ **Manual Override**: User says "use simple workflow" regardless of complexity
-→ **Simple Workflow**: Agent → Serial Review Chain → fixes → max-devops cleanup
+→ **Simple Workflow**: sergei-perfectionist-coder → Serial Review Chain → fixes → max-devops cleanup
    - **Serial Review Chain**: max-devops validation → patrick-auditor review → **User review (manual mode only)**
    - **Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Now (<30min) or File Issue
 
