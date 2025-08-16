@@ -106,6 +106,7 @@
 
 #### 8-Phase Mission Protocol
 
+```
 Phase 1: CLEAN STATE
 ┌─────────────────┐
 │   max-devops    │ ──▶ Verify clean repo state
@@ -194,6 +195,12 @@ Phase 8: INTEGRATION
 │   max-devops    │ ──▶ │ Merge PR        │ ──▶ │ Final cleanup   │
 │   engineer      │     │ (squash if req) │     │ & validation    │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
+
+Phase 9: EXECUTIVE SUMMARY
+┌─────────────────┐     ┌─────────────────┐
+│ chris-architect │ ──▶ │ Final report    │ ──▶ USER
+│                 │     │ to stakeholder  │
+└─────────────────┘     └─────────────────┘
 ```
 
 ---
