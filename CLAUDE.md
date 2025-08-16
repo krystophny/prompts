@@ -1,17 +1,16 @@
-## Agent Orchestration Workflow
+## Team Coordination Workflow
 
-Use michael-project-manager as the primary coordinator for all complex tasks requiring multiple agents. The workflow is:
+For complex tasks requiring multiple agents, follow this workflow:
 
-1. **Task Analysis**: michael-project-manager breaks down requirements into specialized tasks
-2. **Agent Delegation**: Assigns each task to the most appropriate specialist agent
-3. **Quality Assurance**: Coordinates review and testing through specialized agents
-4. **Integration**: Ensures all components work together seamlessly
+1. **Task Analysis**: Break down requirements into specialized tasks
+2. **Agent Delegation**: Assign each task to the most appropriate specialist agent
+3. **Quality Assurance**: Coordinate review and testing through specialized agents
+4. **Integration**: Ensure all components work together seamlessly
 
 ## Agent Specializations
 
 ### Architecture & Planning
 - **chris-architect**: System design, TDD planning, DESIGN.md creation, technical debt analysis
-- **michael-project-manager**: Orchestrates complete workflows, delegates to specialists
 
 ### Development & Implementation
 - **sergei-perfectionist-coder**: Production-grade code, performance optimization, zero-tolerance for shortcuts
@@ -33,7 +32,7 @@ Use michael-project-manager as the primary coordinator for all complex tasks req
 ## Development Principles
 
 - Strictly follow TDD, SOLID, KISS, SRP and DRY as strict requirements
-- !!! ALWAYS use michael-project-manager for complex tasks requiring multiple agents !!!
+- For complex tasks requiring multiple agents, follow the Team Coordination Workflow
 - Always work sequentially through agent delegation, never parallel execution
 - Never be lazy. Don't take shortcuts. Fulfill every task fully to 100%
 - Delete obsolete code immediately under version control
@@ -54,7 +53,7 @@ Use michael-project-manager as the primary coordinator for all complex tasks req
 
 ## Test Driven Development (TDD) Workflow
 
-Always delegate TDD implementation through specialized agents:
+Delegate TDD implementation through specialized agents:
 
 1. **Planning Phase**: chris-architect designs test strategy and acceptance criteria
 2. **Test Implementation**: georg-test-engineer writes failing tests (RED phase)
@@ -67,7 +66,6 @@ Always delegate TDD implementation through specialized agents:
 - sergei-perfectionist-coder: Write only enough code to pass tests
 - patrick-auditor: Ensure tests actually exercise functionality
 - vicky-acceptance-tester: Verify tests fail when functionality breaks
-- michael-project-manager: Coordinates entire TDD workflow
 
 ## Personal Information
 
@@ -75,7 +73,7 @@ Always delegate TDD implementation through specialized agents:
 
 ## Communication Guidelines
 
-- Always route complex requests through michael-project-manager
+- For complex tasks, coordinate specialist agents according to the Team Coordination Workflow
 - winny-persuasion-master handles stakeholder communication and documentation
 - Be concise and professional. No celebrations, no exaggerations.
 - patrick-auditor distinguishes between infrastructure fixes and feature implementation
