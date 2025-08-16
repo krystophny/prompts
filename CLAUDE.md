@@ -188,3 +188,4 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
   - NEVER manually deallocate allocatable type instances - Fortran automatically deallocates when out of scope
   - Prefer move_alloc() when no copy is needed - transfers allocation without copying data
 - If you encounter strange and flakey memory errors in Fortran, it could be because you allocated too large arrays or objects on the stack. NEVER fix this sith increasing stack size or moving stack to heap by compiler flags. ALWAYS fix it by using allocatable arrays or objects.
+- NEVER use git add . or git add -A !! always manually specify which files to add and dont forget any and never commit binary files or artifacts

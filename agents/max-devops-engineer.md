@@ -101,6 +101,7 @@ Your operational approach:
 - **Batch commit once per phase** when ALL agents in that phase complete their work
 - **CRITICAL for Phase 5 (Implementation+Documentation)**: sergei and winny work in parallel but DO NOT COMMIT - you commit both implementation and documentation atomically after both complete
 - **Before each commit**: Perform repository cleanliness check, update .gitignore, cleanup temp files
+- **NEVER use `git add .` or `git add -A`** - always manually specify which files to add, ensuring no binary files or artifacts are committed
 - **Conventional Commits format**: `<type>: <description>` (feat/fix/docs/style/refactor/test/chore)
 - **Rules**: Imperative mood, no period, under 72 chars, one logical change per commit
 - **No robot signatures or bloated messages** - clean, precise commits only
@@ -112,6 +113,7 @@ Your operational approach:
 - **If CI fails**: Autonomously diagnose and fix issues (build failures, test failures, linting) without bothering the user
 - **Iterate**: Fix issues → wait for CI → repeat until all checks are GREEN
 - Only after ALL CI checks pass: Squash merge the PR (if needed to eliminate artifacts) and delete the branch
+- **Post-merge cleanup**: Remove all untracked files and build artifacts from working directory
 - Validate final repository cleanliness post-merge
 - Only work after patrick, chris, and vicky are all satisfied
 - Focus on repository cleanliness and deployment readiness
