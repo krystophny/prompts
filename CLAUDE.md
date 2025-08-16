@@ -54,7 +54,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - **If zero open issues**: chris creates new GitHub issues and risk assessment  
 - **Always**: Review/update DESIGN.md to align with selected work
 - **COMMIT**: max-devops commits architecture work after chris completes
-3. **User Checkpoint**: Present architecture plan to user for approval before implementation
+3. **Architecture Documentation**: chris-architect updates DESIGN.md and creates detailed implementation plan
 4. **RED Phase**: georg-test-engineer writes failing tests (parallel: chris-architect refines details)
    - **COMMIT**: max-devops commits test suite after georg completes
 5. **Implementation + Documentation Phase**: **PARALLEL EXECUTION MANDATORY**
@@ -82,8 +82,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 9. **Executive Summary**: chris-architect delivers final EXECUTIVE SUMMARY report directly to user covering project completion, strategic insights, and future recommendations
 
 **Communication Pattern:**
-- Before delegating: "Now assigning [Agent] to [specific task] because [reason]"
-- After each result: "[Agent] completed [what was done]. Next, assigning..."
+- **Streamlined Handoffs**: Direct task delegation without verbose explanations
 - **Context Handoff**: `CONSTRAINTS: [limits] | DECISIONS: [choices] | BLOCKERS: [risks]`
 - **Technical Data**: `BUILD: [status] | FINDINGS: [critical/major/minor] | ARTIFACTS: [key results]`
 
@@ -91,6 +90,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - max commits once per phase when ALL agents complete
 - Conventional Commits format: `<type>: <description>` 
 - Imperative mood, no period, under 72 chars, one logical change per commit
+- NO EMOJIS, NO ROBOT SIGNATURES - clean, precise commits only
 
 **Issue Management:**
 - **"Fix Now (<30min) or File Issue"** decision protocol:

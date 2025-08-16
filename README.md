@@ -161,10 +161,10 @@ STEP 2: WORK PRIORITIZATION (chris-architect)
 │  (DECIDES)      │     │ issues + DESIGN │
 └─────────────────┘     └─────────────────┘
 
-Phase 3: USER CHECKPOINT
+Phase 3: ARCHITECTURE DOCUMENTATION
 ┌─────────────────┐
-│ Present plan    │ ──▶ USER APPROVAL REQUIRED
-│ to stakeholder  │
+│ chris updates   │ ──▶ DESIGN.md + implementation plan
+│ DESIGN.md       │
 └─────────────────┘
 
 Phase 4: RED PHASE
@@ -275,7 +275,7 @@ Phase 9: EXECUTIVE SUMMARY
 - Conventional Commits: `<type>: <description>`
 - Imperative mood, no period, <72 chars
 - One logical change per commit
-- No robot signatures or bloat
+- NO EMOJIS, NO ROBOT SIGNATURES - clean, precise commits only
 
 **DEFINITION OF DONE**
 - All tests pass with meaningful coverage
