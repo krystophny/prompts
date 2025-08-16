@@ -2,18 +2,36 @@
 
 A quality-driven multi-agent software development system featuring specialized AI agents working collaboratively through structured TDD processes.
 
+## 🎯 User Control & Flexibility
+
+**YOU ARE IN COMPLETE CONTROL**: This system serves you. All workflows, processes, and decisions can be overridden by your explicit direction.
+
+**Override Examples:**
+- "Use simple workflow for this complex change"
+- "Skip reviews and just implement"
+- "Work on issue #123" (bypasses automatic selection)
+- "Let me review everything manually"
+- "Just fix this quickly without full workflow"
+
 ## Quick Start
 
-**Choose Your Workflow:**
+**Choose Your Approach:**
 
-1. **New Feature/Requirements** → Use **Feature Planning** with chris-architect
-2. **Execute Existing Work** → Use **Feature Development** workflow  
-3. **System Audit** → **Playtest Workflow** (auto-triggered on clean repository)
+1. **Structured Workflow**: Let the system guide you through defined processes
+2. **Custom Control**: Override any decisions with your specific requirements
+3. **Ad Hoc Tasks**: Give any task outside existing workflows
+
+**Workflow Options:**
+- **Feature Planning** → Strategic planning with chris-architect
+- **Feature Development** → Structured implementation workflow  
+- **Playtest Workflow** → Comprehensive system audit
+- **Custom Tasks** → Any work you specify
 
 **Execution Modes:**
-- **Single Issue** (default): Complete one task and stop
-- **Batch Mode**: Solve all open issues automatically (`"solve all issues"`) - 🤖 Fully autonomous
-- **Manual Review**: Include user review in workflow (`"manual mode"`) - Independent of execution mode
+- **Single Task** (default): Complete one task and stop
+- **Batch Mode**: Solve all issues automatically - 🤖 Fully autonomous
+- **Manual Review**: Include your review at any stage
+- **Custom Flow**: Define your own process
 
 ## Workflow Types
 
@@ -78,20 +96,20 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 **Decision Tree**: Choose the right workflow based on task complexity
 
 ### Simple Workflow
-*Use when ALL criteria are met OR user manually requests:*
+*Default criteria OR your override:*
 
 ✅ Single file affected  
 ✅ No API/interface changes  
 ✅ No new dependencies  
 ✅ Estimated <2 hours work  
-✅ **Manual Override**: User says "use simple workflow"  
+✅ **YOUR CHOICE**: Say "use simple workflow" for ANY task
 
 **Process**: sergei-perfectionist-coder → Serial Review Chain → fixes → max cleanup
 - **Serial Review Chain**: max validation (FIRST REVIEWER) → patrick review → chris-architect final review
-- **Manual Review Mode**: User participates as final reviewer (only when explicitly requested)
+- **YOUR CONTROL**: Override any step or include manual review
 
 ### Complex Workflow  
-*Use when ANY trigger applies:*
+*Default triggers OR your override:*
 
 ❌ Multiple files affected  
 ❌ API/interface changes required  
@@ -99,8 +117,9 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 ❌ Estimated >2 hours work  
 ❌ Architecture impact  
 ❌ New features requiring documentation  
+✅ **YOUR CHOICE**: Say "use complex workflow" for ANY task
 
-**Process**: Full 7-phase workflow (detailed below)
+**Process**: Full 7-phase workflow (detailed below) - customize any phase
 
 ---
 
@@ -166,10 +185,10 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 | **Playtest Audit** | System-wide testing on clean repository | Comprehensive bug backlog |
 
 **Management Principles:**
-- **Fix Now (<30min) or File Issue**: Critical findings fixed immediately, others become issues
+- **Fix Now (<30min) or File Issue**: Critical findings fixed immediately, others become issues  
 - **Labels**: [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS], [SECURITY]
-- **chris-architect owns**: Issue lifecycle, triage, prioritization, closure decisions (unless user specifies issue)
-- **User Override**: Users can specify which issue to work on, bypassing chris-architect selection
+- **Default Management**: chris-architect handles lifecycle, triage, prioritization
+- **YOUR CONTROL**: Override any selection, specify exact issue, or provide custom tasks
 
 ---
 
@@ -204,10 +223,11 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 | **Manual Review** | User says "manual mode" | User participates as final reviewer in workflow |
 
 **Valid Combinations:**
-- Single Issue + Automatic Review (DEFAULT)
-- Single Issue + Manual Review
+- Single Task + Automatic Review (DEFAULT)
+- Single Task + Manual Review
 - Batch Mode + Automatic Review  
 - Batch Mode + Manual Review
+- **Custom Combination**: Define your own workflow mix
 
 ### Definition of Done
 ✅ All tests pass with meaningful coverage  

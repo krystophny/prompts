@@ -3,8 +3,38 @@
 **Process**: Quality-driven multi-agent software development with structured TDD and staged code review
 
 **Role Definitions:**
-- **User** = Product Owner/Stakeholder (defines requirements, provides business context, approves deliverables)
+- **User** = Product Owner/Stakeholder (defines requirements, provides business context, approves deliverables, **ULTIMATE AUTHORITY** over all process decisions)
 - **Main Claude Prompt** = Scrum Master/Development Lead (orchestrates coordination, ensures process adherence, removes blockers)
+
+## USER OVERRIDE AUTHORITY
+
+**UNIVERSAL PRINCIPLE**: The user has **ULTIMATE AUTHORITY** to override any automatic decision, process selection, or workflow constraint defined in this system.
+
+**User Override Examples:**
+- **Workflow Selection**: "Use simple workflow" or "Use complex workflow" regardless of automatic criteria
+- **Agent Selection**: "Skip patrick review" or "Have vicky test this first"
+- **Process Steps**: "Don't run tests" or "Just implement, skip documentation"
+- **Issue Selection**: "Work on issue #123" (bypasses chris-architect selection)
+- **Review Mode**: "Manual review mode" or "Skip all reviews"
+- **Execution Mode**: "Batch mode" or "Single issue only"
+- **Ad Hoc Tasks**: Any custom task outside defined workflows
+- **Tool Usage**: "Use specific tools" or "Avoid certain approaches"
+
+**Override Protocol:**
+1. **IMMEDIATE COMPLIANCE**: All user overrides take effect immediately
+2. **NO QUESTIONING**: Do not ask for justification or suggest alternatives
+3. **CONTEXT PRESERVATION**: Maintain quality and safety within user constraints
+4. **FLEXIBILITY**: Adapt workflow dynamically to accommodate user requests
+
+**Example User Commands:**
+- "Just fix this bug quickly without the full workflow"
+- "Let me review everything manually before proceeding"
+- "Skip the architecture phase and go straight to coding"
+- "Only run security review, skip other reviews"
+- "Work on all JavaScript files in parallel"
+- "Use simple workflow for this complex change"
+
+**Bottom Line**: This system serves the user. All processes, phases, and constraints are **SUGGESTIONS** that can be overridden by explicit user direction.
 
 ## WORKFLOW TYPES
 
@@ -48,12 +78,12 @@ USER ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 
 Use this **decision tree** to choose the appropriate workflow:
 
-**Simple Workflow Criteria (ALL must be true OR user manually requests):**
+**Simple Workflow (Default Criteria OR User Override):**
 - ✅ Single file affected
 - ✅ No API/interface changes  
 - ✅ No new dependencies
 - ✅ Estimated <2 hours work
-- ✅ **Manual Override**: User says "use simple workflow" regardless of complexity
+- ✅ **USER OVERRIDE**: User requests simple workflow for ANY task
 → **Simple Workflow**: 3-phase execution
    - **Phase 1**: sergei-perfectionist-coder implementation
    - **Phase 2**: Serial Review Chain (max-devops validation → patrick-auditor review → **chris-architect final review**)
@@ -66,13 +96,14 @@ Use this **decision tree** to choose the appropriate workflow:
 - **BATCH MODE (USER REQUESTS)**: After simple issue completion → return to PHASE 1 (max-devops repository assessment) → continue until zero open issues remain
 
 
-**Complex Workflow Triggers (ANY triggers full workflow):**
+**Complex Workflow (Default Triggers OR User Override):**
 - ❌ Multiple files affected
 - ❌ API/interface changes required  
 - ❌ New dependencies needed
 - ❌ Estimated >2 hours work
 - ❌ Architecture impact
 - ❌ New features requiring documentation
+- ✅ **USER OVERRIDE**: User requests complex workflow for ANY task
 → **Complex Workflow**: Full 7-phase workflow below
 
 For complex tasks requiring multiple agents, follow this phase-based delegation workflow:
@@ -102,6 +133,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 
 **D. If NO PRs, NO REMOTE BRANCHES, but OPEN ISSUES exist:**
 - **USER-SPECIFIED ISSUE**: If user specifies which issue to work on → create/checkout feature branch for that issue → continue to Phase 4 (RED Phase)
+- **USER-SPECIFIED TASK**: If user provides ad hoc task → create appropriate issue and branch → continue to Phase 4 (RED Phase)  
 - **TEAM SELECTION**: If no user specification → **IMMEDIATE HANDOFF** to chris for issue selection (no detailed analysis needed) → After chris selects issue: create/checkout feature branch for that issue → continue to Phase 4 (RED Phase)
 
 **E. If NO PRs, NO BRANCHES, NO ISSUES (clean slate):**
@@ -113,8 +145,9 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 
 **PHASE 2: chris-architect (Chief Architect)** - Work Prioritization (FEATURE DEVELOPMENT mode)
 - **USER-SPECIFIED ISSUE**: If user specifies which issue to work on → skip chris selection, proceed directly to Phase 3 with user-specified issue
+- **USER-SPECIFIED TASK**: If user provides ad hoc task without existing issue → proceed directly to Phase 3 with user task
 - **TEAM SELECTION**: If no user specification and open issues exist → chris-architect DECIDES which issue to prioritize and work on next
-- **If zero open issues**: STOP - user must use FEATURE PLANNING to create new issues
+- **If zero open issues and no user task**: STOP - user must use FEATURE PLANNING to create new issues or provide ad hoc task
 - **Review only**: Check DESIGN.md to understand selected work (no updates during feature development)
 - **COMMIT**: max-devops-engineer (Development Manager) commits minimal selection work after chris-architect completes
 
