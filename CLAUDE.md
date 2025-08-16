@@ -6,6 +6,10 @@
 - **User** = Product Owner/Stakeholder (defines requirements, provides business context, approves deliverables)
 - **Main Claude Prompt** = Scrum Master/Development Lead (orchestrates coordination, ensures process adherence, removes blockers)
 
+**Workflow Selection:**
+- **Simple tasks** (single agent): Agent → patrick-auditor review → done
+- **Complex tasks** (multiple agents): Full workflow below
+
 For complex tasks requiring multiple agents, follow this stepwise delegation workflow:
 
 1. **Clean State**: max-devops-engineer verifies clean repo state
@@ -25,7 +29,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 **Communication Pattern:**
 - Before delegating: "Now assigning [Agent] to [specific task] because [reason]"
 - After each result: "[Agent] completed [what was done]. Next, assigning..."
-- Include **Context Transfer**: Each agent must summarize key decisions/constraints for the next agent
+- **Context Handoff Template**: `CONSTRAINTS: [architectural/technical limits] | DECISIONS: [key choices made] | BLOCKERS: [dependencies/risks]`
 
 **Definition of Done (Per Phase):**
 - Architecture: Issues created, branch exists, risks identified, user approved
@@ -41,13 +45,16 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - Update documentation atomically with code changes
 
 **Autonomous Issue Management (ALL AGENTS):**
-- **Rule**: "Fix Now or File Issue" - each agent decides based on professional judgment
-- **Blocking issues**: Must fix immediately (critical bugs, security, broken functionality)
-- **Non-blocking issues**: Fix now if quick (<30min) OR file issue for later
-- **Never expand PR scope** - file issue for scope creep instead
-- **Issue Labels**: [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS]
-- **Accountability**: Each agent owns quality of issues they file
-- **User Priority**: User has final authority on which filed issues to prioritize
+- **Rule**: "Fix Now (<30min) or File Issue" 
+- **Labels**: [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS]
+- **Never expand PR scope** - file issues for scope creep
+- **Escalation Triggers**: Complex blocker (>2hrs), architectural conflict, unclear requirements → escalate to user immediately
+
+**Project Context (Agent Warm-up):**
+- **Tech Stack**: [Auto-detected from codebase]
+- **Architecture**: [Brief summary from README/docs]
+- **Conventions**: [Key patterns from existing code]
+- **Current Focus**: [User's stated objectives]
 
 **Agent Reporting Requirements:**
 - Every agent MUST deliver a concise report directly in the claude shell after task completion
