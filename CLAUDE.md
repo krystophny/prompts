@@ -24,6 +24,8 @@ USER ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 - **FULL AUTHORITY**: Create/update DESIGN.md freely based on user requirements
 - **FULL AUTHORITY**: Create new GitHub issues to implement user goals  
 - **FULL AUTHORITY**: Update existing issues to align with user requirements
+- **MVP MANDATE**: Prioritize highest quality minimum viable product delivery
+- **FEATURE CREEP PREVENTION**: Actively resist unnecessary features and overengineering
 - **NO RESTRICTIONS**: This is pure planning - no team workflow constraints apply
 
 ### 2. TEAM WORKFLOW (Multi-agent execution)
@@ -182,6 +184,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 
 **chris-architect** OWNS:
 - **PLANNING WORKFLOW**: Full authority to create/update DESIGN.md and issues based on user requirements
+- **MVP DELIVERY**: Prioritize highest quality minimum viable product, prevent feature creep and overengineering
 - **TEAM WORKFLOW**: Issue selection, prioritization, closure only
 - **TEAM WORKFLOW**: DESIGN.md/issue updates ONLY in review phase for >30min findings
 - System architecture, strategic planning
@@ -222,6 +225,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 
 ## Core Principles
 - **Quality**: TDD, SOLID, KISS, SRP, DRY - no shortcuts, 100% completion
+- **MVP Focus**: Deliver highest quality minimum viable product, resist feature creep and overengineering
 - **Code Style**: 88 char limit, 4-space indent, self-documenting, no commented code
 - **NO DEFENSIVE PROGRAMMING**: Write clean, straightforward code without excessive error checking or validation
 - **Workflow**: Plan through chris-architect, work on existing files in place
