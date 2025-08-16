@@ -27,7 +27,8 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
    - chris-architect: goal alignment review using patrick's clean technical data
    - patrick-auditor: deep code quality analysis + API/developer documentation verification  
    - vicky-acceptance-tester: user acceptance testing + user documentation validation using patrick's clean build
-7. **Refinement**: sergei-perfectionist-coder addresses feedback until all reviewers satisfied
+   - **If vicky finds user documentation issues**: Hand back directly to winny-persuasion-master for fixes
+7. **Refinement**: sergei-perfectionist-coder addresses code feedback, winny-persuasion-master addresses documentation feedback, until all reviewers satisfied
 8. **Integration**: max-devops-engineer merges PR and cleans up
 
 **Communication Pattern:**
