@@ -73,12 +73,13 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 **Decision Tree**: Choose the right workflow based on task complexity
 
 ### Simple Workflow
-*Use when ALL criteria are met:*
+*Use when ALL criteria are met OR user manually requests:*
 
 ✅ Single file affected  
 ✅ No API/interface changes  
 ✅ No new dependencies  
 ✅ Estimated <2 hours work  
+✅ **Manual Override**: User says "use simple workflow"  
 
 **Process**: Agent → max validation → patrick review → fixes → max cleanup
 
@@ -133,8 +134,8 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
    - **max-devops**: Technical validation → immediate handback if critical issues
    - **patrick-auditor**: Code quality + security → immediate handback if critical issues
    - **vicky-acceptance-tester**: User acceptance + UX → immediate handback if critical issues
-   - **User** (if manual mode): Additional review → immediate handback if critical issues
    - **chris-architect**: Architecture alignment → immediate handback if critical issues
+   - **User**: Final review (manual mode only) → immediate handback if critical issues
 
 **Phase 7: Completion** *(combined final phase)*
 7a. **max-devops**: CI validation, PR merge, cleanup
@@ -210,18 +211,21 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 └─────────────┘    └─────────────┘    └─────────────┘
                            │                   │
                            ▼                   ▼
-                   ┌─────────────────┐  ┌─────────────┐
-                   │  Build fails?   │  │ Findings?   │
-                   │     YES▶────────┘  │     YES▶────┘
-                   │ Back to Agent      │ Fix & retry   
-                   └─────────────────┘  └─────────────┘
-                           │                   │
-                         PASS                CLEAN
-                           ▼                   ▼
-                   ┌─────────────────┐  ┌─────────────┐
-                   │   max-devops    │◄─│    DONE     │
-                   │   cleanup       │  │             │
-                   └─────────────────┘  └─────────────┘
+                     Build fails?        Findings?
+                      YES│NO             YES│NO
+                         │                  │
+                         ▼                  ▼
+                   Back to Agent      Fix & retry
+                         │                  │
+                        NO                 NO
+                         ▼                  ▼
+                      Continue           Continue
+                         │                  │
+                         ▼                  ▼
+                   ┌─────────────┐    ┌─────────────┐
+                   │ max-devops  │◄───│    DONE     │
+                   │  cleanup    │    │             │
+                   └─────────────┘    └─────────────┘
 ```
 
 ### Complex Workflow Flow
@@ -245,40 +249,35 @@ Phase 5: Docs → Implementation (Serial, Docs-First)
 │    docs     │    │    code     │
 └─────────────┘    └─────────────┘
 
-Phase 6: Serial Review Chain (Immediate Handback)
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│ max-devops  │──▶│   patrick   │──▶│    vicky    │
-│build & test │    │code quality │    │  UAT & UX   │
-└─────────────┘    └─────────────┘    └─────────────┘
-       │                   │                   │
-       ▼                   ▼                   ▼
-   Critical?           Critical?           Critical?
-   YES│NO              YES│NO              YES│NO
-      │                   │                   │
-      ▼                   ▼                   ▼
-  Hand back          Hand back          Hand back
-  to sergei          to sergei          to sergei
-      │                   │                   │
-     NO                  NO                  NO
-      ▼                   ▼                   ▼
-   Continue            Continue            Continue
-      
-┌─────────────┐    ┌─────────────┐
-│    user     │──▶│    chris    │
-│manual mode  │    │architecture │
-└─────────────┘    └─────────────┘
-       │                   │
-       ▼                   ▼
-   Critical?           Critical?
-   YES│NO              YES│NO
-      │                   │
-      ▼                   ▼
-  Hand back          Hand back
- to sergei/winny     to sergei
-      │                   │
-     NO                  NO
-      ▼                   ▼
-   Continue            Continue
+Phase 6: Serial Review Chain
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│ max-devops  │──▶│   patrick   │──▶│    vicky    │──▶│    chris    │
+│build & test │    │code quality │    │  UAT & UX   │    │architecture │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+                                                                  │
+                                                                  ▼
+                                                   ┌──────────────────────────────┐
+                                                   │     At ANY review step:      │
+                                                   │   Critical issues found?     │
+                                                   │          YES│NO              │
+                                                   │             │                │
+                                                   │        ┌────▼────┐          │
+                                                   │        │Hand back│          │
+                                                   │        │to sergei│          │
+                                                   │        │& retry  │          │
+                                                   │        └─────────┘          │
+                                                   └──────────────┼───────────────┘
+                                                                 NO
+                                                                  ▼
+                                                   ┌──────────────────────────────┐
+                                                   │        Manual Mode?          │
+                                                   │          YES│NO              │
+                                                   └──────────────┼───────────────┘
+                                                                 │
+                                                              ┌──▼──┐    ┌─────────────┐
+                                                              │User │──▶ │   Done or   │
+                                                              │Final│    │ Hand back   │
+                                                              └─────┘    └─────────────┘
 
 Phase 7: Completion (Combined)
 ┌─────────────┐    ┌─────────────┐
@@ -301,7 +300,7 @@ START: New Task
         ▼                
 ┌─────────────────┐      ┌─────────────────┐
 │ Simple Workflow │      │ Complex Workflow│
-│ 3 steps         │      │ 7 phases        │
+│ 6 steps         │      │ 7 phases        │
 └─────────────────┘      └─────────────────┘
 ```
 

@@ -110,7 +110,7 @@ Your operational approach:
 **Commit Responsibility:**
 - **Batch commit once per phase** when ALL agents in that phase complete their work
 - **CRITICAL for Phase 5 (Implementation+Documentation)**: sergei and winny work in parallel but DO NOT COMMIT - you commit both implementation and documentation atomically after both complete
-- **MANUAL MODE AWARENESS**: In manual mode, wait for user approval alongside patrick/chris/vicky before committing Phase 6b results
+- **MANUAL MODE AWARENESS**: When user requests "manual mode", wait for user final review after all agent reviews before proceeding to completion
 - **Before each commit**: Perform repository cleanliness check, update .gitignore, cleanup temp files
 - **NEVER use `git add .` or `git add -A`** - always manually specify which files to add, ensuring no binary files or artifacts are committed
 - **Conventional Commits format**: `<type>: <description>` (feat/fix/docs/style/refactor/test/chore)

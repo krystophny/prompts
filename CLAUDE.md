@@ -48,12 +48,13 @@ USER ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 
 Use this **decision tree** to choose the appropriate workflow:
 
-**Simple Workflow Criteria (ALL must be true):**
+**Simple Workflow Criteria (ALL must be true OR user manually requests):**
 - ✅ Single file affected
 - ✅ No API/interface changes  
 - ✅ No new dependencies
 - ✅ Estimated <2 hours work
-→ **Simple Workflow**: Agent → max-devops build validation → patrick-auditor review → fixes → max-devops cleanup
+- ✅ **Manual Override**: User says "use simple workflow" regardless of complexity
+→ **Simple Workflow**: Agent → max-devops build validation → patrick-auditor review → user review → fixes → max-devops cleanup
 
 **Simple Workflow Batch Mode:**
 - **SINGLE ISSUE MODE (DEFAULT)**: Complete one simple issue → STOP
@@ -117,14 +118,12 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
   - **PERSISTENCE REQUIRED**: Must not stop until all issues are fixed - no exceptions
 
 **REVIEW MODES:**
-- **AUTOMATIC REVIEW (DEFAULT)**: patrick, chris, vicky complete review autonomously
-- **MANUAL MODE (USER REQUESTS)**: When user says "manual mode" or "let the team work in manual mode":
-  - **USER AS THIRD REVIEWER**: User participates as additional reviewer in Phase 6b-3
-  - **WORKFLOW PAUSE**: Workflow pauses after patrick/vicky complete review, waits for user input
-  - **USER APPROVAL REQUIRED**: Progression requires user approval alongside all other reviewers
-  - **FINDINGS HANDBACK**: User findings are handed back to appropriate agents (sergei/winny) same as other reviewers
-  - **BATCH INTEGRATION**: User review findings included in comprehensive batch handoff alongside patrick's findings
-  - **INDEPENDENT OF BATCH MODE**: Manual mode works in both single issue and batch modes
+- **AUTOMATIC REVIEW (DEFAULT)**: patrick, vicky, chris complete review autonomously → workflow completes
+- **MANUAL MODE (USER REQUESTS)**: When user says "manual mode" → user performs final review in Step 6-5
+- **WORKFLOW PAUSE**: In manual mode, workflow pauses after chris-architect review, waits for user input
+- **USER APPROVAL REQUIRED**: In manual mode, user has final approval authority
+- **FINDINGS HANDBACK**: User findings are handed back to appropriate agents (sergei/winny) for immediate fixes
+- **INDEPENDENT OF BATCH MODE**: Manual mode works in both single issue and batch modes
 3. **Architecture Documentation**: chris-architect updates DESIGN.md, creates detailed implementation plan, and conducts risk assessment
    - **Risk Assessment**: Identify technical, schedule, and quality risks with mitigation strategies
    - **Opportunity Analysis**: Identify performance, efficiency, and innovation opportunities
@@ -138,8 +137,8 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
    - **Step 6-1**: max-devops technical validation (build/test/hygiene) → immediate handback if critical issues
    - **Step 6-2**: patrick-auditor code quality + security review → immediate handback if critical issues  
    - **Step 6-3**: vicky-acceptance-tester user acceptance + UX validation → immediate handback if critical issues
-   - **Step 6-4**: **MANUAL MODE ONLY** - User review → immediate handback if critical issues
-   - **Step 6-5**: chris-architect architecture alignment review → immediate handback if critical issues
+   - **Step 6-4**: chris-architect architecture alignment review → immediate handback if critical issues
+   - **Step 6-5**: **MANUAL MODE ONLY** - User final review → immediate handback if critical issues
 7. **Completion**: **COMBINED FINAL PHASE**
    - **max-devops**: CI validation, PR merge, repository cleanup
    - **chris-architect**: Executive summary report to user
