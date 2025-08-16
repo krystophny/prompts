@@ -1,25 +1,14 @@
-```
- ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗    ███████╗██╗   ██╗███████╗████████╗███████╗███╗   ███╗
-██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝    ██╔════╝╚██╗ ██╔╝██╔════╝╚══██╔══╝██╔════╝████╗ ████║
-██║     ██║     ███████║██║   ██║██║  ██║█████╗      ███████╗ ╚████╔╝ ███████╗   ██║   █████╗  ██╔████╔██║
-██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝      ╚════██║  ╚██╔╝  ╚════██║   ██║   ██╔══╝  ██║╚██╔╝██║
-╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗    ███████║   ██║   ███████║   ██║   ███████╗██║ ╚═╝ ██║
- ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝    ╚══════╝   ╚═╝   ╚══════╝   ╚═╝   ╚══════╝╚═╝     ╚═╝
-```
+# Claude System
 
 ## MISSION CONTROL
 
 **Quality-First Agile Development with Multi-Agent TDD Workflow**
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 
 ## AGENT ROSTER
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────────┐
-│                               ▓▓▓ CORE AGENTS ▓▓▓                                   │
-└─────────────────────────────────────────────────────────────────────────────────────┘
-```
+### Core Agents
 
 **chris-architect**  
 *Distinguished computational physicist & system architect*  
@@ -51,11 +40,7 @@
 - Build execution, repository hygiene, technical validation  
 - GitHub Actions/GitLab CI expert, zero tolerance for build artifacts
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────────┐
-│                            ▓▓▓ DOMAIN EXPERTS ▓▓▓                                   │
-└─────────────────────────────────────────────────────────────────────────────────────┘
-```
+### Domain Experts
 
 **winny-persuasion-master**  
 *Master of persuasion & user documentation*  
@@ -77,7 +62,7 @@
 - Mathematical formulation, LaTeX-to-code translation, symbolic mathematics  
 - Bridges pure mathematics with computational implementation
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 
 ## WORKFLOW ARCHITECTURES
 
@@ -119,10 +104,7 @@
 ### COMPLEX WORKFLOW  
 *Multi-file, >2 hours, architecture impact*
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────────┐
-│                             8-PHASE MISSION PROTOCOL                               │
-└─────────────────────────────────────────────────────────────────────────────────────┘
+#### 8-Phase Mission Protocol
 
 Phase 1: CLEAN STATE
 ┌─────────────────┐
@@ -214,18 +196,16 @@ Phase 8: INTEGRATION
 └─────────────────┘     └─────────────────┘     └─────────────────┘
 ```
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 
 ## CORE PRINCIPLES
 
-```
-▓▓▓ QUALITY MANIFESTO ▓▓▓
-┌─ TDD, SOLID, KISS, SRP, DRY
-├─ Zero shortcuts, zero cheating
-├─ 100% completion, no placeholders  
-├─ Non-shallow, non-tautological tests
-└─ Computational physics precision
-```
+**Quality Manifesto:**
+- TDD, SOLID, KISS, SRP, DRY
+- Zero shortcuts, zero cheating
+- 100% completion, no placeholders  
+- Non-shallow, non-tautological tests
+- Computational physics precision
 
 **CODE STANDARDS**
 - 88 character limit, 4-space indentation
@@ -244,22 +224,14 @@ Phase 8: INTEGRATION
 - Documentation updated atomically
 - All reviewers approve with zero findings
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 
 ## SYSTEM REFERENCES
 
 **Documentation**: [Claude Code Docs](https://docs.anthropic.com/en/docs/claude-code/common-workflows)  
 **Configuration**: See `CLAUDE.md` for complete workflow specifications  
 **Architecture**: System design patterns in `DESIGN.md`  
-**Aesthetic**: Cyberpunk/retro computing inspired interface design
+**Prompts**: See `PROMPTS.md` for original workflow prompts
 
-```
-██████╗ ███████╗████████╗██████╗  ██████╗      ██████╗ ██████╗ ██████╗ ██╗███╗   ██╗ ██████╗ 
-██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██╔═══██╗    ██╔════╝██╔═══██╗██╔══██╗██║████╗  ██║██╔════╝ 
-██████╔╝█████╗     ██║   ██████╔╝██║   ██║    ██║     ██║   ██║██║  ██║██║██╔██╗ ██║██║  ███╗
-██╔══██╗██╔══╝     ██║   ██╔══██╗██║   ██║    ██║     ██║   ██║██║  ██║██║██║╚██╗██║██║   ██║
-██║  ██║███████╗   ██║   ██║  ██║╚██████╔╝    ╚██████╗╚██████╔╝██████╔╝██║██║ ╚████║╚██████╔╝
-╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝      ╚═════╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝ ╚═════╝ 
-```
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
