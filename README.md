@@ -135,8 +135,9 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 4. **georg-test-engineer**: Writes failing tests (parallel with chris refinements)
 
 **Phase 5: Documentation → Implementation** *(Serial Execution - docs first)*
-5a. **winny-technical-writer**: User documentation (docs-first approach)
-5b. **sergei-perfectionist-coder**: Code + API documentation using winny's docs as guide
+5. **Implementation Phase** (docs-first approach):
+   - **winny-technical-writer**: User documentation 
+   - **sergei-perfectionist-coder**: Code + API documentation using winny's docs as guide
 
 **Phase 6: Serial Review Chain** *(fully serial execution)*:
    - **max**: Technical validation → immediate handback if critical issues

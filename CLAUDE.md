@@ -139,17 +139,17 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 **PHASE 4: RED Phase** - georg-test-engineer writes failing tests (parallel: chris-architect refines details)
    - **COMMIT**: georg commits test suite after completion
 
-**PHASE 5: Documentation → Implementation Phase** - **SERIAL EXECUTION (Docs-First)**
-   - **Phase 5a**: winny-technical-writer writes user documentation using test specifications (docs-first approach)
-   - **Phase 5b**: sergei-perfectionist-coder implements code + updates API/developer docs using winny's documentation as guide)
+**PHASE 5: Implementation Phase** - **SERIAL EXECUTION (Docs-First)**
+   - winny-technical-writer writes user documentation using test specifications (docs-first approach)
+   - sergei-perfectionist-coder implements code + updates API/developer docs using winny's documentation as guide
    - **COMMIT**: max-devops commits both documentation and implementation atomically after both agents complete
 
-**PHASE 6: Serial Review Chain** - **FULLY SERIAL EXECUTION**
-   - **Phase 6-1**: max-devops technical validation (build/test/hygiene) → immediate handback if critical issues
-   - **Phase 6-2**: patrick-auditor code quality + security review → immediate handback if critical issues  
-   - **Phase 6-3**: vicky-acceptance-tester user acceptance + UX validation → immediate handback if critical issues
-   - **Phase 6-4**: chris-architect architecture alignment review → immediate handback if critical issues
-   - **Phase 6-5**: **MANUAL MODE ONLY** - User final review → immediate handback if critical issues
+**PHASE 6: Review Phase** - **SERIAL EXECUTION**
+   - max-devops technical validation (build/test/hygiene) → immediate handback if critical issues
+   - patrick-auditor code quality + security review → immediate handback if critical issues  
+   - vicky-acceptance-tester user acceptance + UX validation → immediate handback if critical issues
+   - chris-architect architecture alignment review → immediate handback if critical issues
+   - **MANUAL MODE ONLY** - User final review → immediate handback if critical issues
    - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to THE FIRST reviewer (max-devops) to restart entire review chain from beginning
 
 **PHASE 7: Completion** - **COMBINED FINAL PHASE**
@@ -175,7 +175,6 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
    - **BATCH MODE (USER REQUESTS)**: After playtest completion → immediately continue with main development workflow using newly created issues → clean repository triggers new playtest → potentially infinite cycle
 
 **Key Principles**:
-- **PARALLEL EXECUTION**: Like Phase 6b, all non-max agents work simultaneously
 - **AUDIT MINDSET**: Thorough exploration without time pressure of active development
 - **ISSUE CREATION ENCOURAGED**: Build comprehensive backlog of improvements
 - **max-devops RESPONSIBILITY**: Build operations, git hygiene, repository management only
@@ -253,7 +252,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 **max-devops-engineer (Development Manager)** OWNS:
 - Repository state assessment and PR triage (MANDATORY first phase)
 - Build execution, CI/CD operations, repository state management
-- Technical validation (6a), findings categorization, CI monitoring
+- Technical validation (review phase), findings categorization, CI monitoring
 - Final integration and PR merging, merge conflict resolution
 - Advanced git operations: filter-branch/squash, rebase, push --force after rebase/squash
 - Repository cleanliness validation: zero binary files, build artifacts, temp files in working copy AND git history
