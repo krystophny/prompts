@@ -218,8 +218,8 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
                            ▼                   ▼
                    ┌─────────────────┐  ┌─────────────┐
                    │  Build fails?   │  │ Findings?   │
-                   │ ──────────────▶ │  │ ──────────▶ │
-                   │ Back to Agent   │  │ Fix & retry │
+                   │     YES▶────────┘  │     YES▶────┘
+                   │ Back to Agent      │ Fix & retry   
                    └─────────────────┘  └─────────────┘
                            │                   │
                          PASS                CLEAN
