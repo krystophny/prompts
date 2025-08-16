@@ -1,30 +1,268 @@
-# prompts
+```
+ ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗    ███████╗██╗   ██╗███████╗████████╗███████╗███╗   ███╗
+██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝    ██╔════╝╚██╗ ██╔╝██╔════╝╚══██╔══╝██╔════╝████╗ ████║
+██║     ██║     ███████║██║   ██║██║  ██║█████╗      ███████╗ ╚████╔╝ ███████╗   ██║   █████╗  ██╔████╔██║
+██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝      ╚════██║  ╚██╔╝  ╚════██║   ██║   ██╔══╝  ██║╚██╔╝██║
+╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗    ███████║   ██║   ███████║   ██║   ███████╗██║ ╚═╝ ██║
+ ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝    ╚══════╝   ╚═╝   ╚══════╝   ╚═╝   ╚══════╝╚═╝     ╚═╝
+```
 
-See also [Claude docs](https://docs.anthropic.com/en/docs/claude-code/common-workflows).
+## ⚡ MISSION CONTROL ⚡
 
-* Assess situation, plan, decide, execute, review, iterate. Finally, evaluate what can be done better next time. Start with architecture verification, understand build systems first.
-* The goal of this project is *goal*. Initialize CLAUDE.md with this information.
-* *Insert requirements and goals here*. Devise an architectural plan in DESIGN.md and derive a detailed backlog for execution in RED/GREEN/REFACTOR test-driven development with non-shallow and non-tautological tests in a set of well and detailed issues on GitHub. Emphasize that no cheating and no shortcuts, simplifications, stubs or placeholders are allowed. Then commit and push.
-* Consider the current failing tests and problems, devise a solution strategy, and add a list of issues with a detailed checklist what to do to resolve it.
-* Check if all issues that are solved have been closed and all PRs are merged into main. Then checkout and pull main. Identify the best issue to work on next on GitHub and get it done in a new branch. No cheating, no shortcuts, no simplifications, no stubs, no placeholders. Write targetted and fast behavior-driven well explained tests in the Given-When-Then structure that initially fail (RED phase), implement full functionality to make them pass (GREEN phase), clean up implementation (REFACTOR phase), see that all tests still pass. Do this in small steps. After each step, update issue description, commit, push. Once finished, ensure that tests pass, and open a PR.
-* Check qodo comments in PR, CI and coverage and fix anything that pops up.
-* Merge PR into main, checkout and pull main. Check if all issues that are solved have been closed. Identify the best issue to work on. Continue working in a new branch and file PR in the end.
-* Audit the whole codebase and all tests if you cheated or took a shortcut or wrote a stub just to get something to look like it works superficially. Check for duplicate, legacy, and dead code up for elimination. Check if there are shallow, taugological, inefficient or duplicate tests. Check if all criteria of CLAUDE.md and ~/.claude/CLAUDE.md are fulfilled. Then fix all honestly in small steps covered by tests.
+> **Quality-First Agile Development with Multi-Agent TDD Workflow**  
+> *Where computational physics meets cyberpunk aesthetics and zero shortcuts are tolerated*
 
-## Review
-* Review the changes of the current PR in a constructively critical way based on the following criteria.
-  - Objectives of the underlying issue are completely fulfilled and in line with project goals and scope.
-  - Code is correct and free of stubs and illegal shortcuts.
-  - No race conditions or concurrency issues.
-  - No dead, legacy or duplicated code remains.
-  - Test coverage is adequate and tests are targetted, non-shallow, non-tautological and as fast as possible to run.
-  - No files added that shouldn't be in git. 
-  - File and directory names and structure are consistent and meaningful.
-  - Documentation is up to date. 
-  - Conventions of CLAUDE.md and ~/.claude/CLAUDE.md are fulfilled.
-  - Then revise according to the review, ensure tests pass, commit, and push.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## Thinking Mode
+## 🤖 AGENT ROSTER
 
-Think. Think hard. Think harder. Ultrathink.
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                               ▓▓▓ CORE AGENTS ▓▓▓                                   │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+```
 
+**🏗️⚛️ chris-architect**  
+*Distinguished computational physicist & system architect*  
+→ GitHub issue lifecycle, system architecture, DESIGN.md, strategic planning  
+→ Distinguished by rigorous mathematical approach to software architecture
+
+**⚡💎 sergei-perfectionist-coder**  
+*Elite perfectionist, computational physicist background*  
+→ Production code implementation, API/developer documentation  
+→ Zero shortcuts, zero stubs, zero placeholders - computational physics precision
+
+**🔬✅ georg-test-engineer**  
+*Elite test engineer, BDD expert*  
+→ Test creation (unit/integration/system), 100% meaningful coverage  
+→ Given-When-Then structure, non-shallow, non-tautological tests
+
+**🔍🛡️ patrick-auditor**  
+*Expert code quality auditor & security analyst*  
+→ Security analysis, code quality review, convention compliance  
+→ Constructively critical, input validation, injection vulnerabilities
+
+**🎭💥 vicky-acceptance-tester**  
+*Elite acceptance tester & chaos engineer*  
+→ User acceptance testing, UX validation, user documentation validation  
+→ Bug finder extraordinaire, chaos engineering mindset
+
+**⚙️🚀 max-devops-engineer**  
+*Elite DevOps engineer, CI/CD master*  
+→ Build execution, repository hygiene, technical validation  
+→ GitHub Actions/GitLab CI expert, zero tolerance for build artifacts
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                            ▓▓▓ DOMAIN EXPERTS ▓▓▓                                   │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+**📝✨ winny-persuasion-master**  
+*Master of persuasion & user documentation*  
+→ User documentation, persuasive content creation  
+→ Transforms technical complexity into user-friendly narratives
+
+**🎨💻 steffi-ux-designer**  
+*Elite UX designer with cyberpunk aesthetic*  
+→ UI/UX design, interface optimization, visual styling  
+→ Artistic vision meets technical prowess, retro computing inspiration
+
+**📊🔬 philipp-data-scientist**  
+*Elite data scientist with physics background*  
+→ Data analysis, visualization, statistical modeling, data pipelines  
+→ Publication-quality visualizations, scientific rigor
+
+**🧮⚛️ jonatan-math-physicist**  
+*Master mathematician & LaTeX expert*  
+→ Mathematical formulation, LaTeX-to-code translation, symbolic mathematics  
+→ Bridges pure mathematics with computational implementation
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 📊 WORKFLOW ARCHITECTURES
+
+### ⚡ SIMPLE WORKFLOW
+*Single file, <2 hours, no API changes*
+
+```
+┌─────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   AGENT     │───▶│  max-devops      │───▶│  patrick-auditor│
+│ (ANY ROLE)  │    │ build validation │    │     review      │
+└─────────────┘    └──────────────────┘    └─────────────────┘
+                             │                       │
+                             ▼                       ▼
+                   ┌─────────────────┐    ┌─────────────────┐
+                   │ BUILD SUCCESS?  │◄───│  FINDINGS?      │
+                   └─────────────────┘    └─────────────────┘
+                             │                       │
+                           YES │                   YES │
+                             ▼                       ▼
+                   ┌─────────────────┐    ┌─────────────────┐
+                   │   max-devops    │◄───│   BACK TO       │
+                   │    cleanup      │    │     AGENT       │
+                   └─────────────────┘    └─────────────────┘
+                             │                       │
+                             ▼                       │
+                        ┌─────────┐                  │
+                        │  DONE   │                  │
+                        └─────────┘                  │
+                                                     │
+                        ┌────────────────────────────┘
+                        │
+                        ▼
+                   ┌─────────────────┐
+                   │ ITERATE UNTIL   │
+                   │ ZERO FINDINGS   │
+                   └─────────────────┘
+```
+
+### ⚙️ COMPLEX WORKFLOW  
+*Multi-file, >2 hours, architecture impact*
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                           🚀 8-PHASE MISSION PROTOCOL 🚀                           │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+Phase 1: CLEAN STATE
+┌─────────────────┐
+│   max-devops    │ ──▶ Verify clean repo state
+│    engineer     │
+└─────────────────┘
+
+Phase 2: ARCHITECTURE  
+┌─────────────────┐     ┌─────────────────┐
+│ chris-architect │ ──▶ │ GitHub issues   │ ──▶ COMMIT
+│                 │     │ branch, risks   │
+└─────────────────┘     └─────────────────┘
+
+Phase 3: USER CHECKPOINT
+┌─────────────────┐
+│ Present plan    │ ──▶ USER APPROVAL REQUIRED
+│ to stakeholder  │
+└─────────────────┘
+
+Phase 4: RED PHASE
+┌─────────────────┐     ┌─────────────────┐
+│ georg-test      │ ──▶ │ Failing tests   │ ──▶ COMMIT
+│ engineer        │ ║   │ (parallel)      │
+└─────────────────┘ ║   └─────────────────┘
+                    ║   ┌─────────────────┐
+                    ╚══▶│ chris-architect │
+                        │ refines details │
+                        └─────────────────┘
+
+Phase 5: IMPLEMENTATION + DOCS (PARALLEL MANDATORY)
+┌─────────────────┐     ┌─────────────────┐
+│ sergei-coder    │ ──▶ │ Code + API docs │ ──┐
+│                 │     │                 │   │
+└─────────────────┘     └─────────────────┘   │ ──▶ COMMIT
+┌─────────────────┐     ┌─────────────────┐   │     (BOTH)
+│ winny-master    │ ──▶ │ User docs       │ ──┘
+│                 │     │                 │
+└─────────────────┘     └─────────────────┘
+
+Phase 6a: TECHNICAL VALIDATION
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   max-devops    │ ──▶ │ Build, test,    │ ──▶ │ FINDINGS?       │
+│    engineer     │     │ categorize      │     │                 │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+         ▲                                               │
+         │                                             YES│
+         │              ┌─────────────────┐               ▼
+         └──────────────│ sergei-coder    │◄──┌─────────────────┐
+                        │ fixes issues    │   │ BACK TO SERGEI  │
+                        └─────────────────┘   │ ITERATE UNTIL   │
+                                              │ ZERO FINDINGS   │
+                                              └─────────────────┘
+                                                       │
+                                                     NO │
+                                                       ▼
+Phase 6b: PARALLEL REVIEW (Only if 6a = ZERO findings)
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│ patrick-auditor │ ──▶ │ Code quality +  │     │ vicky-tester    │
+│                 │     │ security review │     │ UAT + UX + docs │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+                                │                         │
+                                │                         ▼
+                                │               ┌─────────────────┐
+                                │               │ Doc issues? ──▶ │
+                                │               │ BACK TO WINNY   │
+                                │               └─────────────────┘
+                                ▼                         │
+                        ┌─────────────────┐               │
+                        │ chris-architect │◄──────────────┘
+                        │ arch alignment  │
+                        └─────────────────┘
+                                │
+                                ▼
+                        ┌─────────────────┐
+                        │ ALL APPROVE? ──▶│ COMMIT
+                        └─────────────────┘
+
+Phase 7: REFINEMENT
+┌─────────────────┐     ┌─────────────────┐
+│ sergei + winny  │ ──▶ │ Address feedback│ ──▶ COMMIT (each cycle)
+│ iterate until   │     │ until satisfied │
+│ all satisfied   │     │                 │
+└─────────────────┘     └─────────────────┘
+
+Phase 8: INTEGRATION
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   max-devops    │ ──▶ │ Merge PR        │ ──▶ │ Final cleanup   │
+│   engineer      │     │ (squash if req) │     │ & validation    │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## ⚡ CORE PRINCIPLES
+
+```
+▓▓▓ QUALITY MANIFESTO ▓▓▓
+┌─ TDD, SOLID, KISS, SRP, DRY
+├─ Zero shortcuts, zero cheating
+├─ 100% completion, no placeholders  
+├─ Non-shallow, non-tautological tests
+└─ Computational physics precision
+```
+
+**🔧 CODE STANDARDS**
+- 88 character limit, 4-space indentation
+- Self-documenting code, no commented dead code
+- Fortran: `typename_t` convention, empty associate blocks
+
+**📋 COMMIT PROTOCOL** 
+- Conventional Commits: `<type>: <description>`
+- Imperative mood, no period, <72 chars
+- One logical change per commit
+- No robot signatures or bloat
+
+**🎯 DEFINITION OF DONE**
+- All tests pass with meaningful coverage
+- CI green, zero build artifacts
+- Documentation updated atomically
+- All reviewers approve with zero findings
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 📚 SYSTEM REFERENCES
+
+**📖 Documentation**: [Claude Code Docs](https://docs.anthropic.com/en/docs/claude-code/common-workflows)  
+**⚙️ Configuration**: See `CLAUDE.md` for complete workflow specifications  
+**🏗️ Architecture**: System design patterns in `DESIGN.md`  
+**🎨 Aesthetic**: Cyberpunk/retro computing inspired interface design
+
+```
+██████╗ ███████╗████████╗██████╗  ██████╗      ██████╗ ██████╗ ██████╗ ██╗███╗   ██╗ ██████╗ 
+██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██╔═══██╗    ██╔════╝██╔═══██╗██╔══██╗██║████╗  ██║██╔════╝ 
+██████╔╝█████╗     ██║   ██████╔╝██║   ██║    ██║     ██║   ██║██║  ██║██║██╔██╗ ██║██║  ███╗
+██╔══██╗██╔══╝     ██║   ██╔══██╗██║   ██║    ██║     ██║   ██║██║  ██║██║██║╚██╗██║██║   ██║
+██║  ██║███████╗   ██║   ██║  ██║╚██████╔╝    ╚██████╗╚██████╔╝██████╔╝██║██║ ╚████║╚██████╔╝
+╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝      ╚═════╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝ ╚═════╝ 
+```
+
+> *"Where computational physics meets hacker aesthetics, and perfection is the only acceptable outcome."*
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
