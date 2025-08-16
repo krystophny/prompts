@@ -54,13 +54,15 @@ Use this **decision tree** to choose the appropriate workflow:
 - ✅ No new dependencies
 - ✅ Estimated <2 hours work
 - ✅ **Manual Override**: User says "use simple workflow" regardless of complexity
-→ **Simple Workflow**: sergei-perfectionist-coder → Serial Review Chain → fixes → max-devops cleanup
-   - **Serial Review Chain**: max-devops validation → patrick-auditor review → **User review (manual mode only)**
+→ **Simple Workflow**: 3-phase execution
+   - **Phase 1**: sergei-perfectionist-coder implementation
+   - **Phase 2**: Serial Review Chain (max-devops validation → patrick-auditor review → **User review (manual mode only)**)
+   - **Phase 3**: max-devops cleanup and completion
    - **Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Now (<30min) or File Issue
 
 **Simple Workflow Batch Mode:**
 - **SINGLE ISSUE MODE (DEFAULT)**: Complete one simple issue → STOP
-- **BATCH MODE (USER REQUESTS)**: After simple issue completion → return to STEP 1 (max-devops repository assessment) → continue until zero open issues remain
+- **BATCH MODE (USER REQUESTS)**: After simple issue completion → return to PHASE 1 (max-devops repository assessment) → continue until zero open issues remain
 
 **Complex Workflow Triggers (ANY triggers full workflow):**
 - ❌ Multiple files affected
@@ -71,9 +73,9 @@ Use this **decision tree** to choose the appropriate workflow:
 - ❌ New features requiring documentation
 → **Complex Workflow**: Full 7-phase workflow below
 
-For complex tasks requiring multiple agents, follow this stepwise delegation workflow:
+For complex tasks requiring multiple agents, follow this phase-based delegation workflow:
 
-**STEP 1: max-devops-engineer** - Repository State ("Can we work?")
+**PHASE 1: max-devops-engineer** - Repository State ("Can we work?")
 
 **Quick Assessment Protocol (30 seconds max):**
 1. `git status` - check for unfinished PRs and current branch state
@@ -82,12 +84,12 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 
 **A. If UNFINISHED PRs exist:**
 - Pick one PR (prefer current branch if it's a PR branch)
-- Checkout that PR's branch → go directly to step 6a (Technical Validation)
+- Checkout that PR's branch → go directly to Phase 6a (Technical Validation)
 - NEVER create new issues or start new work until ALL PRs are finished
 
 **B. If NO PRs, but OPEN ISSUES exist:**
 - **IMMEDIATE HANDOFF** to chris for issue selection (no detailed analysis needed)
-- After chris selects issue: create/checkout feature branch for that issue → continue to step 4 (RED Phase)
+- After chris selects issue: create/checkout feature branch for that issue → continue to Phase 4 (RED Phase)
 
 **C. If NO PRs, NO ISSUES (clean slate):**
 - **INITIATE PLAYTEST WORKFLOW** automatically (comprehensive system audit)
@@ -96,7 +98,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 
 **Key Principle**: For clean repositories, avoid over-analysis - immediate handoff after basic status check
 
-**STEP 2: chris-architect (Chief Architect)** - Work Prioritization (FEATURE DEVELOPMENT mode)
+**PHASE 2: chris-architect (Chief Architect)** - Work Prioritization (FEATURE DEVELOPMENT mode)
 - **If open issues exist**: chris-architect DECIDES which issue to prioritize and work on next
 - **If zero open issues**: STOP - user must use FEATURE PLANNING to create new issues
 - **Review only**: Check DESIGN.md to understand selected work (no updates during feature development)
@@ -117,33 +119,37 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
   - **MANDATORY**: Apply workflow repeatedly until ALL issues are resolved
   - **AUTOMATIC PLAYTEST**: When repository becomes clean (zero issues), playtest workflow automatically triggers
   - **ISSUE REPLENISHMENT**: Playtest usually discovers new issues and files them as GitHub issues
-  - **WORKFLOW CONTINUATION**: After each issue completion, immediately return to STEP 1 (max-devops repository assessment) 
+  - **WORKFLOW CONTINUATION**: After each issue completion, immediately return to PHASE 1 (max-devops repository assessment) 
   - **RARE TERMINATION**: Batch only stops when playtest discovers ZERO issues (very rare)
   - **FINAL SUMMARY ONLY**: Executive Summary delivered only after playtest finds zero issues
 
 **REVIEW MODES:**
 - **AUTOMATIC REVIEW (DEFAULT)**: patrick, vicky, chris complete review autonomously → workflow completes
-- **MANUAL MODE (USER REQUESTS)**: When user says "manual mode" → user performs final review in Step 6-5
+- **MANUAL MODE (USER REQUESTS)**: When user says "manual mode" → user performs final review in Phase 6-5
 - **WORKFLOW PAUSE**: In manual mode, workflow pauses after chris-architect review, waits for user input
 - **USER APPROVAL REQUIRED**: In manual mode, user has final approval authority
 - **FINDINGS HANDBACK**: User findings are handed back to appropriate agents (sergei/winny) for immediate fixes
 - **INDEPENDENT OF BATCH MODE**: Manual mode works in both single issue and batch modes
-3. **Architecture Documentation**: chris-architect updates DESIGN.md, creates detailed implementation plan, and conducts risk assessment
+**PHASE 3: Architecture Documentation** - chris-architect updates DESIGN.md, creates detailed implementation plan, and conducts risk assessment
    - **Risk Assessment**: Identify technical, schedule, and quality risks with mitigation strategies
    - **Opportunity Analysis**: Identify performance, efficiency, and innovation opportunities
-4. **RED Phase**: georg-test-engineer writes failing tests (parallel: chris-architect refines details)
+
+**PHASE 4: RED Phase** - georg-test-engineer writes failing tests (parallel: chris-architect refines details)
    - **COMMIT**: georg commits test suite after completion
-5. **Documentation → Implementation Phase**: **SERIAL EXECUTION (Docs-First)**
-   - **Step 5a**: winny-technical-writer writes user documentation using test specifications (docs-first approach)
-   - **Step 5b**: sergei-perfectionist-coder implements code + updates API/developer docs using winny's documentation as guide
+
+**PHASE 5: Documentation → Implementation Phase** - **SERIAL EXECUTION (Docs-First)**
+   - **Phase 5a**: winny-technical-writer writes user documentation using test specifications (docs-first approach)
+   - **Phase 5b**: sergei-perfectionist-coder implements code + updates API/developer docs using winny's documentation as guide)
    - **COMMIT**: max-devops commits both documentation and implementation atomically after both agents complete
-6. **Serial Review Chain**: **FULLY SERIAL EXECUTION**
-   - **Step 6-1**: max-devops technical validation (build/test/hygiene) → immediate handback if critical issues
-   - **Step 6-2**: patrick-auditor code quality + security review → immediate handback if critical issues  
-   - **Step 6-3**: vicky-acceptance-tester user acceptance + UX validation → immediate handback if critical issues
-   - **Step 6-4**: chris-architect architecture alignment review → immediate handback if critical issues
-   - **Step 6-5**: **MANUAL MODE ONLY** - User final review → immediate handback if critical issues
-7. **Completion**: **COMBINED FINAL PHASE**
+
+**PHASE 6: Serial Review Chain** - **FULLY SERIAL EXECUTION**
+   - **Phase 6-1**: max-devops technical validation (build/test/hygiene) → immediate handback if critical issues
+   - **Phase 6-2**: patrick-auditor code quality + security review → immediate handback if critical issues  
+   - **Phase 6-3**: vicky-acceptance-tester user acceptance + UX validation → immediate handback if critical issues
+   - **Phase 6-4**: chris-architect architecture alignment review → immediate handback if critical issues
+   - **Phase 6-5**: **MANUAL MODE ONLY** - User final review → immediate handback if critical issues
+
+**PHASE 7: Completion** - **COMBINED FINAL PHASE**
    - **max-devops**: CI validation, PR merge, repository cleanup
    - **chris-architect**: Executive summary report to user
 
@@ -155,9 +161,9 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 **Protocol** (Serial execution):
 1. **max-devops-engineer**: Repository health check, build system validation, CI verification, findings categorization
 2. **SERIAL AUDIT (only if max confirms clean build state)**:
-   - **Step 2a**: patrick-auditor performs security audit, code quality review, technical debt identification
-   - **Step 2b**: vicky-acceptance-tester performs exhaustive user acceptance testing, stress testing, edge case exploration  
-   - **Step 2c**: chris-architect performs architecture review, design consistency validation, strategic assessment
+   - **Phase 2a**: patrick-auditor performs security audit, code quality review, technical debt identification
+   - **Phase 2b**: vicky-acceptance-tester performs exhaustive user acceptance testing, stress testing, edge case exploration  
+   - **Phase 2c**: chris-architect performs architecture review, design consistency validation, strategic assessment
 3. **All agents**: File issues for discovered defects/improvements at appropriate severity levels
    - Labels: [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS], [SECURITY]
 4. **max-devops-engineer**: Ensure all findings are properly documented as GitHub issues
@@ -242,7 +248,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 **UNIQUE RESPONSIBILITIES - NO OVERLAP:**
 
 **max-devops-engineer (Development Manager)** OWNS:
-- Repository state assessment and PR triage (MANDATORY first step)
+- Repository state assessment and PR triage (MANDATORY first phase)
 - Build execution, CI/CD operations, repository state management
 - Technical validation (6a), findings categorization, CI monitoring
 - Final integration and PR merging, merge conflict resolution

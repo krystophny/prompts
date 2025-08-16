@@ -105,12 +105,13 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 
 ## Simple Workflow Process
 
-**Steps:**
-1. **sergei-perfectionist-coder** implements changes
-2. **Serial Review Chain**: max validation → patrick review → **User review (manual mode only)**
-3. **Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Now (<30min) or File Issue
-4. **Iterate** until all findings resolved
-5. **max** cleanup and completion
+**Phases:**
+1. **Phase 1**: sergei-perfectionist-coder implements changes
+2. **Phase 2**: Serial Review Chain (max validation → patrick review → **User review (manual mode only)**)
+3. **Phase 3**: max cleanup and completion
+
+**Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Now (<30min) or File Issue
+**Iteration**: Repeat phases until all findings resolved
 
 **Batch Behavior:**
 - **Single Issue** (default): Complete one issue → stop
@@ -222,7 +223,7 @@ $ gh issue list
 # → Playtest Workflow automatically initiates
 ```
 
-**Serial Audit Steps**:
+**Serial Audit Phases**:
 1. **max-devops-engineer**: Repository health check, build validation, CI verification
 2. **patrick-auditor**: Security audit, code quality review, technical debt identification  
 3. **vicky-acceptance-tester**: Exhaustive user testing, stress testing, edge case exploration
@@ -260,7 +261,7 @@ $ gh issue list
 
 ⚠️ **WARNING**: Batch mode can run indefinitely because playtest workflow usually discovers new issues
 
-1. **Workflow Continuation**: After completing ANY issue → return to STEP 1 (max-devops assessment)
+1. **Workflow Continuation**: After completing ANY issue → return to PHASE 1 (max-devops assessment)
 2. **Automatic Playtest Trigger**: When repository is clean (zero issues), playtest workflow automatically runs
 3. **Issue Replenishment**: Playtest typically discovers new issues and files them as GitHub issues
 4. **Infinite Cycle Potential**: New issues → batch continues → clean repository → playtest → more issues → repeat
@@ -327,7 +328,7 @@ Start → Complete Issue → Repository Assessment → Issues Remain?
                                               │
                                               ▼
                                     ┌──────────────────────────────┐
-                                    │     At ANY review step:      │
+                                    │     At ANY review phase:     │
                                     │   Critical issues found?     │
                                     │          YES│NO              │
                                     │             │                │
@@ -374,7 +375,7 @@ Phase 6: Serial Review Chain
                                                                   │
                                                                   ▼
                                                    ┌──────────────────────────────┐
-                                                   │     At ANY review step:      │
+                                                   │     At ANY review phase:     │
                                                    │   Critical issues found?     │
                                                    │          YES│NO              │
                                                    │             │                │
@@ -533,7 +534,7 @@ START: Repository State
                  ▼              │
         ┌─────────────────┐     │
         │ Simple Workflow │     │
-        │ 6 steps         │     │
+        │ 3 phases        │     │
         └─────────────────┘     │
                  │              │
                  │         ┌────▼────┐
