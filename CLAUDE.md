@@ -6,6 +6,36 @@
 - **User** = Product Owner/Stakeholder (defines requirements, provides business context, approves deliverables)
 - **Main Claude Prompt** = Scrum Master/Development Lead (orchestrates coordination, ensures process adherence, removes blockers)
 
+## WORKFLOW TYPES
+
+### 1. PLANNING WORKFLOW (User ↔ chris-architect)
+**When**: User has new goals, features, or design requirements to translate into actionable work
+**Participants**: User + chris-architect only
+**Purpose**: Strategic planning, requirements capture, design documentation
+
+```
+USER ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
+ │        (FULL AUTHORITY)     (create/update freely)
+ │
+ └─▶ Goals/Features/Design opinions
+```
+
+**chris-architect authority in PLANNING WORKFLOW:**
+- **FULL AUTHORITY**: Create/update DESIGN.md freely based on user requirements
+- **FULL AUTHORITY**: Create new GitHub issues to implement user goals  
+- **FULL AUTHORITY**: Update existing issues to align with user requirements
+- **NO RESTRICTIONS**: This is pure planning - no team workflow constraints apply
+
+### 2. TEAM WORKFLOW (Multi-agent execution)
+**When**: Executing work defined in planning workflow or existing issues
+**Participants**: All agents following structured TDD workflow
+**Purpose**: Implementation, testing, review, delivery
+
+**chris-architect authority in TEAM WORKFLOW:**
+- **RESTRICTED**: Issue selection, prioritization, closure only
+- **RESTRICTED**: DESIGN.md/issue updates ONLY in review phase for >30min findings
+- **NO AUTONOMOUS UPDATES**: Cannot update DESIGN.md or issues during execution phases
+
 **Workflow Selection:**
 
 Use this **decision tree** to choose the appropriate workflow:
@@ -45,15 +75,21 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - After chris selects issue: create/checkout feature branch for that issue → continue to step 4 (RED Phase)
 
 **C. If NO PRs, NO ISSUES (clean slate):**
-- **IMMEDIATE HANDOFF** to chris for issue creation (no detailed analysis needed)
+- **IMMEDIATE HANDOFF** to chris for work prioritization (user-requested work or defer)
 
 **Key Principle**: For clean repositories, avoid over-analysis - immediate handoff after basic status check
 
-**STEP 2: chris-architect** - Work Prioritization ("What should we work on?")
+**STEP 2: chris-architect** - Work Prioritization (TEAM WORKFLOW mode)
 - **If open issues exist**: chris DECIDES which issue to prioritize and work on next
-- **If zero open issues**: chris creates new GitHub issues and risk assessment  
-- **Always**: Review/update DESIGN.md to align with selected work
-- **COMMIT**: max-devops commits architecture work after chris completes
+- **If zero open issues**: STOP - user must use PLANNING WORKFLOW to create new issues
+- **Review only**: Check DESIGN.md to understand selected work (no updates during team workflow)
+- **COMMIT**: max-devops commits minimal selection work after chris completes
+
+**TEAM WORKFLOW Restrictions for chris-architect:**
+- **SELECTION ONLY**: Choose existing issues, prioritize, close completed issues
+- **NO ISSUE CREATION**: Cannot create new issues in team workflow (use PLANNING WORKFLOW)
+- **NO DESIGN UPDATES**: Cannot update DESIGN.md except in review phase for >30min findings
+- **NO AUTONOMOUS CHANGES**: All updates require either review phase findings or return to PLANNING WORKFLOW
 
 **BATCH ISSUE RESOLUTION PROTOCOL:**
 - **SINGLE ISSUE MODE (DEFAULT)**: Complete full workflow for one issue → Executive Summary → STOP
@@ -145,8 +181,10 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - NOT build operations, NOT repository hygiene, NOT .gitignore management
 
 **chris-architect** OWNS:
-- ALL GitHub issue management (lifecycle, triage, prioritization, closure)
-- System architecture, DESIGN.md, strategic planning
+- **PLANNING WORKFLOW**: Full authority to create/update DESIGN.md and issues based on user requirements
+- **TEAM WORKFLOW**: Issue selection, prioritization, closure only
+- **TEAM WORKFLOW**: DESIGN.md/issue updates ONLY in review phase for >30min findings
+- System architecture, strategic planning
 - NOT implementation, NOT build systems, NOT test writing, NOT git operations
 
 **georg-test-engineer** OWNS:

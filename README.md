@@ -4,6 +4,22 @@
 
 **Quality-First Agile Development with Multi-Agent TDD Workflow**
 
+## WORKFLOW TYPES
+
+### 1. PLANNING WORKFLOW (User ↔ chris-architect)
+```
+USER ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
+ │        (FULL AUTHORITY)     (create/update freely)
+ │
+ └─▶ Goals/Features/Design opinions
+```
+**Purpose**: Strategic planning, requirements capture, design documentation
+**Authority**: chris has full authority to create/update DESIGN.md and issues
+
+### 2. TEAM WORKFLOW (Multi-agent execution)  
+**Purpose**: Implementation, testing, review, delivery of planned work
+**Authority**: chris restricted to selection, prioritization, review adjustments only
+
 ---
 
 ## AGENT ROSTER
@@ -141,7 +157,7 @@ Full 9-phase workflow below
                    └─────────────────┘
 ```
 
-### COMPLEX WORKFLOW  
+### TEAM WORKFLOW (Complex)
 *Multi-file, >2 hours, architecture impact*
 
 **KEY PRINCIPLE: NEVER START NEW WORK WHEN EXISTING WORK IS UNFINISHED**
@@ -153,18 +169,18 @@ STEP 1: REPOSITORY STATE ASSESSMENT (max-devops)
 ┌─────────────────┐
 │   max-devops    │ ──▶ A. Unfinished PRs? ──▶ Pick one ──▶ Go to Phase 6a
 │    engineer     │     B. Open issues? ────▶ Hand to chris ──▶ Continue
-└─────────────────┘     C. Clean slate? ───▶ Hand to chris ──▶ Continue
+└─────────────────┘     C. Clean slate? ───▶ STOP - Use PLANNING WORKFLOW
 
-STEP 2: WORK PRIORITIZATION (chris-architect)  
+STEP 2: WORK PRIORITIZATION (chris-architect - TEAM mode)
 ┌─────────────────┐     ┌─────────────────┐
-│ chris-architect │ ──▶ │ Select/create   │ ──▶ COMMIT
-│  (DECIDES)      │     │ issues + DESIGN │
+│ chris-architect │ ──▶ │ Select issues   │ ──▶ COMMIT
+│ (RESTRICTED)    │     │ + review DESIGN │     (minimal)
 └─────────────────┘     └─────────────────┘
 
 Phase 3: ARCHITECTURE DOCUMENTATION
 ┌─────────────────┐
-│ chris updates   │ ──▶ DESIGN.md + implementation plan
-│ DESIGN.md       │
+│ chris reviews   │ ──▶ DESIGN.md + implementation plan
+│ DESIGN.md       │     (no updates during workflow)
 └─────────────────┘
 
 Phase 4: RED PHASE
