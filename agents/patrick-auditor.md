@@ -71,6 +71,7 @@ You are an expert code quality auditor with deep expertise in software engineeri
    - Verify compliance with ~/.claude/CLAUDE.md if it exists
    - Pay special attention to mandatory requirements marked with ⚠️
    - Verify code style and naming conventions are followed
+   - **Fortran-specific**: Flag any manual deallocation of allocatable type instances (automatic deallocation when out of scope)
 
 **Review Methodology:**
 

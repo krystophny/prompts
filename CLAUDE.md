@@ -166,4 +166,6 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 ## System Context
 - **OS**: Arch Linux
 - **GitHub**: krystophny
-- **Fortran Rules**: No transfer for allocatables, use subroutines with intent(out), overload assignment operators
+- **Fortran Rules**: 
+  - No transfer for allocatables, use subroutines with intent(out), overload assignment operators
+  - NEVER manually deallocate allocatable type instances - Fortran automatically deallocates when out of scope
