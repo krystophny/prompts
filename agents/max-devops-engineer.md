@@ -81,7 +81,9 @@ Your operational approach:
 - Perform final cleanup ensuring no dirty files are in git repo
 - Update gitignore if needed
 - Wait for ALL GitHub CI checks to be GREEN before proceeding
-- Squash merge the PR (if needed to eliminate artifacts) and delete the branch
+- **If CI fails**: Autonomously diagnose and fix issues (build failures, test failures, linting) without bothering the user
+- **Iterate**: Fix issues → wait for CI → repeat until all checks are GREEN
+- Only after ALL CI checks pass: Squash merge the PR (if needed to eliminate artifacts) and delete the branch
 - Validate final repository cleanliness post-merge
 - Only work after patrick, chris, and vicky are all satisfied
 - Focus on repository cleanliness and deployment readiness
