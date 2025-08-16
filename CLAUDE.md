@@ -7,7 +7,7 @@
 - **Main Claude Prompt** = Scrum Master/Development Lead (orchestrates coordination, ensures process adherence, removes blockers)
 
 **Workflow Selection:**
-- **Simple tasks** (single agent): Agent → patrick-auditor review → done
+- **Simple tasks** (single agent): Agent → patrick-auditor review → if findings: back to agent for fixes → repeat until zero findings → done
 - **Complex tasks** (multiple agents): Full workflow below
 
 For complex tasks requiring multiple agents, follow this stepwise delegation workflow:
@@ -20,13 +20,13 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
    - sergei-perfectionist-coder implements code + updates API/developer docs
    - winny-persuasion-master writes user documentation using test specifications
 6. **Review + Documentation Validation**: 
-   **6a. Technical Setup & Critical Blocker Check (Sequential)**: patrick-auditor runs build, tests, checks for CRITICAL blockers
-   - **If critical blockers found**: Immediately escalate to sergei-perfectionist-coder with specific fixes, skip 6b
-   - **If no critical blockers**: Share technical data and proceed to 6b
-   **6b. Parallel Review (Only if 6a passes)**:
-   - chris-architect: goal alignment review using patrick's technical data
+   **6a. Technical Setup & Findings Check (Sequential)**: patrick-auditor runs build, tests, identifies any findings
+   - **If ANY findings found** (critical/major/minor): Immediately hand back to sergei-perfectionist-coder with categorized fixes needed, skip 6b
+   - **Only if ZERO findings**: Share clean technical data and proceed to 6b
+   **6b. Parallel Review (Only if 6a has zero findings)**:
+   - chris-architect: goal alignment review using patrick's clean technical data
    - patrick-auditor: deep code quality analysis + API/developer documentation verification  
-   - vicky-acceptance-tester: user acceptance testing + user documentation validation using patrick's build
+   - vicky-acceptance-tester: user acceptance testing + user documentation validation using patrick's clean build
 7. **Refinement**: sergei-perfectionist-coder addresses feedback until all reviewers satisfied
 8. **Integration**: max-devops-engineer merges PR and cleans up
 
@@ -34,13 +34,13 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - Before delegating: "Now assigning [Agent] to [specific task] because [reason]"
 - After each result: "[Agent] completed [what was done]. Next, assigning..."
 - **Context Handoff Template**: `CONSTRAINTS: [architectural/technical limits] | DECISIONS: [key choices made] | BLOCKERS: [dependencies/risks]`
-- **Technical Data Sharing**: `BUILD_STATUS: [passing/failing] | ARTIFACTS: [test results, coverage, build logs] | ISSUES: [critical blockers found]`
+- **Technical Data Sharing**: `BUILD_STATUS: [passing/failing] | ARTIFACTS: [test results, coverage, build logs] | FINDINGS: [critical/major/minor findings found]`
 
 **Definition of Done (Per Phase):**
 - Architecture: Issues created, branch exists, risks identified, user approved
 - RED: Tests fail as expected, cover all requirements, properly documented
 - Implementation+Docs: All tests pass, CI green, PR created, API/dev docs updated, user docs written
-- Review 6a: Build passes, no critical blockers, technical data shared OR escalated to sergei with fixes
+- Review 6a: Build passes, zero findings, clean technical data shared OR findings handed back to sergei with categorized fixes
 - Review 6b: All three reviewers approve code+docs with no blocking issues
 - Integration: PR merged, branch deleted, repository clean
 
