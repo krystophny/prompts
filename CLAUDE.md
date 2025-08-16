@@ -12,15 +12,25 @@
 
 For complex tasks requiring multiple agents, follow this stepwise delegation workflow:
 
-1. **Repository State Assessment**: max-devops-engineer MANDATORY first step:
-   - **Check open PRs**: If multiple PRs open, choose one (prefer current branch) and go to step 6a
-   - **Check unmerged state**: If any unmerged PRs exist, BLOCK new work until all PRs cleaned up
-   - **Check unclosed issues**: Report orphaned issues from merged PRs to chris-architect
-   - **Only if clean state**: Proceed with new work (step 2 or skip to appropriate phase)
-2. **Architecture**: chris-architect assesses existing issues and creates NEW issues ONLY if zero open issues exist
-   - **If issues exist**: Prioritize and select next issue to work on
-   - **If zero issues**: Create new GitHub issues and risk assessment  
-   - **COMMIT**: max-devops commits architecture work after chris completes
+**STEP 1: max-devops-engineer** - Repository State ("Can we work?")
+
+**A. If UNFINISHED PRs exist:**
+- Pick one PR (prefer current branch if it's a PR branch)
+- Checkout that PR's branch → go directly to step 6a (Technical Validation)
+- NEVER create new issues or start new work until ALL PRs are finished
+
+**B. If NO PRs, but OPEN ISSUES exist:**
+- Hand off to chris for issue selection
+- After chris selects issue: create/checkout feature branch for that issue → continue to step 4 (RED Phase)
+
+**C. If NO PRs, NO ISSUES (clean slate):**
+- Hand off to chris for issue creation
+
+**STEP 2: chris-architect** - Work Prioritization ("What should we work on?")
+- **If open issues exist**: chris DECIDES which issue to prioritize and work on next
+- **If zero open issues**: chris creates new GitHub issues and risk assessment  
+- **Always**: Review/update DESIGN.md to align with selected work
+- **COMMIT**: max-devops commits architecture work after chris completes
 3. **User Checkpoint**: Present architecture plan to user for approval before implementation
 4. **RED Phase**: georg-test-engineer writes failing tests (parallel: chris-architect refines details)
    - **COMMIT**: max-devops commits test suite after georg completes

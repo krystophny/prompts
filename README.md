@@ -104,19 +104,21 @@
 ### COMPLEX WORKFLOW  
 *Multi-file, >2 hours, architecture impact*
 
-#### 8-Phase Mission Protocol
+**KEY PRINCIPLE: NEVER START NEW WORK WHEN EXISTING WORK IS UNFINISHED**
+
+#### Simplified 2-Step Start Protocol
 
 ```
-Phase 1: CLEAN STATE
+STEP 1: REPOSITORY STATE ASSESSMENT (max-devops)
 ┌─────────────────┐
-│   max-devops    │ ──▶ Verify clean repo state
-│    engineer     │
-└─────────────────┘
+│   max-devops    │ ──▶ A. Unfinished PRs? ──▶ Pick one ──▶ Go to Phase 6a
+│    engineer     │     B. Open issues? ────▶ Hand to chris ──▶ Continue
+└─────────────────┘     C. Clean slate? ───▶ Hand to chris ──▶ Continue
 
-Phase 2: ARCHITECTURE  
+STEP 2: WORK PRIORITIZATION (chris-architect)  
 ┌─────────────────┐     ┌─────────────────┐
-│ chris-architect │ ──▶ │ GitHub issues   │ ──▶ COMMIT
-│                 │     │ branch, risks   │
+│ chris-architect │ ──▶ │ Select/create   │ ──▶ COMMIT
+│  (DECIDES)      │     │ issues + DESIGN │
 └─────────────────┘     └─────────────────┘
 
 Phase 3: USER CHECKPOINT
@@ -218,6 +220,11 @@ Phase 9: EXECUTIVE SUMMARY
 - 88 character limit, 4-space indentation
 - Self-documenting code, no commented dead code
 - Fortran: `typename_t` convention, empty associate blocks
+
+**WORKFLOW PRINCIPLES**
+- **Never start new work when existing work is unfinished**
+- max-devops handles repository state, chris-architect decides work priorities
+- Finish all PRs before starting new issues
 
 **COMMIT PROTOCOL** 
 - Conventional Commits: `<type>: <description>`
