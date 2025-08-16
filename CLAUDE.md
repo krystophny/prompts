@@ -59,6 +59,7 @@ Use this **decision tree** to choose the appropriate workflow:
    - **Phase 2**: Serial Review Chain (max-devops validation → patrick-auditor review → **User review (manual mode only)**)
    - **Phase 3**: max-devops cleanup and completion
    - **Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Now (<30min) or File Issue
+   - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to THE SAME reviewer who found the issue for verification
 
 **Simple Workflow Batch Mode:**
 - **SINGLE ISSUE MODE (DEFAULT)**: Complete one simple issue → STOP
@@ -148,6 +149,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
    - **Phase 6-3**: vicky-acceptance-tester user acceptance + UX validation → immediate handback if critical issues
    - **Phase 6-4**: chris-architect architecture alignment review → immediate handback if critical issues
    - **Phase 6-5**: **MANUAL MODE ONLY** - User final review → immediate handback if critical issues
+   - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to THE SAME reviewer who found the issue for verification, NOT the next reviewer
 
 **PHASE 7: Completion** - **COMBINED FINAL PHASE**
    - **max-devops**: CI validation, PR merge, repository cleanup

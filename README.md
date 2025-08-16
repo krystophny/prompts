@@ -111,6 +111,7 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 3. **Phase 3**: max cleanup and completion
 
 **Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Now (<30min) or File Issue
+**CRITICAL HANDBACK**: sergei fixes → return to SAME reviewer who found issue → verify fix → continue
 **Iteration**: Repeat phases until all findings resolved
 
 **Batch Behavior:**
@@ -335,7 +336,8 @@ Start → Complete Issue → Repository Assessment → Issues Remain?
                                     │        ┌────▼────┐          │
                                     │        │Hand back│          │
                                     │        │to sergei│          │
-                                    │        │& retry  │          │
+                                    │        │then SAME│          │
+                                    │        │reviewer │          │
                                     │        └─────────┘          │
                                     └──────────────┼───────────────┘
                                                   NO
@@ -382,7 +384,8 @@ Phase 6: Serial Review Chain
                                                    │        ┌────▼────┐          │
                                                    │        │Hand back│          │
                                                    │        │to sergei│          │
-                                                   │        │& retry  │          │
+                                                   │        │then SAME│          │
+                                                   │        │reviewer │          │
                                                    │        └─────────┘          │
                                                    └──────────────┼───────────────┘
                                                                  NO
