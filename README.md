@@ -66,8 +66,48 @@
 
 ## WORKFLOW ARCHITECTURES
 
+**Workflow Selection Decision Tree:**
+
+Use this **decision tree** to choose the appropriate workflow:
+
+```
+START: Analyze the task
+    │
+    ├── Single file affected? ──YES──┐
+    │                                │
+    ├── No API/interface changes? ──YES──┐
+    │                                    │
+    ├── No new dependencies? ────────YES──┐
+    │                                     │
+    ├── Estimated <2 hours work? ────YES──┴──┐
+    │                                        │
+    │                                        ▼
+    │                              **SIMPLE WORKFLOW**
+    │                              Agent → max build validation 
+    │                              → patrick review → fixes 
+    │                              → max cleanup
+    │
+    ▼ (Any NO answer above)
+**COMPLEX WORKFLOW** 
+Full 9-phase workflow below
+```
+
+**Simple Workflow Criteria (ALL must be true):**
+- ✅ Single file affected
+- ✅ No API/interface changes  
+- ✅ No new dependencies
+- ✅ Estimated <2 hours work
+
+**Complex Workflow Triggers (ANY triggers full workflow):**
+- ❌ Multiple files affected
+- ❌ API/interface changes required
+- ❌ New dependencies needed
+- ❌ Estimated >2 hours work
+- ❌ Architecture impact
+- ❌ New features requiring documentation
+
 ### SIMPLE WORKFLOW
-*Single file, <2 hours, no API changes*
+*Single file, no API changes, no dependencies, <2 hours*
 
 ```
 ┌─────────────┐    ┌──────────────────┐    ┌─────────────────┐
@@ -97,7 +137,7 @@
                         ▼
                    ┌─────────────────┐
                    │ ITERATE UNTIL   │
-                   │ ZERO FINDINGS   │
+                   │ FINDINGS FIXED  │
                    └─────────────────┘
 ```
 
@@ -241,7 +281,7 @@ Phase 9: EXECUTIVE SUMMARY
 - All tests pass with meaningful coverage
 - CI green, zero build artifacts
 - Documentation updated atomically
-- All reviewers approve with zero findings
+- All reviewers approve (zero critical findings, major/minor addressed or filed as issues)
 
 ---
 

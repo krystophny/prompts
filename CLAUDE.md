@@ -7,12 +7,33 @@
 - **Main Claude Prompt** = Scrum Master/Development Lead (orchestrates coordination, ensures process adherence, removes blockers)
 
 **Workflow Selection:**
-- **Simple tasks** (single file, <2 hours, no API changes): Agent → max-devops build validation → patrick-auditor review → if findings: back to agent for fixes → repeat until zero findings → max-devops cleanup
-- **Complex tasks** (multi-file, >2 hours, architecture impact): Full workflow below
+
+Use this **decision tree** to choose the appropriate workflow:
+
+**Simple Workflow Criteria (ALL must be true):**
+- ✅ Single file affected
+- ✅ No API/interface changes  
+- ✅ No new dependencies
+- ✅ Estimated <2 hours work
+→ **Simple Workflow**: Agent → max-devops build validation → patrick-auditor review → fixes → max-devops cleanup
+
+**Complex Workflow Triggers (ANY triggers full workflow):**
+- ❌ Multiple files affected
+- ❌ API/interface changes required  
+- ❌ New dependencies needed
+- ❌ Estimated >2 hours work
+- ❌ Architecture impact
+- ❌ New features requiring documentation
+→ **Complex Workflow**: Full 9-phase workflow below
 
 For complex tasks requiring multiple agents, follow this stepwise delegation workflow:
 
 **STEP 1: max-devops-engineer** - Repository State ("Can we work?")
+
+**Quick Assessment Protocol (30 seconds max):**
+1. `git status` - check for unfinished PRs and current branch state
+2. `gh pr list` - check for open PRs 
+3. `gh issue list` - check for open issues
 
 **A. If UNFINISHED PRs exist:**
 - Pick one PR (prefer current branch if it's a PR branch)
@@ -20,11 +41,13 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - NEVER create new issues or start new work until ALL PRs are finished
 
 **B. If NO PRs, but OPEN ISSUES exist:**
-- Hand off to chris for issue selection
+- **IMMEDIATE HANDOFF** to chris for issue selection (no detailed analysis needed)
 - After chris selects issue: create/checkout feature branch for that issue → continue to step 4 (RED Phase)
 
 **C. If NO PRs, NO ISSUES (clean slate):**
-- Hand off to chris for issue creation
+- **IMMEDIATE HANDOFF** to chris for issue creation (no detailed analysis needed)
+
+**Key Principle**: For clean repositories, avoid over-analysis - immediate handoff after basic status check
 
 **STEP 2: chris-architect** - Work Prioritization ("What should we work on?")
 - **If open issues exist**: chris DECIDES which issue to prioritize and work on next
@@ -51,8 +74,9 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
    - chris-architect: architecture alignment review using max's clean build data
    - vicky-acceptance-tester: user acceptance testing + user documentation validation using max's clean build
    - **If vicky finds user documentation issues**: Hand back directly to winny-persuasion-master for fixes
+   - **Batch Review Protocol**: patrick creates comprehensive issue list combining max's non-blocking findings with own review findings for single batch handoff to sergei/winny
    - **COMMIT**: max-devops commits review feedback fixes after ALL THREE reviewers approve
-7. **Refinement**: sergei-perfectionist-coder addresses code feedback, winny-persuasion-master addresses documentation feedback, until all reviewers satisfied
+7. **Refinement**: sergei-perfectionist-coder addresses comprehensive feedback batch from patrick, winny-persuasion-master addresses documentation feedback from vicky, until all reviewers satisfied
    - **COMMIT**: max-devops commits each refinement cycle
 8. **Integration**: max-devops-engineer waits for CI to pass, autonomously fixes any CI failures, merges PR (squash if needed), validates final repository cleanliness, and cleans up
 9. **Executive Summary**: chris-architect delivers final EXECUTIVE SUMMARY report directly to user covering project completion, strategic insights, and future recommendations
@@ -69,10 +93,19 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - Imperative mood, no period, under 72 chars, one logical change per commit
 
 **Issue Management:**
-- "Fix Now (<30min) or File Issue" with labels [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS]
+- **"Fix Now (<30min) or File Issue"** decision protocol:
+  - **CRITICAL findings** → Always fix immediately (required for progression)
+  - **MAJOR/MINOR findings** → Fix now if <30min, otherwise create GitHub issue
+  - **Issue labels**: [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS]
 - chris-architect owns issue lifecycle, triage, prioritization, closure decisions
 - Never expand PR scope - file issues for scope creep
 - Escalate complex blockers (>2hrs), architectural conflicts, unclear requirements to user
+
+**Findings vs Issues Protocol:**
+- **Findings** = Discovered during current PR review cycle (immediate attention)
+- **Issues** = Filed for future work outside current PR scope
+- **Critical findings** must be fixed before progression, cannot become issues
+- **Major/Minor findings** can become issues if they require >30min work
 
 **Reporting:**
 - Every agent MUST deliver: **COMPLETED**, **OPEN ITEMS**, **LESSONS LEARNED**
@@ -113,7 +146,9 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 
 **sergei-perfectionist-coder** OWNS:
 - ALL production code implementation, API/developer documentation
-- Addressing ALL findings from max and patrick until resolved
+- Addressing CRITICAL findings from max immediately (block progression)
+- Addressing comprehensive review batch from patrick (includes max's non-blocking + patrick's findings)
+- Addressing documentation/UX findings from vicky (handed directly to winny, but sergei may need code changes)
 - NOT user documentation, NOT build systems, NOT issue management
 
 **vicky-acceptance-tester** OWNS:

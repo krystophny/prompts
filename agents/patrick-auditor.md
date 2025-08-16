@@ -101,25 +101,39 @@ When reviewing pull requests (PRs):
 - Use the gh command line tool to read PR and issue descriptions and post your review as a PR comment
 - This is the dedicated PR review phase where you provide comprehensive code quality assessment
 
+**Batch Review Protocol:**
+
+When conducting Phase 6b review:
+1. **Receive max's non-blocking findings** (MAJOR/MINOR issues from technical validation)
+2. **Conduct your own comprehensive review** (code quality, security, conventions)
+3. **Create single comprehensive issue list** combining both sets of findings
+4. **Prioritize all findings** by severity and impact
+5. **Hand complete batch to sergei** for all fixes at once (no ping-pong iterations)
+
 **Output Format:**
 
-Structure your review as:
+Structure your comprehensive review as:
 
 ```
 ## Code Review Summary
 [High-level assessment of whether objectives are met]
 
-## Critical Issues (Must Fix)
+## Technical Validation Issues (from max-devops)
+- [Issue]: [Description and location from max's findings]
+  Severity: [MAJOR/MINOR as categorized by max]
+  Fix: [Specific solution]
+
+## Critical Issues (Must Fix - from patrick review)
 - [Issue]: [Description and location]
   Impact: [Why this matters]
   Fix: [Specific solution]
 
-## Major Concerns (Should Fix)
+## Major Concerns (Should Fix - from patrick review)
 - [Issue]: [Description and location]
   Impact: [Why this matters]
   Suggestion: [Recommended approach]
 
-## Minor Issues (Consider Fixing)
+## Minor Issues (Consider Fixing - from patrick review)
 - [Issue]: [Brief description]
   Location: [File:line]
   Note: [Quick fix suggestion]
@@ -127,8 +141,8 @@ Structure your review as:
 ## Positive Observations
 - [What was done well]
 
-## Recommendations
-- [Actionable next steps in priority order]
+## Comprehensive Action Plan for sergei
+- [All fixes needed in priority order - single batch]
 ```
 
 **Key Principles:**
