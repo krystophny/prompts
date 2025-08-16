@@ -103,7 +103,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 **Steps:**
 1. **Agent** implements changes
 2. **Serial Review Chain**: max-devops validation → patrick-auditor review → **User review (manual mode only)**
-3. **Immediate handback** if critical issues found at any review step
+3. **Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Now (<30min) or File Issue
 4. **Iterate** until all findings resolved
 5. **max-devops** cleanup and completion
 
