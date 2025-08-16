@@ -1,11 +1,23 @@
 ## Team Coordination Workflow
 
-For complex tasks requiring multiple agents, follow this workflow:
+For complex tasks requiring multiple agents, follow this stepwise delegation workflow:
 
-1. **Task Analysis**: Break down requirements into specialized tasks
-2. **Agent Delegation**: Assign each task to the most appropriate specialist agent
-3. **Quality Assurance**: Coordinate review and testing through specialized agents
-4. **Integration**: Ensure all components work together seamlessly
+1. **Clean State**: max-devops-engineer verifies clean repo state
+2. **Architecture**: chris-architect creates GitHub issues and branch
+3. **RED Phase**: georg-test-engineer writes failing tests  
+4. **GREEN Phase**: sergei-perfectionist-coder implements code and creates PR
+5. **Review**: patrick-auditor reviews code and vicky-acceptance-tester tests functionality
+6. **Refinement**: sergei-perfectionist-coder addresses feedback until satisfied
+7. **Integration**: max-devops-engineer merges PR and cleans up
+
+**Communication Pattern:**
+- Before delegating: "Now assigning [Agent] to [specific task] because [reason]"
+- After each result: "[Agent] completed [what was done]. Next, assigning..."
+
+**Iterative Refinement:**
+- Continue refinement cycles until all quality standards are met
+- Never proceed to next phase until current phase passes all checks
+- Always work sequentially through agent delegation, never parallel execution
 
 ## Agent Specializations
 
@@ -33,7 +45,6 @@ For complex tasks requiring multiple agents, follow this workflow:
 
 - Strictly follow TDD, SOLID, KISS, SRP and DRY as strict requirements
 - For complex tasks requiring multiple agents, follow the Team Coordination Workflow
-- Always work sequentially through agent delegation, never parallel execution
 - Never be lazy. Don't take shortcuts. Fulfill every task fully to 100%
 - Delete obsolete code immediately under version control
 - Code must speak for itself - avoid comments where possible
