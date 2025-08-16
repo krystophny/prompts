@@ -87,7 +87,7 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 ✅ **Manual Override**: User says "use simple workflow"  
 
 **Process**: sergei-perfectionist-coder → Serial Review Chain → fixes → max cleanup
-- **Serial Review Chain**: max validation → patrick review → chris-architect final review
+- **Serial Review Chain**: max validation (FIRST REVIEWER) → patrick review → chris-architect final review
 - **Manual Review Mode**: User participates as final reviewer (only when explicitly requested)
 
 ### Complex Workflow  
@@ -108,7 +108,7 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 
 **Phases:**
 1. **Phase 1**: sergei-perfectionist-coder implements changes
-2. **Phase 2**: Serial Review Chain (max validation → patrick review → chris-architect final review)
+2. **Phase 2**: Serial Review Chain (max validation (FIRST REVIEWER) → patrick review → chris-architect final review)
 3. **Phase 3**: max cleanup and completion
 
 **Manual Review Mode**: User participates as final reviewer (only when explicitly requested)
@@ -128,14 +128,14 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 ### 7-Phase Development Process
 
 **Phase 1-2: Planning & Prioritization**
-1. **max**: Repository assessment (PRs/issues/clean state)
-2. **chris-architect**: Issue selection and prioritization
+1. **max**: Repository assessment (non-draft PRs → review phase | draft PRs → implementation | remote branches → test phase | open issues → selection)
+2. **chris-architect**: Issue selection and prioritization (if no existing work found)
 
 **Phase 3: Architecture Documentation**
 3. **chris-architect**: Reviews DESIGN.md, creates implementation plan
 
 **Phase 4: RED Phase (Test-Driven Development)**
-4. **georg-test-engineer**: Writes failing tests (parallel with chris refinements)
+4. **georg-test-engineer**: Writes failing tests and opens draft PR (parallel with chris refinements)
 
 **Phase 5: Documentation → Implementation** *(Serial Execution - docs first)*
 5. **Implementation Phase** (docs-first approach):
@@ -143,7 +143,7 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
    - **sergei-perfectionist-coder**: Code + API documentation using winny's docs as guide
 
 **Phase 6: Serial Review Chain** *(fully serial execution)*:
-   - **max**: Technical validation → immediate handback if critical issues
+   - **max**: Technical validation (FIRST REVIEWER) → immediate handback if critical issues
    - **patrick-auditor**: Code quality + security → immediate handback if critical issues
    - **vicky-acceptance-tester**: User acceptance + UX → immediate handback if critical issues
    - **chris-architect**: Architecture alignment → immediate handback if critical issues

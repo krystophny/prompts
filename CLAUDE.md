@@ -80,20 +80,31 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 **PHASE 1: max-devops-engineer** - Repository State ("Can we work?")
 
 **Quick Assessment Protocol (30 seconds max):**
-1. `git status` - check for unfinished PRs and current branch state
-2. `gh pr list` - check for open PRs 
-3. `gh issue list` - check for open issues
+1. `git fetch` - update remote branch information
+2. `gh pr list` - check for open PRs (draft and non-draft)
+3. `git branch -r --no-merged main` - check for remote feature branches not yet merged
+4. `gh issue list` - check for open issues
 
-**A. If UNFINISHED PRs exist:**
-- Pick one PR (prefer current branch if it's a PR branch)
-- Checkout that PR's branch → continue at review phase (Phase 6 for complex, Phase 2 for simple)
-- NEVER create new issues or start new work until ALL PRs are finished
+**A. If NON-DRAFT PRs exist:**
+- Pick one non-draft PR (prefer current branch if it's a PR branch)
+- Checkout that PR's branch → **REVIEW PHASE** (Phase 6 for complex, Phase 2 for simple)
+- NEVER create new issues or start new work until ALL non-draft PRs are finished
 
-**B. If NO PRs, but OPEN ISSUES exist:**
+**B. If DRAFT PRs exist (but no non-draft PRs):**
+- Pick one draft PR (prefer current branch if it's a draft PR branch)  
+- Checkout that draft PR's branch → **IMPLEMENTATION PHASE** (Phase 5)
+- NEVER create new issues or start new work until ALL draft PRs are finished
+
+**C. If NO PRs but REMOTE FEATURE BRANCHES exist:**
+- Pick one remote feature branch (ignore local stale branches)
+- Checkout that remote branch → **RED PHASE** (Phase 4 - georg-test-engineer continues)
+- Continue development from where work was left off
+
+**D. If NO PRs, NO REMOTE BRANCHES, but OPEN ISSUES exist:**
 - **IMMEDIATE HANDOFF** to chris for issue selection (no detailed analysis needed)
 - After chris selects issue: create/checkout feature branch for that issue → continue to Phase 4 (RED Phase)
 
-**C. If NO PRs, NO ISSUES (clean slate):**
+**E. If NO PRs, NO BRANCHES, NO ISSUES (clean slate):**
 - **INITIATE PLAYTEST WORKFLOW** automatically (comprehensive system audit)
 - **SINGLE MODE (DEFAULT)**: After playtest completion → chris-architect delivers Executive Summary → STOP
 - **BATCH MODE (USER REQUESTS)**: After playtest completion → continue with main development workflow using newly created issues → clean repository triggers playtest again → potentially infinite cycle
@@ -145,7 +156,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
    - **Opportunity Analysis**: Identify performance, efficiency, and innovation opportunities
 
 **PHASE 4: RED Phase** - georg-test-engineer writes failing tests (parallel: chris-architect refines details)
-   - **COMMIT**: georg commits test suite after completion
+   - **COMMIT**: georg commits test suite and opens draft PR after completion
 
 **PHASE 5: Implementation Phase** - **SERIAL EXECUTION (Docs-First)**
    - winny-technical-writer writes user documentation using test specifications (docs-first approach)
@@ -153,7 +164,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
    - **COMMIT**: max-devops commits both documentation and implementation atomically after both agents complete
 
 **PHASE 6: Review Phase** - **SERIAL EXECUTION**
-   - max-devops technical validation (build/test/hygiene) → immediate handback if critical issues
+   - max-devops technical validation (FIRST REVIEWER - build/test/hygiene analysis) → immediate handback if critical issues
    - patrick-auditor code quality + security review → immediate handback if critical issues  
    - vicky-acceptance-tester user acceptance + UX validation → immediate handback if critical issues
    - chris-architect architecture alignment review → immediate handback if critical issues
