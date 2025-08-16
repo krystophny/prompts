@@ -14,23 +14,29 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 
 1. **Clean State**: max-devops-engineer verifies clean repo state
 2. **Architecture**: chris-architect creates GitHub issues, branch, and risk assessment
+   - **COMMIT**: max-devops commits architecture work after chris completes
 3. **User Checkpoint**: Present architecture plan to user for approval before implementation
 4. **RED Phase**: georg-test-engineer writes failing tests (parallel: chris-architect refines details)
+   - **COMMIT**: max-devops commits test suite after georg completes
 5. **Implementation + Documentation Phase**: **PARALLEL EXECUTION MANDATORY**
    - sergei-perfectionist-coder implements code + updates API/developer docs
    - winny-persuasion-master writes user documentation using test specifications
+   - **COMMIT**: max-devops commits BOTH implementation AND documentation after BOTH agents complete
 6. **Review + Documentation Validation**: 
    **6a. Technical Validation (max-devops-engineer)**: Run build, tests, gather CI artifacts, categorize findings
    - **Repository Hygiene Check**: Verify zero binary files, build artifacts, temp files in working copy AND git history
    - **If ANY findings found** (critical/major/minor): Hand back to sergei-perfectionist-coder with categorized fixes needed
    - **Iterate**: sergei fixes issues → max re-validates → repeat until ZERO findings
+   - **COMMIT**: max-devops commits fixes after each iteration
    - **Only when max confirms ZERO findings**: Share clean build data and proceed to 6b
    **6b. Parallel Review (Only if 6a has zero findings)**:
    - patrick-auditor: deep code quality analysis + security review + API/developer documentation verification
    - chris-architect: architecture alignment review using max's clean build data
    - vicky-acceptance-tester: user acceptance testing + user documentation validation using max's clean build
    - **If vicky finds user documentation issues**: Hand back directly to winny-persuasion-master for fixes
+   - **COMMIT**: max-devops commits review feedback fixes after ALL THREE reviewers approve
 7. **Refinement**: sergei-perfectionist-coder addresses code feedback, winny-persuasion-master addresses documentation feedback, until all reviewers satisfied
+   - **COMMIT**: max-devops commits each refinement cycle
 8. **Integration**: max-devops-engineer merges PR (squash if needed), validates final repository cleanliness, and cleans up
 
 **Communication Pattern:**
@@ -38,6 +44,13 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - After each result: "[Agent] completed [what was done]. Next, assigning..."
 - **Context Handoff**: `CONSTRAINTS: [limits] | DECISIONS: [choices] | BLOCKERS: [risks]`
 - **Technical Data**: `BUILD: [status] | FINDINGS: [critical/major/minor] | ARTIFACTS: [key results]`
+
+**Commit Protocol:**
+- **max-devops-engineer commits once per phase** when ALL agents in that phase complete
+- **Immediate cleanup**: max performs cleanliness checks and chores before each commit
+- **Conventional Commits format**: `<type>: <description>` (feat/fix/docs/style/refactor/test/chore)
+- **Rules**: Imperative mood, no period, under 72 chars, one logical change per commit
+- **No robot signatures or bloated messages** - clean, precise commits only
 
 **Definition of Done (Per Phase):**
 - Architecture: Issues created, branch exists, risks identified, user approved
