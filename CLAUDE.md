@@ -12,11 +12,14 @@
 
 For complex tasks requiring multiple agents, follow this stepwise delegation workflow:
 
-1. **Branch Check**: max-devops-engineer checks current branch state:
-   - If on main: Create feature branch and proceed to step 2
-   - If on feature branch with existing issue/PR: Skip to step 4 (RED Phase)
-   - If on feature branch without issue/PR: Proceed to step 2
-2. **Architecture**: chris-architect creates GitHub issues and risk assessment
+1. **Repository State Assessment**: max-devops-engineer MANDATORY first step:
+   - **Check open PRs**: If multiple PRs open, choose one (prefer current branch) and go to step 6a
+   - **Check unmerged state**: If any unmerged PRs exist, BLOCK new work until all PRs cleaned up
+   - **Check unclosed issues**: Report orphaned issues from merged PRs to chris-architect
+   - **Only if clean state**: Proceed with new work (step 2 or skip to appropriate phase)
+2. **Architecture**: chris-architect assesses existing issues and creates NEW issues ONLY if zero open issues exist
+   - **If issues exist**: Prioritize and select next issue to work on
+   - **If zero issues**: Create new GitHub issues and risk assessment  
    - **COMMIT**: max-devops commits architecture work after chris completes
 3. **User Checkpoint**: Present architecture plan to user for approval before implementation
 4. **RED Phase**: georg-test-engineer writes failing tests (parallel: chris-architect refines details)
@@ -50,57 +53,27 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - **Technical Data**: `BUILD: [status] | FINDINGS: [critical/major/minor] | ARTIFACTS: [key results]`
 
 **Commit Protocol:**
-- **max-devops-engineer commits once per phase** when ALL agents in that phase complete
-- **Immediate cleanup**: max performs cleanliness checks and chores before each commit
-- **Conventional Commits format**: `<type>: <description>` (feat/fix/docs/style/refactor/test/chore)
-- **Rules**: Imperative mood, no period, under 72 chars, one logical change per commit
-- **No robot signatures or bloated messages** - clean, precise commits only
+- max commits once per phase when ALL agents complete
+- Conventional Commits format: `<type>: <description>` 
+- Imperative mood, no period, under 72 chars, one logical change per commit
 
-**Definition of Done (Per Phase):**
-- Architecture: Issues created, branch exists, risks identified, user approved
-- RED: Tests fail as expected, cover all requirements, properly documented
-- Implementation+Docs: All tests pass, CI green, PR created, API/dev docs updated, user docs written
-- Review 6a: max and sergei iterate until build passes with zero findings, then clean technical data shared
-- Review 6b: All three reviewers approve code+docs with no blocking issues
-- Integration: PR merged, branch deleted, repository clean
+**Issue Management:**
+- "Fix Now (<30min) or File Issue" with labels [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS]
+- chris-architect owns issue lifecycle, triage, prioritization, closure decisions
+- Never expand PR scope - file issues for scope creep
+- Escalate complex blockers (>2hrs), architectural conflicts, unclear requirements to user
 
-**Documentation Standards:**
-- CONCISE and CLEAR - essential information only
-- Examples and code snippets over lengthy descriptions
-- Update documentation atomically with code changes
-
-**Autonomous Issue Management:**
-- **All Agents**: "Fix Now (<30min) or File Issue" with labels [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS]
-- **chris-architect**: Owns issue lifecycle, triage, prioritization, and closure decisions
-- **Never expand PR scope** - file issues for scope creep
-- **Escalation Triggers**: Complex blocker (>2hrs), architectural conflict, unclear requirements → escalate to user immediately
-
-**Project Context (Agent Warm-up):**
-- **Tech Stack**: [Auto-detected from codebase]
-- **Architecture**: [Brief summary from README/docs]
-- **Conventions**: [Key patterns from existing code]
-- **Current Focus**: [User's stated objectives]
-
-**Agent Reporting Requirements:**
-- Every agent MUST deliver a concise report directly in the claude shell after task completion
-- Report format: **COMPLETED**, **OPEN ITEMS**, **LESSONS LEARNED**
-- At PR completion: chris-architect delivers an **EXECUTIVE SUMMARY** covering the entire workflow
-- Reports should be actionable and highlight key decisions, blockers, and next steps
-- **LESSONS LEARNED** must include specific recommendations for improving:
-  - CLAUDE.md system prompts and workflow instructions
-  - Individual agent persona definitions and capabilities
-  - Team coordination patterns and communication protocols
-
-**Iterative Refinement:**
-- Continue refinement cycles until all quality standards are met
-- Never proceed to next phase until current phase passes all checks
-- Use parallel execution where specified (Implementation+Docs, Review phases)
+**Reporting:**
+- Every agent MUST deliver: **COMPLETED**, **OPEN ITEMS**, **LESSONS LEARNED**
+- chris-architect delivers **EXECUTIVE SUMMARY** at PR completion
+- **LESSONS LEARNED** must include CLAUDE.md workflow improvement recommendations
 
 ## Agent Ownership Matrix
 
 **UNIQUE RESPONSIBILITIES - NO OVERLAP:**
 
 **max-devops-engineer** OWNS:
+- ALL repository state assessment and PR triage (MANDATORY first step)
 - ALL build execution, CI/CD operations, repository state management
 - ALL git operations: branch creation, checkout, merging, push/pull
 - Technical validation (6a), findings categorization, .gitignore, dirty files cleanup
@@ -109,6 +82,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - ALL merge conflict resolution, push --force only after rebase/squash operations
 - MANDATORY: Zero binary files, build artifacts, temp files in working copy AND git history
 - MANDATORY: NEVER push directly to main - all work in feature branches until PR merge
+- MANDATORY: BLOCK new work when unmerged PRs exist - clean up first
 - NOT code quality, NOT security analysis, NOT test quality review
 
 **patrick-auditor** OWNS:  
@@ -152,15 +126,6 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 **jonatan-math-physicist** OWNS:
 - ALL mathematical formulation, LaTeX-to-code translation, symbolic mathematics
 - NOT data analysis/statistics, NOT system architecture
-
-## Agent Role Mappings
-- **chris-architect** = Senior Technical Architect + Issue Manager
-- **sergei-perfectionist-coder** = Senior Software Engineer  
-- **georg-test-engineer** = QA Lead/Test Creator
-- **patrick-auditor** = Code Review Lead + Security Analyst
-- **vicky-acceptance-tester** = User Acceptance Tester
-- **max-devops-engineer** = DevOps Engineer + Technical Validator
-- **Domain Experts**: jonatan-math-physicist, philipp-data-scientist, steffi-ux-designer, winny-persuasion-master
 
 ## Core Principles
 - **Quality**: TDD, SOLID, KISS, SRP, DRY - no shortcuts, 100% completion
