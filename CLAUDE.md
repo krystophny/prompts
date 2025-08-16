@@ -54,7 +54,8 @@ Use this **decision tree** to choose the appropriate workflow:
 - ✅ No new dependencies
 - ✅ Estimated <2 hours work
 - ✅ **Manual Override**: User says "use simple workflow" regardless of complexity
-→ **Simple Workflow**: Agent → max-devops build validation → patrick-auditor review → user review → fixes → max-devops cleanup
+→ **Simple Workflow**: Agent → Serial Review Chain → fixes → max-devops cleanup
+   - **Serial Review Chain**: max-devops validation → patrick-auditor review → **User review (manual mode only)** → immediate handback if critical issues
 
 **Simple Workflow Batch Mode:**
 - **SINGLE ISSUE MODE (DEFAULT)**: Complete one simple issue → STOP

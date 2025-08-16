@@ -81,7 +81,8 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ✅ Estimated <2 hours work  
 ✅ **Manual Override**: User says "use simple workflow"  
 
-**Process**: Agent → max validation → patrick review → fixes → max cleanup
+**Process**: Agent → Serial Review Chain → fixes → max cleanup
+- **Serial Review Chain**: max validation → patrick review → User review (manual mode only)
 
 ### Complex Workflow  
 *Use when ANY trigger applies:*
@@ -101,8 +102,8 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 
 **Steps:**
 1. **Agent** implements changes
-2. **max-devops** validates build and tests
-3. **patrick-auditor** reviews for quality/security
+2. **Serial Review Chain**: max-devops validation → patrick-auditor review → **User review (manual mode only)**
+3. **Immediate handback** if critical issues found at any review step
 4. **Iterate** until all findings resolved
 5. **max-devops** cleanup and completion
 
@@ -209,23 +210,36 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 │   Agent     │──▶│ max-devops  │──▶│  patrick    │
 │ implements  │    │ validates   │    │  reviews    │
 └─────────────┘    └─────────────┘    └─────────────┘
-                           │                   │
-                           ▼                   ▼
-                     Build fails?        Findings?
-                      YES│NO             YES│NO
-                         │                  │
-                         ▼                  ▼
-                   Back to Agent      Fix & retry
-                         │                  │
-                        NO                 NO
-                         ▼                  ▼
-                      Continue           Continue
-                         │                  │
-                         ▼                  ▼
-                   ┌─────────────┐    ┌─────────────┐
-                   │ max-devops  │◄───│    DONE     │
-                   │  cleanup    │    │             │
-                   └─────────────┘    └─────────────┘
+                                              │
+                                              ▼
+                                    ┌──────────────────┐
+                                    │   Manual Mode?   │
+                                    │      YES│NO      │
+                                    └──────────────────┘
+                                              │
+                                           ┌──▼──┐    ┌─────────────┐
+                                           │User │──▶ │   Done or   │
+                                           │Final│    │ Hand back   │
+                                           └─────┘    └─────────────┘
+                                              │
+                                              ▼
+                                    ┌──────────────────────────────┐
+                                    │     At ANY review step:      │
+                                    │   Critical issues found?     │
+                                    │          YES│NO              │
+                                    │             │                │
+                                    │        ┌────▼────┐          │
+                                    │        │Hand back│          │
+                                    │        │to Agent │          │
+                                    │        │& retry  │          │
+                                    │        └─────────┘          │
+                                    └──────────────┼───────────────┘
+                                                  NO
+                                                   ▼
+                                           ┌─────────────┐
+                                           │ max-devops  │
+                                           │  cleanup    │
+                                           └─────────────┘
 ```
 
 ### Complex Workflow Flow
