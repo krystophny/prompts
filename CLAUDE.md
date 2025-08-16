@@ -21,6 +21,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
    - winny-persuasion-master writes user documentation using test specifications
 6. **Review + Documentation Validation**: 
    **6a. Technical Validation (max-devops-engineer)**: Run build, tests, gather CI artifacts, categorize findings
+   - **Repository Hygiene Check**: Verify zero binary files, build artifacts, temp files in working copy AND git history
    - **If ANY findings found** (critical/major/minor): Hand back to sergei-perfectionist-coder with categorized fixes needed
    - **Iterate**: sergei fixes issues → max re-validates → repeat until ZERO findings
    - **Only when max confirms ZERO findings**: Share clean build data and proceed to 6b
@@ -30,7 +31,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
    - vicky-acceptance-tester: user acceptance testing + user documentation validation using max's clean build
    - **If vicky finds user documentation issues**: Hand back directly to winny-persuasion-master for fixes
 7. **Refinement**: sergei-perfectionist-coder addresses code feedback, winny-persuasion-master addresses documentation feedback, until all reviewers satisfied
-8. **Integration**: max-devops-engineer merges PR and cleans up
+8. **Integration**: max-devops-engineer merges PR (squash if needed), validates final repository cleanliness, and cleans up
 
 **Communication Pattern:**
 - Before delegating: "Now assigning [Agent] to [specific task] because [reason]"
@@ -86,11 +87,15 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - ALL build execution, CI/CD operations, repository state management
 - Technical validation (6a), findings categorization, .gitignore, dirty files cleanup
 - Final integration and PR merging
+- ALL git hygiene: filter-branch/squash to eliminate artifacts, keep branches rebased on main
+- ALL merge conflict resolution, push --force only after rebase/squash operations
+- MANDATORY: Zero binary files, build artifacts, temp files in working copy AND git history
 - NOT code quality, NOT security analysis, NOT test quality review
 
 **patrick-auditor** OWNS:  
 - ALL security analysis (input validation, injection vulnerabilities, auth/authorization)
 - Code quality review, test quality review, convention compliance verification
+- MANDATORY: Verify repository cleanliness (no binaries/artifacts/bloat) in review
 - NOT build operations, NOT repository hygiene, NOT .gitignore management
 
 **chris-architect** OWNS:
