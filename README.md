@@ -12,8 +12,8 @@ A quality-driven multi-agent software development system featuring specialized A
 
 **Execution Modes:**
 - **Single Issue** (default): Complete one task and stop
-- **Batch Mode**: Solve all open issues automatically (`"solve all issues"`)
-- **Manual Mode**: Include user review in workflow (`"manual mode"`)
+- **Batch Mode**: Solve all open issues automatically (`"solve all issues"`) - 🤖 Fully autonomous
+- **Manual Review**: Include user review in workflow (`"manual mode"`) - Independent of execution mode
 
 ## Workflow Types
 
@@ -87,7 +87,8 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 ✅ **Manual Override**: User says "use simple workflow"  
 
 **Process**: sergei-perfectionist-coder → Serial Review Chain → fixes → max cleanup
-- **Serial Review Chain**: max validation → patrick review → User review (manual mode only)
+- **Serial Review Chain**: max validation → patrick review → chris-architect final review
+- **Manual Review Mode**: User participates as final reviewer (only when explicitly requested)
 
 ### Complex Workflow  
 *Use when ANY trigger applies:*
@@ -107,8 +108,10 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 
 **Phases:**
 1. **Phase 1**: sergei-perfectionist-coder implements changes
-2. **Phase 2**: Serial Review Chain (max validation → patrick review → **User review (manual mode only)**)
+2. **Phase 2**: Serial Review Chain (max validation → patrick review → chris-architect final review)
 3. **Phase 3**: max cleanup and completion
+
+**Manual Review Mode**: User participates as final reviewer (only when explicitly requested)
 
 **Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Now (<30min) or File Issue
 **CRITICAL HANDBACK**: sergei fixes → return to FIRST reviewer (max) → restart entire review chain from beginning
@@ -144,7 +147,7 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
    - **patrick-auditor**: Code quality + security → immediate handback if critical issues
    - **vicky-acceptance-tester**: User acceptance + UX → immediate handback if critical issues
    - **chris-architect**: Architecture alignment → immediate handback if critical issues
-   - **User**: Final review (manual mode only) → immediate handback if critical issues
+   - **User**: Final review (manual review mode only) → immediate handback if critical issues
 
 **Phase 7: Completion** *(combined final phase)*
 7a. **max**: CI validation, PR merge, cleanup
@@ -185,11 +188,25 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 
 ### Workflow Modes
 
+**Execution Modes:**
+
 | Mode | Trigger | Behavior |
 |------|---------|----------|
 | **Single Issue** (default) | Standard operation | Complete one issue → stop |
-| **Batch Mode** ⚠️ | User says "solve all issues" | Continue until ALL issues resolved (typically infinite due to playtest) |
-| **Manual Mode** | User says "manual mode" | User participates as reviewer in workflow |
+| **Batch Mode** ⚠️ | User says "solve all issues" | 🤖 Fully autonomous - Continue until ALL issues resolved (typically infinite due to playtest) |
+
+**Review Modes (Independent):**
+
+| Mode | Trigger | Behavior |
+|------|---------|----------|
+| **Automatic Review** (default) | Standard operation | All agents complete review autonomously |
+| **Manual Review** | User says "manual mode" | User participates as final reviewer in workflow |
+
+**Valid Combinations:**
+- Single Issue + Automatic Review (DEFAULT)
+- Single Issue + Manual Review
+- Batch Mode + Automatic Review  
+- Batch Mode + Manual Review
 
 ### Definition of Done
 ✅ All tests pass with meaningful coverage  
@@ -319,7 +336,7 @@ Start → Complete Issue → Repository Assessment → Issues Remain?
                                               │
                                               ▼
                                     ┌──────────────────┐
-                                    │   Manual Mode?   │
+                                    │  Manual Review?  │
                                     │      YES│NO      │
                                     └──────────────────┘
                                               │
@@ -392,7 +409,7 @@ Phase 6: Serial Review Chain
                                                                  NO
                                                                   ▼
                                                    ┌──────────────────────────────┐
-                                                   │        Manual Mode?          │
+                                                   │     Manual Review Mode?     │
                                                    │          YES│NO              │
                                                    └──────────────┼───────────────┘
                                                                  │
@@ -447,7 +464,7 @@ Repository State Check
         │
         ▼
 ┌─────────────────────────────┐
-│       Batch Mode?           │
+│    Batch Execution Mode?    │
 │        YES│NO               │
 └─────────────────────────────┘
              │
@@ -556,6 +573,8 @@ START: Repository State
                        │ 7 phases        │ │  Task &     │
                        └─────────────────┘ │  STOP       │
                                            └─────────────┘
+
+Note: Manual Review Mode can be combined with any workflow above
 ```
 
 ---

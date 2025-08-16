@@ -56,12 +56,12 @@ Use this **decision tree** to choose the appropriate workflow:
 - ✅ **Manual Override**: User says "use simple workflow" regardless of complexity
 → **Simple Workflow**: 3-phase execution
    - **Phase 1**: sergei-perfectionist-coder implementation
-   - **Phase 2**: Serial Review Chain (max-devops validation → patrick-auditor review → **User review (manual mode only)**)
+   - **Phase 2**: Serial Review Chain (max-devops validation → patrick-auditor review → **chris-architect final review**)
    - **Phase 3**: max-devops cleanup and completion
    - **Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Now (<30min) or File Issue
    - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to THE FIRST reviewer (max-devops) to restart entire review chain from beginning
 
-**Simple Workflow Batch Mode:**
+**Simple Workflow Execution Modes:**
 - **SINGLE ISSUE MODE (DEFAULT)**: Complete one simple issue → STOP
 - **BATCH MODE (USER REQUESTS)**: After simple issue completion → return to PHASE 1 (max-devops repository assessment) → continue until zero open issues remain
 
@@ -114,10 +114,11 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 
 **WORKFLOW MODE CONFIGURATION:**
 
-**EXECUTION MODES:**
+**EXECUTION MODES (Choose One):**
 - **SINGLE ISSUE MODE (DEFAULT)**: Complete full workflow for one issue → Executive Summary → STOP
-- **BATCH MODE (USER REQUESTS)**: When user explicitly asks to "solve all open issues" or "fix all issues":
+- **BATCH MODE (USER EXPLICITLY REQUESTS)**: When user explicitly asks to "solve all open issues" or "fix all issues":
   - **⚠️ INFINITE DURATION WARNING**: Batch mode typically runs indefinitely because playtest workflow discovers new issues
+  - **🤖 FULLY AUTONOMOUS**: Batch mode NEVER pauses for user input unless manual review mode explicitly requested
   - **MANDATORY**: Apply workflow repeatedly until ALL issues are resolved
   - **AUTOMATIC PLAYTEST**: When repository becomes clean (zero issues), playtest workflow automatically triggers
   - **ISSUE REPLENISHMENT**: Playtest usually discovers new issues and files them as GitHub issues
@@ -125,13 +126,20 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
   - **RARE TERMINATION**: Batch only stops when playtest discovers ZERO issues (very rare)
   - **FINAL SUMMARY ONLY**: Executive Summary delivered only after playtest finds zero issues
 
-**REVIEW MODES:**
-- **AUTOMATIC REVIEW (DEFAULT)**: patrick, vicky, chris complete review autonomously → workflow completes
-- **MANUAL MODE (USER REQUESTS)**: When user says "manual mode" → user performs final review in Phase 6-5
-- **WORKFLOW PAUSE**: In manual mode, workflow pauses after chris-architect review, waits for user input
-- **USER APPROVAL REQUIRED**: In manual mode, user has final approval authority
-- **FINDINGS HANDBACK**: User findings are handed back to appropriate agents (sergei/winny) for immediate fixes
-- **INDEPENDENT OF BATCH MODE**: Manual mode works in both single issue and batch modes
+**REVIEW MODES (Choose One - Independent of Execution Mode):**
+- **AUTOMATIC REVIEW (DEFAULT)**: All agents complete review autonomously → workflow proceeds automatically
+- **MANUAL REVIEW (USER EXPLICITLY REQUESTS)**: When user explicitly says "manual mode" or "manual review":
+  - **USER FINAL REVIEW**: User performs final review after all agent reviews complete
+  - **WORKFLOW PAUSE**: Workflow pauses after chris-architect review, waits for user input
+  - **USER APPROVAL REQUIRED**: User has final approval authority before proceeding
+  - **FINDINGS HANDBACK**: User findings are handed back to appropriate agents for immediate fixes
+  - **WORKS WITH ANY EXECUTION MODE**: Manual review works in both single issue and batch modes
+
+**VALID COMBINATIONS:**
+- Single Issue + Automatic Review (DEFAULT)
+- Single Issue + Manual Review  
+- Batch Mode + Automatic Review
+- Batch Mode + Manual Review
 **PHASE 3: Architecture Documentation** - chris-architect updates DESIGN.md, creates detailed implementation plan, and conducts risk assessment
    - **Risk Assessment**: Identify technical, schedule, and quality risks with mitigation strategies
    - **Opportunity Analysis**: Identify performance, efficiency, and innovation opportunities
@@ -149,7 +157,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
    - patrick-auditor code quality + security review → immediate handback if critical issues  
    - vicky-acceptance-tester user acceptance + UX validation → immediate handback if critical issues
    - chris-architect architecture alignment review → immediate handback if critical issues
-   - **MANUAL MODE ONLY** - User final review → immediate handback if critical issues
+   - **MANUAL REVIEW MODE ONLY** - User final review → immediate handback if critical issues
    - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to THE FIRST reviewer (max-devops) to restart entire review chain from beginning
 
 **PHASE 7: Completion** - **COMBINED FINAL PHASE**
@@ -349,7 +357,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - **Primary Customer**: Repository owner/user requesting functionality
 - **Customer Requirements**: Captured in GitHub issues and user acceptance criteria
 - **Customer Satisfaction**: Measured through vicky-acceptance-tester validation and chris-architect executive summaries
-- **Customer Communication**: Direct interaction during manual mode review phases
+- **Customer Communication**: Direct interaction ONLY when user explicitly requests manual review mode
 
 ## System Context
 - **OS**: Arch Linux
