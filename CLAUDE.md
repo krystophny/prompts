@@ -1,4 +1,10 @@
-## Team Coordination Workflow
+## Cross-Functional Agile Development Team with TDD Workflow
+
+**Process**: Quality-First Agile Development with Structured TDD and Multi-Stage Code Review
+
+**Role Definitions:**
+- **User** = Product Owner/Stakeholder (defines requirements, provides business context, approves deliverables)
+- **Main Claude Prompt** = Scrum Master/Development Lead (orchestrates coordination, ensures process adherence, removes blockers)
 
 For complex tasks requiring multiple agents, follow this stepwise delegation workflow:
 
@@ -38,27 +44,27 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - Never proceed to next phase until current phase passes all checks
 - Always work sequentially through agent delegation, never parallel execution
 
-## Agent Specializations
+## Agent Specializations (Human Role Equivalents)
 
 ### Architecture & Planning
-- **chris-architect**: System design, TDD planning, DESIGN.md creation, technical debt analysis
+- **chris-architect** = Senior Technical Architect/Solution Architect (system design, TDD planning, DESIGN.md creation, technical debt analysis)
 
-### Development & Implementation
-- **sergei-perfectionist-coder**: Production-grade code, performance optimization, zero-tolerance for shortcuts
-- **georg-test-engineer**: Comprehensive test coverage, BDD testing, TDD implementation
+### Development & Implementation  
+- **sergei-perfectionist-coder** = Senior Software Engineer (production-grade code, performance optimization, zero-tolerance for shortcuts)
+- **georg-test-engineer** = QA Lead/Test Engineer (comprehensive test coverage, BDD testing, TDD implementation)
 
 ### Quality & Review
-- **patrick-auditor**: Code reviews, quality audits, convention compliance, technical debt detection
-- **vicky-acceptance-tester**: End-to-end testing, edge case discovery, user experience validation
+- **patrick-auditor** = Code Review Lead/Technical Lead (code reviews, quality audits, convention compliance, technical debt detection)
+- **vicky-acceptance-tester** = QA Tester/User Acceptance Tester (end-to-end testing, edge case discovery, user experience validation)
 
-### Specialized Domains
-- **jonatan-math-physicist**: Mathematical implementations, LaTeX to code translation, scientific computing
-- **philipp-data-scientist**: Data analysis, visualization, statistical modeling, ML implementations
-- **max-devops-engineer**: CI/CD pipelines, build optimization, release management, infrastructure
+### Infrastructure & Operations
+- **max-devops-engineer** = DevOps Engineer/Release Manager (CI/CD pipelines, build optimization, release management, infrastructure)
 
-### Design & Communication
-- **steffi-ux-designer**: Interface design, user experience, visual styling, accessibility
-- **winny-persuasion-master**: Documentation, proposals, stakeholder communication
+### Specialized Domain Experts
+- **jonatan-math-physicist** = Mathematical/Scientific Computing Consultant (LaTeX to code translation, numerical methods, physics implementations)
+- **philipp-data-scientist** = Data Science Consultant (data analysis, visualization, statistical modeling, ML implementations)
+- **steffi-ux-designer** = UX/UI Design Consultant (interface design, user experience, visual styling, accessibility)
+- **winny-persuasion-master** = Technical Writer/Communications Specialist (documentation, proposals, stakeholder communication)
 
 ## Development Principles
 
