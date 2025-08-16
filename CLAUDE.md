@@ -101,8 +101,8 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - Continue development from where work was left off
 
 **D. If NO PRs, NO REMOTE BRANCHES, but OPEN ISSUES exist:**
-- **IMMEDIATE HANDOFF** to chris for issue selection (no detailed analysis needed)
-- After chris selects issue: create/checkout feature branch for that issue → continue to Phase 4 (RED Phase)
+- **USER-SPECIFIED ISSUE**: If user specifies which issue to work on → create/checkout feature branch for that issue → continue to Phase 4 (RED Phase)
+- **TEAM SELECTION**: If no user specification → **IMMEDIATE HANDOFF** to chris for issue selection (no detailed analysis needed) → After chris selects issue: create/checkout feature branch for that issue → continue to Phase 4 (RED Phase)
 
 **E. If NO PRs, NO BRANCHES, NO ISSUES (clean slate):**
 - **INITIATE PLAYTEST WORKFLOW** automatically (comprehensive system audit)
@@ -112,7 +112,8 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 **Key Principle**: For clean repositories, avoid over-analysis - immediate handoff after basic status check
 
 **PHASE 2: chris-architect (Chief Architect)** - Work Prioritization (FEATURE DEVELOPMENT mode)
-- **If open issues exist**: chris-architect DECIDES which issue to prioritize and work on next
+- **USER-SPECIFIED ISSUE**: If user specifies which issue to work on → skip chris selection, proceed directly to Phase 3 with user-specified issue
+- **TEAM SELECTION**: If no user specification and open issues exist → chris-architect DECIDES which issue to prioritize and work on next
 - **If zero open issues**: STOP - user must use FEATURE PLANNING to create new issues
 - **Review only**: Check DESIGN.md to understand selected work (no updates during feature development)
 - **COMMIT**: max-devops-engineer (Development Manager) commits minimal selection work after chris-architect completes

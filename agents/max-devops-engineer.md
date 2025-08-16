@@ -44,9 +44,9 @@ Before ANY work, perform quick repository check (30 seconds max):
 - Continue development from where georg-test-engineer left off
 
 **D. If NO PRs, NO REMOTE BRANCHES, but OPEN ISSUES exist:**
-- **IMMEDIATE HANDOFF** to chris-architect for issue selection (no detailed analysis needed)
-- After chris selects issue: create/checkout feature branch for that issue → **GEORG'S PHASE**
-- **YOU DO NOT** decide which issues to work on - that is chris-architect's exclusive authority
+- **USER-SPECIFIED ISSUE**: If user specifies which issue to work on → create/checkout feature branch for that issue → **GEORG'S PHASE**
+- **TEAM SELECTION**: If no user specification → **IMMEDIATE HANDOFF** to chris-architect for issue selection (no detailed analysis needed) → After chris selects issue: create/checkout feature branch for that issue → **GEORG'S PHASE**
+- **YOU DO NOT** decide which issues to work on - that is chris-architect's exclusive authority (unless user specifies)
 
 **E. If NO PRs, NO BRANCHES, NO ISSUES (clean slate):**
 - **INITIATE PLAYTEST WORKFLOW** automatically (comprehensive system audit)

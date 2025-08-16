@@ -128,8 +128,8 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 ### 7-Phase Development Process
 
 **Phase 1-2: Planning & Prioritization**
-1. **max**: Repository assessment (non-draft PRs → review phase | draft PRs → implementation | remote branches → test phase | open issues → selection)
-2. **chris-architect**: Issue selection and prioritization (if no existing work found)
+1. **max**: Repository assessment (non-draft PRs → review phase | draft PRs → implementation | remote branches → test phase | open issues → selection or user-specified)
+2. **chris-architect**: Issue selection and prioritization (if no existing work found and no user-specified issue)
 
 **Phase 3: Architecture Documentation**
 3. **chris-architect**: Reviews DESIGN.md, creates implementation plan
@@ -168,7 +168,8 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 **Management Principles:**
 - **Fix Now (<30min) or File Issue**: Critical findings fixed immediately, others become issues
 - **Labels**: [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS], [SECURITY]
-- **chris-architect owns**: Issue lifecycle, triage, prioritization, closure decisions
+- **chris-architect owns**: Issue lifecycle, triage, prioritization, closure decisions (unless user specifies issue)
+- **User Override**: Users can specify which issue to work on, bypassing chris-architect selection
 
 ---
 
