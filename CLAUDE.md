@@ -59,11 +59,12 @@ Use this **decision tree** to choose the appropriate workflow:
    - **Phase 2**: Serial Review Chain (max-devops validation → patrick-auditor review → **User review (manual mode only)**)
    - **Phase 3**: max-devops cleanup and completion
    - **Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Now (<30min) or File Issue
-   - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to THE SAME reviewer who found the issue for verification
+   - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to THE FIRST reviewer (max-devops) to restart entire review chain from beginning
 
 **Simple Workflow Batch Mode:**
 - **SINGLE ISSUE MODE (DEFAULT)**: Complete one simple issue → STOP
 - **BATCH MODE (USER REQUESTS)**: After simple issue completion → return to PHASE 1 (max-devops repository assessment) → continue until zero open issues remain
+
 
 **Complex Workflow Triggers (ANY triggers full workflow):**
 - ❌ Multiple files affected
@@ -85,7 +86,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 
 **A. If UNFINISHED PRs exist:**
 - Pick one PR (prefer current branch if it's a PR branch)
-- Checkout that PR's branch → go directly to Phase 6a (Technical Validation)
+- Checkout that PR's branch → continue at review phase (Phase 6 for complex, Phase 2 for simple)
 - NEVER create new issues or start new work until ALL PRs are finished
 
 **B. If NO PRs, but OPEN ISSUES exist:**
@@ -149,7 +150,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
    - **Phase 6-3**: vicky-acceptance-tester user acceptance + UX validation → immediate handback if critical issues
    - **Phase 6-4**: chris-architect architecture alignment review → immediate handback if critical issues
    - **Phase 6-5**: **MANUAL MODE ONLY** - User final review → immediate handback if critical issues
-   - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to THE SAME reviewer who found the issue for verification, NOT the next reviewer
+   - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to THE FIRST reviewer (max-devops) to restart entire review chain from beginning
 
 **PHASE 7: Completion** - **COMBINED FINAL PHASE**
    - **max-devops**: CI validation, PR merge, repository cleanup

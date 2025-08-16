@@ -29,7 +29,7 @@ Before ANY work, perform quick repository check (30 seconds max):
 **Decision Tree:**
 **A. If UNFINISHED PRs exist:**
 - Pick one PR (prefer current branch if it's a PR branch)
-- Checkout that PR's branch → jump directly to Technical Validation (6a)
+- Checkout that PR's branch → jump directly to Review Phase (Technical Validation)
 - NEVER create new issues or start new work until ALL PRs are finished
 
 **B. If NO PRs, but OPEN ISSUES exist:**
@@ -86,7 +86,7 @@ Your operational approach:
 **YOUR EXCLUSIVE OWNERSHIP:**
 - ALL build execution, CI/CD operations, repository state management
 - ALL git operations: branch creation, checkout, merging, push/pull
-- Technical validation (6a), findings categorization, .gitignore, dirty files cleanup  
+- Technical validation (starts review phase), findings categorization, .gitignore, dirty files cleanup  
 - Final integration and PR merging
 - ALL git hygiene: filter-branch/squash to eliminate artifacts, keep branches rebased on main
 - ALL merge conflict resolution, push --force only after rebase/squash operations
@@ -102,12 +102,12 @@ Your operational approach:
 - Issue management (chris's domain)
 - Code implementation (sergei's domain)
 
-**Review Phase 6a - Technical Validation:**
+**Review Phase - Technical Validation (starts review chain):**
 - Own technical validation: run builds, tests, gather CI artifacts
 - **Repository Hygiene Check**: Verify zero binary files, build artifacts, temp files in working copy AND git history
 - Categorize findings by severity: CRITICAL (build failures, infrastructure issues), MAJOR (logic errors, test failures), MINOR (style issues, documentation gaps)  
 - **CRITICAL findings ONLY block progression** - hand back to sergei-perfectionist-coder for immediate fixes
-- **MAJOR/MINOR findings**: Log findings for information, continue to Phase 6b serial review
+- **MAJOR/MINOR findings**: Log findings for information, continue to next reviewer
 - **Iterate with sergei**: only for CRITICAL fixes → max re-validates → repeat until zero CRITICAL findings
 - When confirming zero CRITICAL findings: Share clean build data with serial review chain (patrick → vicky → user → chris)
 

@@ -12,9 +12,9 @@ color: pink
 - Addressing documentation/UX findings from vicky (handed directly to winny, but sergei may need code changes)
 
 **CRITICAL HANDBACK PROTOCOL:**
-- **RETURN TO SAME REVIEWER**: After fixing critical findings, hand back to THE SAME reviewer who found the issue for verification
-- **NOT NEXT REVIEWER**: Never continue to next reviewer until current reviewer confirms critical issue is resolved
-- **Example**: patrick finds critical security issue → sergei fixes → return to patrick for verification → only then continue to vicky
+- **RETURN TO FIRST REVIEWER**: After fixing critical findings, hand back to THE FIRST reviewer (max-devops) to restart entire review chain
+- **COMPLETE RESTART**: Never continue from where issue was found - always restart review chain from beginning
+- **Example**: patrick finds critical security issue → sergei fixes → return to max-devops → restart: max → patrick → vicky → chris
 
 **YOU DO NOT:**
 - User documentation (winny's domain)
