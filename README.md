@@ -7,13 +7,13 @@
  ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝    ╚══════╝   ╚═╝   ╚══════╝   ╚═╝   ╚══════╝╚═╝     ╚═╝
 ```
 
-## ⚡ MISSION CONTROL ⚡
+## MISSION CONTROL
 
 **Quality-First Agile Development with Multi-Agent TDD Workflow**
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## 🤖 AGENT ROSTER
+## AGENT ROSTER
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
@@ -21,35 +21,35 @@
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**🏗️⚛️ chris-architect**  
+**chris-architect**  
 *Distinguished computational physicist & system architect*  
-→ GitHub issue lifecycle, system architecture, DESIGN.md, strategic planning  
-→ Distinguished by rigorous mathematical approach to software architecture
+- GitHub issue lifecycle, system architecture, DESIGN.md, strategic planning  
+- Distinguished by rigorous mathematical approach to software architecture
 
-**⚡💎 sergei-perfectionist-coder**  
+**sergei-perfectionist-coder**  
 *Elite perfectionist, computational physicist background*  
-→ Production code implementation, API/developer documentation  
-→ Zero shortcuts, zero stubs, zero placeholders - computational physics precision
+- Production code implementation, API/developer documentation  
+- Zero shortcuts, zero stubs, zero placeholders - computational physics precision
 
-**🔬✅ georg-test-engineer**  
+**georg-test-engineer**  
 *Elite test engineer, BDD expert*  
-→ Test creation (unit/integration/system), 100% meaningful coverage  
-→ Given-When-Then structure, non-shallow, non-tautological tests
+- Test creation (unit/integration/system), 100% meaningful coverage  
+- Given-When-Then structure, non-shallow, non-tautological tests
 
-**🔍🛡️ patrick-auditor**  
+**patrick-auditor**  
 *Expert code quality auditor & security analyst*  
-→ Security analysis, code quality review, convention compliance  
-→ Constructively critical, input validation, injection vulnerabilities
+- Security analysis, code quality review, convention compliance  
+- Constructively critical, input validation, injection vulnerabilities
 
-**🎭💥 vicky-acceptance-tester**  
+**vicky-acceptance-tester**  
 *Elite acceptance tester & chaos engineer*  
-→ User acceptance testing, UX validation, user documentation validation  
-→ Bug finder extraordinaire, chaos engineering mindset
+- User acceptance testing, UX validation, user documentation validation  
+- Bug finder extraordinaire, chaos engineering mindset
 
-**⚙️🚀 max-devops-engineer**  
+**max-devops-engineer**  
 *Elite DevOps engineer, CI/CD master*  
-→ Build execution, repository hygiene, technical validation  
-→ GitHub Actions/GitLab CI expert, zero tolerance for build artifacts
+- Build execution, repository hygiene, technical validation  
+- GitHub Actions/GitLab CI expert, zero tolerance for build artifacts
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
@@ -57,31 +57,31 @@
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**📝✨ winny-persuasion-master**  
+**winny-persuasion-master**  
 *Master of persuasion & user documentation*  
-→ User documentation, persuasive content creation  
-→ Transforms technical complexity into user-friendly narratives
+- User documentation, persuasive content creation  
+- Transforms technical complexity into user-friendly narratives
 
-**🎨💻 steffi-ux-designer**  
+**steffi-ux-designer**  
 *Elite UX designer with cyberpunk aesthetic*  
-→ UI/UX design, interface optimization, visual styling  
-→ Artistic vision meets technical prowess, retro computing inspiration
+- UI/UX design, interface optimization, visual styling  
+- Artistic vision meets technical prowess, retro computing inspiration
 
-**📊🔬 philipp-data-scientist**  
+**philipp-data-scientist**  
 *Elite data scientist with physics background*  
-→ Data analysis, visualization, statistical modeling, data pipelines  
-→ Publication-quality visualizations, scientific rigor
+- Data analysis, visualization, statistical modeling, data pipelines  
+- Publication-quality visualizations, scientific rigor
 
-**🧮⚛️ jonatan-math-physicist**  
+**jonatan-math-physicist**  
 *Master mathematician & LaTeX expert*  
-→ Mathematical formulation, LaTeX-to-code translation, symbolic mathematics  
-→ Bridges pure mathematics with computational implementation
+- Mathematical formulation, LaTeX-to-code translation, symbolic mathematics  
+- Bridges pure mathematics with computational implementation
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## 📊 WORKFLOW ARCHITECTURES
+## WORKFLOW ARCHITECTURES
 
-### ⚡ SIMPLE WORKFLOW
+### SIMPLE WORKFLOW
 *Single file, <2 hours, no API changes*
 
 ```
@@ -116,12 +116,12 @@
                    └─────────────────┘
 ```
 
-### ⚙️ COMPLEX WORKFLOW  
+### COMPLEX WORKFLOW  
 *Multi-file, >2 hours, architecture impact*
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
-│                           🚀 8-PHASE MISSION PROTOCOL 🚀                           │
+│                             8-PHASE MISSION PROTOCOL                               │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
 Phase 1: CLEAN STATE
@@ -216,7 +216,7 @@ Phase 8: INTEGRATION
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## ⚡ CORE PRINCIPLES
+## CORE PRINCIPLES
 
 ```
 ▓▓▓ QUALITY MANIFESTO ▓▓▓
@@ -227,18 +227,18 @@ Phase 8: INTEGRATION
 └─ Computational physics precision
 ```
 
-**🔧 CODE STANDARDS**
+**CODE STANDARDS**
 - 88 character limit, 4-space indentation
 - Self-documenting code, no commented dead code
 - Fortran: `typename_t` convention, empty associate blocks
 
-**📋 COMMIT PROTOCOL** 
+**COMMIT PROTOCOL** 
 - Conventional Commits: `<type>: <description>`
 - Imperative mood, no period, <72 chars
 - One logical change per commit
 - No robot signatures or bloat
 
-**🎯 DEFINITION OF DONE**
+**DEFINITION OF DONE**
 - All tests pass with meaningful coverage
 - CI green, zero build artifacts
 - Documentation updated atomically
@@ -246,12 +246,12 @@ Phase 8: INTEGRATION
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## 📚 SYSTEM REFERENCES
+## SYSTEM REFERENCES
 
-**📖 Documentation**: [Claude Code Docs](https://docs.anthropic.com/en/docs/claude-code/common-workflows)  
-**⚙️ Configuration**: See `CLAUDE.md` for complete workflow specifications  
-**🏗️ Architecture**: System design patterns in `DESIGN.md`  
-**🎨 Aesthetic**: Cyberpunk/retro computing inspired interface design
+**Documentation**: [Claude Code Docs](https://docs.anthropic.com/en/docs/claude-code/common-workflows)  
+**Configuration**: See `CLAUDE.md` for complete workflow specifications  
+**Architecture**: System design patterns in `DESIGN.md`  
+**Aesthetic**: Cyberpunk/retro computing inspired interface design
 
 ```
 ██████╗ ███████╗████████╗██████╗  ██████╗      ██████╗ ██████╗ ██████╗ ██╗███╗   ██╗ ██████╗ 
