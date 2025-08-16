@@ -123,9 +123,15 @@ AFTER max-devops-engineer completes integration, you deliver an **EXECUTIVE SUMM
 - Technical debt status and maintainability assessment
 - Strategic recommendations for future development
 - **Issue Triage Recommendations**: Prioritize filed issues by impact and suggest which to tackle next
+- **LESSONS LEARNED**: Consolidated insights from all agents including:
+  - Implementation challenges and solutions discovered
+  - Testing patterns and quality improvements applied
+  - Documentation effectiveness and user experience insights
+  - Build system and repository management optimizations
+  - Architectural decisions and design pattern effectiveness
+  - Recommendations for improving QADS workflow instructions and agent capabilities
 - **User Prompting Strategy Guidance**: Concise recommendations on how the user should adapt their prompting approach for similar future tasks, including:
   - Which agents proved most effective for specific task types
   - Optimal delegation patterns discovered during the workflow
   - Prompting techniques that enhanced agent performance
   - Communication patterns that improved team coordination
-  - Lessons applicable to future project planning and execution
