@@ -1,390 +1,209 @@
-# Claude System
+# Claude Multi-Agent Development System
 
-## MISSION CONTROL
+A quality-first agile development workflow system featuring specialized AI agents working collaboratively through structured TDD processes.
 
-**Quality-First Agile Development with Multi-Agent TDD Workflow**
+## Quick Start
 
-## WORKFLOW TYPES
+**Choose Your Workflow:**
 
-### 1. FEATURE PLANNING (User ↔ chris-architect)
+1. **New Feature/Requirements** → Use **Feature Planning** with chris-architect
+2. **Execute Existing Work** → Use **Feature Development** workflow  
+3. **System Audit** → **Playtest Workflow** (auto-triggered on clean repository)
+
+**Execution Modes:**
+- **Single Issue** (default): Complete one task and stop
+- **Batch Mode**: Solve all open issues automatically (`"solve all issues"`)
+- **Manual Mode**: Include user review in workflow (`"manual mode"`)
+
+## Workflow Types
+
+### Feature Planning
+*User ↔ chris-architect collaboration*
+
 ```
-USER ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
- │        (Chief Architect)    (create/update freely)
- │        (FULL AUTHORITY)
- │
- └─▶ Goals/Features/Design opinions
+Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ```
-**Purpose**: Strategic planning, requirements capture, design documentation
-**Authority**: chris-architect (Chief Architect) has full authority to create/update DESIGN.md and issues
 
-### 2. FEATURE DEVELOPMENT (Multi-role execution)  
-**Purpose**: Implementation, testing, review, delivery of planned work
-**Authority**: chris-architect (Chief Architect) restricted to selection, prioritization, review adjustments only
+- **Purpose**: Strategic planning and requirements capture
+- **Authority**: chris-architect has full authority to create/update DESIGN.md and issues
+- **Use When**: Starting new features or major changes
 
-### 3. PLAYTEST WORKFLOW (System-wide audit)
-**Purpose**: Comprehensive system audit automatically triggered when repository is clean
-**Authority**: max-devops validates build, then parallel audit by vicky/patrick/chris, comprehensive bug backlog creation
-**State**: Automatically initiated when all PRs closed and issues resolved
-- **SINGLE MODE (DEFAULT)**: Stop after playtest with chris Executive Summary
-- **BATCH MODE (USER REQUESTS)**: Continue with development of discovered issues until clean
+### Feature Development  
+*Multi-agent structured implementation*
+
+- **Purpose**: Execute planned work through TDD workflow
+- **Authority**: chris-architect restricted to issue selection and prioritization
+- **Process**: 9-phase workflow from tests to delivery
+
+### Playtest Workflow
+*Comprehensive system audit*
+
+- **Purpose**: Discover bugs and improvements through thorough testing
+- **Trigger**: Automatically initiated when repository is clean (no PRs/issues)
+- **Result**: Comprehensive bug backlog for future development
 
 ---
 
-## AGENT ROSTER
+## The Team
 
-### Core Agents
+### Core Development Agents
 
-**chris-architect (Chief Architect)**  
-*Distinguished computational physicist & system architect*  
-- GitHub issue lifecycle, system architecture, DESIGN.md, strategic planning  
-- MVP-focused: prevents feature creep, prioritizes highest quality minimum viable product
-- Distinguished by rigorous mathematical approach to software architecture
+| Agent | Role | Primary Responsibilities |
+|-------|------|-------------------------|
+| **chris-architect** | Chief Architect | System architecture, issue lifecycle, DESIGN.md, MVP focus |
+| **sergei-perfectionist-coder** | Chief Programmer | Production code, API docs, zero-compromise implementation |
+| **georg-test-engineer** | Test Engineer | Test creation (unit/integration/system), BDD expertise |
+| **patrick-auditor** | Code Reviewer/QA | Security analysis, code quality, compliance verification |
+| **vicky-acceptance-tester** | Customer/Tester | User acceptance testing, UX validation, chaos engineering |
+| **max-devops-engineer** | Development Manager | Build execution, repository hygiene, CI/CD operations |
 
-**sergei-perfectionist-coder (Chief Programmer)**  
-*Elite perfectionist, computational physicist background*  
-- Production code implementation, API/developer documentation  
-- Zero shortcuts, zero stubs, zero placeholders - computational physics precision
+### Specialist Agents
 
-**georg-test-engineer (Test Engineer)**  
-*Elite test engineer, BDD expert*  
-- Test creation (unit/integration/system), 100% meaningful coverage  
-- Given-When-Then structure, non-shallow, non-tautological tests
-
-**patrick-auditor (Code Reviewer/QA)**  
-*Expert code quality auditor & security analyst*  
-- Security analysis, code quality review, convention compliance  
-- Constructively critical, input validation, injection vulnerabilities
-
-**vicky-acceptance-tester (Customer/Tester)**  
-*Elite acceptance tester & chaos engineer*  
-- User acceptance testing, UX validation, user documentation validation  
-- Bug finder extraordinaire, chaos engineering mindset
-
-**max-devops-engineer (Development Manager)**  
-*Elite DevOps engineer, CI/CD master*  
-- Build execution, repository hygiene, technical validation  
-- GitHub Actions/GitLab CI expert, zero tolerance for build artifacts
-
-### Domain Experts
-
-**winny-technical-writer (Technical Writer)**  
-*Master of documentation & technical communication*  
-- User documentation, technical content creation  
-- Transforms technical complexity into user-friendly narratives
-
-**steffi-ux-designer**  
-*Elite UX designer with cyberpunk aesthetic*  
-- UI/UX design, interface optimization, visual styling  
-- Artistic vision meets technical prowess, retro computing inspiration
-
-**philipp-data-scientist**  
-*Elite data scientist with physics background*  
-- Data analysis, visualization, statistical modeling, data pipelines  
-- Publication-quality visualizations, scientific rigor
-
-**jonatan-math-physicist**  
-*Master mathematician & LaTeX expert*  
-- Mathematical formulation, LaTeX-to-code translation, symbolic mathematics  
-- Bridges pure mathematics with computational implementation
+| Agent | Expertise | When to Use |
+|-------|-----------|-------------|
+| **winny-technical-writer** | Technical Writing | User documentation, technical content creation |
+| **steffi-ux-designer** | UX Design | UI/interface optimization, visual styling |
+| **philipp-data-scientist** | Data Science | Data analysis, visualization, statistical modeling |
+| **jonatan-math-physicist** | Mathematics | Mathematical formulation, LaTeX-to-code translation |
 
 ---
 
-## WORKFLOW ARCHITECTURES
+## Workflow Selection
 
-**Workflow Selection Decision Tree:**
+**Decision Tree**: Choose the right workflow based on task complexity
 
-Use this **decision tree** to choose the appropriate workflow:
+### Simple Workflow
+*Use when ALL criteria are met:*
 
-```
-START: Analyze the task
-    │
-    ├── Single file affected? ──YES──┐
-    │                                │
-    ├── No API/interface changes? ──YES──┐
-    │                                    │
-    ├── No new dependencies? ────────YES──┐
-    │                                     │
-    ├── Estimated <2 hours work? ────YES──┴──┐
-    │                                        │
-    │                                        ▼
-    │                              **SIMPLE WORKFLOW**
-    │                              Agent → max build validation 
-    │                              → patrick review → fixes 
-    │                              → max cleanup
-    │
-    ▼ (Any NO answer above)
-**COMPLEX WORKFLOW** 
-Full 9-phase workflow below
-```
+✅ Single file affected  
+✅ No API/interface changes  
+✅ No new dependencies  
+✅ Estimated <2 hours work  
 
-**Simple Workflow Criteria (ALL must be true):**
-- ✅ Single file affected
-- ✅ No API/interface changes  
-- ✅ No new dependencies
-- ✅ Estimated <2 hours work
+**Process**: Agent → max validation → patrick review → fixes → max cleanup
 
-**Complex Workflow Triggers (ANY triggers full workflow):**
-- ❌ Multiple files affected
-- ❌ API/interface changes required
-- ❌ New dependencies needed
-- ❌ Estimated >2 hours work
-- ❌ Architecture impact
-- ❌ New features requiring documentation
+### Complex Workflow  
+*Use when ANY trigger applies:*
 
-### SIMPLE WORKFLOW
-*Single file, no API changes, no dependencies, <2 hours*
+❌ Multiple files affected  
+❌ API/interface changes required  
+❌ New dependencies needed  
+❌ Estimated >2 hours work  
+❌ Architecture impact  
+❌ New features requiring documentation  
 
-```
-┌─────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   AGENT     │───▶│  max-devops      │───▶│  patrick-auditor│
-│ (ANY ROLE)  │    │ build validation │    │     review      │
-└─────────────┘    └──────────────────┘    └─────────────────┘
-                             │                       │
-                             ▼                       ▼
-                   ┌─────────────────┐    ┌─────────────────┐
-                   │ BUILD SUCCESS?  │◄───│  FINDINGS?      │
-                   └─────────────────┘    └─────────────────┘
-                             │                       │
-                           YES │                   YES │
-                             ▼                       ▼
-                   ┌─────────────────┐    ┌─────────────────┐
-                   │   max-devops    │◄───│   BACK TO       │
-                   │    cleanup      │    │     AGENT       │
-                   └─────────────────┘    └─────────────────┘
-                             │                       │
-                             ▼                       │
-                        ┌─────────┐                  │
-                        │  DONE   │                  │
-                        └─────────┘                  │
-                             │                       │
-                             ▼                       │
-                   ┌─────────────────┐               │
-                   │ BATCH MODE?     │               │
-                   └─────────────────┘               │
-                             │                       │
-                           YES │                     │
-                             ▼                       │
-                   ┌─────────────────┐               │
-                   │ RETURN TO       │               │
-                   │ STEP 1 (max)    │               │
-                   │ FOR NEXT ISSUE  │               │
-                   └─────────────────┘               │
-                                                     │
-                        ┌────────────────────────────┘
-                        │
-                        ▼
-                   ┌─────────────────┐
-                   │ ITERATE UNTIL   │
-                   │ FINDINGS FIXED  │
-                   └─────────────────┘
-```
-
-**Simple Workflow Batch Mode:**
-- **SINGLE ISSUE MODE (DEFAULT)**: Complete one simple issue → STOP
-- **BATCH MODE (USER REQUESTS)**: After simple issue completion → return to STEP 1 (max-devops repository assessment) → continue until zero open issues remain
-
-### FEATURE DEVELOPMENT (Complex)
-*Multi-file, >2 hours, architecture impact*
-
-**KEY PRINCIPLE: NEVER START NEW WORK WHEN EXISTING WORK IS UNFINISHED**
-
-#### Simplified 2-Step Start Protocol
-
-```
-STEP 1: REPOSITORY STATE ASSESSMENT (max-devops-engineer)
-┌─────────────────┐
-│ max-devops-eng  │ ──▶ A. Unfinished PRs? ──▶ Pick one ──▶ Go to Phase 6a
-│ (Dev Manager)   │     B. Open issues? ────▶ Hand to chris ──▶ Continue
-└─────────────────┘     C. Clean slate? ───▶ STOP - Use FEATURE PLANNING
-
-STEP 2: WORK PRIORITIZATION (chris-architect - FEATURE DEV mode)
-┌─────────────────┐     ┌─────────────────┐
-│ chris-architect │ ──▶ │ Select issues   │ ──▶ COMMIT
-│ (Chief Architect│     │ + review DESIGN │     (minimal)
-│  RESTRICTED)    │     │                 │
-└─────────────────┘     └─────────────────┘
-
-Phase 3: ARCHITECTURE DOCUMENTATION
-┌─────────────────┐
-│ chris reviews   │ ──▶ DESIGN.md + implementation plan
-│ DESIGN.md       │     (no updates during workflow)
-└─────────────────┘
-
-Phase 4: RED PHASE
-┌─────────────────┐     ┌─────────────────┐
-│ georg-test      │ ──▶ │ Failing tests   │ ──▶ COMMIT
-│ engineer        │ ║   │ (parallel)      │
-└─────────────────┘ ║   └─────────────────┘
-                    ║   ┌─────────────────┐
-                    ╚══▶│ chris-architect │
-                        │ refines details │
-                        └─────────────────┘
-
-Phase 5: IMPLEMENTATION + DOCS (PARALLEL MANDATORY)
-┌─────────────────┐     ┌─────────────────┐
-│ sergei-coder    │ ──▶ │ Code + API docs │ ──┐
-│                 │     │                 │   │
-└─────────────────┘     └─────────────────┘   │ ──▶ COMMIT
-┌─────────────────┐     ┌─────────────────┐   │     (BOTH)
-│ winny-master    │ ──▶ │ User docs       │ ──┘
-│                 │     │                 │
-└─────────────────┘     └─────────────────┘
-
-Phase 6a: TECHNICAL VALIDATION
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   max-devops    │ ──▶ │ Build, test,    │ ──▶ │ CRITICAL        │
-│    engineer     │     │ categorize      │     │ FINDINGS?       │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-         ▲                                               │
-         │                                             YES│
-         │              ┌─────────────────┐               ▼
-         └──────────────│ sergei-coder    │◄──┌─────────────────┐
-                        │ fixes CRITICAL  │   │ BACK TO SERGEI  │
-                        └─────────────────┘   │ CRITICAL ONLY   │
-                                              └─────────────────┘
-                                                       │
-                                                     NO │
-                                                       ▼
-                                              ┌─────────────────┐
-                                              │ MAJOR/MINOR to  │
-                                              │ patrick batch   │
-                                              └─────────────────┘
-                                                       │
-                                                       ▼
-Phase 6b: PARALLEL REVIEW (Only if 6a = ZERO CRITICAL findings)
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│ patrick-auditor │ ──▶ │ Code quality +  │     │ vicky-tester    │
-│ + max findings  │     │ security review │     │ UAT + UX + docs │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-                                │                         │
-                                │                         ▼
-                                │               ┌─────────────────┐
-                                │               │ Doc issues? ──▶ │
-                                │               │ BACK TO WINNY   │
-                                │               └─────────────────┘
-                                ▼                         │
-                        ┌─────────────────┐               │
-                        │ chris-architect │◄──────────────┘
-                        │ arch alignment  │
-                        └─────────────────┘
-                                │
-                                ▼
-                        ┌─────────────────┐
-                        │ MANUAL MODE?    │
-                        └─────────────────┘
-                                │
-                              YES │
-                                ▼
-                        ┌─────────────────┐
-                        │ WAIT FOR USER   │
-                        │ REVIEW INPUT    │
-                        └─────────────────┘
-                                │
-                                ▼
-                        ┌─────────────────┐
-                        │ ALL APPROVE? ──▶│ COMMIT
-                        │ (incl. user)    │
-                        └─────────────────┘
-
-Phase 7: REFINEMENT
-┌─────────────────┐     ┌─────────────────┐
-│ sergei + winny  │ ──▶ │ Address feedback│ ──▶ COMMIT (each cycle)
-│ iterate until   │     │ until satisfied │
-│ all satisfied   │     │                 │
-└─────────────────┘     └─────────────────┘
-
-Phase 8: INTEGRATION
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   max-devops    │ ──▶ │ Merge PR        │ ──▶ │ Final cleanup   │
-│   engineer      │     │ (squash if req) │     │ & validation    │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-
-Phase 9: EXECUTIVE SUMMARY
-┌─────────────────┐     ┌─────────────────┐
-│ chris-architect │ ──▶ │ Final report    │ ──▶ USER
-│                 │     │ to stakeholder  │
-└─────────────────┘     └─────────────────┘
-```
+**Process**: Full 9-phase workflow (detailed below)
 
 ---
 
-## ISSUE MANAGEMENT
+## Simple Workflow Process
 
-**Three Main Sources of Issues:**
+**Steps:**
+1. **Agent** implements changes
+2. **max-devops** validates build and tests
+3. **patrick-auditor** reviews for quality/security
+4. **Iterate** until all findings resolved
+5. **max-devops** cleanup and completion
 
-1. **FEATURE PLANNING Issues**
-   - Created by chris-architect during Feature Planning workflow with user
-   - Strategic user requirements translated into actionable development tasks
-   - Source: User goals → chris-architect analysis → GitHub issues
+**Batch Behavior:**
+- **Single Issue** (default): Complete one issue → stop
+- **Batch Mode**: Continue automatically until all issues resolved
 
-2. **REVIEW & TESTING Process Issues**
-   - Created during Feature Development workflow (Phase 6b-7) when findings require >30min work
-   - Discovered by max/patrick/vicky/chris during technical validation and review phases
-   - Source: Review findings → GitHub issues (scope creep prevention)
+## Complex Workflow Process
 
-3. **PLAYTEST WORKFLOW Issues** 
-   - Created during comprehensive system audit by all agents
-   - Defects and improvements discovered through thorough system exploration
-   - Source: max/vicky/patrick/chris audit findings → GitHub issues (various severity levels)
-   - Generated when all PRs/issues are typically closed (clean slate audit state)
+**Key Principle**: Never start new work when existing work is unfinished
 
----
+### 9-Phase Development Process
 
-## CORE PRINCIPLES
+**Phase 1-2: Planning & Prioritization**
+1. **max-devops**: Repository assessment (PRs/issues/clean state)
+2. **chris-architect**: Issue selection and prioritization
 
-**Quality Manifesto:**
-- TDD, SOLID, KISS, SRP, DRY
-- MVP Focus: highest quality minimum viable product delivery
-- Zero shortcuts, zero cheating, resist feature creep and overengineering
-- 100% completion, no placeholders  
-- Non-shallow, non-tautological tests
-- Computational physics precision
+**Phase 3: Architecture Documentation**
+3. **chris-architect**: Reviews DESIGN.md, creates implementation plan
 
-**CODE STANDARDS**
-- 88 character limit, 4-space indentation
-- Self-documenting code, no commented dead code
-- Fortran: `typename_t` convention, empty associate blocks
+**Phase 4: RED Phase (Test-Driven Development)**
+4. **georg-test-engineer**: Writes failing tests (parallel with chris refinements)
 
-**WORKFLOW PRINCIPLES**
-- **Never start new work when existing work is unfinished**
-- max-devops handles repository state, chris-architect decides work priorities
-- Finish all PRs before starting new issues
+**Phase 5: Implementation + Documentation** *(Parallel Execution)*
+5. **sergei-perfectionist-coder**: Code + API documentation
+   **winny-technical-writer**: User documentation
 
-**WORKFLOW MODE CONFIGURATION**
+**Phase 6: Review & Validation**
+6a. **max-devops**: Technical validation (build/test/critical findings)
+6b. **Parallel Review** (only if 6a passes):
+   - **patrick-auditor**: Code quality + security + batch findings
+   - **vicky-acceptance-tester**: User acceptance + UX validation
+   - **chris-architect**: Architecture alignment
+   - **User** (if manual mode): Additional review
 
-**EXECUTION MODES**
-- **SINGLE ISSUE (DEFAULT)**: Complete one issue → Executive Summary → STOP
-- **BATCH MODE**: When user requests "solve all issues" → Continue until ALL issues resolved
-- **NO STOPPING RULE**: In batch mode, MUST persist through all issues without stopping
+**Phase 7: Refinement**
+7. **sergei + winny**: Address all feedback until reviewers satisfied
 
-**REVIEW MODES**
-- **AUTOMATIC REVIEW (DEFAULT)**: patrick, chris, vicky complete review autonomously
-- **MANUAL MODE**: When user says "manual mode" → User participates as fourth parallel reviewer
-- **WORKFLOW PAUSE**: In manual mode, workflow pauses in Phase 6b waiting for user approval
-- **FINDINGS HANDBACK**: User findings are handed back to appropriate agents same as other reviewers
-- **BATCH INTEGRATION**: User review findings included in comprehensive batch handoff
-- **INDEPENDENT OPERATION**: Manual mode works with both single issue and batch modes
+**Phase 8: Integration**
+8. **max-devops**: CI validation, PR merge, cleanup
 
-**COMMIT PROTOCOL** 
-- Conventional Commits: `<type>: <description>`
-- Imperative mood, no period, <72 chars
-- One logical change per commit
-- NO EMOJIS, NO ROBOT SIGNATURES - clean, precise commits only
-
-**DEFINITION OF DONE**
-- All tests pass with meaningful coverage
-- CI green, zero build artifacts
-- Documentation updated atomically
-- All reviewers approve (zero critical findings, major/minor addressed or filed as issues)
+**Phase 9: Completion**
+9. **chris-architect**: Executive summary report to user
 
 ---
 
-## SYSTEM REFERENCES
+## Issue Sources & Management
 
-**Documentation**: [Claude Code Docs](https://docs.anthropic.com/en/docs/claude-code/common-workflows)  
-**Configuration**: See `CLAUDE.md` for complete workflow specifications  
-**Architecture**: System design patterns in `DESIGN.md`  
-**Prompts**: See `PROMPTS.md` for original workflow prompts
+**Issues come from three sources:**
 
+| Source | When Created | Purpose |
+|--------|--------------|---------|
+| **Feature Planning** | User requirements with chris-architect | Strategic development tasks |
+| **Review Findings** | During Phase 6-7 when fixes need >30min | Prevent scope creep |
+| **Playtest Audit** | System-wide testing on clean repository | Comprehensive bug backlog |
+
+**Management Principles:**
+- **Fix Now (<30min) or File Issue**: Critical findings fixed immediately, others become issues
+- **Labels**: [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS], [SECURITY]
+- **chris-architect owns**: Issue lifecycle, triage, prioritization, closure decisions
 
 ---
+
+## Core Principles
+
+### Quality Standards
+- **TDD Workflow**: Test-driven development with meaningful coverage
+- **MVP Focus**: Highest quality minimum viable product delivery
+- **Zero Shortcuts**: 100% completion, no placeholders or stubs
+- **Code Quality**: SOLID, KISS, SRP, DRY principles
+- **Precision**: Computational physics-level accuracy
+
+### Code Standards
+- **Style**: 88 char limit, 4-space indent, self-documenting
+- **Commits**: Conventional format, imperative mood, <72 chars
+- **Fortran**: `typename_t` convention, empty associate blocks
+
+### Workflow Modes
+
+| Mode | Trigger | Behavior |
+|------|---------|----------|
+| **Single Issue** (default) | Standard operation | Complete one issue → stop |
+| **Batch Mode** | User says "solve all issues" | Continue until ALL issues resolved |
+| **Manual Mode** | User says "manual mode" | User participates as reviewer in Phase 6b |
+
+### Definition of Done
+✅ All tests pass with meaningful coverage  
+✅ CI green, zero build artifacts  
+✅ Documentation updated atomically  
+✅ All reviewers approve (critical findings fixed)  
+
+---
+
+## References
+
+| Resource | Description |
+|----------|-------------|
+| [Claude Code Docs](https://docs.anthropic.com/en/docs/claude-code/common-workflows) | Official documentation |
+| `CLAUDE.md` | Complete workflow specifications |
+| `DESIGN.md` | System architecture and design patterns |
+| `PROMPTS.md` | Original agent workflow prompts |
+
+---
+
+*Claude Multi-Agent Development System - Structured TDD workflow for quality-first development*
