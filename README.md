@@ -210,23 +210,23 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 
 ### Simple Workflow Flow
 ```
-┌─────────────┐    ┌──────────────┐    ┌─────────────┐
-│   Agent     │───▶│ max-devops   │───▶│  patrick    │
-│ implements  │    │  validates   │    │  reviews    │
-└─────────────┘    └──────────────┘    └─────────────┘
-                            │                   │
-                            ▼                   ▼
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Agent     │───▶│ max-devops  │───▶│  patrick    │
+│ implements  │    │ validates   │    │  reviews    │
+└─────────────┘    └─────────────┘    └─────────────┘
+                           │                   │
+                           ▼                   ▼
                    ┌─────────────────┐  ┌─────────────┐
                    │  Build fails?   │  │ Findings?   │
-                   │  ──────────────▶│  │ ──────────▶ │
-                   │  Back to Agent  │  │ Fix & retry │
+                   │ ──────────────▶ │  │ ──────────▶ │
+                   │ Back to Agent   │  │ Fix & retry │
                    └─────────────────┘  └─────────────┘
-                            │                   │
-                          PASS                CLEAN
-                            ▼                   ▼
+                           │                   │
+                         PASS                CLEAN
+                           ▼                   ▼
                    ┌─────────────────┐  ┌─────────────┐
                    │   max-devops    │◄─│    DONE     │
-                   │    cleanup      │  │             │
+                   │   cleanup       │  │             │
                    └─────────────────┘  └─────────────┘
 ```
 
@@ -241,7 +241,7 @@ Phase 1-2: Planning
 Phase 3-4: Design & Tests  
 ┌─────────────┐    ┌─────────────┐
 │    chris    │───▶│    georg    │
-│ architecture│    │ writes tests│
+│architecture │    │writes tests │
 └─────────────┘    └─────────────┘
 
 Phase 5: Implementation (Parallel)
@@ -255,9 +255,9 @@ Phase 6a: Technical Validation
 │ max-devops  │───▶│  Critical   │
 │build & test │    │ findings?   │
 └─────────────┘    └─────────────┘
-                            │
-                         YES│NO
-                            ▼
+                           │
+                        YES│NO
+                           ▼
                    ┌─────────────┐
                    │Continue to  │
                    │Phase 6b     │
