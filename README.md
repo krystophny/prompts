@@ -206,4 +206,101 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 
 ---
 
+## Visual Workflow Guides
+
+### Simple Workflow Flow
+```
+┌─────────────┐    ┌──────────────┐    ┌─────────────┐
+│   Agent     │───▶│ max-devops   │───▶│  patrick    │
+│ implements  │    │  validates   │    │  reviews    │
+└─────────────┘    └──────────────┘    └─────────────┘
+                            │                   │
+                            ▼                   ▼
+                   ┌─────────────────┐  ┌─────────────┐
+                   │  Build fails?   │  │ Findings?   │
+                   │  ──────────────▶│  │ ──────────▶ │
+                   │  Back to Agent  │  │ Fix & retry │
+                   └─────────────────┘  └─────────────┘
+                            │                   │
+                          PASS                CLEAN
+                            ▼                   ▼
+                   ┌─────────────────┐  ┌─────────────┐
+                   │   max-devops    │◄─│    DONE     │
+                   │    cleanup      │  │             │
+                   └─────────────────┘  └─────────────┘
+```
+
+### Complex Workflow Flow
+```
+Phase 1-2: Planning
+┌─────────────┐    ┌─────────────┐
+│ max-devops  │───▶│    chris    │
+│ repo check  │    │ prioritizes │
+└─────────────┘    └─────────────┘
+
+Phase 3-4: Design & Tests  
+┌─────────────┐    ┌─────────────┐
+│    chris    │───▶│    georg    │
+│ architecture│    │ writes tests│
+└─────────────┘    └─────────────┘
+
+Phase 5: Implementation (Parallel)
+┌─────────────┐    ┌─────────────┐
+│   sergei    │    │    winny    │
+│    code     │    │    docs     │
+└─────────────┘    └─────────────┘
+
+Phase 6a: Technical Validation
+┌─────────────┐    ┌─────────────┐
+│ max-devops  │───▶│  Critical   │
+│build & test │    │ findings?   │
+└─────────────┘    └─────────────┘
+                            │
+                         YES│NO
+                            ▼
+                   ┌─────────────┐
+                   │Continue to  │
+                   │Phase 6b     │
+                   └─────────────┘
+
+Phase 6b: Parallel Review
+┌─────────────┐  ┌─────────────┐  ┌─────────────┐
+│   patrick   │  │    vicky    │  │    chris    │
+│code quality │  │  UAT & UX   │  │architecture │
+└─────────────┘  └─────────────┘  └─────────────┘
+       │                │                │
+       └────────────────┼────────────────┘
+                        ▼
+                ┌─────────────┐
+                │ All approve │
+                │     ?       │
+                └─────────────┘
+
+Phase 7-9: Completion
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│sergei+winny │───▶│ max-devops  │───▶│    chris    │
+│ refinements │    │integration  │    │  summary    │
+└─────────────┘    └─────────────┘    └─────────────┘
+```
+
+### Workflow Decision Tree
+```
+START: New Task
+        │
+        ▼
+┌─────────────────┐
+│ Simple Workflow │ ◄─── ALL criteria met:
+│ Criteria Check  │      • Single file
+└─────────────────┘      • No API changes
+        │                • No dependencies  
+      YES│NO              • <2 hours
+        ▼                
+┌─────────────────┐      ┌─────────────────┐
+│ Simple Workflow │      │ Complex Workflow│
+│ 3 steps         │      │ 9 phases        │
+└─────────────────┘      └─────────────────┘
+```
+
+---
+
 *Claude Multi-Agent Development System - Structured TDD workflow for quality-first development*
