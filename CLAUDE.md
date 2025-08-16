@@ -55,6 +55,10 @@ Use this **decision tree** to choose the appropriate workflow:
 - ✅ Estimated <2 hours work
 → **Simple Workflow**: Agent → max-devops build validation → patrick-auditor review → fixes → max-devops cleanup
 
+**Simple Workflow Batch Mode:**
+- **SINGLE ISSUE MODE (DEFAULT)**: Complete one simple issue → STOP
+- **BATCH MODE (USER REQUESTS)**: After simple issue completion → return to STEP 1 (max-devops repository assessment) → continue until zero open issues remain
+
 **Complex Workflow Triggers (ANY triggers full workflow):**
 - ❌ Multiple files affected
 - ❌ API/interface changes required  
@@ -101,7 +105,9 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 - **NO DESIGN UPDATES**: Cannot update DESIGN.md except in review phase for >30min findings
 - **NO AUTONOMOUS CHANGES**: All updates require either review phase findings or return to FEATURE PLANNING
 
-**BATCH ISSUE RESOLUTION PROTOCOL:**
+**WORKFLOW MODE CONFIGURATION:**
+
+**EXECUTION MODES:**
 - **SINGLE ISSUE MODE (DEFAULT)**: Complete full workflow for one issue → Executive Summary → STOP
 - **BATCH MODE (USER REQUESTS)**: When user explicitly asks to "solve all open issues" or "fix all issues":
   - **MANDATORY**: Apply workflow repeatedly until ALL issues are resolved
@@ -109,6 +115,16 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
   - **WORKFLOW CONTINUATION**: After each issue completion, immediately return to STEP 1 (max-devops repository assessment) 
   - **FINAL SUMMARY ONLY**: Executive Summary delivered only after ALL issues are completed
   - **PERSISTENCE REQUIRED**: Must not stop until all issues are fixed - no exceptions
+
+**REVIEW MODES:**
+- **AUTOMATIC REVIEW (DEFAULT)**: patrick, chris, vicky complete review autonomously
+- **MANUAL MODE (USER REQUESTS)**: When user says "manual mode" or "let the team work in manual mode":
+  - **USER AS FOURTH REVIEWER**: User participates as additional parallel reviewer in Phase 6b
+  - **WORKFLOW PAUSE**: Workflow pauses after patrick/chris/vicky complete review, waits for user input
+  - **USER APPROVAL REQUIRED**: Progression requires user approval alongside all other reviewers
+  - **FINDINGS HANDBACK**: User findings are handed back to appropriate agents (sergei/winny) same as other reviewers
+  - **BATCH INTEGRATION**: User review findings included in comprehensive batch handoff alongside patrick's findings
+  - **INDEPENDENT OF BATCH MODE**: Manual mode works in both single issue and batch modes
 3. **Architecture Documentation**: chris-architect updates DESIGN.md and creates detailed implementation plan
 4. **RED Phase**: georg-test-engineer writes failing tests (parallel: chris-architect refines details)
    - **COMMIT**: max-devops commits test suite after georg completes
@@ -128,9 +144,12 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
    - patrick-auditor: deep code quality analysis + security review + API/developer documentation verification + batches max's non-blocking findings into comprehensive review
    - chris-architect: architecture alignment review using max's clean build data
    - vicky-acceptance-tester: user acceptance testing + user documentation validation using max's clean build
+   - **MANUAL MODE**: If user requests "manual mode", workflow pauses here for user review as fourth parallel reviewer
    - **If vicky finds user documentation issues**: Hand back directly to winny-technical-writer for fixes
+   - **If user finds issues in MANUAL mode**: Hand back issues to appropriate agents (sergei for code, winny for docs, etc.) same as other reviewers
    - **Batch Review Protocol**: patrick creates comprehensive issue list combining max's non-blocking findings with own review findings for single batch handoff to sergei/winny
-   - **COMMIT**: max-devops commits review feedback fixes after ALL THREE reviewers approve
+   - **User findings integration**: User review findings are included in the comprehensive batch handoff alongside patrick's findings
+   - **COMMIT**: max-devops commits review feedback fixes after ALL reviewers approve (including user in MANUAL mode)
 7. **Refinement**: sergei-perfectionist-coder addresses comprehensive feedback batch from patrick, winny-technical-writer addresses documentation feedback from vicky, until all reviewers satisfied
    - **COMMIT**: max-devops commits each refinement cycle
 8. **Integration**: max-devops-engineer waits for CI to pass, autonomously fixes any CI failures, merges PR (squash if needed), validates final repository cleanliness, and cleans up

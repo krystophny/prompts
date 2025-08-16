@@ -156,6 +156,19 @@ Full 9-phase workflow below
                         ┌─────────┐                  │
                         │  DONE   │                  │
                         └─────────┘                  │
+                             │                       │
+                             ▼                       │
+                   ┌─────────────────┐               │
+                   │ BATCH MODE?     │               │
+                   └─────────────────┘               │
+                             │                       │
+                           YES │                     │
+                             ▼                       │
+                   ┌─────────────────┐               │
+                   │ RETURN TO       │               │
+                   │ STEP 1 (max)    │               │
+                   │ FOR NEXT ISSUE  │               │
+                   └─────────────────┘               │
                                                      │
                         ┌────────────────────────────┘
                         │
@@ -165,6 +178,10 @@ Full 9-phase workflow below
                    │ FINDINGS FIXED  │
                    └─────────────────┘
 ```
+
+**Simple Workflow Batch Mode:**
+- **SINGLE ISSUE MODE (DEFAULT)**: Complete one simple issue → STOP
+- **BATCH MODE (USER REQUESTS)**: After simple issue completion → return to STEP 1 (max-devops repository assessment) → continue until zero open issues remain
 
 ### FEATURE DEVELOPMENT (Complex)
 *Multi-file, >2 hours, architecture impact*
@@ -253,7 +270,20 @@ Phase 6b: PARALLEL REVIEW (Only if 6a = ZERO CRITICAL findings)
                                 │
                                 ▼
                         ┌─────────────────┐
+                        │ MANUAL MODE?    │
+                        └─────────────────┘
+                                │
+                              YES │
+                                ▼
+                        ┌─────────────────┐
+                        │ WAIT FOR USER   │
+                        │ REVIEW INPUT    │
+                        └─────────────────┘
+                                │
+                                ▼
+                        ┌─────────────────┐
                         │ ALL APPROVE? ──▶│ COMMIT
+                        │ (incl. user)    │
                         └─────────────────┘
 
 Phase 7: REFINEMENT
@@ -320,10 +350,20 @@ Phase 9: EXECUTIVE SUMMARY
 - max-devops handles repository state, chris-architect decides work priorities
 - Finish all PRs before starting new issues
 
-**BATCH RESOLUTION MODES**
+**WORKFLOW MODE CONFIGURATION**
+
+**EXECUTION MODES**
 - **SINGLE ISSUE (DEFAULT)**: Complete one issue → Executive Summary → STOP
 - **BATCH MODE**: When user requests "solve all issues" → Continue until ALL issues resolved
 - **NO STOPPING RULE**: In batch mode, MUST persist through all issues without stopping
+
+**REVIEW MODES**
+- **AUTOMATIC REVIEW (DEFAULT)**: patrick, chris, vicky complete review autonomously
+- **MANUAL MODE**: When user says "manual mode" → User participates as fourth parallel reviewer
+- **WORKFLOW PAUSE**: In manual mode, workflow pauses in Phase 6b waiting for user approval
+- **FINDINGS HANDBACK**: User findings are handed back to appropriate agents same as other reviewers
+- **BATCH INTEGRATION**: User review findings included in comprehensive batch handoff
+- **INDEPENDENT OPERATION**: Manual mode works with both single issue and batch modes
 
 **COMMIT PROTOCOL** 
 - Conventional Commits: `<type>: <description>`
