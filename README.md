@@ -38,9 +38,14 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ### Playtest Workflow
 *Comprehensive system audit*
 
-- **Purpose**: Discover bugs and improvements through thorough testing
+```
+Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Issue Backlog
+```
+
+- **Purpose**: Discover defects and improvements through exhaustive system exploration
 - **Trigger**: Automatically initiated when repository is clean (no PRs/issues)
-- **Result**: Comprehensive bug backlog for future development
+- **Process**: Serial audit by all agents to build comprehensive bug backlog
+- **Result**: GitHub issues labeled by severity for future development
 
 ---
 
@@ -109,7 +114,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 
 **Batch Behavior:**
 - **Single Issue** (default): Complete one issue → stop
-- **Batch Mode**: Continue automatically until all issues resolved
+- **Batch Mode**: Continue automatically until ALL issues resolved
 
 ## Complex Workflow Process
 
@@ -181,7 +186,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 |------|---------|----------|
 | **Single Issue** (default) | Standard operation | Complete one issue → stop |
 | **Batch Mode** | User says "solve all issues" | Continue until ALL issues resolved |
-| **Manual Mode** | User says "manual mode" | User participates as reviewer in Phase 6b |
+| **Manual Mode** | User says "manual mode" | User participates as reviewer in workflow |
 
 ### Definition of Done
 ✅ All tests pass with meaningful coverage  
@@ -199,6 +204,80 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 | `CLAUDE.md` | Complete workflow specifications |
 | `DESIGN.md` | System architecture and design patterns |
 | `PROMPTS.md` | Original agent workflow prompts |
+
+---
+
+## Playtest Workflow Process
+
+**When Triggered**: Repository is clean (zero PRs, zero issues)
+
+**Example Trigger**:
+```bash
+$ gh pr list
+# No open pull requests
+
+$ gh issue list  
+# No open issues
+
+# → Playtest Workflow automatically initiates
+```
+
+**Serial Audit Steps**:
+1. **max-devops-engineer**: Repository health check, build validation, CI verification
+2. **patrick-auditor**: Security audit, code quality review, technical debt identification  
+3. **vicky-acceptance-tester**: Exhaustive user testing, stress testing, edge case exploration
+4. **chris-architect**: Architecture review, design consistency validation, strategic assessment
+5. **All agents**: File issues for discovered defects at appropriate severity levels
+6. **max-devops-engineer**: Ensure all findings documented as GitHub issues
+
+**Issue Labels Created**:
+- `[CRITICAL]` - System-breaking issues requiring immediate attention
+- `[IMPROVEMENT]` - Enhancement opportunities  
+- `[TECHNICAL-DEBT]` - Code quality and maintainability issues
+- `[UX]` - User experience improvements
+- `[DOCS]` - Documentation gaps or errors
+- `[SECURITY]` - Security vulnerabilities or hardening opportunities
+
+**Completion Modes**:
+- **Single Mode** (default): After playtest → chris-architect Executive Summary → STOP
+- **Batch Mode**: After playtest → immediately continue resolving ALL discovered issues
+
+---
+
+## Batch Mode Behavior
+
+**Activation**: User explicitly requests `"solve all open issues"` or `"fix all issues"`
+
+**Example Usage**:
+```bash
+# User says: "solve all open issues"
+# → Triggers batch mode for ALL workflows
+```
+
+**Batch Mode Logic**:
+
+1. **Workflow Continuation**: After completing ANY issue → return to STEP 1 (max-devops assessment)
+2. **No Stopping**: Continue workflow cycles until zero open issues remain  
+3. **Final Summary Only**: Executive Summary delivered only after ALL issues completed
+4. **Persistence Required**: Must not stop until all issues fixed - no exceptions
+
+**Works With All Workflows**:
+- **Simple Workflow Batch**: Complete simple issue → assess repository → continue if issues remain
+- **Complex Workflow Batch**: Complete complex issue → assess repository → continue if issues remain  
+- **Playtest + Batch**: Clean repository triggers playtest → creates issues → immediately resolves ALL issues
+
+**Batch Mode Flow**:
+```
+Start → Complete Issue → Repository Assessment → Issues Remain? 
+  ▲                                                      │
+  │                                                   YES│NO
+  │                                                      │
+  └────────── Continue Workflow Cycle ◄─────────────────┘
+                                                         │
+                                                        NO
+                                                         ▼
+                                               Executive Summary
+```
 
 ---
 
@@ -300,22 +379,152 @@ Phase 7: Completion (Combined)
 └─────────────┘    └─────────────┘
 ```
 
+### Playtest Workflow Flow
+```
+Repository State Check
+        │
+        ▼
+┌─────────────────────────────┐
+│ Clean Repository?           │
+│ • Zero PRs                  │ 
+│ • Zero Issues               │
+└─────────────────────────────┘
+        │
+      YES│NO
+        │
+        ▼                     
+┌─────────────────────────────┐
+│    PLAYTEST WORKFLOW        │
+│       (Automatic)           │
+└─────────────────────────────┘
+        │
+        ▼
+┌─────────────────────────────┐
+│ Serial Audit Process:       │
+│ 1. max: Build/CI health     │
+│ 2. patrick: Security/Quality │ 
+│ 3. vicky: User Testing      │
+│ 4. chris: Architecture      │
+└─────────────────────────────┘
+        │
+        ▼
+┌─────────────────────────────┐
+│ All Agents:                 │
+│ File Issues by Severity     │
+│ [CRITICAL][IMPROVEMENT]     │
+│ [TECHNICAL-DEBT][UX]        │
+│ [DOCS][SECURITY]            │
+└─────────────────────────────┘
+        │
+        ▼
+┌─────────────────────────────┐
+│       Batch Mode?           │
+│        YES│NO               │
+└─────────────────────────────┘
+             │
+        ┌────▼─────┐         ┌──────────────────┐
+        │ Continue │         │ Executive Summary│
+        │ Workflow │         │     & STOP       │
+        │  Cycles  │         └──────────────────┘
+        └──────────┘
+```
+
+### Batch Mode Flow
+```
+Batch Mode Trigger: "solve all issues"
+        │
+        ▼
+┌─────────────────────────────┐
+│    Repository Assessment    │
+│    (max-devops check)       │
+└─────────────────────────────┘
+        │
+        ▼
+┌─────────────────────────────┐
+│     Issues Exist?           │
+│        YES│NO               │
+└─────────────────────────────┘
+             │
+        ┌────▼─────┐         ┌──────────────────┐
+        │ Execute  │         │ Final Executive  │
+        │Workflow  │         │ Summary & STOP   │
+        │for Issue │         └──────────────────┘
+        └────┬─────┘                   ▲
+             │                         │
+             ▼                         │
+┌─────────────────────────────┐        │
+│    Issue Completed          │        │
+│    Return to Assessment     │────────┘
+│    (Workflow Continuation)  │     NO
+└─────────────────────────────┘
+             │
+             ▼
+┌─────────────────────────────┐
+│   More Issues Remain?       │
+│        YES│NO               │
+└─────────────────────────────┘
+             │
+            YES
+             │
+             └──────────────────┐
+                                │
+                                ▼
+        ┌─────────────────────────────┐
+        │    Continue Cycle           │
+        │    (MANDATORY until         │
+        │     ALL issues resolved)    │
+        └─────────────────────────────┘
+```
+
 ### Workflow Decision Tree
 ```
-START: New Task
+START: Repository State
         │
         ▼
 ┌─────────────────┐
-│ Simple Workflow │ ◄─── ALL criteria met:
-│ Criteria Check  │      • Single file
-└─────────────────┘      • No API changes
-        │                • No dependencies  
-      YES│NO              • <2 hours
-        ▼                
-┌─────────────────┐      ┌─────────────────┐
-│ Simple Workflow │      │ Complex Workflow│
-│ 6 steps         │      │ 7 phases        │
-└─────────────────┘      └─────────────────┘
+│ max Assessment  │
+│ • PRs exist?    │
+│ • Issues exist? │
+│ • Clean slate?  │
+└─────────────────┘
+        │
+    ┌───▼────────────────────────┐
+    │                            │
+    ▼            ▼               ▼
+┌─────────┐ ┌─────────┐ ┌──────────────┐
+│Continue │ │ Issue   │ │   PLAYTEST   │
+│Existing │ │Selection│ │   WORKFLOW   │
+│   PR    │ │& Branch │ │  (Automatic) │
+└─────────┘ └─────────┘ └──────────────┘
+                 │              │
+                 ▼              ▼
+        ┌─────────────────┐ ┌─────────────┐
+        │ Simple Workflow │ │ Issue       │
+        │ Criteria Check  │ │ Creation    │
+        └─────────────────┘ └─────────────┘
+                 │              │
+               YES│NO            │
+                 ▼              │
+        ┌─────────────────┐     │
+        │ Simple Workflow │     │
+        │ 6 steps         │     │
+        └─────────────────┘     │
+                 │              │
+                 │         ┌────▼────┐
+                 │         │ Batch   │
+                 │         │ Mode?   │
+                 │         └────┬────┘
+                 │              │
+                 │           YES│NO
+                 │              │
+                 └──────────────┼─────────────────┐
+                                │                 │
+                                ▼                 ▼
+                       ┌─────────────────┐ ┌─────────────┐
+                       │ Complex Workflow│ │  Single     │
+                       │ 7 phases        │ │  Task &     │
+                       └─────────────────┘ │  STOP       │
+                                           └─────────────┘
 ```
 
 ---
