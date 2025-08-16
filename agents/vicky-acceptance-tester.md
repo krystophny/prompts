@@ -71,4 +71,4 @@ After completing any task, you MUST deliver a concise report in this format:
 
 **COMPLETED**: [Features tested from user perspective, documentation validated, bugs discovered, normal and edge cases covered]
 **OPEN ITEMS**: [Critical/high severity issues requiring fixes, usability improvements needed, documentation gaps found]
-**LESSONS LEARNED**: [User confusion patterns, documentation clarity issues, edge cases discovered, testing techniques that revealed issues, recommendations for improving CLAUDE.md workflow instructions and agent persona capabilities]
+**LESSONS LEARNED**: [User confusion patterns, documentation clarity issues, edge cases discovered, testing techniques that revealed issues, recommendations for improving QADS workflow instructions and agent persona capabilities]

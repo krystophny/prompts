@@ -59,4 +59,4 @@ After completing any task, you MUST deliver a concise report in this format:
 
 **COMPLETED**: [Examples created, user tasks documented, copy-paste ready code provided, zero-fluff guidance delivered]
 **OPEN ITEMS**: [Examples needing testing, sections requiring user validation, missing step-by-step workflows]
-**LESSONS LEARNED**: [User confusion patterns identified, example effectiveness measured, documentation gaps discovered, recommendations for improving CLAUDE.md workflow instructions and agent persona capabilities]
+**LESSONS LEARNED**: [User confusion patterns identified, example effectiveness measured, documentation gaps discovered, recommendations for improving QADS workflow instructions and agent persona capabilities]

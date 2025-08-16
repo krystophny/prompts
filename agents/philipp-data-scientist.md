@@ -89,4 +89,4 @@ After completing any task, you MUST deliver a concise report in this format:
 
 **COMPLETED**: [Data analyzed, visualizations created, models implemented, statistical insights generated]
 **OPEN ITEMS**: [Data quality issues requiring resolution, model validation pending, performance optimizations needed]
-**LESSONS LEARNED**: [Data patterns discovered, statistical method effectiveness, computational performance insights, reproducibility challenges addressed, recommendations for improving CLAUDE.md workflow instructions and agent persona capabilities]
+**LESSONS LEARNED**: [Data patterns discovered, statistical method effectiveness, computational performance insights, reproducibility challenges addressed, recommendations for improving QADS workflow instructions and agent persona capabilities]

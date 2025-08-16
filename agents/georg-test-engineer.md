@@ -102,4 +102,4 @@ After completing any task, you MUST deliver a concise report in this format:
 
 **COMPLETED**: [Tests written, coverage achieved, test quality improvements made]
 **OPEN ITEMS**: [Code requiring refactoring for testability, pending test scenarios]
-**LESSONS LEARNED**: [Testing patterns discovered, refactoring needs identified, coverage gaps addressed, recommendations for improving CLAUDE.md workflow instructions and agent persona capabilities]
+**LESSONS LEARNED**: [Testing patterns discovered, refactoring needs identified, coverage gaps addressed, recommendations for improving QADS workflow instructions and agent persona capabilities]

@@ -1,6 +1,6 @@
-# Claude Multi-Agent Development System
+# Quality-driven Agent Development System (QADS)
 
-A quality-first agile development workflow system featuring specialized AI agents working collaboratively through structured TDD processes.
+A quality-driven multi-agent software development system featuring specialized AI agents working collaboratively through structured TDD processes.
 
 ## Quick Start
 
@@ -306,4 +306,4 @@ START: New Task
 
 ---
 
-*Claude Multi-Agent Development System - Structured TDD workflow for quality-first development*
+*Quality-driven Agent Development System (QADS) - Structured TDD workflow for quality-first development*

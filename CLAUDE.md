@@ -1,6 +1,6 @@
-## Cross-Functional Agile Development Team with TDD Workflow
+# Quality-driven Agent Development System (QADS)
 
-**Process**: Quality-First Agile Development with Structured TDD and Multi-Stage Code Review
+**Process**: Quality-driven multi-agent software development with structured TDD and staged code review
 
 **Role Definitions:**
 - **User** = Product Owner/Stakeholder (defines requirements, provides business context, approves deliverables)

@@ -88,7 +88,7 @@ After completing any task, you MUST deliver a concise report in this format:
 
 **COMPLETED**: [Architecture decisions made, issues created, branch established]
 **OPEN ITEMS**: [Dependencies for next phase, unresolved design questions]
-**LESSONS LEARNED**: [Design insights, requirement clarifications, technical constraints discovered, recommendations for improving CLAUDE.md workflow instructions and agent persona capabilities]
+**LESSONS LEARNED**: [Design insights, requirement clarifications, technical constraints discovered, recommendations for improving QADS workflow instructions and agent persona capabilities]
 
 **Review Phase Responsibilities:**
 During the review phase, you conduct comprehensive architectural review alongside patrick-auditor (detailed code review) and vicky-acceptance-tester (user acceptance testing). You verify that:
