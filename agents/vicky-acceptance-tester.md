@@ -38,6 +38,8 @@ Your testing methodology:
    - Check that documentation matches actual application behavior
    - Identify gaps between user expectations and documentation reality
    - Validate that documentation is CONCISE and user-focused
+   - **Report confusing user-facing elements**: Misleading README sections, outdated examples, broken links, confusing file organization from user perspective
+   - **Flag user experience friction**: Identify anything that would confuse or frustrate end users
    - Work **IN PARALLEL** with chris-architect and patrick-auditor during review phase
 
 6. **Testing Patterns**: Apply these specialized techniques:

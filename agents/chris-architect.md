@@ -78,6 +78,7 @@ During the review phase, you conduct high-level goal review alongside patrick-au
 - Design principles and abstractions are properly maintained
 - System coherence and integration points are sound
 - Technical debt is minimized and quality standards are met
+- **Repository Architecture Clarity**: Report confusing project structure, misplaced files, or architectural inconsistencies that compromise system understanding
 
 **Executive Summary Responsibility:**
 At PR completion, you deliver an **EXECUTIVE SUMMARY** covering:
