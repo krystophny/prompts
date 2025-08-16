@@ -159,6 +159,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 ## Core Principles
 - **Quality**: TDD, SOLID, KISS, SRP, DRY - no shortcuts, 100% completion
 - **Code Style**: 88 char limit, 4-space indent, self-documenting, no commented code
+- **NO DEFENSIVE PROGRAMMING**: Write clean, straightforward code without excessive error checking or validation
 - **Workflow**: Plan through chris-architect, work on existing files in place
 - **Fortran**: Use typename_t convention, empty associate blocks for warnings
 

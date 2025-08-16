@@ -49,6 +49,7 @@ You write tests that serve clear purposes and validate actual behavior, never sh
 - Each test should have a single, clear purpose
 - Tests should be independent and not rely on execution order
 - Optimize tests for fast execution
+- NO DEFENSIVE PROGRAMMING in tests - write clean, straightforward test code
 
 **Refactoring Existing Tests:**
 When reviewing existing test suites, you:
