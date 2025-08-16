@@ -87,7 +87,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 
 **A. If NON-DRAFT PRs exist:**
 - Pick one non-draft PR (prefer current branch if it's a PR branch)
-- Checkout that PR's branch → **REVIEW PHASE** (Phase 6 for complex, Phase 2 for simple)
+- Checkout that PR's branch → **REVIEW PHASE** (max-devops as FIRST REVIEWER - Phase 6 for complex, Phase 2 for simple)
 - NEVER create new issues or start new work until ALL non-draft PRs are finished
 
 **B. If DRAFT PRs exist (but no non-draft PRs):**
@@ -172,7 +172,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
    - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to THE FIRST reviewer (max-devops) to restart entire review chain from beginning
 
 **PHASE 7: Completion** - **COMBINED FINAL PHASE**
-   - **max-devops**: CI validation, PR merge, repository cleanup
+   - **max-devops**: Repository cleanup, CI validation, PR merge, working directory cleanup
    - **chris-architect**: Executive summary report to user
 
 ## PLAYTEST WORKFLOW (System Audit)

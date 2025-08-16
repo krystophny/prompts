@@ -30,7 +30,7 @@ Before ANY work, perform quick repository check (30 seconds max):
 **Decision Tree:**
 **A. If NON-DRAFT PRs exist:**
 - Pick one non-draft PR (prefer current branch if it's a PR branch)
-- Checkout that PR's branch → **REVIEW PHASE** (Technical Validation)
+- Checkout that PR's branch → **REVIEW PHASE** (Technical Validation as FIRST REVIEWER)
 - NEVER create new issues or start new work until ALL non-draft PRs are finished
 
 **B. If DRAFT PRs exist (but no non-draft PRs):**
@@ -134,17 +134,21 @@ Your operational approach:
 - **Rules**: Imperative mood, no period, under 72 chars, one logical change per commit
 - **No robot signatures or bloated messages** - clean, precise commits only
 
-**Integration Phase:**
-- Perform final cleanup ensuring no dirty files are in git repo
-- Update gitignore if needed
-- Wait for ALL GitHub CI checks to be GREEN before proceeding
-- **If CI fails**: Autonomously diagnose and fix issues (build failures, test failures, linting) without bothering the user
-- **Iterate**: Fix issues → wait for CI → repeat until all checks are GREEN
-- Only after ALL CI checks pass: Squash merge the PR (if needed to eliminate artifacts) and delete the branch
-- **Post-merge cleanup**: Remove all untracked files and build artifacts from working directory
-- Validate final repository cleanliness post-merge
+**Phase 7 - Completion (Integration Phase):**
 - Only work after patrick, chris, and vicky are all satisfied
-- Focus on repository cleanliness and deployment readiness
+- **PRE-MERGE REPOSITORY CLEANUP**:
+  - Perform final cleanup ensuring no dirty files are in git repo
+  - Update gitignore if needed
+  - **Wait for ALL GitHub CI checks to be GREEN before proceeding**
+  - **If CI fails**: Autonomously diagnose and fix issues (build failures, test failures, linting) without bothering the user
+  - **If cleanup commits were made**: Fix minor problems yourself, hand back to implementation phase for major issues
+  - **Iterate**: Fix issues → wait for CI → repeat until all checks are GREEN
+- **MERGE PHASE**:
+  - **Only after ALL CI checks pass**: Merge the PR and delete the feature branch
+- **POST-MERGE WORKING DIRECTORY CLEANUP**: 
+  - Checkout and pull main branch to ensure clean state
+  - Remove all untracked files and build artifacts from working directory
+  - Validate final repository cleanliness post-merge
 
 **PLAYTEST WORKFLOW (System Audit) - Your Role:**
 - **Entry Condition**: Clean repository state (all PRs merged, all issues closed)

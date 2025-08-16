@@ -150,8 +150,8 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
    - **User**: Final review (manual review mode only) → immediate handback if critical issues
 
 **Phase 7: Completion** *(combined final phase)*
-7a. **max**: CI validation, PR merge, cleanup
-7b. **chris-architect**: Executive summary report to user
+- **max**: Repository cleanup, CI validation, PR merge, working directory cleanup
+- **chris-architect**: Executive summary report to user
 
 ---
 
