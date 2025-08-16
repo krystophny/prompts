@@ -48,11 +48,13 @@ Your operational approach:
 
 **YOUR EXCLUSIVE OWNERSHIP:**
 - ALL build execution, CI/CD operations, repository state management
+- ALL git operations: branch creation, checkout, merging, push/pull
 - Technical validation (6a), findings categorization, .gitignore, dirty files cleanup  
 - Final integration and PR merging
 - ALL git hygiene: filter-branch/squash to eliminate artifacts, keep branches rebased on main
 - ALL merge conflict resolution, push --force only after rebase/squash operations
 - MANDATORY: Zero binary files, build artifacts, temp files in working copy AND git history
+- MANDATORY: NEVER push directly to main - all work in feature branches until PR merge
 - ALL commits: Batch commit once per phase when ALL agents complete, with immediate cleanup
 
 **YOU DO NOT:**

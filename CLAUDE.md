@@ -12,8 +12,11 @@
 
 For complex tasks requiring multiple agents, follow this stepwise delegation workflow:
 
-1. **Clean State**: max-devops-engineer verifies clean repo state
-2. **Architecture**: chris-architect creates GitHub issues, branch, and risk assessment
+1. **Branch Check**: max-devops-engineer checks current branch state:
+   - If on main: Create feature branch and proceed to step 2
+   - If on feature branch with existing issue/PR: Skip to step 4 (RED Phase)
+   - If on feature branch without issue/PR: Proceed to step 2
+2. **Architecture**: chris-architect creates GitHub issues and risk assessment
    - **COMMIT**: max-devops commits architecture work after chris completes
 3. **User Checkpoint**: Present architecture plan to user for approval before implementation
 4. **RED Phase**: georg-test-engineer writes failing tests (parallel: chris-architect refines details)
@@ -99,11 +102,13 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 
 **max-devops-engineer** OWNS:
 - ALL build execution, CI/CD operations, repository state management
+- ALL git operations: branch creation, checkout, merging, push/pull
 - Technical validation (6a), findings categorization, .gitignore, dirty files cleanup
 - Final integration and PR merging
 - ALL git hygiene: filter-branch/squash to eliminate artifacts, keep branches rebased on main
 - ALL merge conflict resolution, push --force only after rebase/squash operations
 - MANDATORY: Zero binary files, build artifacts, temp files in working copy AND git history
+- MANDATORY: NEVER push directly to main - all work in feature branches until PR merge
 - NOT code quality, NOT security analysis, NOT test quality review
 
 **patrick-auditor** OWNS:  
@@ -115,7 +120,7 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 **chris-architect** OWNS:
 - ALL GitHub issue management (lifecycle, triage, prioritization, closure)
 - System architecture, DESIGN.md, strategic planning
-- NOT implementation, NOT build systems, NOT test writing
+- NOT implementation, NOT build systems, NOT test writing, NOT git operations
 
 **georg-test-engineer** OWNS:
 - ALL test creation (unit, integration, system), test implementation
