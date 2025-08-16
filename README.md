@@ -33,7 +33,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 
 - **Purpose**: Execute planned work through TDD workflow
 - **Authority**: chris-architect restricted to issue selection and prioritization
-- **Process**: 8-phase workflow from tests to delivery
+- **Process**: 7-phase workflow from tests to delivery
 
 ### Playtest Workflow
 *Comprehensive system audit*
@@ -92,7 +92,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ❌ Architecture impact  
 ❌ New features requiring documentation  
 
-**Process**: Full 8-phase workflow (detailed below)
+**Process**: Full 7-phase workflow (detailed below)
 
 ---
 
@@ -113,7 +113,7 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 
 **Key Principle**: Never start new work when existing work is unfinished
 
-### 8-Phase Development Process
+### 7-Phase Development Process
 
 **Phase 1-2: Planning & Prioritization**
 1. **max-devops**: Repository assessment (PRs/issues/clean state)
@@ -125,23 +125,20 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 **Phase 4: RED Phase (Test-Driven Development)**
 4. **georg-test-engineer**: Writes failing tests (parallel with chris refinements)
 
-**Phase 5: Implementation + Documentation** *(Serial Execution - docs first)*
-5a. **winny-technical-writer**: User documentation  
-5b. **sergei-perfectionist-coder**: Code + API documentation
+**Phase 5: Documentation → Implementation** *(Serial Execution - docs first)*
+5a. **winny-technical-writer**: User documentation (docs-first approach)
+5b. **sergei-perfectionist-coder**: Code + API documentation using winny's docs as guide
 
-**Phase 6: Review & Validation**
-6a. **max-devops**: Technical validation (build/test/critical findings)
-6b. **Serial Review** *(immediate handback for critical issues)*:
+**Phase 6: Serial Review Chain** *(fully serial execution)*:
+   - **max-devops**: Technical validation → immediate handback if critical issues
    - **patrick-auditor**: Code quality + security → immediate handback if critical issues
    - **vicky-acceptance-tester**: User acceptance + UX → immediate handback if critical issues
    - **User** (if manual mode): Additional review → immediate handback if critical issues
    - **chris-architect**: Architecture alignment → immediate handback if critical issues
 
-**Phase 7: Integration**
-7. **max-devops**: CI validation, PR merge, cleanup
-
-**Phase 8: Completion**
-8. **chris-architect**: Executive summary report to user
+**Phase 7: Completion** *(combined final phase)*
+7a. **max-devops**: CI validation, PR merge, cleanup
+7b. **chris-architect**: Executive summary report to user
 
 ---
 
@@ -228,57 +225,66 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ```
 
 ### Complex Workflow Flow
-*Note: Diagrams show parallel topology for clarity, but execution is currently serial*
+*Honest serial execution throughout*
 ```
-Phase 1-2: Planning
+Phase 1-2: Planning (Serial)
 ┌─────────────┐    ┌─────────────┐
 │ max-devops  │──▶│    chris    │
 │ repo check  │    │ prioritizes │
 └─────────────┘    └─────────────┘
 
-Phase 3-4: Design & Tests  
+Phase 3-4: Design & Tests (Serial)  
 ┌─────────────┐    ┌─────────────┐
 │    chris    │──▶│    georg    │
 │architecture │    │writes tests │
 └─────────────┘    └─────────────┘
 
-Phase 5: Implementation (Parallel)
+Phase 5: Docs → Implementation (Serial, Docs-First)
 ┌─────────────┐    ┌─────────────┐
-│   sergei    │    │    winny    │
-│    code     │    │    docs     │
+│    winny    │──▶│   sergei    │
+│    docs     │    │    code     │
 └─────────────┘    └─────────────┘
 
-Phase 6a: Technical Validation
-┌─────────────┐    ┌─────────────┐
-│ max-devops  │──▶│  Critical   │
-│build & test │    │ findings?   │
-└─────────────┘    └─────────────┘
-                           │
-                        YES│NO
-                           ▼
-                   ┌─────────────┐
-                   │Continue to  │
-                   │Phase 6b     │
-                   └─────────────┘
-
-Phase 6b: Parallel Review
-┌─────────────┐  ┌─────────────┐  ┌─────────────┐
-│   patrick   │  │    vicky    │  │    chris    │
-│code quality │  │  UAT & UX   │  │architecture │
-└─────────────┘  └─────────────┘  └─────────────┘
-       │                │                │
-       └────────────────┼────────────────┘
-                        ▼
-                ┌─────────────┐
-                │ All approve │
-                │     ?       │
-                └─────────────┘
-
-Phase 7-9: Completion
+Phase 6: Serial Review Chain (Immediate Handback)
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│sergei+winny │──▶│ max-devops  │──▶│    chris    │
-│ refinements │    │integration  │    │  summary    │
+│ max-devops  │──▶│   patrick   │──▶│    vicky    │
+│build & test │    │code quality │    │  UAT & UX   │
 └─────────────┘    └─────────────┘    └─────────────┘
+       │                   │                   │
+       ▼                   ▼                   ▼
+   Critical?           Critical?           Critical?
+   YES│NO              YES│NO              YES│NO
+      │                   │                   │
+      ▼                   ▼                   ▼
+  Hand back          Hand back          Hand back
+  to sergei          to sergei          to sergei
+      │                   │                   │
+     NO                  NO                  NO
+      ▼                   ▼                   ▼
+   Continue            Continue            Continue
+      
+┌─────────────┐    ┌─────────────┐
+│    user     │──▶│    chris    │
+│manual mode  │    │architecture │
+└─────────────┘    └─────────────┘
+       │                   │
+       ▼                   ▼
+   Critical?           Critical?
+   YES│NO              YES│NO
+      │                   │
+      ▼                   ▼
+  Hand back          Hand back
+ to sergei/winny     to sergei
+      │                   │
+     NO                  NO
+      ▼                   ▼
+   Continue            Continue
+
+Phase 7: Completion (Combined)
+┌─────────────┐    ┌─────────────┐
+│ max-devops  │──▶│    chris    │
+│integration  │    │  summary    │
+└─────────────┘    └─────────────┘
 ```
 
 ### Workflow Decision Tree
@@ -295,7 +301,7 @@ START: New Task
         ▼                
 ┌─────────────────┐      ┌─────────────────┐
 │ Simple Workflow │      │ Complex Workflow│
-│ 3 steps         │      │ 9 phases        │
+│ 3 steps         │      │ 7 phases        │
 └─────────────────┘      └─────────────────┘
 ```
 

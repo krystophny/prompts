@@ -66,7 +66,7 @@ Use this **decision tree** to choose the appropriate workflow:
 - ❌ Estimated >2 hours work
 - ❌ Architecture impact
 - ❌ New features requiring documentation
-→ **Complex Workflow**: Full 8-phase workflow below
+→ **Complex Workflow**: Full 7-phase workflow below
 
 For complex tasks requiring multiple agents, follow this stepwise delegation workflow:
 
@@ -128,30 +128,19 @@ For complex tasks requiring multiple agents, follow this stepwise delegation wor
 3. **Architecture Documentation**: chris-architect updates DESIGN.md and creates detailed implementation plan
 4. **RED Phase**: georg-test-engineer writes failing tests (parallel: chris-architect refines details)
    - **COMMIT**: georg commits test suite after completion
-5. **Implementation + Documentation Phase**: **SERIAL EXECUTION**
-   - **Step 5a**: winny-technical-writer writes user documentation using test specifications
-   - **COMMIT**: winny commits user documentation after completion
-   - **Step 5b**: sergei-perfectionist-coder implements code + updates API/developer docs  
-   - **COMMIT**: sergei commits implementation and API documentation after completion
-6. **Review + Documentation Validation**: 
-   **6a. Technical Validation (max-devops-engineer)**: Run build, tests, gather CI artifacts, categorize findings
-   - **Repository Hygiene Check**: Verify zero binary files, build artifacts, temp files in working copy AND git history
-   - **CRITICAL findings ONLY block progression** (build failures, infrastructure issues): Hand back to sergei-perfectionist-coder for immediate fixes
-   - **MAJOR/MINOR findings**: Continue to Phase 6b, pass findings list to patrick for inclusion in comprehensive review batch
-   - **Iterate**: sergei fixes only CRITICAL issues → max re-validates → repeat until zero CRITICAL findings
-   - **COMMIT**: max-devops commits fixes after each iteration
-   - **When max confirms zero CRITICAL findings**: Pass clean build data AND non-blocking findings list to serial review chain
-   **6b. Serial Review (Only if 6a has zero CRITICAL findings)**:
-   - **Step 6b-1**: patrick-auditor performs deep code quality analysis + security review + API/developer documentation verification + incorporates max's non-blocking findings
-   - **IMMEDIATE HANDBACK**: If critical issues found → hand back to sergei immediately for fixes before continuing
-   - **Step 6b-2**: vicky-acceptance-tester performs user acceptance testing + user documentation validation  
-   - **IMMEDIATE HANDBACK**: If critical issues found → hand back to sergei/winny immediately for fixes before continuing
-   - **Step 6b-3**: **MANUAL MODE ONLY** - User performs review if "manual mode" requested
-   - **IMMEDIATE HANDBACK**: If critical issues found by user → hand back to sergei/winny immediately for fixes before continuing
-   - **Step 6b-4**: chris-architect performs architecture alignment review
-   - **IMMEDIATE HANDBACK**: If critical issues found → hand back to sergei immediately for fixes before continuing
-7. **Integration**: max-devops-engineer waits for CI to pass, autonomously fixes any CI failures, merges PR (squash if needed), validates final repository cleanliness, and cleans up
-8. **Executive Summary**: chris-architect delivers final EXECUTIVE SUMMARY report directly to user covering project completion, strategic insights, and future recommendations
+5. **Documentation → Implementation Phase**: **SERIAL EXECUTION (Docs-First)**
+   - **Step 5a**: winny-technical-writer writes user documentation using test specifications (docs-first approach)
+   - **Step 5b**: sergei-perfectionist-coder implements code + updates API/developer docs using winny's documentation as guide
+   - **COMMIT**: max-devops commits both documentation and implementation atomically after both agents complete
+6. **Serial Review Chain**: **FULLY SERIAL EXECUTION**
+   - **Step 6-1**: max-devops technical validation (build/test/hygiene) → immediate handback if critical issues
+   - **Step 6-2**: patrick-auditor code quality + security review → immediate handback if critical issues  
+   - **Step 6-3**: vicky-acceptance-tester user acceptance + UX validation → immediate handback if critical issues
+   - **Step 6-4**: **MANUAL MODE ONLY** - User review → immediate handback if critical issues
+   - **Step 6-5**: chris-architect architecture alignment review → immediate handback if critical issues
+7. **Completion**: **COMBINED FINAL PHASE**
+   - **max-devops**: CI validation, PR merge, repository cleanup
+   - **chris-architect**: Executive summary report to user
 
 ## PLAYTEST WORKFLOW (System Audit)
 
