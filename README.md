@@ -239,6 +239,19 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 
 ## References
 
+### Historical Context
+
+QADS resurrects formal software engineering methods (TSP, Cleanroom) that were abandoned by human teams due to Agile's rise. What was too rigid for humans - structured roles, phase gates, formal reviews - becomes practical through AI automation. This represents "Post-Agile Development": bringing back quality benefits without human coordination costs.
+
+| Resource | Description |
+|----------|-------------|
+| [Team Software Process (TSP)](https://en.wikipedia.org/wiki/Team_Software_Process) | Human equivalent with structured roles and self-directed teams |
+| [Cleanroom Software Engineering](https://en.wikipedia.org/wiki/Cleanroom_software_engineering) | Team-based formal verification through reviews |
+| [Personal Software Process (PSP)](https://en.wikipedia.org/wiki/Personal_software_process) | Individual developer discipline (TSP foundation) |
+| [Why Agile Replaced Formal Methods](https://www.atlassian.com/agile/project-management/project-management-intro) | Historical context for methodology evolution |
+
+### QADS Documentation
+
 | Resource | Description |
 |----------|-------------|
 | [Claude Code Docs](https://docs.anthropic.com/en/docs/claude-code/common-workflows) | Official documentation |
