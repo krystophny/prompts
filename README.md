@@ -189,7 +189,8 @@ Issues come from three sources:
 
 Management Principles:
 - Fix Autonomously or File Issue: Critical findings fixed immediately, minor issues fixed by reviewers within scope, others become issues
-- Autonomous Fix Scope: Each reviewer can fix minor issues in their domain without disrupting workflow  
+- Autonomous Fix Scope: Each reviewer can fix minor issues in their domain without disrupting workflow
+- Boy Scout Rule: All agents clean up minor issues in code, docs, issues, PRs, file organization within their competence bounds - liberal before review phase, restrictive during/after review  
 - Labels: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY], [DOCS] (defects only)
 - ⚠️ **FORBIDDEN in playtest**: [IMPROVEMENT], [ENHANCEMENT], [FEATURE], [UX] (unless fixing broken UX)
 - Default Management: chris-architect handles lifecycle, triage, prioritization
@@ -210,6 +211,7 @@ Management Principles:
 - **Style**: 88 char limit, 4-space indent, self-documenting
 - **Commits**: Conventional format, imperative mood, <72 chars
 - **Fortran**: `typename_t` convention, empty associate blocks
+- **Boy Scout Rule**: "Leave everything cleaner than you found it" - fix minor issues in code, docs, issues, PRs, file organization within competence bounds
 
 ### Workflow Modes
 
@@ -238,7 +240,8 @@ Valid Combinations:
 ✅ All tests pass with meaningful coverage  
 ✅ CI green, zero build artifacts  
 ✅ Documentation updated atomically  
-✅ All reviewers approve (critical findings fixed)  
+✅ All reviewers approve (critical findings fixed)
+✅ Boy Scout Rule applied - everything left cleaner than found within competence bounds  
 
 ---
 

@@ -235,6 +235,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - **AUDIT MINDSET**: Thorough exploration without time pressure of active development
 - **DEFECT DETECTION ONLY**: Build comprehensive backlog of DEFECTS - never expand scope
 - **NO FEATURE CREEP**: Playtest validates existing functionality - does not define new functionality
+- **BOY SCOUT RULE APPLIES**: Clean up any minor issues encountered during audit in code, docs, issues, file organization within competence bounds - commit separately from main findings
 - **max-devops RESPONSIBILITY**: Build operations, git hygiene, repository management only
 - **CONDITIONAL CONTINUATION**: Only proceed to resolve discovered defect issues if user explicitly requests batch mode
 
@@ -251,6 +252,15 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - Imperative mood, no period, under 72 chars, one logical change per commit
 - NO EMOJIS, NO ROBOT SIGNATURES - clean, precise commits only
 - NEVER commit binary files, build artifacts, or temporary files
+
+**BOY SCOUT RULE - "Leave everything cleaner than you found it":**
+- **ENCOURAGED ALWAYS**: Fix any minor issues you encounter during your work within your competence bounds
+- **APPLIES TO EVERYTHING**: Code, documentation, issues, PR descriptions, commit messages, file/directory names and placement, organization - anything within your domain expertise
+- **COMPETENCE BOUNDS**: Only fix what falls within your agent role's scope and expertise (see Agent Ownership Matrix)
+- **PRE-REVIEW PHASES**: Very liberal - fix anything that needs cleaning and fits scope or is general maintenance
+- **REVIEW PHASE & AFTER**: Restrictive - only fix issues directly related to your review findings to avoid breaking things
+- **EXAMPLES**: Remove dead code, fix typos, update outdated comments, standardize formatting, fix obvious bugs, clarify issue descriptions, improve PR titles, organize file structure, fix broken links, improve directory organization, rename confusing files
+- **COMMIT SEPARATELY**: Boy Scout fixes should be separate commits from main work when possible
 
 **Issue Management:**
 - **"Fix Autonomously or File Issue"** decision protocol:
@@ -269,6 +279,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - **Critical findings** must be fixed before progression, cannot become issues
 - **Major/Minor findings** can be fixed autonomously by reviewer if within their scope, otherwise become issues
 - **AUTONOMOUS FIXES**: Reviewers encouraged to fix minor issues directly and commit cleanly without disrupting workflow
+- **BOY SCOUT RULE**: All agents encouraged to clean up any minor issues encountered in code, docs, issues, PRs, file organization, etc. within their competence bounds - very liberal before review phase, restrictive during/after review
 
 **Reporting:**
 - Every agent MUST deliver: **COMPLETED**, **OPEN ITEMS**, **LESSONS LEARNED**
