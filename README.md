@@ -1,37 +1,25 @@
 # Quality-driven Agent Development System (QADS)
 
-A quality-driven multi-agent software development system featuring specialized AI agents working collaboratively through structured TDD processes.
-
-## User Control & Flexibility
-
-**Complete control**: This system serves you. All workflows, processes, and decisions can be overridden by your explicit direction.
-
-Override examples:
-- "Use simple workflow for this complex change"
-- "Skip reviews and just implement"
-- "Work on issue #123" (bypasses automatic selection)
-- "Let me review everything manually"
-- "Just fix this quickly without full workflow"
+A multi-agent software development system featuring specialized AI agents working through structured TDD workflows with quality gates and rapid feedback cycles.
 
 ## Quick Start
 
-Choose your approach:
+**You have complete control** - override any workflow, decision, or process with your explicit direction.
 
-1. **Structured Workflow**: Let the system guide you through defined processes
-2. **Custom Control**: Override any decisions with your specific requirements
-3. **Ad Hoc Tasks**: Give any task outside existing workflows
+**Choose your workflow:**
+- **Feature Planning** → Strategic planning with chris-architect  
+- **Feature Development** → Structured implementation (simple/complex)
+- **Playtest Workflow** → System audit for defects only
 
-Workflow options:
-- **Feature Planning** → Strategic planning with chris-architect
-- **Feature Development** → Structured implementation workflow  
-- **Playtest Workflow** → Comprehensive system audit
-- **Custom Tasks** → Any work you specify
-
-Execution Modes:
+**Execution modes:**
 - Single Task (default): Complete one task and stop
-- Batch Mode: Solve all issues automatically - fully autonomous
+- Batch Mode: Solve all issues automatically until repository clean
 - Manual Review: Include your review at any stage
-- Custom Flow: Define your own process
+
+**Override examples:**
+- "Use simple workflow for this complex change"
+- "Work on issue #123" | "Just fix this quickly"
+- "Manual review mode" | "Skip all reviews"
 
 ## Workflow Types
 
@@ -47,31 +35,27 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 - Use when starting new features or major changes
 
 ### Feature Development  
-*Multi-agent structured implementation*
+*Structured implementation workflow*
 
-- Execute planned work through TDD workflow
-- chris-architect restricted to issue selection and prioritization
-- 7-phase workflow from tests to delivery
+- Execute planned work through TDD process
+- Automatic workflow selection: simple (single file, <2hrs) or complex (multi-file, >2hrs)
+- Quality gates with multi-stage reviews and immediate handback on critical findings
 
 ### Playtest Workflow
-*Comprehensive system audit - DEFECTS ONLY*
+*System audit for defects only*
 
 ```
 Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ DEFECT Backlog
 ```
 
-⚠️ **CRITICAL CONSTRAINT**: Playtest NEVER creates issues for new features or scope expansion
-- Discover DEFECTS ONLY through exhaustive system exploration
-- Automatically initiated when repository is clean (no PRs/issues)
-- Serial audit by all agents to build comprehensive DEFECT backlog
-- Creates GitHub issues labeled by severity for DEFECTS only - not new features
-- 🎯 **Purpose**: Quality assurance of existing functionality - not feature planning
-
----
+⚠️ **Defects only** - Never creates issues for new features or scope expansion
+- Automatically triggered when repository is clean (no PRs/issues)
+- Serial audit by all agents to discover broken functionality only
+- Files GitHub issues with severity labels: [CRITICAL], [BUG], [SECURITY], [TECHNICAL-DEBT], [DOCS]
 
 ## The Team
 
-### Core Development Agents
+**Core Development Agents:**
 
 | Agent | Role | Primary Responsibilities |
 |-------|------|-------------------------|
@@ -79,195 +63,111 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ DE
 | **sergei-perfectionist-coder** | Chief Programmer | Production code, API docs, zero-compromise implementation |
 | **georg-test-engineer** | Test Engineer | Test creation (unit/integration/system), BDD expertise |
 | **patrick-auditor** | Code Reviewer/QA | Security analysis, code quality, compliance verification |
-| **vicky-acceptance-tester** | Customer/Tester | User acceptance testing, UX validation, chaos engineering |
+| **vicky-acceptance-tester** | Customer/Tester | User acceptance testing, UX validation |
 | **max-devops-engineer** | Development Manager | Build execution, repository hygiene, CI/CD operations |
+| **winny-technical-writer** | Technical Writer | User documentation, technical content creation |
 
-### Specialist Agents
-
-| Agent | Expertise | When to Use |
-|-------|-----------|-------------|
-| **winny-technical-writer** | Technical Writing | User documentation, technical content creation |
-| **steffi-ux-designer** | UX Design | UI/interface optimization, visual styling |
-| **philipp-data-scientist** | Data Science | Data analysis, visualization, statistical modeling |
-| **jonatan-math-physicist** | Mathematics | Mathematical formulation, LaTeX-to-code translation |
-
----
+**Specialist Agents:** steffi-ux-designer, philipp-data-scientist, jonatan-math-physicist
 
 ## Workflow Selection
 
-Choose the right workflow based on task complexity:
+### Simple Workflow (Auto-selected OR your override)
 
-### Simple Workflow
-*Default criteria OR your override:*
+**Criteria:** Single file, no API changes, no new dependencies, <2 hours
 
-✅ Single file affected  
-✅ No API/interface changes  
-✅ No new dependencies  
-✅ Estimated <2 hours work  
-✅ **Your choice**: Say "use simple workflow" for any task
+**Process:** Implementation → Serial Review Chain → Cleanup
+- Serial Review: max validation → patrick code quality → chris architecture
+- Immediate handback on critical findings, autonomous minor fixes
 
-Process: sergei-perfectionist-coder → Serial Review Chain → fixes → max cleanup
-- Serial Review Chain: max validation (first reviewer) → patrick review → chris-architect final review
-- Your control: Override any step or include manual review
+### Complex Workflow (Auto-selected OR your override)
 
-### Complex Workflow  
-*Default triggers OR your override:*
+**Criteria:** Multiple files, API changes, new dependencies, >2 hours, architecture impact
 
-❌ Multiple files affected  
-❌ API/interface changes required  
-❌ New dependencies needed  
-❌ Estimated >2 hours work  
-❌ Architecture impact  
-❌ New features requiring documentation  
-✅ **Your choice**: Say "use complex workflow" for any task
-
-Process: Full 7-phase workflow (detailed below) - customize any phase
-
----
+**Process:** Full 7-phase workflow with TDD, documentation-first implementation, and comprehensive review chain
 
 ## Simple Workflow Process
 
-Phases:
-1. **Phase 1**: sergei-perfectionist-coder implements changes
-2. **Phase 2**: Serial Review Chain (max validation (FIRST REVIEWER) → patrick review → chris-architect final review)
-3. **Phase 3**: max cleanup and completion
+**Phases:**
+1. **Implementation**: sergei-perfectionist-coder implements changes
+2. **Serial Review**: max validation → patrick code quality → chris architecture
+3. **Completion**: max cleanup and completion
 
-Manual Review Mode: User participates as final reviewer (only when explicitly requested)
+**Findings Protocol:**
+- CRITICAL → immediate handback to sergei → restart review chain
+- MINOR → reviewer fixes autonomously within scope or files issue
 
-Findings Protocol: CRITICAL → immediate handback | MAJOR/MINOR → Fix Autonomously (if within scope) or File Issue
-Minor Fix Autonomy: Reviewers fix minor issues within their scope autonomously and commit cleanly
-Critical Handback: sergei fixes → return to first reviewer (max) → restart entire review chain from beginning
-Iteration: Repeat phases until all findings resolved
+**Manual Review Mode:** User participates as final reviewer (when requested)
 
-Batch Behavior:
-- Single Issue (default): Complete one issue → stop
-- Batch Mode: Continue automatically until all issues resolved (can run indefinitely - see Batch Mode section)
+**Batch Mode:** Continue until all issues resolved (can run indefinitely due to playtest)
 
 ## Complex Workflow Process
 
-Key Principle: Never start new work when existing work is unfinished
+**7-Phase Development Process:**
 
-### 7-Phase Development Process
+**Phase 1-2: Planning**
+1. **max**: Repository assessment (handles existing PRs/branches/issues/untracked files)
+2. **chris-architect**: Issue selection and prioritization (if needed)
 
-Phase 1-2: Planning & Prioritization
-1. **max**: Repository assessment (non-draft PRs → review phase | draft PRs → implementation | remote branches → test phase | open issues → selection or user-specified)
-2. **chris-architect**: Issue selection and prioritization (if no existing work found and no user-specified issue)
+**Phase 3-4: Design & Tests**
+3. **chris-architect**: DESIGN.md review, implementation plan
+4. **georg-test-engineer**: Test-driven development, writes failing tests
 
-Phase 3: Architecture Documentation
-3. **chris-architect**: Reviews DESIGN.md, creates implementation plan
+**Phase 5: Documentation-First Implementation**
+5. **winny-technical-writer**: User documentation
+6. **sergei-perfectionist-coder**: Code + API docs using winny's guidance
 
-Phase 4: RED Phase (Test-Driven Development)
-4. **georg-test-engineer**: Writes failing tests and opens draft PR (parallel with chris refinements)
+**Phase 6: Serial Review Chain**
+- **max**: Technical validation → **patrick**: Code quality + security → **vicky**: User acceptance + UX → **chris**: Architecture alignment
+- **User**: Final review (manual review mode only)
+- **Critical findings**: Immediate handback to sergei → restart review chain
 
-Phase 5: Documentation → Implementation (Serial Execution - docs first)
-5. **Implementation Phase** (docs-first approach):
-   - **winny-technical-writer**: User documentation 
-   - **sergei-perfectionist-coder**: Code + API documentation using winny's docs as guide
+**Phase 7: Completion**
+- **max**: Repository cleanup, CI validation, PR merge
+- **chris**: Executive summary report
 
-Phase 6: Serial Review Chain (fully serial execution):
-   - **max**: Technical validation (FIRST REVIEWER) → immediate handback if critical issues
-   - **patrick-auditor**: Code quality + security → immediate handback if critical issues
-   - **vicky-acceptance-tester**: User acceptance + UX → immediate handback if critical issues
-   - **chris-architect**: Architecture alignment → immediate handback if critical issues
-   - **User**: Final review (manual review mode only) → immediate handback if critical issues
+## Issue Management
 
-Phase 7: Completion (combined final phase)
-- **max**: Repository cleanup, CI validation, PR merge, working directory cleanup
-- **chris-architect**: Executive summary report to user
+**Issue Sources:**
 
----
+| Source | Purpose | Labels Used |
+|--------|---------|-------------|
+| **Feature Planning** | Strategic development tasks | All labels allowed |
+| **Review Findings** | Prevent scope creep (fixes >30min) | [BUG], [TECHNICAL-DEBT] |
+| **Playtest Audit** | DEFECT backlog only | [CRITICAL], [BUG], [SECURITY], [TECHNICAL-DEBT], [DOCS] |
 
-## Issue Sources & Management
-
-Issues come from three sources:
-
-| Source | When Created | Purpose |
-|--------|--------------|---------|
-| **Feature Planning** | User requirements with chris-architect | Strategic development tasks |
-| **Review Findings** | During Phase 6-7 when fixes need >30min | Prevent scope creep |
-| **Playtest Audit** | System-wide testing on clean repository | Comprehensive DEFECT backlog (NEVER new features) |
-
-Management Principles:
-- Fix Autonomously or File Issue: Critical findings fixed immediately, minor issues fixed by reviewers within scope, others become issues
-- Autonomous Fix Scope: Each reviewer can fix minor issues in their domain without disrupting workflow
-- Boy Scout Rule: All agents clean up minor issues in code, docs, issues, PRs, file organization within their competence bounds - liberal before review phase, restrictive during/after review  
-- Labels: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY], [DOCS] (defects only)
-- ⚠️ **FORBIDDEN in playtest**: [IMPROVEMENT], [ENHANCEMENT], [FEATURE], [UX] (unless fixing broken UX)
-- Default Management: chris-architect handles lifecycle, triage, prioritization
-- Your Control: Override any selection, specify exact issue, or provide custom tasks
+**Management:**
+- **Boy Scout Rule**: Clean up minor issues within competence bounds
+- **Fix or File**: Critical → fix immediately, Minor → fix autonomously or file issue
+- **Your Control**: Override selection, specify issues, or provide custom tasks
 
 ---
 
 ## Core Principles
 
-### Quality Standards
-- **TDD Workflow**: Test-driven development with meaningful coverage
-- **MVP Focus**: Highest quality minimum viable product delivery
-- **Zero Shortcuts**: 100% completion, no placeholders or stubs
-- **Code Quality**: SOLID, KISS, SRP, DRY principles
-- **Precision**: Computational physics-level accuracy
+**Quality Standards:**
+- TDD workflow with meaningful test coverage
+- MVP focus: highest quality minimum viable product
+- Zero shortcuts: 100% completion, no placeholders
+- Code quality: SOLID, KISS, SRP, DRY principles
 
-### Code Standards
-- **Style**: 88 char limit, 4-space indent, self-documenting
-- **Commits**: Conventional format, imperative mood, <72 chars
-- **Fortran**: `typename_t` convention, empty associate blocks
-- **Boy Scout Rule**: "Leave everything cleaner than you found it" - fix minor issues in code, docs, issues, PRs, file organization within competence bounds
+**Workflow Modes:**
 
-### Workflow Modes
+| Execution Mode | Trigger | Behavior |
+|----------------|---------|----------|
+| **Single Issue** (default) | Standard | Complete one issue → stop |
+| **Batch Mode** | "solve all issues" | Continue until all resolved (typically infinite) |
 
-Execution Modes:
+| Review Mode | Trigger | Behavior |
+|-------------|---------|----------|
+| **Automatic** (default) | Standard | All agent reviews autonomous |
+| **Manual Review** | "manual mode" | User participates as final reviewer |
 
-| Mode | Trigger | Behavior |
-|------|---------|----------|
-| **Single Issue** (default) | Standard operation | Complete one issue → stop |
-| **Batch Mode** | User says "solve all issues" | Fully autonomous - Continue until all issues resolved (typically infinite due to playtest) |
+**Definition of Done:**
+✅ All tests pass ✅ CI green ✅ Documentation updated ✅ All reviews passed ✅ Repository cleaner than found
 
-Review Modes (Independent):
+## Documentation
 
-| Mode | Trigger | Behavior |
-|------|---------|----------|
-| **Automatic Review** (default) | Standard operation | All agents complete review autonomously |
-| **Manual Review** | User says "manual mode" | User participates as final reviewer in workflow |
-
-Valid Combinations:
-- Single Task + Automatic Review (DEFAULT)
-- Single Task + Manual Review
-- Batch Mode + Automatic Review  
-- Batch Mode + Manual Review
-- Custom Combination: Define your own workflow mix
-
-### Definition of Done
-✅ All tests pass with meaningful coverage  
-✅ CI green, zero build artifacts  
-✅ Documentation updated atomically  
-✅ All reviewers approve (critical findings fixed)
-✅ Boy Scout Rule applied - everything left cleaner than found within competence bounds  
-
----
-
-## References
-
-### Historical Context
-
-QADS applies proven quality practices at **micro-scale** - every single issue and PR follows the same structured protocol with quality gates, multi-stage reviews, rapid handback cycles, and clear ownership. What typically applies to large projects, QADS executes consistently for every small change.
-
-Core Practices:
-- **Quality Gates**: Multi-stage review checkpoints with go/no-go decisions before progression
-- **Test-Driven Development**: RED-GREEN-REFACTOR with separate design and implementation roles
-- **Structured Review Process**: Systematic handoffs between specialized roles with defined criteria
-- **Rapid Iteration**: Short cycles with immediate feedback and handback on critical findings
-- **Clear Ownership**: Each agent has distinct responsibilities and decision authority
-
-Key Insight: Rather than applying heavy process to large features, QADS applies lightweight but rigorous process to every change, ensuring consistent quality through systematic execution by AI agents who never skip steps or cut corners.
-
-| Resource | Description |
-|----------|-------------|
-| [Stage-Gate Product Development](https://en.wikipedia.org/wiki/Stage-gate_process) | Quality gates and cross-functional review methodology |
-| [Feature-Driven Development (FDD)](https://en.wikipedia.org/wiki/Feature-driven_development) | Structured roles with clear ownership and short iterations |
-| [Test-Driven Development](https://agilealliance.org/glossary/tdd/) | RED-GREEN-REFACTOR cycle with role separation |
-| [ISO 9001 Quality Management](https://en.wikipedia.org/wiki/ISO_9001) | Process-oriented quality control and systematic reviews |
-
-### QADS Documentation
+**QADS applies proven quality practices at micro-scale** - every issue and PR follows structured protocols with quality gates, multi-stage reviews, and rapid feedback cycles.
 
 | Resource | Description |
 |----------|-------------|
@@ -276,80 +176,38 @@ Key Insight: Rather than applying heavy process to large features, QADS applies 
 | `DESIGN.md` | System architecture and design patterns |
 | `PROMPTS.md` | Original agent workflow prompts |
 
----
+## Playtest & Batch Mode
 
-## Playtest Workflow Process
+### Playtest Workflow
+**Triggered:** Repository is clean (zero PRs, zero issues)
 
-When Triggered: Repository is clean (zero PRs, zero issues)
+**Process:**
+1. **max**: Repository health, build validation, CI verification
+2. **patrick**: Security audit, code quality, technical debt
+3. **vicky**: User testing, stress testing, edge cases
+4. **chris**: Architecture review, design consistency
+5. **All agents**: File DEFECT issues only with severity labels
 
-Example Trigger:
-```bash
-$ gh pr list
-# No open pull requests
+**Labels:** [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY], [DOCS]
+**Forbidden:** [IMPROVEMENT], [ENHANCEMENT], [FEATURE], [UX]
 
-$ gh issue list  
-# No open issues
+### Batch Mode
+**Warning:** Typically runs indefinitely due to playtest discovering new defects
 
-# → Playtest Workflow automatically initiates
-```
+**Activation:** "solve all open issues" or "fix all issues"
 
-Serial Audit Phases:
-1. **max-devops-engineer**: Repository health check, build validation, CI verification
-2. **patrick-auditor**: Security audit, code quality review, technical debt identification  
-3. **vicky-acceptance-tester**: Exhaustive user testing, stress testing, edge case exploration
-4. **chris-architect**: Architecture review, design consistency validation, strategic assessment
-5. **All agents**: File issues for discovered DEFECTS ONLY at appropriate severity levels
-6. **max-devops-engineer**: Ensure all findings documented as GitHub issues
-
-⚠️ **AGENT CONSTRAINT**: Every agent must focus ONLY on defects - broken functionality, bugs, security issues. NEVER file feature requests or scope expansion.
-
-Issue Labels Created (DEFECTS ONLY):
-- `[CRITICAL]` - System-breaking issues requiring immediate attention
-- `[BUG]` - Broken functionality that needs repair
-- `[TECHNICAL-DEBT]` - Code quality and maintainability defects
-- `[SECURITY]` - Security vulnerabilities requiring fixes
-- `[DOCS]` - Documentation errors or broken examples
-
-⚠️ **FORBIDDEN LABELS in playtest**: `[IMPROVEMENT]`, `[ENHANCEMENT]`, `[FEATURE]`, `[UX]` (unless fixing broken UX)
-- 🎯 **Playtest Rule**: File issues only for what's broken, never for what's missing
-
-Completion Modes:
-- Single Mode (default): After playtest → chris-architect Executive Summary → STOP
-- Batch Mode: After playtest → immediately continue resolving all discovered issues → triggers new playtest when clean → potentially infinite cycle
+**Logic:**
+1. Complete issue → Repository assessment
+2. More issues? → Continue workflow
+3. No issues? → Automatic playtest
+4. Playtest discovers defects → Repeat cycle
+5. Rare termination when playtest finds zero issues
 
 ---
 
-## Batch Mode Behavior
+## Visual Workflow Guides
 
-Critical Warning: Batch mode typically runs indefinitely because the playtest workflow discovers new defect issues each time the repository becomes clean. Only use batch mode when you have significant time available.
-
-⚠️ **Note**: Playtest discovers DEFECTS only - not new features. Feature requests must come from Feature Planning phase.
-
-Activation: User explicitly requests "solve all open issues" or "fix all issues"
-
-Example Usage:
-```bash
-# User says: "solve all open issues"
-# → Triggers batch mode for ALL workflows
-```
-
-Batch Mode Logic:
-
-Warning: Batch mode can run indefinitely because playtest workflow usually discovers new issues
-
-1. **Workflow Continuation**: After completing ANY issue → return to PHASE 1 (max-devops assessment)
-2. **Automatic Playtest Trigger**: When repository is clean (zero issues), playtest workflow automatically runs
-3. **Issue Replenishment**: Playtest typically discovers new issues and files them as GitHub issues
-4. **Infinite Cycle Potential**: New issues → batch continues → clean repository → playtest → more issues → repeat
-5. **Rare Termination**: Batch only stops when playtest discovers ZERO issues (very rare)
-6. **Final Summary Only**: Executive Summary delivered only after playtest finds zero issues
-
-Works With All Workflows:
-- **Simple Workflow Batch**: Complete simple issue → assess repository → continue if issues remain
-- **Complex Workflow Batch**: Complete complex issue → assess repository → continue if issues remain  
-- **Playtest + Batch**: Clean repository triggers playtest → creates issues → immediately resolves ALL issues → clean repository → playtest again → potentially infinite
-
-Batch Mode Flow:
+### Batch Mode Flow
 ```
 WARNING: Can run indefinitely due to playtest replenishment
 
@@ -379,10 +237,6 @@ Start → Complete Issue → Repository Assessment → Issues Remain?
                                               Executive Summary
                                               (VERY RARE END)
 ```
-
----
-
-## Visual Workflow Guides
 
 ### Simple Workflow Flow
 ```
