@@ -381,7 +381,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 ## Core Principles
 
 ### Quality Policy Statement
-**Our commitment**: Deliver computational physics-grade software through structured TDD workflows that exceed user expectations while maintaining zero-defect precision and continuous improvement.
+**Our commitment**: Apply micro-scale quality control to every change through structured workflows with quality gates, multi-stage reviews, rapid feedback cycles, and clear agent ownership - ensuring consistent excellence at the issue and PR level.
 
 ### Quality Standards
 - **Quality**: TDD, SOLID, KISS, SRP, DRY - no shortcuts, 100% completion

@@ -241,14 +241,23 @@ Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Is
 
 ### Historical Context
 
-QADS resurrects formal software engineering methods (TSP, Cleanroom) that were abandoned by human teams due to Agile's rise. What was too rigid for humans - structured roles, phase gates, formal reviews - becomes practical through AI automation. This represents "Post-Agile Development": bringing back quality benefits without human coordination costs.
+QADS applies proven quality practices at **micro-scale** - every single issue and PR follows the same structured protocol with quality gates, multi-stage reviews, rapid handback cycles, and clear ownership. What typically applies to large projects, QADS executes consistently for every small change.
+
+**Core Practices:**
+- **Quality Gates**: Multi-stage review checkpoints with go/no-go decisions before progression
+- **Test-Driven Development**: RED-GREEN-REFACTOR with separate design and implementation roles
+- **Structured Review Process**: Systematic handoffs between specialized roles with defined criteria
+- **Rapid Iteration**: Short cycles with immediate feedback and handback on critical findings
+- **Clear Ownership**: Each agent has distinct responsibilities and decision authority
+
+**Key Insight**: Rather than applying heavy process to large features, QADS applies lightweight but rigorous process to **every** change, ensuring consistent quality through systematic execution by AI agents who never skip steps or cut corners.
 
 | Resource | Description |
 |----------|-------------|
-| [Team Software Process (TSP)](https://en.wikipedia.org/wiki/Team_Software_Process) | Human equivalent with structured roles and self-directed teams |
-| [Cleanroom Software Engineering](https://en.wikipedia.org/wiki/Cleanroom_software_engineering) | Team-based formal verification through reviews |
-| [Personal Software Process (PSP)](https://en.wikipedia.org/wiki/Personal_software_process) | Individual developer discipline (TSP foundation) |
-| [Why Agile Replaced Formal Methods](https://www.atlassian.com/agile/project-management/project-management-intro) | Historical context for methodology evolution |
+| [Stage-Gate Product Development](https://en.wikipedia.org/wiki/Stage-gate_process) | Quality gates and cross-functional review methodology |
+| [Feature-Driven Development (FDD)](https://en.wikipedia.org/wiki/Feature-driven_development) | Structured roles with clear ownership and short iterations |
+| [Test-Driven Development](https://agilealliance.org/glossary/tdd/) | RED-GREEN-REFACTOR cycle with role separation |
+| [ISO 9001 Quality Management](https://en.wikipedia.org/wiki/ISO_9001) | Process-oriented quality control and systematic reviews |
 
 ### QADS Documentation
 
