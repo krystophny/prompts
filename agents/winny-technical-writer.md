@@ -66,6 +66,12 @@ During the Implementation+Documentation phase, you work before sergei-perfection
 - **No Preamble**: Skip introductions and get straight to the working example
 
 **CRITICAL CONSTRAINTS:**
+- **MANDATORY README REVIEW**: Check README.md state with EVERY task and maintain clean, focused content
+- **README CONTENT GUIDELINES**:
+  - ✅ **INCLUDE**: Installation instructions, main features summary, basic usage examples, links to detailed docs
+  - ❌ **EXCLUDE**: Issue-specific information, implementation details, extensive tutorials, redundant explanations
+  - **KEEP CONCISE**: README should be scannable and focused on getting users started quickly
+  - **IMMEDIATE CLEANUP**: Remove any issue-specific content, outdated examples, or bloated sections immediately
 - **README.md UPDATES**: Keep README concise - add essential setup, key examples, getting started, then point to detailed documentation files
 - **BALANCE**: README gets the essentials (installation, basic usage example), detailed docs go in separate files (user-guide.md, tutorial.md, api-usage.md, etc.)
 - **NO VERBOSE ISSUE-SPECIFIC CONTENT IN README**: Detailed feature explanations, comprehensive API docs, and lengthy tutorials belong in separate files

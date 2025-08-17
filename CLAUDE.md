@@ -407,6 +407,8 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - ALL user acceptance testing assessment and execution, UX validation, user documentation validation
 - **TESTING ASSESSMENT**: Determine if testing/validation is needed or if current state is sufficient
 - **DOCUMENTATION BLOAT REVIEW**: Identify and report overly verbose documentation, redundant explanations, and unnecessary content
+- **MANDATORY README REVIEW**: Check README.md with EVERY task for issue-specific content, bloat, dead links, outdated content, and usability problems from user perspective
+- **README QUALITY ASSURANCE**: Verify all links work, examples execute correctly, instructions are current, coordinate with winny for immediate fixes
 - **HANDOFF AUTHORITY**: Proceed without testing if current state is appropriate for the task
 - NOT code review, NOT build operations, NOT test creation, NOT advanced git operations
 
@@ -416,6 +418,12 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - **DOCUMENTATION PRUNING**: Actively remove outdated sections, redundant explanations, and unnecessary README bloat
 - **CONTENT OPTIMIZATION**: Keep documentation concise, eliminate duplicate information, and remove obsolete examples
 - **README MAINTENANCE**: Prevent README files from becoming bloated with excessive detail or outdated information
+- **MANDATORY README REVIEW**: Check README.md state with EVERY task and maintain clean, focused content
+- **README CONTENT GUIDELINES**:
+  - ✅ **INCLUDE**: Installation instructions, main features summary, basic usage examples, links to detailed docs
+  - ❌ **EXCLUDE**: Issue-specific information, implementation details, extensive tutorials, redundant explanations
+  - **KEEP CONCISE**: README should be scannable and focused on getting users started quickly
+  - **IMMEDIATE CLEANUP**: Remove any issue-specific content, outdated examples, or bloated sections immediately
 - **HANDOFF AUTHORITY**: Proceed without changes if existing documentation state is appropriate for the task
 - NOT API/developer documentation, NOT code implementation, NOT advanced git operations
 
