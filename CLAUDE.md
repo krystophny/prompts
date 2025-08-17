@@ -89,17 +89,18 @@ Use this **decision tree** to choose the appropriate workflow:
 - ✅ No new dependencies
 - ✅ Estimated <2 hours work
 - ✅ **USER OVERRIDE**: User requests simple workflow for ANY task
-→ **Simple Workflow**: 3-phase execution
-   - **Phase 1**: sergei-perfectionist-coder implementation
-   - **Phase 2**: Serial Review Chain (max-devops validation → patrick-auditor review → **chris-architect final review**)
-   - **Phase 3**: max-devops cleanup and completion
+→ **Simple Workflow**: 4-phase execution
+   - **Phase 1**: max-devops repository state assessment and cleanup (MANDATORY FIRST STEP)
+   - **Phase 2**: sergei-perfectionist-coder implementation
+   - **Phase 3**: Serial Review Chain (max-devops review → patrick-auditor review → chris-architect review)
+   - **Phase 4**: max-devops final cleanup and completion
    - **Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Autonomously (if within scope) or File Issue
    - **MINOR FIX AUTONOMY**: Reviewers encouraged to fix minor issues within their scope autonomously and commit cleanly
-   - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to THE FIRST reviewer (max-devops) to restart entire review chain from beginning
+   - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to max-devops to restart entire review chain from beginning
 
 **Simple Workflow Execution Modes:**
 - **SINGLE ISSUE MODE (DEFAULT)**: Complete one simple issue → STOP
-- **BATCH MODE (USER REQUESTS)**: After simple issue completion → return to PHASE 1 (max-devops repository assessment) → continue until zero open issues remain
+- **BATCH MODE (USER REQUESTS)**: After simple issue completion → return to PHASE 1 (max-devops repository assessment and cleanup) → continue until zero open issues remain
 
 
 **Complex Workflow (Default Triggers OR User Override):**
@@ -114,18 +115,25 @@ Use this **decision tree** to choose the appropriate workflow:
 
 For complex tasks requiring multiple agents, follow this phase-based delegation workflow:
 
-**PHASE 1: max-devops-engineer** - Repository State ("Can we work?")
+**PHASE 1: max-devops-engineer** - Repository State Assessment and Cleanup (MANDATORY FIRST STEP)
 
 **Quick Assessment Protocol (30 seconds max):**
 1. `git fetch` - update remote branch information
 2. `gh pr list` - check for open PRs (draft and non-draft)
 3. `git branch -r --no-merged main` - check for remote feature branches not yet merged
 4. `gh issue list` - check for open issues
+5. `git status` - check for untracked files requiring handling
 
 **A. If NON-DRAFT PRs exist:**
 - Pick one non-draft PR (prefer current branch if it's a PR branch)
-- Checkout that PR's branch → **REVIEW PHASE** (max-devops as FIRST REVIEWER - Phase 6 for complex, Phase 2 for simple)
+- Checkout that PR's branch → **REVIEW PHASE** (max-devops reviews first - Phase 6 for complex, Phase 2 for simple)
 - NEVER create new issues or start new work until ALL non-draft PRs are finished
+
+**UNTRACKED FILES HANDLING:**
+- **IF on main + untracked files exist**: Create branch `add-untracked-files-YYYYMMDD-HHMMSS` → add relevant files, discard temp files → commit → open PR → treat as scenario A (non-draft PR exists)
+- **IF on feature branch + untracked files exist**: Add relevant files to current branch, discard temp files, proceed as usual
+- **NEVER push untracked files directly to main** - always through PR review process
+- **PRESERVE**: Build folders for faster rebuilds | **DISCARD**: Temp files, artifacts, editor files
 
 **B. If DRAFT PRs exist (but no non-draft PRs):**
 - Pick one draft PR (prefer current branch if it's a draft PR branch)  
@@ -186,19 +194,18 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 **PHASE 4: RED Phase** - georg-test-engineer assesses and implements test changes
    - **COMMIT**: georg commits test changes (if any) and opens draft PR after completion
 
-**PHASE 5: Implementation Phase** - **Docs-First**
-   - winny-technical-writer assesses and implements documentation changes using test specifications
-   - sergei-perfectionist-coder assesses and implements code changes + updates API/developer docs using winny's documentation as guide
-   - **COMMIT**: Each agent commits their own work after completion
+**PHASE 5: Implementation Phase** - **Serial Docs-First**
+   - winny-technical-writer assesses and implements documentation changes using test specifications, commits own work
+   - sergei-perfectionist-coder assesses and implements code changes + updates API/developer docs using winny's documentation as guide, commits own work
 
 **PHASE 6: Review Phase**
-   - max-devops technical validation (FIRST REVIEWER - build/test/hygiene analysis) → immediate handback if critical issues
-   - patrick-auditor code quality + security review → immediate handback if critical issues  
-   - vicky-acceptance-tester user acceptance + UX validation → immediate handback if critical issues
-   - chris-architect architecture alignment review → immediate handback if critical issues
+   - max-devops review (technical validation, build/test/hygiene analysis) → immediate handback if critical issues
+   - patrick-auditor review (code quality + security) → immediate handback if critical issues  
+   - vicky-acceptance-tester review (user acceptance + UX validation) → immediate handback if critical issues
+   - chris-architect review (architecture alignment) → immediate handback if critical issues
    - **MANUAL REVIEW MODE ONLY** - User final review → immediate handback if critical issues
    - **MINOR FIX AUTONOMY**: All reviewers encouraged to fix minor issues within their scope autonomously and commit cleanly
-   - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to THE FIRST reviewer (max-devops) to restart entire review chain from beginning
+   - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to max-devops to restart entire review chain from beginning
 
 **PHASE 7: Completion** - **COMBINED FINAL PHASE**
    - **max-devops**: Repository cleanup, CI validation, PR merge, working directory cleanup
@@ -270,6 +277,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
   - **Issue labels**: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY], [DOCS] (defects only)
 - **FORBIDDEN in playtest**: [IMPROVEMENT], [ENHANCEMENT], [FEATURE], [UX] (unless fixing broken UX)
 - chris-architect owns issue lifecycle, triage, prioritization, closure decisions
+- **COMPETENCE BOUND CONFLICTS**: For overlapping responsibilities, chris-architect serves as tie-breaker
 - Never expand PR scope - file issues for scope creep
 - Escalate complex blockers (>2hrs), architectural conflicts, unclear requirements to user
 

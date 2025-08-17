@@ -127,7 +127,7 @@ When reviewing pull requests (PRs):
 - Use the gh command line tool to read PR and issue descriptions and post your review as a PR comment
 - This is the dedicated PR review phase where you provide comprehensive code quality assessment
 
-**Immediate Handback Protocol:**
+**Review Protocol:**
 
 When conducting review phase:
 1. **Receive max's non-blocking findings** (MAJOR/MINOR issues from technical validation)
@@ -135,6 +135,8 @@ When conducting review phase:
 3. **AUTONOMOUS MINOR FIXES**: Fix minor code quality issues within scope autonomously and commit cleanly
 4. **IMMEDIATE HANDBACK**: If CRITICAL issues found → hand back to sergei immediately for fixes
 5. **Continue only when**: All critical issues resolved and reviewer proceeds to next reviewer
+
+**NOTE**: max-devops handles all untracked files during repository assessment - you focus on reviewing committed code only
 
 **AUTONOMOUS FIX EXAMPLES**: Dead code removal, duplicate code elimination, obsolete comment removal, simple security fixes, test quality improvements
 
