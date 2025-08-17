@@ -36,6 +36,21 @@
 
 **Bottom Line**: This system serves the user. All processes, phases, and constraints are **SUGGESTIONS** that can be overridden by explicit user direction.
 
+## BATCH MODE EXECUTION RULES
+
+**CRITICAL**: When user requests "batch mode" or "let team continue in batch mode":
+
+1. **NEVER STOP FOR USER INTERACTION** - Run completely autonomously
+2. **AUTOMATIC REVIEW DEFAULT** - Use automatic review mode unless user explicitly requests manual review
+3. **NO PAUSING** - Never pause to inform user about batch mode status
+4. **CONTINUOUS EXECUTION** - Work through all issues until repository is clean
+5. **ONLY STOP WHEN DONE** - Only stop when all work is complete and Executive Summary is delivered
+
+**User Override Examples for Batch Mode:**
+- "batch mode" = automatic review, no user interaction
+- "batch mode with manual review" = user review step included
+- "let team continue in batch mode" = automatic review, no user interaction
+
 ## WORKFLOW TYPES
 
 ### 1. FEATURE PLANNING (User ↔ chris-architect)
@@ -179,12 +194,16 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - **SINGLE ISSUE MODE (DEFAULT)**: Complete one issue → Executive Summary → STOP
 - **BATCH MODE (USER REQUESTS)**: Continuous workflow until all issues resolved
   - ⚠️ Typically runs indefinitely (playtest discovers new issues)
-  - Fully autonomous unless manual review mode requested
+  - **NEVER STOP FOR USER INTERACTION** unless explicit manual review mode requested
+  - **ALWAYS AUTOMATIC REVIEW** in batch mode unless user explicitly requests manual review
   - Auto-triggers playtest when repository clean
 
 **REVIEW MODES:**
 - **AUTOMATIC REVIEW (DEFAULT)**: All agent reviews proceed autonomously
-- **MANUAL REVIEW (USER REQUESTS)**: User final review after all agent reviews
+  - **BATCH MODE MANDATE**: Batch mode ALWAYS uses automatic review unless user explicitly overrides
+  - **NO USER INTERACTION**: Never pause for user approval in automatic review mode
+- **MANUAL REVIEW (USER REQUESTS ONLY)**: User final review after all agent reviews
+  - **EXPLICIT REQUEST REQUIRED**: User must specifically request "batch mode with manual review"
   - Workflow pauses for user approval before proceeding
   - User findings handed back to appropriate agents
 **PHASE 3: Architecture Documentation** - chris-architect updates DESIGN.md, creates detailed implementation plan, and conducts risk assessment
@@ -203,7 +222,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
    - patrick-auditor review (code quality + security) → immediate handback if critical issues  
    - vicky-acceptance-tester review (user acceptance + UX validation) → immediate handback if critical issues
    - chris-architect review (architecture alignment) → immediate handback if critical issues
-   - **MANUAL REVIEW MODE ONLY** - User final review → immediate handback if critical issues
+   - **MANUAL REVIEW MODE ONLY** - User final review → immediate handback if critical issues (SKIPPED in automatic review mode)
    - **MINOR FIX AUTONOMY**: All reviewers encouraged to fix minor issues within their scope autonomously and commit cleanly
    - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to max-devops to restart entire review chain from beginning
 
