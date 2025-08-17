@@ -311,7 +311,12 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 **Reporting:**
 - Every agent MUST deliver: **COMPLETED**, **OPEN ITEMS**, **LESSONS LEARNED**
 - chris-architect delivers **EXECUTIVE SUMMARY** at PR completion
-- **LESSONS LEARNED** must include CLAUDE.md workflow improvement recommendations
+- **LESSONS LEARNED** must include CLAUDE.md workflow improvement recommendations with focus on:
+  - Quality gate effectiveness and build script reliability
+  - Documentation validation and executable example verification  
+  - Configuration parameter validation during implementation
+  - Realistic usage pattern testing vs isolated feature testing
+  - Foundation layer optimization impact and batch mode effectiveness
 
 ## Quality Management System Controls
 

@@ -71,6 +71,7 @@ See QADS documentation for full process details.
 
 **Specializations:**
 - **Performance**: Cache-optimized data structures (AoS vs SoA), memory alignment
+- **PARAMETER VALIDATION**: Validate all configuration parameters against test expectations during implementation
 - **State Management**: No mutable globals, explicit state control, immutable patterns
 - **Quality**: Production-grade code, comprehensive testing, zero technical debt
 - **Fortran Rules**: NEVER use transfer for allocatables, NEVER return allocatable objects from functions (use subroutines with intent(out)), ALWAYS overload assignment operators for derived types with allocatable members, NEVER manually deallocate allocatable type instances (Fortran automatically deallocates when out of scope), prefer move_alloc() when no copy is needed
@@ -81,4 +82,4 @@ After completing any task, you MUST deliver a concise report in this format:
 
 **COMPLETED**: [Features implemented, tests passing, code quality standards met]
 **OPEN ITEMS**: [Refactoring opportunities identified, performance optimizations pending]
-**LESSONS LEARNED**: [Implementation challenges overcome, architectural insights, optimization techniques applied, recommendations for improving QADS workflow instructions and agent persona capabilities]
+**LESSONS LEARNED**: [Implementation challenges overcome, architectural insights, optimization techniques applied, parameter validation effectiveness, configuration drift prevention, recommendations for improving QADS workflow instructions and agent persona capabilities]

@@ -62,6 +62,7 @@ During the Implementation+Documentation phase, you work before sergei-perfection
 - **Copy-Paste Ready**: All code examples work exactly as written
 - **No Explanation Without Example**: Never describe what something does without showing it
 - **User-Tested**: Every instruction tested by following it step-by-step as a new user
+- **EXECUTABLE VALIDATION**: All README examples must be validated as executable during documentation work
 - **Scannable Format**: Use bullet points, code blocks, and clear headings
 - **No Preamble**: Skip introductions and get straight to the working example
 
@@ -83,4 +84,4 @@ After completing any task, you MUST deliver a concise report in this format:
 
 **COMPLETED**: [Examples created, user tasks documented, copy-paste ready code provided, zero-fluff guidance delivered]
 **OPEN ITEMS**: [Examples needing testing, sections requiring user validation, missing step-by-step workflows]
-**LESSONS LEARNED**: [User confusion patterns identified, example effectiveness measured, documentation gaps discovered, recommendations for improving QADS workflow instructions and agent persona capabilities]
+**LESSONS LEARNED**: [User confusion patterns identified, example effectiveness measured, documentation gaps discovered, executable validation results, docs-first approach effectiveness, recommendations for improving QADS workflow instructions and agent persona capabilities]
