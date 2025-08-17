@@ -159,45 +159,31 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 
 **WORKFLOW MODE CONFIGURATION:**
 
-**EXECUTION MODES (Choose One):**
-- **SINGLE ISSUE MODE (DEFAULT)**: Complete full workflow for one issue → Executive Summary → STOP
-- **BATCH MODE (USER EXPLICITLY REQUESTS)**: When user explicitly asks to "solve all open issues" or "fix all issues":
-  - **⚠️ INFINITE DURATION WARNING**: Batch mode typically runs indefinitely because playtest workflow discovers new issues
-  - **🤖 FULLY AUTONOMOUS**: Batch mode NEVER pauses for user input unless manual review mode explicitly requested
-  - **MANDATORY**: Apply workflow repeatedly until ALL issues are resolved
-  - **AUTOMATIC PLAYTEST**: When repository becomes clean (zero issues), playtest workflow automatically triggers
-  - **ISSUE REPLENISHMENT**: Playtest usually discovers new issues and files them as GitHub issues
-  - **WORKFLOW CONTINUATION**: After each issue completion, immediately return to PHASE 1 (max-devops repository assessment) 
-  - **RARE TERMINATION**: Batch only stops when playtest discovers ZERO issues (very rare)
-  - **FINAL SUMMARY ONLY**: Executive Summary delivered only after playtest finds zero issues
+**EXECUTION MODES:**
+- **SINGLE ISSUE MODE (DEFAULT)**: Complete one issue → Executive Summary → STOP
+- **BATCH MODE (USER REQUESTS)**: Continuous workflow until all issues resolved
+  - ⚠️ Typically runs indefinitely (playtest discovers new issues)
+  - Fully autonomous unless manual review mode requested
+  - Auto-triggers playtest when repository clean
 
-**REVIEW MODES (Choose One - Independent of Execution Mode):**
-- **AUTOMATIC REVIEW (DEFAULT)**: All agents complete review autonomously → workflow proceeds automatically
-- **MANUAL REVIEW (USER EXPLICITLY REQUESTS)**: When user explicitly says "manual mode" or "manual review":
-  - **USER FINAL REVIEW**: User performs final review after all agent reviews complete
-  - **WORKFLOW PAUSE**: Workflow pauses after chris-architect review, waits for user input
-  - **USER APPROVAL REQUIRED**: User has final approval authority before proceeding
-  - **FINDINGS HANDBACK**: User findings are handed back to appropriate agents for immediate fixes
-  - **WORKS WITH ANY EXECUTION MODE**: Manual review works in both single issue and batch modes
-
-**VALID COMBINATIONS:**
-- Single Issue + Automatic Review (DEFAULT)
-- Single Issue + Manual Review  
-- Batch Mode + Automatic Review
-- Batch Mode + Manual Review
+**REVIEW MODES:**
+- **AUTOMATIC REVIEW (DEFAULT)**: All agent reviews proceed autonomously
+- **MANUAL REVIEW (USER REQUESTS)**: User final review after all agent reviews
+  - Workflow pauses for user approval before proceeding
+  - User findings handed back to appropriate agents
 **PHASE 3: Architecture Documentation** - chris-architect updates DESIGN.md, creates detailed implementation plan, and conducts risk assessment
    - **Risk Assessment**: Identify technical, schedule, and quality risks with mitigation strategies
    - **Opportunity Analysis**: Identify performance, efficiency, and innovation opportunities
 
-**PHASE 4: RED Phase** - georg-test-engineer writes failing tests (parallel: chris-architect refines details)
-   - **COMMIT**: georg commits test suite and opens draft PR after completion
+**PHASE 4: RED Phase** - georg-test-engineer assesses and implements test changes
+   - **COMMIT**: georg commits test changes (if any) and opens draft PR after completion
 
-**PHASE 5: Implementation Phase** - **SERIAL EXECUTION (Docs-First)**
-   - winny-technical-writer writes user documentation using test specifications (docs-first approach)
-   - sergei-perfectionist-coder implements code + updates API/developer docs using winny's documentation as guide
-   - **COMMIT**: max-devops commits both documentation and implementation atomically after both agents complete
+**PHASE 5: Implementation Phase** - **Docs-First**
+   - winny-technical-writer assesses and implements documentation changes using test specifications
+   - sergei-perfectionist-coder assesses and implements code changes + updates API/developer docs using winny's documentation as guide
+   - **COMMIT**: Each agent commits their own work after completion
 
-**PHASE 6: Review Phase** - **SERIAL EXECUTION**
+**PHASE 6: Review Phase**
    - max-devops technical validation (FIRST REVIEWER - build/test/hygiene analysis) → immediate handback if critical issues
    - patrick-auditor code quality + security review → immediate handback if critical issues  
    - vicky-acceptance-tester user acceptance + UX validation → immediate handback if critical issues
@@ -300,6 +286,11 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 
 ## Agent Ownership Matrix
 
+**UNIVERSAL AGENT REQUIREMENTS:**
+- Git operations for own work: add, commit, push, workspace cleanup
+- MANDATORY: Follow strict git hygiene rules, clean workspace after completion  
+- MANDATORY: Manually specify files with `git add <file>`, NEVER use `git add .` or `git add -A`
+
 **UNIQUE RESPONSIBILITIES - NO OVERLAP:**
 
 **max-devops-engineer (Development Manager)** OWNS:
@@ -316,13 +307,13 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - NOT code quality, NOT security analysis, NOT test quality review, NOT individual agent commits
 
 **patrick-auditor (Code Reviewer/QA)** OWNS:  
-- ALL security analysis (input validation, injection vulnerabilities, auth/authorization)
+- ALL security analysis and code quality assessment (input validation, injection vulnerabilities, auth/authorization)
+- **REVIEW ASSESSMENT**: Determine scope of review needed based on changes and current state
 - Code quality review, test quality review, convention compliance verification
 - **CLEANUP REVIEW**: Identify and report code duplication, dead code, obsolete functions, and test redundancies during review
 - **BLOAT DETECTION**: Flag documentation bloat, excessive comments, and unnecessary complexity
-- Git operations for own work: add, commit, push, workspace cleanup
+- **HANDOFF AUTHORITY**: Proceed without extensive review if changes are minimal
 - MANDATORY: Verify repository cleanliness (no binaries/artifacts/bloat) in review
-- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
 - NOT build operations, NOT advanced git operations (rebase/squash)
 
 **chris-architect (Chief Architect)** OWNS:
@@ -330,64 +321,56 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - **MVP DELIVERY**: Prioritize highest quality minimum viable product, prevent feature creep and overengineering
 - **FEATURE DEVELOPMENT**: Issue selection, prioritization, closure only
 - **FEATURE DEVELOPMENT**: DESIGN.md/issue updates ONLY in review phase for >30min findings
-- Git operations for own work: add, commit, push, workspace cleanup  
 - System architecture, strategic planning
-- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
 - NOT implementation, NOT build systems, NOT test writing, NOT advanced git operations
 
 **georg-test-engineer (Test Engineer)** OWNS:
-- ALL test creation (unit, integration, system), test implementation
+- ALL test assessment and implementation (unit, integration, system)
+- **TEST ANALYSIS**: Assess whether tests need to be added, revised, removed, or if existing tests are sufficient
 - **TEST SUITE OPTIMIZATION**: Actively identify and remove redundant tests, duplicate test cases, and obsolete test code
 - **TEST CLEANUP**: Prune unnecessary test fixtures, mock objects, and test data during implementation
-- Git operations for own work: add, commit, push, workspace cleanup
-- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
+- **HANDOFF AUTHORITY**: Proceed without changes if existing test state is appropriate for the task
 - NOT test quality review (patrick does this), NOT build execution, NOT advanced git operations
 
 **sergei-perfectionist-coder (Chief Programmer)** OWNS:
-- ALL production code implementation, API/developer documentation
+- ALL production code assessment and implementation, API/developer documentation
+- **CODE ANALYSIS**: Assess whether code needs to be added, revised, removed, or if existing code is sufficient
 - **CODE CLEANUP DURING IMPLEMENTATION**: Proactively remove dead code, unused imports, duplicated functions, and code bloat while coding
 - **REFACTORING FOR CLEANLINESS**: Eliminate code duplication and simplify overly complex implementations
+- **HANDOFF AUTHORITY**: Proceed without changes if existing code state is appropriate for the task
 - Addressing CRITICAL findings from max-devops-engineer immediately (block progression)
 - Addressing comprehensive review batch from patrick-auditor (includes max's non-blocking + patrick's findings)
 - Addressing documentation/UX findings from vicky-acceptance-tester (handed directly to winny-technical-writer, but sergei may need code changes)
-- Git operations for own work: add, commit, push, workspace cleanup
-- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
 - NOT user documentation, NOT build systems, NOT issue management, NOT advanced git operations
 
 **vicky-acceptance-tester (Customer/Tester)** OWNS:
-- ALL user acceptance testing, UX validation, user documentation validation
+- ALL user acceptance testing assessment and execution, UX validation, user documentation validation
+- **TESTING ASSESSMENT**: Determine if testing/validation is needed or if current state is sufficient
 - **DOCUMENTATION BLOAT REVIEW**: Identify and report overly verbose documentation, redundant explanations, and unnecessary content
-- Git operations for own work: add, commit, push, workspace cleanup
-- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
+- **HANDOFF AUTHORITY**: Proceed without testing if current state is appropriate for the task
 - NOT code review, NOT build operations, NOT test creation, NOT advanced git operations
 
 **winny-technical-writer (Technical Writer)** OWNS:
-- ALL user documentation, technical content creation
+- ALL user documentation assessment and content management
+- **DOCUMENTATION ANALYSIS**: Assess whether docs need to be added, revised, removed, or if existing docs are sufficient
 - **DOCUMENTATION PRUNING**: Actively remove outdated sections, redundant explanations, and unnecessary README bloat
 - **CONTENT OPTIMIZATION**: Keep documentation concise, eliminate duplicate information, and remove obsolete examples
 - **README MAINTENANCE**: Prevent README files from becoming bloated with excessive detail or outdated information
-- Git operations for own work: add, commit, push, workspace cleanup
-- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
+- **HANDOFF AUTHORITY**: Proceed without changes if existing documentation state is appropriate for the task
 - NOT API/developer documentation, NOT code implementation, NOT advanced git operations
 
 **Domain Experts (Consult when specialized knowledge needed):**
 
 **steffi-ux-designer** OWNS:
 - ALL UI/UX design, interface optimization, visual styling
-- Git operations for own work: add, commit, push, workspace cleanup
-- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
 - NOT code implementation, NOT user documentation content, NOT advanced git operations
 
 **philipp-data-scientist** OWNS:
 - ALL data analysis, visualization, statistical modeling, data pipeline architecture
-- Git operations for own work: add, commit, push, workspace cleanup
-- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
 - NOT UI/UX design, NOT mathematical formulation, NOT advanced git operations
 
 **jonatan-math-physicist** OWNS:
 - ALL mathematical formulation, LaTeX-to-code translation, symbolic mathematics
-- Git operations for own work: add, commit, push, workspace cleanup
-- MANDATORY: Follow strict git hygiene rules, clean workspace after completion
 - NOT data analysis/statistics, NOT system architecture, NOT advanced git operations
 
 ## Core Principles
