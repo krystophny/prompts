@@ -93,7 +93,8 @@ Use this **decision tree** to choose the appropriate workflow:
    - **Phase 1**: sergei-perfectionist-coder implementation
    - **Phase 2**: Serial Review Chain (max-devops validation → patrick-auditor review → **chris-architect final review**)
    - **Phase 3**: max-devops cleanup and completion
-   - **Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Now (<30min) or File Issue
+   - **Findings Protocol**: CRITICAL → immediate handback | MAJOR/MINOR → Fix Autonomously (if within scope) or File Issue
+   - **MINOR FIX AUTONOMY**: Reviewers encouraged to fix minor issues within their scope autonomously and commit cleanly
    - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to THE FIRST reviewer (max-devops) to restart entire review chain from beginning
 
 **Simple Workflow Execution Modes:**
@@ -196,6 +197,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
    - vicky-acceptance-tester user acceptance + UX validation → immediate handback if critical issues
    - chris-architect architecture alignment review → immediate handback if critical issues
    - **MANUAL REVIEW MODE ONLY** - User final review → immediate handback if critical issues
+   - **MINOR FIX AUTONOMY**: All reviewers encouraged to fix minor issues within their scope autonomously and commit cleanly
    - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to THE FIRST reviewer (max-devops) to restart entire review chain from beginning
 
 **PHASE 7: Completion** - **COMBINED FINAL PHASE**
@@ -251,9 +253,10 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - NEVER commit binary files, build artifacts, or temporary files
 
 **Issue Management:**
-- **"Fix Now (<30min) or File Issue"** decision protocol:
+- **"Fix Autonomously or File Issue"** decision protocol:
   - **CRITICAL findings** → Always fix immediately (required for progression)
-  - **MAJOR/MINOR findings** → Fix now if <30min, otherwise create GitHub issue
+  - **MAJOR/MINOR findings** → Fix autonomously if within reviewer scope, otherwise create GitHub issue
+  - **AUTONOMOUS FIX SCOPE**: Each reviewer can fix minor issues in their domain without handback protocol
   - **Issue labels**: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY], [DOCS] (defects only)
 - **FORBIDDEN in playtest**: [IMPROVEMENT], [ENHANCEMENT], [FEATURE], [UX] (unless fixing broken UX)
 - chris-architect owns issue lifecycle, triage, prioritization, closure decisions
@@ -264,7 +267,8 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - **Findings** = Discovered during current PR review cycle (immediate attention)
 - **Issues** = Filed for future work outside current PR scope
 - **Critical findings** must be fixed before progression, cannot become issues
-- **Major/Minor findings** can become issues if they require >30min work
+- **Major/Minor findings** can be fixed autonomously by reviewer if within their scope, otherwise become issues
+- **AUTONOMOUS FIXES**: Reviewers encouraged to fix minor issues directly and commit cleanly without disrupting workflow
 
 **Reporting:**
 - Every agent MUST deliver: **COMPLETED**, **OPEN ITEMS**, **LESSONS LEARNED**

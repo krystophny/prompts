@@ -134,7 +134,8 @@ Phases:
 
 Manual Review Mode: User participates as final reviewer (only when explicitly requested)
 
-Findings Protocol: CRITICAL → immediate handback | MAJOR/MINOR → Fix Now (<30min) or File Issue
+Findings Protocol: CRITICAL → immediate handback | MAJOR/MINOR → Fix Autonomously (if within scope) or File Issue
+Minor Fix Autonomy: Reviewers fix minor issues within their scope autonomously and commit cleanly
 Critical Handback: sergei fixes → return to first reviewer (max) → restart entire review chain from beginning
 Iteration: Repeat phases until all findings resolved
 
@@ -187,7 +188,8 @@ Issues come from three sources:
 | **Playtest Audit** | System-wide testing on clean repository | Comprehensive DEFECT backlog (NEVER new features) |
 
 Management Principles:
-- Fix Now (<30min) or File Issue: Critical findings fixed immediately, others become issues  
+- Fix Autonomously or File Issue: Critical findings fixed immediately, minor issues fixed by reviewers within scope, others become issues
+- Autonomous Fix Scope: Each reviewer can fix minor issues in their domain without disrupting workflow  
 - Labels: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY], [DOCS] (defects only)
 - ⚠️ **FORBIDDEN in playtest**: [IMPROVEMENT], [ENHANCEMENT], [FEATURE], [UX] (unless fixing broken UX)
 - Default Management: chris-architect handles lifecycle, triage, prioritization
@@ -403,6 +405,13 @@ Start → Complete Issue → Repository Assessment → Issues Remain?
                                     │   Critical issues found?     │
                                     │          YES│NO              │
                                     │             │                │
+                                    │   ┌─────────▼─────────┐      │
+                                    │   │Minor fixes within │      │
+                                    │   │reviewer scope?    │      │
+                                    │   │Fix autonomously   │      │
+                                    │   │and commit cleanly │      │
+                                    │   └─────────┬─────────┘      │
+                                    │             │                │
                                     │        ┌────▼────┐          │
                                     │        │Hand back│          │
                                     │        │to sergei│          │
@@ -450,6 +459,13 @@ Phase 6: Serial Review Chain
                                                    │     At ANY review phase:     │
                                                    │   Critical issues found?     │
                                                    │          YES│NO              │
+                                                   │             │                │
+                                                   │   ┌─────────▼─────────┐      │
+                                                   │   │Minor fixes within │      │
+                                                   │   │reviewer scope?    │      │
+                                                   │   │Fix autonomously   │      │
+                                                   │   │and commit cleanly │      │
+                                                   │   └─────────┬─────────┘      │
                                                    │             │                │
                                                    │        ┌────▼────┐          │
                                                    │        │Hand back│          │
