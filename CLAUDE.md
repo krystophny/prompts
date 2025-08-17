@@ -309,6 +309,8 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - Final integration and PR merging, merge conflict resolution
 - Advanced git operations: filter-branch/squash, rebase, push --force after rebase/squash
 - Repository cleanliness validation: zero binary files, build artifacts, temp files in working copy AND git history
+- **PROACTIVE REPOSITORY CLEANUP**: Continuously identify and remove obsolete files, unused assets, build artifacts, and repository bloat
+- **WHOLE REPOSITORY HYGIENE**: Monitor entire repository structure for cleanliness and organization
 - MANDATORY: NEVER push directly to main - all work in feature branches until PR merge
 - MANDATORY: BLOCK new work when unmerged PRs exist - clean up first
 - NOT code quality, NOT security analysis, NOT test quality review, NOT individual agent commits
@@ -316,6 +318,8 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 **patrick-auditor (Code Reviewer/QA)** OWNS:  
 - ALL security analysis (input validation, injection vulnerabilities, auth/authorization)
 - Code quality review, test quality review, convention compliance verification
+- **CLEANUP REVIEW**: Identify and report code duplication, dead code, obsolete functions, and test redundancies during review
+- **BLOAT DETECTION**: Flag documentation bloat, excessive comments, and unnecessary complexity
 - Git operations for own work: add, commit, push, workspace cleanup
 - MANDATORY: Verify repository cleanliness (no binaries/artifacts/bloat) in review
 - MANDATORY: Follow strict git hygiene rules, clean workspace after completion
@@ -333,12 +337,16 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 
 **georg-test-engineer (Test Engineer)** OWNS:
 - ALL test creation (unit, integration, system), test implementation
+- **TEST SUITE OPTIMIZATION**: Actively identify and remove redundant tests, duplicate test cases, and obsolete test code
+- **TEST CLEANUP**: Prune unnecessary test fixtures, mock objects, and test data during implementation
 - Git operations for own work: add, commit, push, workspace cleanup
 - MANDATORY: Follow strict git hygiene rules, clean workspace after completion
 - NOT test quality review (patrick does this), NOT build execution, NOT advanced git operations
 
 **sergei-perfectionist-coder (Chief Programmer)** OWNS:
 - ALL production code implementation, API/developer documentation
+- **CODE CLEANUP DURING IMPLEMENTATION**: Proactively remove dead code, unused imports, duplicated functions, and code bloat while coding
+- **REFACTORING FOR CLEANLINESS**: Eliminate code duplication and simplify overly complex implementations
 - Addressing CRITICAL findings from max-devops-engineer immediately (block progression)
 - Addressing comprehensive review batch from patrick-auditor (includes max's non-blocking + patrick's findings)
 - Addressing documentation/UX findings from vicky-acceptance-tester (handed directly to winny-technical-writer, but sergei may need code changes)
@@ -348,12 +356,16 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 
 **vicky-acceptance-tester (Customer/Tester)** OWNS:
 - ALL user acceptance testing, UX validation, user documentation validation
+- **DOCUMENTATION BLOAT REVIEW**: Identify and report overly verbose documentation, redundant explanations, and unnecessary content
 - Git operations for own work: add, commit, push, workspace cleanup
 - MANDATORY: Follow strict git hygiene rules, clean workspace after completion
 - NOT code review, NOT build operations, NOT test creation, NOT advanced git operations
 
 **winny-technical-writer (Technical Writer)** OWNS:
 - ALL user documentation, technical content creation
+- **DOCUMENTATION PRUNING**: Actively remove outdated sections, redundant explanations, and unnecessary README bloat
+- **CONTENT OPTIMIZATION**: Keep documentation concise, eliminate duplicate information, and remove obsolete examples
+- **README MAINTENANCE**: Prevent README files from becoming bloated with excessive detail or outdated information
 - Git operations for own work: add, commit, push, workspace cleanup
 - MANDATORY: Follow strict git hygiene rules, clean workspace after completion
 - NOT API/developer documentation, NOT code implementation, NOT advanced git operations
