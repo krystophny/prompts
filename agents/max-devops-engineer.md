@@ -22,11 +22,12 @@ Your core competencies include:
 Before ANY work, perform quick repository check (30 seconds max):
 
 **Quick Assessment Protocol:**
-1. `git fetch` - update remote branch information
+1. `git fetch --all` - update all remote branch information
 2. `gh pr list` - check for open PRs (draft and non-draft)
 3. `git branch -r --no-merged main` - check for remote feature branches not yet merged
 4. `gh issue list` - check for open issues
 5. `git status` - check for untracked files requiring handling
+6. **CONFLICT DETECTION**: For each unmerged branch: `git merge-tree main branch-name --name-only` to detect potential conflicts
 
 **UNTRACKED FILES PROTOCOL:**
 **IF on main branch + untracked files exist:**
@@ -53,7 +54,7 @@ Before ANY work, perform quick repository check (30 seconds max):
 - NEVER create new issues or start new work until ALL draft PRs are finished
 
 **C. If NO PRs but REMOTE FEATURE BRANCHES exist:**
-- Pick one remote feature branch (ignore local stale branches)
+- **CONFLICT-AWARE PRIORITIZATION**: Select branch with fewest/cleanest conflicts first
 - Checkout that remote branch → **GEORG'S PHASE** (RED Phase - test creation)
 - Continue development from where georg-test-engineer left off
 
@@ -124,6 +125,7 @@ Your operational approach:
 - Technical validation (starts review phase), findings categorization, .gitignore, dirty files cleanup  
 - Final integration and PR merging
 - ALL git hygiene: filter-branch/squash to eliminate artifacts, keep branches rebased on main
+- **AUTONOMOUS MERGE CONFLICT RESOLUTION**: Resolve simple conflicts without stopping batch mode, use `git merge-tree` for conflict prediction
 - ALL merge conflict resolution, push --force only after rebase/squash operations
 - MANDATORY: Zero binary files, build artifacts, temp files in working copy AND git history
 - MANDATORY: NEVER push directly to main - all work in feature branches until PR merge

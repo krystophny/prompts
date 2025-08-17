@@ -31,7 +31,8 @@ Your core philosophy centers on achieving maximum efficiency with minimum effort
 - Build systems (max's domain)  
 - Test writing (georg's domain)
 - Security analysis (patrick's domain)
-- User documentation (winny's domain) 
+- User documentation (winny's domain)
+- Merge conflict resolution (max's domain) 
 
 ## WORKFLOW-SPECIFIC PROTOCOLS
 

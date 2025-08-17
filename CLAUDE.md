@@ -44,7 +44,8 @@
 2. **AUTOMATIC REVIEW DEFAULT** - Use automatic review mode unless user explicitly requests manual review
 3. **NO PAUSING** - Never pause to inform user about batch mode status
 4. **CONTINUOUS EXECUTION** - Work through all issues until repository is clean
-5. **ONLY STOP WHEN DONE** - Only stop when all work is complete and Executive Summary is delivered
+5. **AUTONOMOUS CONFLICT RESOLUTION** - max-devops resolves merge conflicts without stopping batch mode
+6. **ONLY STOP WHEN DONE** - Only stop when all work is complete and Executive Summary is delivered
 
 **User Override Examples for Batch Mode:**
 - "batch mode" = automatic review, no user interaction
@@ -133,11 +134,12 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 **PHASE 1: max-devops-engineer** - Repository State Assessment and Cleanup (MANDATORY FIRST STEP)
 
 **Quick Assessment Protocol (30 seconds max):**
-1. `git fetch` - update remote branch information
+1. `git fetch --all` - update all remote branch information
 2. `gh pr list` - check for open PRs (draft and non-draft)
 3. `git branch -r --no-merged main` - check for remote feature branches not yet merged
 4. `gh issue list` - check for open issues
 5. `git status` - check for untracked files requiring handling
+6. **CONFLICT DETECTION**: For each unmerged branch: `git merge-tree main branch-name --name-only` to detect potential conflicts
 
 **A. If NON-DRAFT PRs exist:**
 - Pick one non-draft PR (prefer current branch if it's a PR branch)
@@ -156,7 +158,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - NEVER create new issues or start new work until ALL draft PRs are finished
 
 **C. If NO PRs but REMOTE FEATURE BRANCHES exist:**
-- Pick one remote feature branch (ignore local stale branches)
+- **CONFLICT-AWARE PRIORITIZATION**: Select branch with fewest/cleanest conflicts first
 - Checkout that remote branch → **RED PHASE** (Phase 4 - georg-test-engineer continues)
 - Continue development from where work was left off
 
@@ -311,12 +313,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 **Reporting:**
 - Every agent MUST deliver: **COMPLETED**, **OPEN ITEMS**, **LESSONS LEARNED**
 - chris-architect delivers **EXECUTIVE SUMMARY** at PR completion
-- **LESSONS LEARNED** must include CLAUDE.md workflow improvement recommendations with focus on:
-  - Quality gate effectiveness and build script reliability
-  - Documentation validation and executable example verification  
-  - Configuration parameter validation during implementation
-  - Realistic usage pattern testing vs isolated feature testing
-  - Foundation layer optimization impact and batch mode effectiveness
+- **LESSONS LEARNED** must include CLAUDE.md workflow improvement recommendations
 
 ## Quality Management System Controls
 
@@ -362,11 +359,12 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - Repository state assessment and PR triage (MANDATORY first phase)
 - Build execution, CI/CD operations, repository state management
 - Technical validation (review phase), findings categorization, CI monitoring
-- Final integration and PR merging, merge conflict resolution
+- Final integration and PR merging, **autonomous merge conflict resolution**
 - Advanced git operations: filter-branch/squash, rebase, push --force after rebase/squash
 - Repository cleanliness validation: zero binary files, build artifacts, temp files in working copy AND git history
 - **PROACTIVE REPOSITORY CLEANUP**: Continuously identify and remove obsolete files, unused assets, build artifacts, and repository bloat
 - **WHOLE REPOSITORY HYGIENE**: Monitor entire repository structure for cleanliness and organization
+- **CONFLICT DETECTION & RESOLUTION**: Use `git merge-tree` for conflict prediction, resolve simple conflicts autonomously in batch mode
 - MANDATORY: NEVER push directly to main - all work in feature branches until PR merge
 - MANDATORY: BLOCK new work when unmerged PRs exist - clean up first
 - NOT code quality, NOT security analysis, NOT test quality review, NOT individual agent commits

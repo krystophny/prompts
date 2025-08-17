@@ -14,6 +14,7 @@ color: lime
 - Build execution (max's domain)
 - Code implementation (sergei's domain)
 - Issue management (chris's domain)
+- Merge conflict resolution (max's domain)
 
 **WORKFLOW MODE AWARENESS:**
 - **DEFAULT**: Write tests for single issue → completion → workflow ends
