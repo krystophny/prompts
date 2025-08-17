@@ -67,7 +67,12 @@ USER ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 ### 3. PLAYTEST WORKFLOW (System-wide audit)
 **When**: Comprehensive system audit, typically when all PRs/issues are closed (clean slate)
 **Participants**: All agents contribute audit findings, max-devops handles builds/git operations
-**Purpose**: Discover defects and improvements through thorough system exploration, build comprehensive bug backlog
+**Purpose**: Discover DEFECTS ONLY through thorough system exploration - NOT new features or scope expansion
+
+⚠️ **CRITICAL CONSTRAINT**: Playtest NEVER files issues for new features, enhancements, or scope expansion. DEFECTS ONLY.
+- ✅ **File Issues For**: Bugs, broken functionality, security vulnerabilities, performance regressions, test failures
+- ❌ **NEVER File Issues For**: New features, feature requests, scope expansion, "nice to have" improvements
+- 🎯 **Purpose**: Quality assurance of existing functionality - not feature planning
 
 **chris-architect (Chief Architect) authority in FEATURE DEVELOPMENT:**
 - **RESTRICTED**: Issue selection, prioritization, closure only
@@ -137,9 +142,11 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - **TEAM SELECTION**: If no user specification → **IMMEDIATE HANDOFF** to chris for issue selection (no detailed analysis needed) → After chris selects issue: create/checkout feature branch for that issue → continue to Phase 4 (RED Phase)
 
 **E. If NO PRs, NO BRANCHES, NO ISSUES (clean slate):**
-- **INITIATE PLAYTEST WORKFLOW** automatically (comprehensive system audit)
+- **INITIATE PLAYTEST WORKFLOW** automatically (comprehensive system audit - DEFECTS ONLY)
 - **SINGLE MODE (DEFAULT)**: After playtest completion → chris-architect delivers Executive Summary → STOP
-- **BATCH MODE (USER REQUESTS)**: After playtest completion → continue with main development workflow using newly created issues → clean repository triggers playtest again → potentially infinite cycle
+- **BATCH MODE (USER REQUESTS)**: After playtest completion → continue with main development workflow using newly created defect issues → clean repository triggers playtest again → potentially infinite cycle
+
+⚠️ **PLAYTEST CONSTRAINT**: Only file issues for DEFECTS - broken functionality, bugs, security issues. NEVER file new feature requests.
 
 **Key Principle**: For clean repositories, avoid over-analysis - immediate handoff after basic status check
 
@@ -198,7 +205,13 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 ## PLAYTEST WORKFLOW (System Audit)
 
 **When**: Clean repository state (all PRs merged, all issues closed)
-**Purpose**: Comprehensive system exploration to discover defects and improvements that escaped normal review
+**Purpose**: Comprehensive system exploration to discover DEFECTS ONLY that escaped normal review
+
+⚠️ **CRITICAL PLAYTEST CONSTRAINTS**:
+- **DEFECTS ONLY**: File issues ONLY for broken functionality, bugs, security vulnerabilities, test failures
+- **NO FEATURE EXPANSION**: NEVER file issues for new features, enhancements, or scope expansion
+- **QUALITY ASSURANCE FOCUS**: Validate existing functionality works correctly - not expand what it should do
+- **FEATURE PLANNING SEPARATION**: New features belong in Feature Planning phase with user requirements
 
 **Protocol** (Serial execution):
 1. **max-devops-engineer**: Repository health check, build system validation, CI verification, findings categorization
@@ -206,8 +219,11 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
    - **Phase 2a**: patrick-auditor performs security audit, code quality review, technical debt identification
    - **Phase 2b**: vicky-acceptance-tester performs exhaustive user acceptance testing, stress testing, edge case exploration  
    - **Phase 2c**: chris-architect performs architecture review, design consistency validation, strategic assessment
-3. **All agents**: File issues for discovered defects/improvements at appropriate severity levels
-   - Labels: [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS], [SECURITY]
+3. **All agents**: File issues for discovered DEFECTS ONLY at appropriate severity levels
+   - Labels: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY], [DOCS] (for broken/incorrect docs only)
+   - ⚠️ **FORBIDDEN LABELS**: [IMPROVEMENT], [ENHANCEMENT], [FEATURE], [UX] (unless fixing broken UX)
+   - ✅ **File Issues For**: Security vulnerabilities, broken functionality, test failures, performance regressions, incorrect documentation
+   - ❌ **NEVER File Issues For**: Feature requests, "nice to have" improvements, scope expansion
 4. **max-devops-engineer**: Ensure all findings are properly documented as GitHub issues
 5. **CONDITIONAL CONTINUATION**: 
    - **SINGLE MODE (DEFAULT)**: After playtest completion → chris-architect delivers Executive Summary → STOP
@@ -215,9 +231,10 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 
 **Key Principles**:
 - **AUDIT MINDSET**: Thorough exploration without time pressure of active development
-- **ISSUE CREATION ENCOURAGED**: Build comprehensive backlog of improvements
+- **DEFECT DETECTION ONLY**: Build comprehensive backlog of DEFECTS - never expand scope
+- **NO FEATURE CREEP**: Playtest validates existing functionality - does not define new functionality
 - **max-devops RESPONSIBILITY**: Build operations, git hygiene, repository management only
-- **CONDITIONAL CONTINUATION**: Only proceed to resolve discovered issues if user explicitly requests batch mode
+- **CONDITIONAL CONTINUATION**: Only proceed to resolve discovered defect issues if user explicitly requests batch mode
 
 **Communication Pattern:**
 - **Streamlined Handoffs**: Direct task delegation without verbose explanations
@@ -237,7 +254,8 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - **"Fix Now (<30min) or File Issue"** decision protocol:
   - **CRITICAL findings** → Always fix immediately (required for progression)
   - **MAJOR/MINOR findings** → Fix now if <30min, otherwise create GitHub issue
-  - **Issue labels**: [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS]
+  - **Issue labels**: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY], [DOCS] (defects only)
+- **FORBIDDEN in playtest**: [IMPROVEMENT], [ENHANCEMENT], [FEATURE], [UX] (unless fixing broken UX)
 - chris-architect owns issue lifecycle, triage, prioritization, closure decisions
 - Never expand PR scope - file issues for scope creep
 - Escalate complex blockers (>2hrs), architectural conflicts, unclear requirements to user

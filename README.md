@@ -54,16 +54,18 @@ Goals/Requirements ──▶ chris-architect ──▶ DESIGN.md + GitHub Issues
 - 7-phase workflow from tests to delivery
 
 ### Playtest Workflow
-*Comprehensive system audit*
+*Comprehensive system audit - DEFECTS ONLY*
 
 ```
-Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ Issue Backlog
+Clean Repository ──▶ Automatic Trigger ──▶ System Audit ──▶ DEFECT Backlog
 ```
 
-- Discover defects and improvements through exhaustive system exploration
+⚠️ **CRITICAL CONSTRAINT**: Playtest NEVER creates issues for new features or scope expansion
+- Discover DEFECTS ONLY through exhaustive system exploration
 - Automatically initiated when repository is clean (no PRs/issues)
-- Serial audit by all agents to build comprehensive bug backlog
-- Creates GitHub issues labeled by severity for future development
+- Serial audit by all agents to build comprehensive DEFECT backlog
+- Creates GitHub issues labeled by severity for DEFECTS only - not new features
+- 🎯 **Purpose**: Quality assurance of existing functionality - not feature planning
 
 ---
 
@@ -182,11 +184,12 @@ Issues come from three sources:
 |--------|--------------|---------|
 | **Feature Planning** | User requirements with chris-architect | Strategic development tasks |
 | **Review Findings** | During Phase 6-7 when fixes need >30min | Prevent scope creep |
-| **Playtest Audit** | System-wide testing on clean repository | Comprehensive bug backlog |
+| **Playtest Audit** | System-wide testing on clean repository | Comprehensive DEFECT backlog (NEVER new features) |
 
 Management Principles:
 - Fix Now (<30min) or File Issue: Critical findings fixed immediately, others become issues  
-- Labels: [CRITICAL], [IMPROVEMENT], [TECHNICAL-DEBT], [UX], [DOCS], [SECURITY]
+- Labels: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY], [DOCS] (defects only)
+- ⚠️ **FORBIDDEN in playtest**: [IMPROVEMENT], [ENHANCEMENT], [FEATURE], [UX] (unless fixing broken UX)
 - Default Management: chris-architect handles lifecycle, triage, prioritization
 - Your Control: Override any selection, specify exact issue, or provide custom tasks
 
@@ -290,16 +293,20 @@ Serial Audit Phases:
 2. **patrick-auditor**: Security audit, code quality review, technical debt identification  
 3. **vicky-acceptance-tester**: Exhaustive user testing, stress testing, edge case exploration
 4. **chris-architect**: Architecture review, design consistency validation, strategic assessment
-5. **All agents**: File issues for discovered defects at appropriate severity levels
+5. **All agents**: File issues for discovered DEFECTS ONLY at appropriate severity levels
 6. **max-devops-engineer**: Ensure all findings documented as GitHub issues
 
-Issue Labels Created:
+⚠️ **AGENT CONSTRAINT**: Every agent must focus ONLY on defects - broken functionality, bugs, security issues. NEVER file feature requests or scope expansion.
+
+Issue Labels Created (DEFECTS ONLY):
 - `[CRITICAL]` - System-breaking issues requiring immediate attention
-- `[IMPROVEMENT]` - Enhancement opportunities  
-- `[TECHNICAL-DEBT]` - Code quality and maintainability issues
-- `[UX]` - User experience improvements
-- `[DOCS]` - Documentation gaps or errors
-- `[SECURITY]` - Security vulnerabilities or hardening opportunities
+- `[BUG]` - Broken functionality that needs repair
+- `[TECHNICAL-DEBT]` - Code quality and maintainability defects
+- `[SECURITY]` - Security vulnerabilities requiring fixes
+- `[DOCS]` - Documentation errors or broken examples
+
+⚠️ **FORBIDDEN LABELS in playtest**: `[IMPROVEMENT]`, `[ENHANCEMENT]`, `[FEATURE]`, `[UX]` (unless fixing broken UX)
+- 🎯 **Playtest Rule**: File issues only for what's broken, never for what's missing
 
 Completion Modes:
 - Single Mode (default): After playtest → chris-architect Executive Summary → STOP
@@ -309,7 +316,9 @@ Completion Modes:
 
 ## Batch Mode Behavior
 
-Critical Warning: Batch mode typically runs indefinitely because the playtest workflow discovers new issues each time the repository becomes clean. Only use batch mode when you have significant time available.
+Critical Warning: Batch mode typically runs indefinitely because the playtest workflow discovers new defect issues each time the repository becomes clean. Only use batch mode when you have significant time available.
+
+⚠️ **Note**: Playtest discovers DEFECTS only - not new features. Feature requests must come from Feature Planning phase.
 
 Activation: User explicitly requests "solve all open issues" or "fix all issues"
 
