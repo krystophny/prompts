@@ -61,15 +61,15 @@ A multi-agent software development system featuring specialized AI agents workin
 | **max-devops-engineer** | Development Manager | Phase 1 (Mandatory) | Repository state assessment, build operations, conflict resolution |
 | **chris-architect** | Chief Architect | Phase 2 & Final Review | System architecture, issue lifecycle, goal completion verification |
 | **georg-test-engineer** | Test Engineer | Phase 4 (RED) | Test assessment and implementation |
-| **sergei-perfectionist-coder** | Chief Programmer | Phase 5 | Production code, API documentation |
-| **patrick-auditor** | Code Reviewer/QA | Phase 6.2 | Code quality (SOLID, KISS, YAGNI, DRY), security analysis |
-| **winny-technical-writer** | Technical Writer | Phase 6.3 | User documentation of validated implementation |
-| **vicky-acceptance-tester** | Customer/Tester | Phase 6.4 | Documentation-reality validation, user workflow testing |
+| **sergei-perfectionist-coder** | Chief Programmer | Phase 5.1 | Production code, API documentation |
+| **winny-technical-writer** | Technical Writer | Phase 5.2 | User documentation authoring after implementation |
+| **patrick-auditor** | Code Reviewer/QA | Phase 6.1 | Code quality (SOLID, KISS, YAGNI, DRY), security analysis |
+| **vicky-acceptance-tester** | Customer/Tester | Phase 6.3 | Documentation-reality validation, autonomous handback authority |
 
 **Key Workflow Features:**
 - **Phase 1 Mandatory**: max-devops always assesses repository state first
-- **Documentation Chain**: winny documents validated code → vicky tests docs against reality
-- **Smart Handback**: vicky → winny (minor doc fixes) | vicky → sergei (major code-doc mismatches)
+- **Phase 5 Documentation Integration**: sergei implements → winny authors comprehensive docs → complete docs available for all reviewers
+- **Enhanced Handback Protocol**: vicky has autonomous authority to decide Phase 5 handbacks → all Phase 5 handbacks restart complete Phase 6
 
 **Specialists:** steffi-ux-designer, philipp-data-scientist, jonatan-math-physicist
 
@@ -106,14 +106,15 @@ A multi-agent software development system featuring specialized AI agents workin
 2. **Phase 2**: chris-architect work prioritization
 3. **Phase 3**: chris-architect architecture documentation
 4. **Phase 4**: georg-test-engineer test implementation (RED phase)
-5. **Phase 5**: sergei-perfectionist-coder code implementation
-6. **Phase 6**: Documentation-validated review chain:
+5. **Phase 5**: Implementation and documentation authoring:
+   - 5.1: sergei-perfectionist-coder implements code
+   - 5.2: winny-technical-writer authors comprehensive user documentation
+6. **Phase 6**: Comprehensive review chain with complete documentation:
    - 6.1: max-devops technical validation
    - 6.2: patrick-auditor code quality review  
-   - 6.3: winny-technical-writer documents validated implementation
-   - 6.4: vicky-acceptance-tester validates docs against reality
-   - 6.5: chris-architect final architecture review
-   - 6.6: User review (manual review mode only)
+   - 6.3: vicky-acceptance-tester validates docs against reality (autonomous handback authority)
+   - 6.4: chris-architect final architecture review
+   - 6.5: User review (manual review mode only)
 7. **Phase 7**: max-devops + chris-architect completion
 
 ## Core Principles

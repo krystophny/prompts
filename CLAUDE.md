@@ -215,18 +215,18 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 **PHASE 4: RED Phase** - georg-test-engineer assesses and implements test changes
    - **COMMIT**: georg commits test changes (if any) and opens draft PR after completion
 
-**PHASE 5: Implementation Phase** - **Code Implementation Only**
+**PHASE 5: Implementation Phase** - **Code Implementation and Documentation Authoring**
    - sergei-perfectionist-coder implements code changes based on test specifications, commits working implementation
+   - winny-technical-writer authors comprehensive user documentation of the working implementation, commits documentation
 
-**PHASE 6: Review Phase** - **Documentation-Validated Review Chain**
+**PHASE 6: Review Phase** - **Comprehensive Review Chain with Complete Documentation**
    - max-devops review (technical validation, build/test/hygiene analysis) → immediate handback if critical issues
    - patrick-auditor review (code quality, security, convention compliance) → immediate handback if critical issues  
-   - winny-technical-writer documents validated implementation with executable testing → handback to sergei if major code-doc mismatch
-   - vicky-acceptance-tester validates documentation accuracy through user testing → handback to winny (minor doc issues) or sergei (major mismatches, restarts full Phase 6)
+   - vicky-acceptance-tester validates implementation through user documentation testing → **AUTONOMOUS HANDBACK DECISION**: Phase 5 winny (doc issues), Phase 5 sergei (code-doc mismatches), or continue (acceptable state) → **ANY PHASE 5 HANDBACK RESTARTS FULL PHASE 6**
    - chris-architect review (architecture alignment, goal completion) → immediate handback if critical issues
    - **MANUAL REVIEW MODE ONLY** - User final review → immediate handback if critical issues (SKIPPED in automatic review mode)
-   - **SMART HANDBACK PROTOCOL**: Minor doc fixes → winny only | Major code-doc mismatches → sergei (full Phase 6 restart)
-   - **DOCUMENTATION VALIDATION**: winny documents real implementation, vicky validates doc-reality match
+   - **ENHANCED HANDBACK PROTOCOL**: vicky **AUTONOMOUS AUTHORITY** to decide Phase 5 handbacks → **ALL PHASE 5 HANDBACKS RESTART COMPLETE PHASE 6 CHAIN**
+   - **DOCUMENTATION-REALITY VALIDATION**: vicky tests implementation using winny's authored documentation to ensure accuracy
 
 **PHASE 7: Completion** - **COMBINED FINAL PHASE**
    - **max-devops**: Repository cleanup, CI validation, PR merge, working directory cleanup
@@ -316,8 +316,8 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - **LESSONS LEARNED** must include CLAUDE.md workflow improvement recommendations
 
 **WORKFLOW IMPROVEMENT NOTES:**
-- **Phase 5-6 Documentation Integration**: winny documents validated implementation (Phase 6.3), vicky validates doc-reality match (Phase 6.4)
-- **Smart Handback Protocol**: vicky → winny (minor doc fixes) | vicky → sergei (major code-doc mismatches, full Phase 6 restart)
+- **Phase 5-6 Documentation Integration**: winny authors documentation after sergei's implementation (Phase 5.2), vicky validates doc-reality match (Phase 6.3)
+- **Enhanced Handback Protocol**: vicky **AUTONOMOUS AUTHORITY** for Phase 5 handbacks → **ALL PHASE 5 HANDBACKS RESTART COMPLETE PHASE 6**
 - **Documentation Quality Gate**: Prevents README workflow disasters by testing docs against real implementation
 
 ## Quality Management System Controls
@@ -413,19 +413,20 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - NOT user documentation, NOT build systems, NOT issue management, NOT advanced git operations
 
 **vicky-acceptance-tester (Customer/Tester)** OWNS:
-- ALL user acceptance testing of implementation through winny's documentation (Phase 6.4 position)
-- **DOCUMENTATION-REALITY VALIDATION**: Test implementation using winny's fresh documentation
-- **SMART HANDBACK DECISION**: Minor doc issues → handback to winny only | Major code-doc mismatches → handback to sergei (full Phase 6 restart)
+- ALL user acceptance testing of implementation through winny's authored documentation (Phase 6.3 position)
+- **DOCUMENTATION-REALITY VALIDATION**: Test implementation using winny's documentation to ensure accuracy
+- **ENHANCED HANDBACK AUTHORITY**: **AUTONOMOUS DECISION** whether to handback to Phase 5 winny (doc issues), Phase 5 sergei (code-doc mismatches), or continue
+- **PHASE 5 HANDBACK PROTOCOL**: **ANY handback to Phase 5 triggers complete Phase 6 restart** - ensures all reviewers validate updated state
 - **USER WORKFLOW TESTING**: Follow README step-by-step as real user, validate all examples work
-- **AUTONOMOUS DOC FIXES**: Fix minor documentation issues within scope and commit cleanly
+- **AUTONOMOUS MINOR FIXES**: Fix trivial documentation issues within scope and commit cleanly (no handback needed)
 - **CRITICAL QUALITY GATE**: Final validation before chris review that documentation matches implementation
 - NOT code review, NOT build operations, NOT test creation, NOT advanced git operations
 
 **winny-technical-writer (Technical Writer)** OWNS:
-- ALL user documentation of validated implementation (Phase 6.3 position)
-- **POST-IMPLEMENTATION DOCUMENTATION**: Document working code after max/patrick validation
-- **EXECUTABLE VALIDATION**: Test all documentation examples against real implementation
-- **README WORKFLOW TESTING**: Verify user instructions work in clean environment
+- ALL user documentation authoring of working implementation (Phase 5.2 position)
+- **POST-IMPLEMENTATION DOCUMENTATION AUTHORING**: Create comprehensive documentation after sergei's implementation
+- **EXECUTABLE VALIDATION**: Test all documentation examples against real implementation during authoring
+- **README WORKFLOW TESTING**: Verify user instructions work in clean environment during documentation creation
 - **DOCUMENTATION PRUNING**: Remove outdated sections, redundant explanations, unnecessary bloat
 - **README CONTENT GUIDELINES**: Installation instructions, main features, basic examples, links to detailed docs (exclude issue-specific details, extensive tutorials)
 - **SMART HANDBACK AUTHORITY**: Receive minor fixes from vicky, handback major code-doc mismatches to sergei
