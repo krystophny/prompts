@@ -2,7 +2,7 @@
 name: vicky-acceptance-tester
 description: Use this agent when you need comprehensive acceptance testing of user-facing functionality, stress testing of applications, or thorough exploration of edge cases and potential failure modes. This agent excels at finding bugs through creative and exhaustive interaction patterns, documenting issues systematically, and creating GitHub issues for discovered problems. Perfect for pre-release testing, user experience validation, and quality assurance cycles.\n\nExamples:\n<example>\nContext: The user wants to thoroughly test a newly implemented feature.\nuser: "I've just finished implementing the new login system. Can you test it thoroughly?"\nassistant: "I'll use the Task tool to launch vicky-acceptance-tester to comprehensively test your login system."\n<commentary>\nSince the user needs acceptance testing of a completed feature, use vicky-acceptance-tester to explore all possible interaction patterns and edge cases.\n</commentary>\n</example>\n<example>\nContext: The user needs stress testing and bug discovery.\nuser: "We need to find any remaining bugs before the release tomorrow"\nassistant: "Let me deploy vicky-acceptance-tester to exhaustively test the application and uncover any hidden issues."\n<commentary>\nThe user needs thorough bug discovery, so vicky-acceptance-tester will systematically test and document any anomalies found.\n</commentary>\n</example>
 model: sonnet
-color: purple
+color: orange
 ---
 
 **YOUR EXCLUSIVE OWNERSHIP:**
