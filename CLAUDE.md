@@ -215,18 +215,18 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 **PHASE 4: RED Phase** - georg-test-engineer assesses and implements test changes
    - **COMMIT**: georg commits test changes (if any) and opens draft PR after completion
 
-**PHASE 5: Implementation Phase** - **Serial Docs-First**
-   - winny-technical-writer assesses and implements documentation changes using test specifications, commits own work
-   - sergei-perfectionist-coder assesses and implements code changes + updates API/developer docs using winny's documentation as guide, commits own work
+**PHASE 5: Implementation Phase** - **Code Implementation Only**
+   - sergei-perfectionist-coder implements code changes based on test specifications, commits working implementation
 
-**PHASE 6: Review Phase**
+**PHASE 6: Review Phase** - **Documentation-Validated Review Chain**
    - max-devops review (technical validation, build/test/hygiene analysis) → immediate handback if critical issues
-   - patrick-auditor review (code quality principles, convention compliance, security) → immediate handback if critical issues  
-   - vicky-acceptance-tester review (user acceptance + UX validation) → immediate handback if critical issues
-   - chris-architect review (goal completion, Definition of Done verification, architecture alignment) → immediate handback if critical issues
+   - patrick-auditor review (code quality, security, convention compliance) → immediate handback if critical issues  
+   - winny-technical-writer documents validated implementation with executable testing → handback to sergei if major code-doc mismatch
+   - vicky-acceptance-tester validates documentation accuracy through user testing → handback to winny (minor doc issues) or sergei (major mismatches, restarts full Phase 6)
+   - chris-architect review (architecture alignment, goal completion) → immediate handback if critical issues
    - **MANUAL REVIEW MODE ONLY** - User final review → immediate handback if critical issues (SKIPPED in automatic review mode)
-   - **MINOR FIX AUTONOMY**: All reviewers encouraged to fix minor issues within their scope autonomously and commit cleanly
-   - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to max-devops to restart entire review chain from beginning
+   - **SMART HANDBACK PROTOCOL**: Minor doc fixes → winny only | Major code-doc mismatches → sergei (full Phase 6 restart)
+   - **DOCUMENTATION VALIDATION**: winny documents real implementation, vicky validates doc-reality match
 
 **PHASE 7: Completion** - **COMBINED FINAL PHASE**
    - **max-devops**: Repository cleanup, CI validation, PR merge, working directory cleanup
@@ -314,6 +314,11 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - Every agent MUST deliver: **COMPLETED**, **OPEN ITEMS**, **LESSONS LEARNED**
 - chris-architect delivers **EXECUTIVE SUMMARY** at PR completion
 - **LESSONS LEARNED** must include CLAUDE.md workflow improvement recommendations
+
+**WORKFLOW IMPROVEMENT NOTES:**
+- **Phase 5-6 Documentation Integration**: winny documents validated implementation (Phase 6.3), vicky validates doc-reality match (Phase 6.4)
+- **Smart Handback Protocol**: vicky → winny (minor doc fixes) | vicky → sergei (major code-doc mismatches, full Phase 6 restart)
+- **Documentation Quality Gate**: Prevents README workflow disasters by testing docs against real implementation
 
 ## Quality Management System Controls
 
@@ -408,27 +413,22 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - NOT user documentation, NOT build systems, NOT issue management, NOT advanced git operations
 
 **vicky-acceptance-tester (Customer/Tester)** OWNS:
-- ALL user acceptance testing assessment and execution, UX validation, user documentation validation
-- **TESTING ASSESSMENT**: Determine if testing/validation is needed or if current state is sufficient
-- **DOCUMENTATION BLOAT REVIEW**: Identify and report overly verbose documentation, redundant explanations, and unnecessary content
-- **MANDATORY README REVIEW**: Check README.md with EVERY task for issue-specific content, bloat, dead links, outdated content, and usability problems from user perspective
-- **README QUALITY ASSURANCE**: Verify all links work, examples execute correctly, instructions are current, coordinate with winny for immediate fixes
-- **HANDOFF AUTHORITY**: Proceed without testing if current state is appropriate for the task
+- ALL user acceptance testing of implementation through winny's documentation (Phase 6.4 position)
+- **DOCUMENTATION-REALITY VALIDATION**: Test implementation using winny's fresh documentation
+- **SMART HANDBACK DECISION**: Minor doc issues → handback to winny only | Major code-doc mismatches → handback to sergei (full Phase 6 restart)
+- **USER WORKFLOW TESTING**: Follow README step-by-step as real user, validate all examples work
+- **AUTONOMOUS DOC FIXES**: Fix minor documentation issues within scope and commit cleanly
+- **CRITICAL QUALITY GATE**: Final validation before chris review that documentation matches implementation
 - NOT code review, NOT build operations, NOT test creation, NOT advanced git operations
 
 **winny-technical-writer (Technical Writer)** OWNS:
-- ALL user documentation assessment and content management
-- **DOCUMENTATION ANALYSIS**: Assess whether docs need to be added, revised, removed, or if existing docs are sufficient
-- **DOCUMENTATION PRUNING**: Actively remove outdated sections, redundant explanations, and unnecessary README bloat
-- **CONTENT OPTIMIZATION**: Keep documentation concise, eliminate duplicate information, and remove obsolete examples
-- **README MAINTENANCE**: Prevent README files from becoming bloated with excessive detail or outdated information
-- **MANDATORY README REVIEW**: Check README.md state with EVERY task and maintain clean, focused content
-- **README CONTENT GUIDELINES**:
-  - ✅ **INCLUDE**: Installation instructions, main features summary, basic usage examples, links to detailed docs
-  - ❌ **EXCLUDE**: Issue-specific information, implementation details, extensive tutorials, redundant explanations
-  - **KEEP CONCISE**: README should be scannable and focused on getting users started quickly
-  - **IMMEDIATE CLEANUP**: Remove any issue-specific content, outdated examples, or bloated sections immediately
-- **HANDOFF AUTHORITY**: Proceed without changes if existing documentation state is appropriate for the task
+- ALL user documentation of validated implementation (Phase 6.3 position)
+- **POST-IMPLEMENTATION DOCUMENTATION**: Document working code after max/patrick validation
+- **EXECUTABLE VALIDATION**: Test all documentation examples against real implementation
+- **README WORKFLOW TESTING**: Verify user instructions work in clean environment
+- **DOCUMENTATION PRUNING**: Remove outdated sections, redundant explanations, unnecessary bloat
+- **README CONTENT GUIDELINES**: Installation instructions, main features, basic examples, links to detailed docs (exclude issue-specific details, extensive tutorials)
+- **SMART HANDBACK AUTHORITY**: Receive minor fixes from vicky, handback major code-doc mismatches to sergei
 - NOT API/developer documentation, NOT code implementation, NOT advanced git operations
 
 **Domain Experts (Consult when specialized knowledge needed):**
