@@ -221,7 +221,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 
 **PHASE 6: Review Phase**
    - max-devops review (technical validation, build/test/hygiene analysis) → immediate handback if critical issues
-   - patrick-auditor review (code quality + security) → immediate handback if critical issues  
+   - patrick-auditor review (code quality principles, convention compliance, security) → immediate handback if critical issues  
    - vicky-acceptance-tester review (user acceptance + UX validation) → immediate handback if critical issues
    - chris-architect review (architecture alignment) → immediate handback if critical issues
    - **MANUAL REVIEW MODE ONLY** - User final review → immediate handback if critical issues (SKIPPED in automatic review mode)
@@ -246,13 +246,13 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 **Protocol** (Serial execution):
 1. **max-devops-engineer**: Repository health check, build system validation, CI verification, findings categorization
 2. **SERIAL AUDIT (only if max confirms clean build state)**:
-   - **Phase 2a**: patrick-auditor performs security audit, code quality review, technical debt identification
+   - **Phase 2a**: patrick-auditor performs comprehensive code quality review (SOLID, KISS, YAGNI, DRY), technical debt identification, security analysis
    - **Phase 2b**: vicky-acceptance-tester performs exhaustive user acceptance testing, stress testing, edge case exploration  
    - **Phase 2c**: chris-architect performs architecture review, design consistency validation, strategic assessment
 3. **All agents**: File issues for discovered DEFECTS ONLY at appropriate severity levels
    - Labels: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY], [DOCS] (for broken/incorrect docs only)
    - ⚠️ **FORBIDDEN LABELS**: [IMPROVEMENT], [ENHANCEMENT], [FEATURE], [UX] (unless fixing broken UX)
-   - ✅ **File Issues For**: Security vulnerabilities, broken functionality, test failures, performance regressions, incorrect documentation
+   - ✅ **File Issues For**: Broken functionality, code quality defects, test failures, security vulnerabilities, performance regressions, incorrect documentation
    - ❌ **NEVER File Issues For**: Feature requests, "nice to have" improvements, scope expansion
 4. **max-devops-engineer**: Ensure all findings are properly documented as GitHub issues
 5. **CONDITIONAL CONTINUATION**: 
@@ -370,7 +370,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 - NOT code quality, NOT security analysis, NOT test quality review, NOT individual agent commits
 
 **patrick-auditor (Code Reviewer/QA)** OWNS:  
-- ALL security analysis and code quality assessment (input validation, injection vulnerabilities, auth/authorization)
+- ALL code quality assessment (SOLID, KISS, YAGNI, DRY, SRP principles, maintainability, design patterns) and security analysis
 - **REVIEW ASSESSMENT**: Determine scope of review needed based on changes and current state
 - Code quality review, test quality review, convention compliance verification
 - **CLEANUP REVIEW**: Identify and report code duplication, dead code, obsolete functions, and test redundancies during review

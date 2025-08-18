@@ -40,7 +40,7 @@ Automatically triggered when repository is clean (no PRs/issues). Comprehensive 
 | **chris-architect** | Chief Architect | System architecture, issue lifecycle, MVP focus |
 | **sergei-perfectionist-coder** | Chief Programmer | Production code, zero-compromise implementation |
 | **georg-test-engineer** | Test Engineer | Test creation, BDD expertise |
-| **patrick-auditor** | Code Reviewer/QA | Security analysis, code quality |
+| **patrick-auditor** | Code Reviewer/QA | Code quality principles (SOLID, KISS, YAGNI, DRY), security analysis |
 | **vicky-acceptance-tester** | Customer/Tester | User acceptance testing, UX validation |
 | **max-devops-engineer** | Development Manager | Build execution, repository hygiene, CI/CD |
 | **winny-technical-writer** | Technical Writer | User documentation |
