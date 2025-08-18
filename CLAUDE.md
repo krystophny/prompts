@@ -223,7 +223,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
    - max-devops review (technical validation, build/test/hygiene analysis) → immediate handback if critical issues
    - patrick-auditor review (code quality principles, convention compliance, security) → immediate handback if critical issues  
    - vicky-acceptance-tester review (user acceptance + UX validation) → immediate handback if critical issues
-   - chris-architect review (architecture alignment) → immediate handback if critical issues
+   - chris-architect review (goal completion, Definition of Done verification, architecture alignment) → immediate handback if critical issues
    - **MANUAL REVIEW MODE ONLY** - User final review → immediate handback if critical issues (SKIPPED in automatic review mode)
    - **MINOR FIX AUTONOMY**: All reviewers encouraged to fix minor issues within their scope autonomously and commit cleanly
    - **CRITICAL HANDBACK PROTOCOL**: When sergei fixes critical findings, return to max-devops to restart entire review chain from beginning
@@ -248,7 +248,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 2. **SERIAL AUDIT (only if max confirms clean build state)**:
    - **Phase 2a**: patrick-auditor performs comprehensive code quality review (SOLID, KISS, YAGNI, DRY), technical debt identification, security analysis
    - **Phase 2b**: vicky-acceptance-tester performs exhaustive user acceptance testing, stress testing, edge case exploration  
-   - **Phase 2c**: chris-architect performs architecture review, design consistency validation, strategic assessment
+   - **Phase 2c**: chris-architect performs goal completion assessment, Definition of Done verification, architecture review, design consistency validation, strategic assessment
 3. **All agents**: File issues for discovered DEFECTS ONLY at appropriate severity levels
    - Labels: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY], [DOCS] (for broken/incorrect docs only)
    - ⚠️ **FORBIDDEN LABELS**: [IMPROVEMENT], [ENHANCEMENT], [FEATURE], [UX] (unless fixing broken UX)
@@ -382,9 +382,10 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 **chris-architect (Chief Architect)** OWNS:
 - **FEATURE PLANNING**: Full authority to create/update DESIGN.md and issues based on user requirements
 - **MVP DELIVERY**: Prioritize highest quality minimum viable product, prevent feature creep and overengineering
+- **GOAL COMPLETION VERIFICATION**: Assess whether objectives are met and Definition of Done is satisfied
 - **FEATURE DEVELOPMENT**: Issue selection, prioritization, closure only
 - **FEATURE DEVELOPMENT**: DESIGN.md/issue updates ONLY in review phase for >30min findings
-- System architecture, strategic planning
+- System architecture, strategic planning, final quality gate authority
 - NOT implementation, NOT build systems, NOT test writing, NOT advanced git operations
 
 **georg-test-engineer (Test Engineer)** OWNS:
