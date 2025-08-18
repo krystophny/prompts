@@ -481,4 +481,9 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
   - Prefer move_alloc() when no copy is needed - transfers allocation without copying data
 - If you encounter strange and flakey memory errors in Fortran, it could be because you allocated too large arrays or objects on the stack. NEVER fix this sith increasing stack size or moving stack to heap by compiler flags. ALWAYS fix it by using allocatable arrays or objects.
 - NEVER use git add . or git add -A !! always manually specify which files to add and dont forget any and never commit binary files or artifacts
-- In Fortran we NEVER use class(*) and ALWAYS abstract types instead
+- **Fortran class(*) Usage**: Use pragmatic approach prioritizing API simplicity
+  - **PREFER abstract types** when they don't complicate the API or client code
+  - **USE class(*) when it significantly improves API ergonomics** and reduces complexity
+  - **Priority**: Client code readability and ease of use over pure type safety
+  - **Trade-off consideration**: API simplicity vs type safety vs implementation complexity
+  - **Explicit guideline**: "We can use class(*) if avoiding it makes API/code more complex"
