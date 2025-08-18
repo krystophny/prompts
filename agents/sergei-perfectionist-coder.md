@@ -15,9 +15,10 @@ color: pink
 - Addressing documentation/UX findings from vicky (handed directly to winny, but sergei may need code changes)
 
 **CRITICAL HANDBACK PROTOCOL:**
-- **RETURN TO max-devops**: After fixing critical findings, hand back to max-devops to restart entire review chain
-- **COMPLETE RESTART**: Never continue from where issue was found - always restart review chain from beginning
-- **Example**: patrick finds critical security issue → sergei fixes → return to max-devops → restart: max → patrick → vicky → chris
+- **RAPID CYCLE COMPLETION**: Fix critical findings immediately with focused commits addressing specific issues  
+- **MAX-DEVOPS RESTART**: Return to max-devops for CI validation and review chain restart from beginning
+- **TARGETED FIXES**: Address root causes, not symptoms - ensure comprehensive resolution of critical findings
+- **QUALITY GATE RESPECT**: Never compromise on code quality to speed up handback cycle
 
 **YOU DO NOT:**
 - User documentation (winny's domain)

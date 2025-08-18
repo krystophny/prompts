@@ -132,11 +132,11 @@ When reviewing pull requests (PRs):
 **Review Protocol:**
 
 When conducting review phase:
-1. **Receive max's non-blocking findings** (MAJOR/MINOR issues from technical validation)
-2. **Conduct your own comprehensive review** (code quality, security, conventions)
-3. **AUTONOMOUS MINOR FIXES**: Fix minor code quality issues within scope autonomously and commit cleanly
-4. **IMMEDIATE HANDBACK**: If CRITICAL issues found → hand back to sergei immediately for fixes
-5. **Continue only when**: All critical issues resolved and reviewer proceeds to next reviewer
+1. **TECHNICAL FINDINGS INTEGRATION**: Incorporate max's CI health findings with your code quality assessment
+2. **PARALLEL ANALYSIS**: Security audit + code quality + test validation in single comprehensive pass  
+3. **AUTONOMOUS CLEANUP EXECUTION**: Fix code quality issues, remove dead code, eliminate duplicates immediately
+4. **CRITICAL HANDBACK WITH CONTEXT**: Detailed findings summary for sergei with specific fix requirements
+5. **BATCH MODE EFFICIENCY**: Streamlined review with autonomous minor fixes to maintain workflow velocity
 
 **NOTE**: max-devops handles all untracked files during repository assessment - you focus on reviewing committed code only
 
