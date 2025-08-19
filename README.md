@@ -1,142 +1,229 @@
 # Quality-driven Agent Development System (QADS)
 
-A multi-agent software development system featuring specialized AI agents working through structured TDD workflows with quality gates and rapid feedback cycles.
+**⚠️ MANDATORY COMPLIANCE ⚠️** - All rules are requirements, not suggestions. User has ULTIMATE AUTHORITY to override.
 
 ## Quick Start
 
-**You have complete control** - override any workflow, decision, or process with your explicit direction.
-
 ```bash
-# User Override Examples
-"Use simple workflow for this complex change"
-"Work on issue #123"  # bypasses chris-architect selection
-"Manual review mode"   # adds user review step
-"Batch mode"           # autonomous execution until all issues resolved
-"Skip patrick review" # customizes review chain
-"Just implement, skip documentation" # process customization
+# Single issue (default)
+"Start development"                # Complete one issue → STOP
+
+# Batch mode 
+"Batch mode"                       # Autonomous execution until clean
+"Batch mode with manual review"    # User reviews after agents
+
+# User overrides (always respected)
+"Use simple workflow"               # Override workflow selection
+"Work on issue #123"               # Override issue selection  
+"Skip patrick review"              # Override review chain
 ```
 
-## Workflow Types
+## Three Workflows
 
-### 1. Feature Planning
-*User ↔ chris-architect collaboration*
+```mermaid
+graph TD
+    User[User Request] --> WF{Which Workflow?}
+    WF -->|New features/design| FP[1. FEATURE PLANNING]
+    WF -->|Execute existing issues| FD[2. FEATURE DEVELOPMENT]
+    WF -->|Clean repository| PT[3. PLAYTEST]
+    
+    FP --> DESIGN[DESIGN.md + Issues]
+    FD --> IMPL[Implementation]
+    PT --> DEFECTS[Defect Issues Only]
+```
 
-**When**: New goals, features, or design requirements need translation into actionable work
-**Authority**: chris-architect has FULL authority to create/update DESIGN.md and GitHub issues based on your requirements
-**Focus**: MVP delivery with feature creep prevention
+### 1. FEATURE PLANNING
+**When**: New features, goals, or design requirements  
+**Who**: User ↔ chris-architect  
+**Authority**: chris has FULL authority over DESIGN.md and issues  
+**Output**: Actionable GitHub issues
 
-### 2. Feature Development  
-*Structured implementation workflow*
+### 2. FEATURE DEVELOPMENT  
+**When**: Executing existing issues or user tasks  
+**Who**: All agents in structured phases  
+**Authority**: chris RESTRICTED to issue selection only  
+**Output**: Implemented, tested, reviewed code
 
-**Decision Tree** - Workflow automatically selected based on:
+### 3. PLAYTEST
+**When**: Repository clean (no PRs, no issues)  
+**Who**: All agents audit for DEFECTS ONLY  
+**Constraint**: NEVER file features/enhancements  
+**Output**: Defect issues only
 
-**Simple Workflow** (4 phases):
-- ✅ Single file affected
-- ✅ No API/interface changes  
-- ✅ No new dependencies
-- ✅ Estimated <2 hours work
-- ✅ **USER OVERRIDE**: "Use simple workflow" for ANY task
+## Feature Development Workflow
 
-**Complex Workflow** (7 phases):
-- ❌ Multiple files affected
-- ❌ API/interface changes required
-- ❌ New dependencies needed
-- ❌ Estimated >2 hours work
-- ❌ Architecture impact
-- ❌ New features requiring documentation
-- ✅ **USER OVERRIDE**: "Use complex workflow" for ANY task
+### Phase 1: Repository Assessment (MANDATORY FIRST)
 
-### 3. Playtest Workflow
-*System audit for defects only*
+```mermaid
+graph LR
+    START[max-devops] --> A{Non-draft PRs?}
+    A -->|Yes| REV[Review PR]
+    A -->|No| B{Draft PRs?}
+    B -->|Yes| IMPL[Continue Implementation]
+    B -->|No| C{Remote branches?}
+    C -->|Yes| RED[Continue from RED]
+    C -->|No| D{Open issues?}
+    D -->|Yes| SEL[chris selects issue]
+    D -->|No| PLAY[PLAYTEST]
+```
 
-**When**: Clean repository state (all PRs merged, all issues closed)
-**Purpose**: Discover DEFECTS ONLY - bugs, broken functionality, security vulnerabilities
-**Constraint**: NEVER files issues for new features or enhancements
-**Trigger**: Automatically initiated when repository is clean
+### Workflow Selection
 
-## The Team
+```mermaid
+graph TD
+    TASK[Task Analysis] --> DEC{Decision Criteria}
+    DEC -->|Single file<br/>No API changes<br/>< 2 hours| SIMPLE[Simple Workflow<br/>4 Phases]
+    DEC -->|Multiple files<br/>API changes<br/>> 2 hours| COMPLEX[Complex Workflow<br/>7 Phases]
+    DEC -->|User Override| OVERRIDE[User Choice]
+```
 
-| Agent | Role | Phase Position | Primary Focus |
-|-------|------|----------------|---------------|
-| **max-devops-engineer** | Development Manager | Phase 1 (Mandatory) | Repository state assessment, build operations, conflict resolution |
-| **chris-architect** | Chief Architect | Phase 2 & Final Review | System architecture, issue lifecycle, goal completion verification |
-| **georg-test-engineer** | Test Engineer | Phase 4 (RED) | Test assessment and implementation |
-| **sergei-perfectionist-coder** | Chief Programmer | Phase 5.1 | Production code, API documentation |
-| **winny-technical-writer** | Technical Writer | Phase 5.2 | User documentation authoring after implementation |
-| **patrick-auditor** | Code Reviewer/QA | Phase 6.1 | Code quality (SOLID, KISS, YAGNI, DRY), security analysis |
-| **vicky-acceptance-tester** | Customer/Tester | Phase 6.3 | Documentation-reality validation, autonomous handback authority |
+### Simple Workflow (4 Phases)
 
-**Key Workflow Features:**
-- **Phase 1 Mandatory**: max-devops always assesses repository state first
-- **Phase 5 Documentation Integration**: sergei implements → winny authors comprehensive docs → complete docs available for all reviewers
-- **Enhanced Handback Protocol**: vicky has autonomous authority to decide Phase 5 handbacks → all Phase 5 handbacks restart complete Phase 6
+```mermaid
+graph LR
+    P1[1. max: Assessment] --> P2[2. sergei: Implementation]
+    P2 --> P3[3. Review Chain]
+    P3 --> P4[4. max: Completion]
+    
+    P3 --> R1[max: Technical]
+    R1 --> R2[patrick: Quality]
+    R2 --> R3[chris: Architecture]
+```
 
-**Specialists:** steffi-ux-designer, philipp-data-scientist, jonatan-math-physicist
+### Complex Workflow (7 Phases)
+
+```mermaid
+graph TD
+    P1[1. max: Assessment] --> P2[2. chris: Issue Selection]
+    P2 --> P3[3. chris: Architecture]
+    P3 --> P4[4. georg: RED Tests]
+    P4 --> P5[5. Implementation]
+    P5 --> P6[6. Review Chain]
+    P6 --> P7[7. Completion]
+    
+    P5 --> I1[5.1 sergei: Code]
+    I1 --> I2[5.2 winny: Docs]
+    
+    P6 --> R1[6.1 max: Technical]
+    R1 --> R2[6.2 patrick: Quality]
+    R2 --> R3[6.3 vicky: Doc Validation]
+    R3 --> R4[6.4 chris: Architecture]
+    R4 --> R5[6.5 User: Manual Only]
+```
+
+### Critical Handback Protocol
+
+```mermaid
+graph TD
+    REVIEW[Review Finding] --> SEV{Severity?}
+    SEV -->|CRITICAL| HAND[Immediate Handback]
+    SEV -->|MAJOR/MINOR| FIX{Can Fix?}
+    FIX -->|Yes| AUTO[Fix Autonomously]
+    FIX -->|No| ISSUE[File Issue]
+    
+    HAND --> RESTART[Restart Review Chain]
+    
+    VICKY[vicky Phase 6.3] --> DEC{Decision?}
+    DEC -->|Minor Doc Issues| WINNY[→ winny]
+    DEC -->|Major Mismatches| SERGEI[→ sergei]
+    SERGEI --> FULL[RESTART Phase 6]
+```
 
 ## Execution Modes
 
-**Execution Modes:**
-| Mode | Trigger | Behavior |
-|------|---------|----------|
-| **Single Issue** (default) | Standard request | Complete one issue → Executive Summary → STOP |
-| **Batch Mode** | "batch mode" or "solve all issues" | Autonomous execution until repository clean |
+| Mode | Trigger | Behavior | Stop |
+|------|---------|----------|------|
+| **Single** | Default | One issue | Executive Summary → STOP |
+| **Batch** | "batch mode" | Continuous | Repository clean |
 
-**Review Modes:**
-| Mode | When Used | Behavior |
-|------|-----------|----------|
-| **Automatic Review** (default) | Standard/Batch mode | All agent reviews proceed autonomously |
-| **Manual Review** | "batch mode with manual review" | User participates as final reviewer after all agents |
+## Review Modes
 
-**Critical Batch Mode Rules:**
-- **NEVER STOP FOR USER INTERACTION** - runs completely autonomously
-- **AUTOMATIC REVIEW DEFAULT** - unless user explicitly requests manual review
-- **CONTINUOUS EXECUTION** - works through all issues until repository is clean
-- **AUTO-PLAYTEST** - triggers playtest when clean, may create infinite cycle of issue resolution
+| Mode | Trigger | User Role | Automation |
+|------|---------|-----------|------------|
+| **Automatic** | Default/Batch | None | Full |
+| **Manual** | "manual review" | Final reviewer | Partial |
 
-## Workflow Phases
+## Agent Ownership Matrix
 
-**Simple Workflow (4 phases):**
-1. **Phase 1**: max-devops repository assessment (MANDATORY)
-2. **Phase 2**: sergei-perfectionist-coder implementation  
-3. **Phase 3**: Serial review chain (max → patrick → chris)
-4. **Phase 4**: max-devops cleanup and completion
+| Agent | Owns | Does Not Own |
+|-------|------|--------------|
+| **max-devops** | Repository, CI/CD, git ops, performance tests, infrastructure | Code quality, implementation |
+| **chris-architect** | Architecture, database, APIs, issues, requirements | Implementation, tests |
+| **georg-test** | Test creation (RED phase) | Test quality review |
+| **sergei-coder** | Code implementation, performance optimization | User docs, tests |
+| **winny-writer** | User documentation, README | API docs, code |
+| **patrick-auditor** | Code quality, security, test review | Implementation |
+| **vicky-tester** | User acceptance, doc validation, handback decisions | Code, tests |
 
-**Complex Workflow (7 phases):**
-1. **Phase 1**: max-devops repository assessment (MANDATORY)
-2. **Phase 2**: chris-architect work prioritization
-3. **Phase 3**: chris-architect architecture documentation
-4. **Phase 4**: georg-test-engineer test implementation (RED phase)
-5. **Phase 5**: Implementation and documentation authoring:
-   - 5.1: sergei-perfectionist-coder implements code
-   - 5.2: winny-technical-writer authors comprehensive user documentation
-6. **Phase 6**: Comprehensive review chain with complete documentation:
-   - 6.1: max-devops technical validation
-   - 6.2: patrick-auditor code quality review  
-   - 6.3: vicky-acceptance-tester validates docs against reality (autonomous handback authority)
-   - 6.4: chris-architect final architecture review
-   - 6.5: User review (manual review mode only)
-7. **Phase 7**: max-devops + chris-architect completion
+### Specialists
+- **steffi-ux**: UI/UX design
+- **philipp-data**: Data science, ML, statistics  
+- **jonatan-math**: Mathematical formulation, LaTeX→code
 
-## Core Principles
+## Batch Mode Flow
 
-**Quality Standards:**
-- TDD workflow with meaningful test coverage
-- MVP focus: highest quality minimum viable product  
-- Zero shortcuts: 100% completion, no placeholders
-- Code quality: SOLID, KISS, SRP, DRY principles
-- Boy Scout Rule: Leave everything cleaner than you found it
+```mermaid
+graph TD
+    BATCH[Batch Mode Start] --> ASSESS[max: Assessment]
+    ASSESS --> WORK{Work exists?}
+    WORK -->|Yes| DEV[Development Workflow]
+    WORK -->|No| PLAY[Playtest]
+    
+    DEV --> COMPLETE{Issue complete?}
+    COMPLETE -->|Yes| ASSESS
+    COMPLETE -->|No| DEV
+    
+    PLAY --> DEFECTS{Defects found?}
+    DEFECTS -->|Yes| ASSESS
+    DEFECTS -->|No| DONE[Executive Summary → STOP]
+```
 
-**Definition of Done:**
-✅ All tests pass ✅ CI green ✅ Documentation updated ✅ All reviews passed ✅ Repository cleaner than found ✅ User acceptance validated
+## Core Standards (NON-NEGOTIABLE)
 
-## Documentation
+### Code
+- TDD with RED/GREEN/REFACTOR
+- SOLID, KISS, YAGNI, DRY
+- NO defensive programming
+- NO stubs/placeholders
 
-| Resource | Description |
-|----------|-------------|
-| [Claude Code Docs](https://docs.anthropic.com/en/docs/claude-code/common-workflows) | Official documentation |
-| `CLAUDE.md` | Complete workflow specifications |
-| `PROMPTS.md` | Agent workflow prompts and commands |
+### Git
+- `git add <file>` ONLY (never `.` or `-A`)
+- Conventional commits: `<type>: <description>`
+- NO emojis, NO signatures
+- NEVER commit binaries
+
+### Documentation
+- ULTRA-CONCISE (winny)
+- Example-first
+- Zero duplication
+- README minimal
+
+### Cleanup
+- Delete immediately
+- No "just in case"
+- No commented code
+- Boy Scout Rule
+
+## Definition of Done
+
+✅ Tests pass  
+✅ CI green  
+✅ Docs updated  
+✅ Reviews passed  
+✅ Repository clean  
+✅ User validated
+
+## Quick Reference
+
+| Command | Effect |
+|---------|--------|
+| Start | Single issue mode |
+| Batch mode | Continuous until clean |
+| Manual review | User participates |
+| Use simple workflow | Override selection |
+| Work on #123 | Override issue |
+| Skip [agent] | Modify review chain |
 
 ---
 
-*Quality-driven Agent Development System (QADS) - Structured TDD workflow for quality-first development*
+*QADS v2.0 - Mandatory compliance. User authority absolute.*
