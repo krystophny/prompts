@@ -217,7 +217,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 
 **PHASE 5: Implementation Phase** - **Code Implementation and Documentation Authoring**
    - sergei-perfectionist-coder implements code changes based on test specifications, commits working implementation
-   - winny-technical-writer authors comprehensive user documentation of the working implementation, commits documentation
+   - winny-technical-writer authors ULTRA-CONCISE user documentation of the working implementation, commits documentation
 
 **PHASE 6: Review Phase** - **Comprehensive Review Chain with Complete Documentation**
    - max-devops review (technical validation, build/test/hygiene analysis) → immediate handback if critical issues
@@ -424,10 +424,12 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 
 **winny-technical-writer (Technical Writer)** OWNS:
 - ALL user documentation authoring of working implementation (Phase 5.2 position)
-- **POST-IMPLEMENTATION DOCUMENTATION AUTHORING**: Create comprehensive documentation after sergei's implementation
+- **POST-IMPLEMENTATION DOCUMENTATION AUTHORING**: Create ULTRA-CONCISE documentation after sergei's implementation - NOT ONE WORD TOO MUCH
 - **EXECUTABLE VALIDATION**: Test all documentation examples against real implementation during authoring
 - **README WORKFLOW TESTING**: Verify user instructions work in clean environment during documentation creation
 - **DOCUMENTATION PRUNING**: Remove outdated sections, redundant explanations, unnecessary bloat
+- **DUPLICATION ELIMINATION**: Check for and eliminate ALL duplication EVERY TIME - no repeated content anywhere
+- **EXTREME CONCISENESS**: Write VERY CLEAR AND CONCISE docs with zero fluff, redundancy, or unnecessary words
 - **README CONTENT GUIDELINES**: Installation instructions, main features, basic examples, links to detailed docs (exclude issue-specific details, extensive tutorials)
 - **SMART HANDBACK AUTHORITY**: Receive minor fixes from vicky, handback major code-doc mismatches to sergei
 - NOT API/developer documentation, NOT code implementation, NOT advanced git operations
