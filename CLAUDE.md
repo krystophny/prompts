@@ -489,3 +489,4 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
   - **Priority**: Client code readability and ease of use over pure type safety
   - **Trade-off consideration**: API simplicity vs type safety vs implementation complexity
   - **Explicit guideline**: "We can use class(*) if avoiding it makes API/code more complex"
+- In Fortran, we MUST not use inner subroutines or functions in programs, subroutines, or functions that access outer variables (will generate trampolines). For closures, use module subroutines and OMP threadprivate module variables instead, or a proper extra context argument avoiding closures altogether. That argument can be class(*) for flexibility.
