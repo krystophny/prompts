@@ -120,6 +120,60 @@
 - **D. Open issues exist** → chris selects or user specifies → Phase 4
 - **E. Clean repository** → PLAYTEST WORKFLOW
 
+## PR Creation and Management Protocol (MANDATORY)
+
+### PR Creation and Update Ownership
+
+**WHO Creates PRs**:
+- **georg-test-engineer**: Creates DRAFT PR in Phase 4 (Complex workflow with tests)
+- **sergei-perfectionist-coder**: Creates NON-DRAFT PR after implementation if none exists (Simple workflow or no tests)
+- **max-devops**: Creates NON-DRAFT PR ONLY for untracked files found on main
+
+**WHEN PRs Are Created**:
+1. **Complex Workflow + Tests**: georg creates DRAFT PR in Phase 4 after RED phase
+2. **Simple Workflow**: sergei creates NON-DRAFT PR after implementation (Phase 2)
+3. **Complex No Tests**: sergei creates NON-DRAFT PR after implementation (Phase 5.1)
+4. **Untracked Files**: max creates NON-DRAFT PR for files found on main (Phase 1)
+
+**WHO Updates PR & Sets Ready**:
+- **winny-technical-writer**: Updates PR and sets READY after Phase 5.2 (Complex workflow)
+- **sergei-perfectionist-coder**: Creates/updates PR as needed (Simple workflow or no tests)
+- Update when implementation differs from initial plan
+
+**PR Title Convention** (matches issue type):
+- `feat: <description>` - new features
+- `fix: <description>` - bug fixes
+- `refactor: <description>` - code refactoring
+- `test: <description>` - test additions/changes
+- `docs: <description>` - documentation updates
+- `perf: <description>` - performance improvements
+- `chore: <description>` - maintenance tasks
+
+**PR State Management**:
+- **DRAFT → READY**: winny converts after documentation (Complex workflow)
+- **NON-DRAFT**: sergei creates already ready (Simple workflow or no tests)
+- **DRAFT PR**: Work-in-progress (Phase 4-5 in Complex workflow)
+- **READY PR**: Implementation complete, ready for review
+
+### PR Review Loop Protocol
+
+**⚠️ CRITICAL PR HANDLING RULES**:
+- **NEVER CLOSE PRs WITHOUT MERGE** - PRs must always be merged
+- **ALWAYS FIX IN REVIEW LOOP** - Continue iterations until all issues resolved
+- **NO ABANDONMENT** - Every PR reaches successful merge
+
+**PR Review Iterations**:
+1. Review finds issues → handback to originator
+2. Originator fixes issues → commit to same PR
+3. Originator updates PR title/desc if implementation changed
+4. Review again → repeat until clean
+5. CI passes → merge (NEVER close without merge)
+
+**Blocked PR Protocol**:
+- Technical blocker → file issue, mark PR blocked, continue other work
+- Never close blocked PR - fix blocker, then resume PR
+- User override only way to abandon PR
+
 **Untracked Files**:
 - On main + untracked → create branch → add relevant → commit → PR → treat as scenario A
 - On feature branch → add relevant to current branch → continue
