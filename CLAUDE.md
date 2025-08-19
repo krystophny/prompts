@@ -456,7 +456,7 @@ For complex tasks requiring multiple agents, follow this phase-based delegation 
 ### Quality Standards
 - **Quality**: TDD, SOLID, KISS, SRP, DRY - no shortcuts, 100% completion
 - **MVP Focus**: Deliver highest quality minimum viable product, resist feature creep and overengineering
-- **Code Style**: 88 char limit, 4-space indent, self-documenting, no commented code
+- **Code Style**: 88 char limit, 4-space indent, self-documenting, no commented code. 90 chars for Fortran including ` &`
 - **NO DEFENSIVE PROGRAMMING**: Write clean, straightforward code without excessive error checking or validation
 - **Workflow**: Plan through chris-architect, work on existing files in place
 - **Fortran**: Use typename_t convention, empty associate blocks for warnings
