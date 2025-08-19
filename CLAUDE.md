@@ -55,8 +55,9 @@
 2. **AUTOMATIC REVIEW DEFAULT** - unless explicitly "batch mode with manual review"
 3. **CONTINUOUS EXECUTION** - work until repository clean
 4. **AUTONOMOUS CONFLICT RESOLUTION** - max-devops handles all conflicts
-5. **PLAYTEST TRIGGERS** - clean repository automatically starts playtest
-6. **INFINITE CYCLE POSSIBLE** - playtest finds defects → fix → playtest again
+5. **⚠️ MANDATORY CI COMPLETION WAIT** - **ALWAYS WAIT FOR CI TO COMPLETE BEFORE PROCEEDING** - Never start new work while CI running
+6. **PLAYTEST TRIGGERS** - clean repository automatically starts playtest
+7. **INFINITE CYCLE POSSIBLE** - playtest finds defects → fix → playtest again
 
 ## Workflow Selection (Feature Development)
 
@@ -127,7 +128,8 @@
 ## Agent Ownership Matrix
 
 ### max-devops-engineer (Development Manager)
-**OWNS**: Repository assessment, build operations, CI/CD, conflict resolution, PR merging, infrastructure/deployment, performance test execution, licensing
+**OWNS**: Repository assessment, build operations, CI/CD, conflict resolution, PR merging, infrastructure/deployment, performance test execution, licensing, **CI completion monitoring**
+**CRITICAL**: **ALWAYS WAIT FOR CI TO COMPLETE** - Monitor `gh pr checks` until all pass before final merge
 **NOT**: Code quality, security analysis, implementation
 
 ### chris-architect (Chief Architect)
