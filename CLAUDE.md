@@ -16,10 +16,11 @@
   <rule_8>During batch mode: Display batch_rules</rule_8>
   <rule_9>During playtest workflow: Display playtest_rules</rule_9>
   <rule_10>When user overrides active: Display override_rules</rule_10>
-  <rule_11>At start of agent work: Display agent_rules AND workflow_rules</rule_11>
-  <rule_12>Before implementation work: Display code_rules AND cleanup_rules</rule_12>
-  <rule_13>ALL agents MUST display relevant rule blocks as specified</rule_13>
-  <rule_14>Display all operation_rules at start of EVERY response</rule_14>
+  <rule_11>For Fortran projects: Display fortran_rules</rule_11>
+  <rule_12>At start of agent work: Display agent_rules AND workflow_rules</rule_12>
+  <rule_13>Before implementation work: Display code_rules AND cleanup_rules</rule_13>
+  <rule_14>ALL agents MUST display relevant rule blocks as specified</rule_14>
+  <rule_15>Display all operation_rules at start of EVERY response</rule_15>
 </operation_rules>
 
 <workflow_rules>
@@ -74,15 +75,6 @@
 | **AUTOMATIC** | Default (especially batch) | All reviews autonomous | NONE |
 | **MANUAL** | User: "manual review mode" | User as final reviewer | Required at Phase 6.5 |
 
-### BATCH MODE CRITICAL RULES
-1. **NEVER STOP FOR USER INTERACTION** - completely autonomous
-2. **AUTOMATIC REVIEW DEFAULT** - unless explicitly "batch mode with manual review"
-3. **CONTINUOUS EXECUTION** - work until repository clean
-4. **AUTONOMOUS CONFLICT RESOLUTION** - max-devops handles all conflicts
-5. **⚠️ MANDATORY CI COMPLETION WAIT** - **ALWAYS WAIT FOR CI TO COMPLETE BEFORE PROCEEDING** - Never start new work while CI running
-6. **PLAYTEST TRIGGERS** - clean repository automatically starts playtest
-7. **INFINITE CYCLE POSSIBLE** - playtest finds defects → fix → playtest again
-
 <batch_rules>
   <rule_1>NEVER STOP for user interaction in batch mode - fully autonomous</rule_1>
   <rule_2>WAIT for CI completion before starting next task</rule_2>
@@ -134,20 +126,7 @@
    - 7.1: **max-devops**: Merge and cleanup
    - 7.2: **chris-architect**: Executive summary
 
-## Issue and PR Context Requirements (MANDATORY)
-
-**ALL AGENTS MUST READ COMPLETE CONTEXT**:
-- **Issue Analysis**: Use `gh issue view <number>` to read issue description AND all comments
-- **PR Analysis**: Use `gh pr view <number>` to read PR description AND all comments  
-- **Context Integration**: Consider all feedback, clarifications, and updates from comments
-- **Work Planning**: Base implementation decisions on complete discussion thread, not just title/description
-
-**CRITICAL**: Comments often contain:
-- Clarified requirements and scope changes
-- Technical constraints and implementation details
-- User feedback and acceptance criteria
-- Previous attempts and what didn't work
-- Dependencies and integration requirements
+## Issue and PR Context Requirements
 
 <gh_rules>
   <rule_1>ALWAYS read complete context: gh issue view AND gh pr view</rule_1>
@@ -197,15 +176,6 @@
 - **sergei-perfectionist-coder**: Creates/updates PR as needed (Simple workflow or no tests)
 - Update when implementation differs from initial plan
 
-**PR Title Convention** (matches issue type):
-- `feat: <description>` - new features
-- `fix: <description>` - bug fixes
-- `refactor: <description>` - code refactoring
-- `test: <description>` - test additions/changes
-- `docs: <description>` - documentation updates
-- `perf: <description>` - performance improvements
-- `chore: <description>` - maintenance tasks
-
 <title_rules>
   <rule_1>Conventional Commits format: type: description</rule_1>
   <rule_2>Imperative mood, no period, <72 chars</rule_2>
@@ -223,11 +193,6 @@
 
 ### PR Review Loop Protocol
 
-**⚠️ CRITICAL PR HANDLING RULES**:
-- **NEVER CLOSE PRs WITHOUT MERGE** - PRs must always be merged
-- **ALWAYS FIX IN REVIEW LOOP** - Continue iterations until all issues resolved
-- **NO ABANDONMENT** - Every PR reaches successful merge
-
 <pr_rules>
   <rule_1>NEVER CLOSE PRs WITHOUT MERGE - all PRs must be merged</rule_1>
   <rule_2>ALWAYS FIX IN REVIEW LOOP - continue until resolved</rule_2>
@@ -235,25 +200,13 @@
   <rule_4>Review iterations: find issues → handback → fix → repeat</rule_4>
   <rule_5>Update PR title/desc if implementation changes</rule_5>
   <rule_6>CI passes → merge (never close without merge)</rule_6>
-  <rule_7>Display all pr_rules before PR operations</rule_7>
+  <rule_7>Blocked PR: file issue, mark blocked, continue other work</rule_7>
+  <rule_8>Untracked on main: branch → add → commit → PR</rule_8>
+  <rule_9>Untracked on feature: add to current branch</rule_9>
+  <rule_10>NEVER push untracked files directly to main</rule_10>
+  <rule_11>Display all pr_rules before PR operations</rule_11>
 </pr_rules>
 
-**PR Review Iterations**:
-1. Review finds issues → handback to originator
-2. Originator fixes issues → commit to same PR
-3. Originator updates PR title/desc if implementation changed
-4. Review again → repeat until clean
-5. CI passes → merge (NEVER close without merge)
-
-**Blocked PR Protocol**:
-- Technical blocker → file issue, mark PR blocked, continue other work
-- Never close blocked PR - fix blocker, then resume PR
-- User override only way to abandon PR
-
-**Untracked Files**:
-- On main + untracked → create branch → add relevant → commit → PR → treat as scenario A
-- On feature branch → add relevant to current branch → continue
-- NEVER push untracked files directly to main
 
 ## Agent Ownership Matrix
 
@@ -287,7 +240,7 @@
 
 ### winny-technical-writer (Technical Writer)
 **OWNS**: User documentation authoring (Phase 5.2)
-**EXTREME CONCISENESS**: NOT ONE WORD TOO MUCH
+**EXAMPLE-FIRST**: Show working code before explanation
 **DUPLICATION ELIMINATION**: Check and eliminate ALL duplication
 **NOT**: API documentation, code implementation
 
@@ -312,12 +265,6 @@
 - **CRITICAL**: MUST fix immediately (blocks progression)
 - **MAJOR/MINOR**: Fix autonomously OR file issue
 
-### Review Phase Rules
-- Critical findings → immediate handback to originator
-- Major/Minor → reviewer fixes if in scope OR files issue
-- Phase 5 handback → COMPLETE Phase 6 restart
-- vicky has AUTONOMOUS decision for Phase 5 handbacks
-
 <review_rules>
   <rule_1>CRITICAL findings: immediate handback to originator</rule_1>
   <rule_2>MAJOR/MINOR: reviewer fixes in scope OR files issue</rule_2>
@@ -330,14 +277,6 @@
 ## Core Quality Standards (NON-NEGOTIABLE)
 
 ### Code Standards
-- TDD with meaningful tests (RED/GREEN/REFACTOR)
-- SOLID, KISS, YAGNI, DRY, SRP principles
-- 88 char limit (90 for Fortran with ` &`)
-- 4-space indent
-- Self-documenting code
-- NO commented-out code
-- NO defensive programming
-- NO stubs, placeholders, or shortcuts
 
 <code_rules>
   <rule_1>TDD with meaningful tests (RED/GREEN/REFACTOR)</rule_1>
@@ -352,14 +291,7 @@
   <rule_10>Display all code_rules before implementation work</rule_10>
 </code_rules>
 
-### Git Hygiene (MANDATORY)
-- Manually specify files: `git add <file>` (NEVER `git add .` or `-A`)
-- Conventional Commits: `<type>: <description>`
-- Imperative mood, no period, <72 chars
-- NO emojis in commit messages, PRs and issues
-- NEVER commit binaries, artifacts, temp files
-- Each agent commits own work immediately
-- ALWAYS push right after commit
+### Git Hygiene
 
 <git_rules>
   <rule_1>git add specific files only - NEVER git add . or -A</rule_1>
@@ -370,10 +302,6 @@
 </git_rules>
 
 ### Immediate Cleanup Policy
-- Delete obsolete code/docs immediately
-- No backup copies, no "just in case" preservation
-- Every line serves current purpose or gets deleted
-- Boy Scout Rule: Leave everything cleaner
 
 <cleanup_rules>
   <rule_1>Delete obsolete code, docs, imports immediately - NO exceptions</rule_1>
@@ -386,12 +314,7 @@
   <rule_8>Display all cleanup_rules during implementation work</rule_8>
 </cleanup_rules>
 
-### Documentation Standards (winny)
-- Concise, technical writing that's information-dense and precise
-- Example-first approach: show working code before explanation
-- ELIMINATE ALL DUPLICATION every time
-- Test all examples against implementation
-- README: Installation, features, basic examples ONLY
+### Documentation Standards
 
 <doc_rules>
   <rule_1>Example-first approach: show working code before explanation</rule_1>
@@ -405,26 +328,20 @@
 
 
 ### Fortran-Specific Rules
-- Use `typename_t` convention
-- Empty associate blocks for warnings
-- NO `transfer` for allocatables
-- Prefer `move_alloc()` for efficiency
-- NEVER manually deallocate allocatable type instances
-- NO inner subroutines/functions accessing outer variables (trampolines)
-- For closures: module subroutines with OMP threadprivate OR context argument
-- Inner loops and array operations always over left index (column-major)
 
-### Stack/Memory Rules
-- NEVER fix stack errors with compiler flags
-- ALWAYS use allocatable arrays/objects for large data
+<fortran_rules>
+  <rule_1>Use typename_t naming convention</rule_1>
+  <rule_2>Empty associate blocks for compiler warnings</rule_2>
+  <rule_3>NO transfer for allocatables - use move_alloc()</rule_3>
+  <rule_4>NEVER manually deallocate allocatable type instances</rule_4>
+  <rule_5>NO inner subroutines accessing outer variables (trampolines)</rule_5>
+  <rule_6>Inner loops over left index (column-major)</rule_6>
+  <rule_7>NEVER fix stack errors with compiler flags</rule_7>
+  <rule_8>ALWAYS use allocatable arrays/objects for large data</rule_8>
+  <rule_9>Display all fortran_rules for Fortran projects</rule_9>
+</fortran_rules>
 
-### Project Build and Test Protocol (MANDATORY)
-**⚠️ CRITICAL: ALL BUILD AND TEST OPERATIONS MUST USE PROJECT-SPECIFIC COMMANDS**
-
-**Working Directory Requirements**:
-- **ALWAYS work from project root directory** - NEVER assume relative paths will work
-- When encountering "file not found" errors, verify current working directory is project root
-- Use absolute paths or ensure commands run from project root
+### Project Build and Test Protocol
 
 <pwd_rules>
   <rule_1>ALWAYS work from project root directory</rule_1>
@@ -432,35 +349,6 @@
   <rule_3>Use absolute paths or ensure pwd is project root</rule_3>
   <rule_4>Display all pwd_rules before any file operations</rule_4>
 </pwd_rules>
-
-**Build Command Protocol**:
-- **NEVER compile with ad hoc commands** (e.g., `gfortran`, `gcc`, `javac` directly)
-- **ALWAYS use project-specific build systems**:
-  - `make` or `make <target>` (if Makefile exists)
-  - `fpm build` (if no Makefile but fpm.toml exists)
-  - `cmake --build .` (if CMakeLists.txt exists)
-  - `npm run build` (if package.json exists)
-  - `cargo build` (if Cargo.toml exists)
-  - `./gradlew build` (if build.gradle exists)
-  - Check project documentation for specific build commands
-
-**Test Command Protocol**:
-- **NEVER run tests with ad hoc commands**
-- **ALWAYS use project-specific test runners**:
-  - `make test` or `make check` (if Makefile exists)
-  - `fpm test` (if no Makefile but fpm.toml exists)
-  - `ctest` (if CMake-based)
-  - `npm test` or `npm run test` (if package.json exists)
-  - `cargo test` (if Cargo.toml exists)
-  - `./gradlew test` (if build.gradle exists)
-  - Check project documentation for specific test commands
-
-**Discovery Protocol** (when build/test commands are unknown):
-1. Check README.md for build/test instructions
-2. Look for Makefile, fpm.toml, CMakeLists.txt, package.json, Cargo.toml, build.gradle
-3. Search for `.github/workflows/` CI files for command examples
-4. Ask user for project-specific commands if none found
-5. **MANDATORY**: Add discovered commands to CLAUDE.md for future reference
 
 <build_rules>
   <rule_1>NEVER use ad hoc compilation (gcc, gfortran, javac directly)</rule_1>
@@ -471,28 +359,7 @@
   <rule_6>Display all build_rules before any build/test operations</rule_6>
 </build_rules>
 
-**Compliance Requirements**:
-- **max-devops**: MUST verify project build system before any build operations
-- **georg**: MUST use project test runners, never ad hoc test execution
-- **sergei**: MUST build using project build system, never direct compilation
-- **patrick**: MUST verify build/test compliance during reviews
-- **ALL AGENTS**: Work from project root, use project-specific commands ONLY
-
 ## User Override Protocol
-
-**User can override ANY rule by explicit command**:
-- Workflow selection: "Use simple workflow for this complex task"
-- Agent selection: "Skip patrick review"
-- Process steps: "Just implement, skip tests"
-- Issue selection: "Work on issue #123"
-- Review mode: "Manual review mode"
-- Execution mode: "Batch mode"
-
-**Override compliance**:
-1. IMMEDIATE execution of user override
-2. NO questioning or alternatives
-3. Maintain quality within constraints
-4. Adapt workflow dynamically
 
 <override_rules>
   <rule_1>IMMEDIATE execution of user override - no delays</rule_1>
@@ -529,9 +396,6 @@
   <rule_3>Labels: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY]</rule_3>
   <rule_4>Display all playtest_rules during any playtest workflow</rule_4>
 </playtest_rules>
-
-**Labels**: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY], [DOCS]
-**FORBIDDEN**: [IMPROVEMENT], [ENHANCEMENT], [FEATURE], [UX]
 
 **Continuation**:
 - Single mode: Executive Summary → STOP
