@@ -6,28 +6,66 @@
 - Failure to comply with these rules constitutes a critical process violation
 
 <operation_rules>
-  <rule_1>Before git operations: Display git_rules AND title_rules</rule_1>
-  <rule_2>Before file operations: Display pwd_rules</rule_2>
-  <rule_3>Before build/test operations: Display build_rules AND pwd_rules</rule_3>
-  <rule_4>Before GitHub operations: Display gh_rules AND title_rules</rule_4>
-  <rule_5>Before PR operations: Display pr_rules</rule_5>
-  <rule_6>During documentation work: Display doc_rules</rule_6>
-  <rule_7>During review phases: Display review_rules</rule_7>
-  <rule_8>During batch mode: Display batch_rules</rule_8>
-  <rule_9>During playtest workflow: Display playtest_rules</rule_9>
-  <rule_10>When user overrides active: Display override_rules</rule_10>
-  <rule_11>For Fortran projects: Display fortran_rules</rule_11>
-  <rule_12>At start of agent work: Display agent_rules AND workflow_rules</rule_12>
-  <rule_13>Before implementation work: Display code_rules AND cleanup_rules</rule_13>
-  <rule_14>ALL agents MUST display relevant rule blocks as specified</rule_14>
-  <rule_15>Display all operation_rules at start of EVERY response</rule_15>
+  <rule_1>CLASSIFY operation: repository | implementation | infrastructure | process</rule_1>
+  <rule_2>Repository work: Display repository_rules</rule_2>
+  <rule_3>Implementation work: Display implementation_rules</rule_3>
+  <rule_4>Infrastructure work: Display infrastructure_rules</rule_4>
+  <rule_5>Process/workflow: Display process_rules</rule_5>
+  <rule_6>Display operation_rules at start of EVERY response</rule_6>
 </operation_rules>
+
+<repository_rules>
+  <rule_1>git add specific files only - NEVER git add . or -A</rule_1>
+  <rule_2>Commit immediately after work - no batching</rule_2>
+  <rule_3>ALWAYS push right after committing</rule_3>
+  <rule_4>NO emojis in commit messages, PRs and issues</rule_4>
+  <rule_5>NEVER commit binaries, artifacts, temp files</rule_5>
+  <rule_6>If creating commit/PR: ADD title_rules</rule_6>
+  <rule_7>If GitHub operations: ADD gh_rules</rule_7>
+  <rule_8>If PR management: ADD pr_rules</rule_8>
+  <rule_9>Display repository_rules for all repository operations</rule_9>
+</repository_rules>
+
+<implementation_rules>
+  <rule_1>TDD with meaningful tests (RED/GREEN/REFACTOR)</rule_1>
+  <rule_2>SOLID, KISS, YAGNI, DRY, SRP principles enforced</rule_2>
+  <rule_3>88 char limit (90 for Fortran with ` &`), 4-space indent</rule_3>
+  <rule_4>Self-documenting code with meaningful names</rule_4>
+  <rule_5>NO commented-out code, stubs, placeholders, shortcuts</rule_5>
+  <rule_6>NO hardcoded secrets, keys, passwords - validate input</rule_6>
+  <rule_7>Data-oriented, cache-oriented - prefer SoA over AoS</rule_7>
+  <rule_8>If modifying code: ADD cleanup_rules</rule_8>
+  <rule_9>If documentation: ADD doc_rules</rule_9>
+  <rule_10>If Fortran project: ADD fortran_rules</rule_10>
+  <rule_11>Display implementation_rules for all coding work</rule_11>
+</implementation_rules>
+
+<infrastructure_rules>
+  <rule_1>ALWAYS work from project root directory</rule_1>
+  <rule_2>File not found? Check if in project root</rule_2>
+  <rule_3>Use absolute paths or ensure pwd is project root</rule_3>
+  <rule_4>If building/testing: ADD build_rules</rule_4>
+  <rule_5>Display infrastructure_rules for file/build operations</rule_5>
+</infrastructure_rules>
+
+<process_rules>
+  <rule_1>Phase 1: max-devops assessment ALWAYS first</rule_1>
+  <rule_2>Follow workflow phases in exact order</rule_2>
+  <rule_3>User overrides are ONLY exception to compliance</rule_3>
+  <rule_4>Each agent: stay in lane, work within ownership</rule_4>
+  <rule_5>Always: ADD workflow_rules AND agent_rules</rule_5>
+  <rule_6>If batch mode: ADD batch_rules</rule_6>
+  <rule_7>If review phase: ADD review_rules</rule_7>
+  <rule_8>If playtest: ADD playtest_rules</rule_8>
+  <rule_9>If user override: ADD override_rules</rule_9>
+  <rule_10>Display process_rules for workflow/coordination</rule_10>
+</process_rules>
 
 <workflow_rules>
   <rule_1>Phase 1: max-devops ALWAYS performs repository assessment FIRST</rule_1>
   <rule_2>Follow workflow phases in exact order - no skipping or shortcuts</rule_2>
   <rule_3>User overrides are the ONLY exception to workflow compliance</rule_3>
-  <rule_4>Display all workflow_rules at start of every agent response</rule_4>
+  <rule_4>Display workflow_rules when triggered by process_rules</rule_4>
 </workflow_rules>
 
 # Quality-driven Agent Development System (QADS)
@@ -79,7 +117,7 @@
   <rule_1>NEVER STOP for user interaction in batch mode - fully autonomous</rule_1>
   <rule_2>WAIT for CI completion before starting next task</rule_2>
   <rule_3>Continue until repository is completely clean</rule_3>
-  <rule_4>Display all batch_rules at start of every batch mode response</rule_4>
+  <rule_4>Display batch_rules when triggered by process_rules</rule_4>
 </batch_rules>
 
 ## Workflow Selection (Feature Development)
@@ -136,7 +174,7 @@
   <rule_5>Base decisions on complete discussion thread, not just title</rule_5>
   <rule_6>Consider all feedback, clarifications, updates from comments</rule_6>
   <rule_7>NEVER work without reading full issue/PR context first</rule_7>
-  <rule_8>Display all gh_rules before GitHub operations</rule_8>
+  <rule_8>Display gh_rules when triggered by repository_rules</rule_8>
 </gh_rules>
 
 ## Phase 1: Repository Assessment (MANDATORY FIRST STEP)
@@ -182,7 +220,7 @@
   <rule_3>Be specific: what changed and why</rule_3>
   <rule_4>One logical change per commit/PR</rule_4>
   <rule_5>Reference issues when applicable: fixes #123</rule_5>
-  <rule_6>Display all title_rules before git operations</rule_6>
+  <rule_6>Display title_rules when triggered by repository_rules</rule_6>
 </title_rules>
 
 **PR State Management**:
@@ -204,7 +242,7 @@
   <rule_8>Untracked on main: branch → add → commit → PR</rule_8>
   <rule_9>Untracked on feature: add to current branch</rule_9>
   <rule_10>NEVER push untracked files directly to main</rule_10>
-  <rule_11>Display all pr_rules before PR operations</rule_11>
+  <rule_11>Display pr_rules when triggered by repository_rules</rule_11>
 </pr_rules>
 
 
@@ -216,7 +254,7 @@
   <rule_3>sergei: Production code implementation, no docs or builds</rule_3>
   <rule_4>patrick: Code quality review, security analysis</rule_4>
   <rule_5>Stay in your lane - never work outside your ownership</rule_5>
-  <rule_6>Display all agent_rules at start of every agent response</rule_6>
+  <rule_6>Display agent_rules when triggered by process_rules</rule_6>
 </agent_rules>
 
 ### max-devops-engineer (Development Manager)
@@ -271,7 +309,7 @@
   <rule_3>Phase 5 handback: COMPLETE Phase 6 restart</rule_3>
   <rule_4>vicky has AUTONOMOUS decision for Phase 5 handbacks</rule_4>
   <rule_5>Continue review iterations until all issues resolved</rule_5>
-  <rule_6>Display all review_rules during review phases</rule_6>
+  <rule_6>Display review_rules when triggered by process_rules</rule_6>
 </review_rules>
 
 ## Core Quality Standards (NON-NEGOTIABLE)
@@ -288,18 +326,8 @@
   <rule_7>NO magic numbers, hardcoded values, duplicate logic</rule_7>
   <rule_8>NO hardcoded secrets, keys, passwords - validate all input</rule_8>
   <rule_9>Data-oriented, cache-oriented design - prefer SoA over AoS</rule_9>
-  <rule_10>Display all code_rules before implementation work</rule_10>
+  <rule_10>Display code_rules when triggered by implementation_rules</rule_10>
 </code_rules>
-
-### Git Hygiene
-
-<git_rules>
-  <rule_1>git add specific files only - NEVER git add . or -A</rule_1>
-  <rule_2>Commit immediately after your work - no batching</rule_2>
-  <rule_3>ALWAYS push right after committing</rule_3>
-  <rule_4>Conventional commits: type: description (no period, <72 chars)</rule_4>
-  <rule_5>Display all git_rules before any git operation</rule_5>
-</git_rules>
 
 ### Immediate Cleanup Policy
 
@@ -311,7 +339,7 @@
   <rule_5>Clean up surrounding code when making changes</rule_5>
   <rule_6>Remove redundant functionality, consolidate patterns</rule_6>
   <rule_7>Delete temp files, build artifacts, empty directories</rule_7>
-  <rule_8>Display all cleanup_rules during implementation work</rule_8>
+  <rule_8>Display cleanup_rules when triggered by implementation_rules</rule_8>
 </cleanup_rules>
 
 ### Documentation Standards
@@ -323,7 +351,7 @@
   <rule_4>Test all examples against actual implementation</rule_4>
   <rule_5>README only: Installation, features, basic examples</rule_5>
   <rule_6>All examples must be copy-paste ready and executable</rule_6>
-  <rule_7>Display all doc_rules during documentation work</rule_7>
+  <rule_7>Display doc_rules when triggered by implementation_rules</rule_7>
 </doc_rules>
 
 
@@ -338,25 +366,18 @@
   <rule_6>Inner loops over left index (column-major)</rule_6>
   <rule_7>NEVER fix stack errors with compiler flags</rule_7>
   <rule_8>ALWAYS use allocatable arrays/objects for large data</rule_8>
-  <rule_9>Display all fortran_rules for Fortran projects</rule_9>
+  <rule_9>Display fortran_rules when triggered by implementation_rules</rule_9>
 </fortran_rules>
 
 ### Project Build and Test Protocol
 
-<pwd_rules>
-  <rule_1>ALWAYS work from project root directory</rule_1>
-  <rule_2>File not found? Check if you're in project root</rule_2>
-  <rule_3>Use absolute paths or ensure pwd is project root</rule_3>
-  <rule_4>Display all pwd_rules before any file operations</rule_4>
-</pwd_rules>
-
 <build_rules>
   <rule_1>NEVER use ad hoc compilation (gcc, gfortran, javac directly)</rule_1>
-  <rule_2>ALWAYS use project build system (make, fpm, npm, cargo, etc.)</rule_2>
-  <rule_3>NEVER run tests with ad hoc commands</rule_3>
-  <rule_4>ALWAYS work from project root directory for builds/tests</rule_4>
+  <rule_2>ALWAYS use project build system</rule_2>
+  <rule_3>Build priority: make first, then fpm/cmake based on project</rule_3>
+  <rule_4>NEVER run tests with ad hoc commands</rule_4>
   <rule_5>Check README/CI files for correct build/test commands</rule_5>
-  <rule_6>Display all build_rules before any build/test operations</rule_6>
+  <rule_6>Display build_rules when triggered by infrastructure_rules</rule_6>
 </build_rules>
 
 ## User Override Protocol
@@ -367,7 +388,7 @@
   <rule_3>Maintain quality within override constraints</rule_3>
   <rule_4>Adapt workflow dynamically to user direction</rule_4>
   <rule_5>User has ULTIMATE AUTHORITY over all rules</rule_5>
-  <rule_6>Display all override_rules when override is active</rule_6>
+  <rule_6>Display override_rules when triggered by process_rules</rule_6>
 </override_rules>
 
 ## Playtest Workflow Details
@@ -394,7 +415,7 @@
   <rule_1>DEFECTS ONLY - bugs, security, performance, test failures</rule_1>
   <rule_2>FORBIDDEN - features, enhancements, improvements, UX</rule_2>
   <rule_3>Labels: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY]</rule_3>
-  <rule_4>Display all playtest_rules during any playtest workflow</rule_4>
+  <rule_4>Display playtest_rules when triggered by process_rules</rule_4>
 </playtest_rules>
 
 **Continuation**:
