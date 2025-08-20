@@ -178,6 +178,51 @@ graph TD
     DEFECTS -->|No| DONE[Executive Summary → STOP]
 ```
 
+## Hierarchical Rule System
+
+```
+operation_rules (Level 1: Classification)
+│
+├─ repository_rules (Level 2: Git/GitHub operations)
+│  ├─ title_rules (Level 3: Commit/PR titles)
+│  ├─ gh_rules (Level 3: GitHub context)
+│  └─ pr_rules (Level 3: PR management)
+│
+├─ implementation_rules (Level 2: Code/documentation)
+│  ├─ code_rules (Level 3: Code standards)
+│  ├─ cleanup_rules (Level 3: Cleanup policy)
+│  ├─ doc_rules (Level 3: Documentation)
+│  └─ fortran_rules (Level 3: Fortran-specific)
+│
+├─ build_rules (Level 2: Build/test operations)
+│
+└─ process_rules (Level 2: Workflow/coordination)
+   ├─ workflow_rules (Level 3: Phase execution)
+   ├─ agent_rules (Level 3: Agent ownership)
+   ├─ batch_rules (Level 3: Batch mode)
+   ├─ review_rules (Level 3: Review process)
+   ├─ playtest_rules (Level 3: Playtest workflow)
+   └─ override_rules (Level 3: User overrides)
+```
+
+### Rule Display Logic
+
+```
+START
+  ↓
+Display operation_rules (7 rules)
+  ↓
+Classify operation type
+  ↓
+Display Level 2 rules (6-11 rules)
+  ↓
+Check context conditions
+  ↓
+Display Level 3 rules (4-11 rules)
+  ↓
+Total: ~21 rules displayed (targeted)
+```
+
 ## Core Standards (NON-NEGOTIABLE)
 
 ### Code
