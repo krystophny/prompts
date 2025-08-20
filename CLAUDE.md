@@ -197,8 +197,8 @@
 ## Agent Ownership Matrix
 
 ### max-devops-engineer (Development Manager)
-**OWNS**: Repository assessment, build operations, CI/CD, conflict resolution, PR merging, infrastructure/deployment, performance test execution, licensing, **CI completion monitoring**
-**CRITICAL**: **ALWAYS WAIT FOR CI TO COMPLETE** - Monitor `gh pr checks` until all pass before final merge
+**OWNS**: Repository assessment, build operations, CI/CD, conflict resolution, **branch rebase and sync**, PR merging, infrastructure/deployment, performance test execution, licensing, **CI completion monitoring**
+**CRITICAL**: **REBASE ON MAIN BEFORE CI** - Ensure branch current, then wait for CI completion before merge
 **NOT**: Code quality, security analysis, implementation
 
 ### chris-architect (Chief Architect)
