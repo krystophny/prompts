@@ -6,6 +6,24 @@
 - Failure to comply with these rules constitutes a critical process violation
 </law>
 
+<operation_rules>
+  <rule_1>Before git operations: Display git_rules</rule_1>
+  <rule_2>Before file operations: Display pwd_rules</rule_2>
+  <rule_3>Before build/test operations: Display build_rules AND pwd_rules</rule_3>
+  <rule_4>During batch mode: Display batch_rules</rule_4>
+  <rule_5>During playtest workflow: Display playtest_rules</rule_5>
+  <rule_6>At start of agent work: Display agent_rules AND workflow_rules</rule_6>
+  <rule_7>ALL agents MUST display relevant rule blocks as specified</rule_7>
+  <rule_8>Display all operation_rules at start of EVERY response</rule_8>
+</operation_rules>
+
+<workflow_rules>
+  <rule_1>Phase 1: max-devops ALWAYS performs repository assessment FIRST</rule_1>
+  <rule_2>Follow workflow phases in exact order - no skipping or shortcuts</rule_2>
+  <rule_3>User overrides are the ONLY exception to workflow compliance</rule_3>
+  <rule_4>Display all workflow_rules at start of every agent response</rule_4>
+</workflow_rules>
+
 # Quality-driven Agent Development System (QADS)
 
 **System**: Multi-agent software development with structured TDD workflows, quality gates, and rapid feedback cycles
@@ -61,6 +79,13 @@
 6. **PLAYTEST TRIGGERS** - clean repository automatically starts playtest
 7. **INFINITE CYCLE POSSIBLE** - playtest finds defects → fix → playtest again
 </law>
+
+<batch_rules>
+  <rule_1>NEVER STOP for user interaction in batch mode - fully autonomous</rule_1>
+  <rule_2>WAIT for CI completion before starting next task</rule_2>
+  <rule_3>Continue until repository is completely clean</rule_3>
+  <rule_4>Display all batch_rules at start of every batch mode response</rule_4>
+</batch_rules>
 
 ## Workflow Selection (Feature Development)
 
@@ -199,6 +224,15 @@
 
 ## Agent Ownership Matrix
 
+<agent_rules>
+  <rule_1>max-devops: Repository assessment, builds, CI/CD, merging</rule_1>
+  <rule_2>chris-architect: Architecture, issue lifecycle, planning only</rule_2>
+  <rule_3>sergei: Production code implementation, no docs or builds</rule_3>
+  <rule_4>patrick: Code quality review, security analysis</rule_4>
+  <rule_5>Stay in your lane - never work outside your ownership</rule_5>
+  <rule_6>Display all agent_rules at start of every agent response</rule_6>
+</agent_rules>
+
 ### max-devops-engineer (Development Manager)
 **OWNS**: Repository assessment, build operations, CI/CD, conflict resolution, **branch rebase and sync**, PR merging, infrastructure/deployment, performance test execution, licensing, **CI completion monitoring**
 **CRITICAL**: **REBASE ON MAIN BEFORE CI** - Ensure branch current, then wait for CI completion before merge
@@ -273,6 +307,14 @@
 - Each agent commits own work immediately
 - ALWAYS push right after commit
 
+<git_rules>
+  <rule_1>git add specific files only - NEVER git add . or -A</rule_1>
+  <rule_2>Commit immediately after your work - no batching</rule_2>
+  <rule_3>ALWAYS push right after committing</rule_3>
+  <rule_4>Conventional commits: type: description (no period, <72 chars)</rule_4>
+  <rule_5>Display all git_rules before any git operation</rule_5>
+</git_rules>
+
 ### Immediate Cleanup Policy
 - Delete obsolete code/docs immediately
 - No backup copies, no "just in case" preservation
@@ -304,7 +346,6 @@
 - NEVER fix stack errors with compiler flags
 - ALWAYS use allocatable arrays/objects for large data
 
-<law>
 ### Project Build and Test Protocol (MANDATORY)
 **⚠️ CRITICAL: ALL BUILD AND TEST OPERATIONS MUST USE PROJECT-SPECIFIC COMMANDS**
 
@@ -312,6 +353,13 @@
 - **ALWAYS work from project root directory** - NEVER assume relative paths will work
 - When encountering "file not found" errors, verify current working directory is project root
 - Use absolute paths or ensure commands run from project root
+
+<pwd_rules>
+  <rule_1>ALWAYS work from project root directory</rule_1>
+  <rule_2>File not found? Check if you're in project root</rule_2>
+  <rule_3>Use absolute paths or ensure pwd is project root</rule_3>
+  <rule_4>Display all pwd_rules before any file operations</rule_4>
+</pwd_rules>
 
 **Build Command Protocol**:
 - **NEVER compile with ad hoc commands** (e.g., `gfortran`, `gcc`, `javac` directly)
@@ -341,7 +389,15 @@
 3. Search for `.github/workflows/` CI files for command examples
 4. Ask user for project-specific commands if none found
 5. **MANDATORY**: Add discovered commands to CLAUDE.md for future reference
-</law>
+
+<build_rules>
+  <rule_1>NEVER use ad hoc compilation (gcc, gfortran, javac directly)</rule_1>
+  <rule_2>ALWAYS use project build system (make, fpm, npm, cargo, etc.)</rule_2>
+  <rule_3>NEVER run tests with ad hoc commands</rule_3>
+  <rule_4>ALWAYS work from project root directory for builds/tests</rule_4>
+  <rule_5>Check README/CI files for correct build/test commands</rule_5>
+  <rule_6>Display all build_rules before any build/test operations</rule_6>
+</build_rules>
 
 **Compliance Requirements**:
 - **max-devops**: MUST verify project build system before any build operations
@@ -386,14 +442,19 @@
 - ❌ NO improvements
 - ❌ NO scope expansion
 
+<playtest_rules>
+  <rule_1>DEFECTS ONLY - bugs, security, performance, test failures</rule_1>
+  <rule_2>FORBIDDEN - features, enhancements, improvements, UX</rule_2>
+  <rule_3>Labels: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY]</rule_3>
+  <rule_4>Display all playtest_rules during any playtest workflow</rule_4>
+</playtest_rules>
+
 **Labels**: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY], [DOCS]
 **FORBIDDEN**: [IMPROVEMENT], [ENHANCEMENT], [FEATURE], [UX]
 
-<law>
 **Continuation**:
 - Single mode: Executive Summary → STOP
 - Batch mode: Continue with found defects → may cycle infinitely
-</law>
 
 # ⚠️ MANDATORY COMPLIANCE REMINDER ⚠️
 
