@@ -300,6 +300,48 @@
 - NEVER fix stack errors with compiler flags
 - ALWAYS use allocatable arrays/objects for large data
 
+### Project Build and Test Protocol (MANDATORY)
+**⚠️ CRITICAL: ALL BUILD AND TEST OPERATIONS MUST USE PROJECT-SPECIFIC COMMANDS**
+
+**Working Directory Requirements**:
+- **ALWAYS work from project root directory** - NEVER assume relative paths will work
+- When encountering "file not found" errors, verify current working directory is project root
+- Use absolute paths or ensure commands run from project root
+
+**Build Command Protocol**:
+- **NEVER compile with ad hoc commands** (e.g., `gfortran`, `gcc`, `javac` directly)
+- **ALWAYS use project-specific build systems**:
+  - `make` or `make <target>` (if Makefile exists)
+  - `cmake --build .` (if CMakeLists.txt exists)
+  - `npm run build` (if package.json exists)
+  - `cargo build` (if Cargo.toml exists)
+  - `./gradlew build` (if build.gradle exists)
+  - Check project documentation for specific build commands
+
+**Test Command Protocol**:
+- **NEVER run tests with ad hoc commands**
+- **ALWAYS use project-specific test runners**:
+  - `make test` or `make check` (if Makefile exists)
+  - `ctest` (if CMake-based)
+  - `npm test` or `npm run test` (if package.json exists)
+  - `cargo test` (if Cargo.toml exists)
+  - `./gradlew test` (if build.gradle exists)
+  - Check project documentation for specific test commands
+
+**Discovery Protocol** (when build/test commands are unknown):
+1. Check README.md for build/test instructions
+2. Look for Makefile, CMakeLists.txt, package.json, Cargo.toml, build.gradle
+3. Search for `.github/workflows/` CI files for command examples
+4. Ask user for project-specific commands if none found
+5. **MANDATORY**: Add discovered commands to CLAUDE.md for future reference
+
+**Compliance Requirements**:
+- **max-devops**: MUST verify project build system before any build operations
+- **georg**: MUST use project test runners, never ad hoc test execution
+- **sergei**: MUST build using project build system, never direct compilation
+- **patrick**: MUST verify build/test compliance during reviews
+- **ALL AGENTS**: Work from project root, use project-specific commands ONLY
+
 ## User Override Protocol
 
 **User can override ANY rule by explicit command**:
