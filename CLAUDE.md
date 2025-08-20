@@ -293,7 +293,6 @@
 - No `transfer` for allocatables
 - Prefer `move_alloc()` for efficiency
 - NEVER manually deallocate allocatable type instances
-- Use `class(*)` when it significantly improves API ergonomics
 - NO inner subroutines/functions accessing outer variables (trampolines)
 - For closures: module subroutines with OMP threadprivate OR context argument
 
