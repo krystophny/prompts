@@ -1,9 +1,10 @@
 # ⚠️ MANDATORY COMPLIANCE NOTICE ⚠️
-
+<law>
 **ALL RULES IN THIS DOCUMENT ARE MANDATORY AND NON-NEGOTIABLE**
 - Every workflow, phase, and protocol described here MUST be followed exactly
 - No shortcuts, no exceptions, no deviations unless explicitly overridden by the user
 - Failure to comply with these rules constitutes a critical process violation
+</law>
 
 # Quality-driven Agent Development System (QADS)
 
@@ -50,6 +51,7 @@
 | **AUTOMATIC** | Default (especially batch) | All reviews autonomous | NONE |
 | **MANUAL** | User: "manual review mode" | User as final reviewer | Required at Phase 6.5 |
 
+<law>
 ### BATCH MODE CRITICAL RULES
 1. **NEVER STOP FOR USER INTERACTION** - completely autonomous
 2. **AUTOMATIC REVIEW DEFAULT** - unless explicitly "batch mode with manual review"
@@ -58,6 +60,7 @@
 5. **⚠️ MANDATORY CI COMPLETION WAIT** - **ALWAYS WAIT FOR CI TO COMPLETE BEFORE PROCEEDING** - Never start new work while CI running
 6. **PLAYTEST TRIGGERS** - clean repository automatically starts playtest
 7. **INFINITE CYCLE POSSIBLE** - playtest finds defects → fix → playtest again
+</law>
 
 ## Workflow Selection (Feature Development)
 
@@ -250,6 +253,7 @@
 
 ## Core Quality Standards (NON-NEGOTIABLE)
 
+<law>
 ### Code Standards
 - TDD with meaningful tests (RED/GREEN/REFACTOR)
 - SOLID, KISS, YAGNI, DRY, SRP principles
@@ -274,6 +278,7 @@
 - No backup copies, no "just in case" preservation
 - Every line serves current purpose or gets deleted
 - Boy Scout Rule: Leave everything cleaner
+</law>
 
 ### Documentation Standards (winny)
 - ULTRA-CONCISE: Zero fluff, redundancy, or unnecessary words
@@ -299,7 +304,7 @@
 - NEVER fix stack errors with compiler flags
 - ALWAYS use allocatable arrays/objects for large data
 
-
+<law>
 ### Project Build and Test Protocol (MANDATORY)
 **⚠️ CRITICAL: ALL BUILD AND TEST OPERATIONS MUST USE PROJECT-SPECIFIC COMMANDS**
 
@@ -312,6 +317,7 @@
 - **NEVER compile with ad hoc commands** (e.g., `gfortran`, `gcc`, `javac` directly)
 - **ALWAYS use project-specific build systems**:
   - `make` or `make <target>` (if Makefile exists)
+  - `fpm build` (if no Makefile but fpm.toml exists)
   - `cmake --build .` (if CMakeLists.txt exists)
   - `npm run build` (if package.json exists)
   - `cargo build` (if Cargo.toml exists)
@@ -322,6 +328,7 @@
 - **NEVER run tests with ad hoc commands**
 - **ALWAYS use project-specific test runners**:
   - `make test` or `make check` (if Makefile exists)
+  - `fpm test` (if no Makefile but fpm.toml exists)
   - `ctest` (if CMake-based)
   - `npm test` or `npm run test` (if package.json exists)
   - `cargo test` (if Cargo.toml exists)
@@ -330,10 +337,11 @@
 
 **Discovery Protocol** (when build/test commands are unknown):
 1. Check README.md for build/test instructions
-2. Look for Makefile, CMakeLists.txt, package.json, Cargo.toml, build.gradle
+2. Look for Makefile, fpm.toml, CMakeLists.txt, package.json, Cargo.toml, build.gradle
 3. Search for `.github/workflows/` CI files for command examples
 4. Ask user for project-specific commands if none found
 5. **MANDATORY**: Add discovered commands to CLAUDE.md for future reference
+</law>
 
 **Compliance Requirements**:
 - **max-devops**: MUST verify project build system before any build operations
@@ -381,9 +389,11 @@
 **Labels**: [CRITICAL], [BUG], [TECHNICAL-DEBT], [SECURITY], [DOCS]
 **FORBIDDEN**: [IMPROVEMENT], [ENHANCEMENT], [FEATURE], [UX]
 
+<law>
 **Continuation**:
 - Single mode: Executive Summary → STOP
 - Batch mode: Continue with found defects → may cycle infinitely
+</law>
 
 # ⚠️ MANDATORY COMPLIANCE REMINDER ⚠️
 
