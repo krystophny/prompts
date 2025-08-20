@@ -10,12 +10,16 @@
   <rule_2>Before file operations: Display pwd_rules</rule_2>
   <rule_3>Before build/test operations: Display build_rules AND pwd_rules</rule_3>
   <rule_4>Before GitHub operations: Display gh_rules AND title_rules</rule_4>
-  <rule_5>During batch mode: Display batch_rules</rule_5>
-  <rule_6>During playtest workflow: Display playtest_rules</rule_6>
-  <rule_7>At start of agent work: Display agent_rules AND workflow_rules</rule_7>
-  <rule_8>Before implementation work: Display code_rules AND cleanup_rules</rule_8>
-  <rule_9>ALL agents MUST display relevant rule blocks as specified</rule_9>
-  <rule_10>Display all operation_rules at start of EVERY response</rule_10>
+  <rule_5>Before PR operations: Display pr_rules</rule_5>
+  <rule_6>During documentation work: Display doc_rules</rule_6>
+  <rule_7>During review phases: Display review_rules</rule_7>
+  <rule_8>During batch mode: Display batch_rules</rule_8>
+  <rule_9>During playtest workflow: Display playtest_rules</rule_9>
+  <rule_10>When user overrides active: Display override_rules</rule_10>
+  <rule_11>At start of agent work: Display agent_rules AND workflow_rules</rule_11>
+  <rule_12>Before implementation work: Display code_rules AND cleanup_rules</rule_12>
+  <rule_13>ALL agents MUST display relevant rule blocks as specified</rule_13>
+  <rule_14>Display all operation_rules at start of EVERY response</rule_14>
 </operation_rules>
 
 <workflow_rules>
@@ -224,6 +228,16 @@
 - **ALWAYS FIX IN REVIEW LOOP** - Continue iterations until all issues resolved
 - **NO ABANDONMENT** - Every PR reaches successful merge
 
+<pr_rules>
+  <rule_1>NEVER CLOSE PRs WITHOUT MERGE - all PRs must be merged</rule_1>
+  <rule_2>ALWAYS FIX IN REVIEW LOOP - continue until resolved</rule_2>
+  <rule_3>NO ABANDONMENT - every PR reaches successful merge</rule_3>
+  <rule_4>Review iterations: find issues → handback → fix → repeat</rule_4>
+  <rule_5>Update PR title/desc if implementation changes</rule_5>
+  <rule_6>CI passes → merge (never close without merge)</rule_6>
+  <rule_7>Display all pr_rules before PR operations</rule_7>
+</pr_rules>
+
 **PR Review Iterations**:
 1. Review finds issues → handback to originator
 2. Originator fixes issues → commit to same PR
@@ -304,6 +318,15 @@
 - Phase 5 handback → COMPLETE Phase 6 restart
 - vicky has AUTONOMOUS decision for Phase 5 handbacks
 
+<review_rules>
+  <rule_1>CRITICAL findings: immediate handback to originator</rule_1>
+  <rule_2>MAJOR/MINOR: reviewer fixes in scope OR files issue</rule_2>
+  <rule_3>Phase 5 handback: COMPLETE Phase 6 restart</rule_3>
+  <rule_4>vicky has AUTONOMOUS decision for Phase 5 handbacks</rule_4>
+  <rule_5>Continue review iterations until all issues resolved</rule_5>
+  <rule_6>Display all review_rules during review phases</rule_6>
+</review_rules>
+
 ## Core Quality Standards (NON-NEGOTIABLE)
 
 ### Code Standards
@@ -324,7 +347,9 @@
   <rule_5>NO commented-out code, stubs, placeholders, shortcuts</rule_5>
   <rule_6>NO defensive programming or unnecessary checks</rule_6>
   <rule_7>NO magic numbers, hardcoded values, duplicate logic</rule_7>
-  <rule_8>Display all code_rules before implementation work</rule_8>
+  <rule_8>NO hardcoded secrets, keys, passwords - validate all input</rule_8>
+  <rule_9>Data-oriented, cache-oriented design - prefer SoA over AoS</rule_9>
+  <rule_10>Display all code_rules before implementation work</rule_10>
 </code_rules>
 
 ### Git Hygiene (MANDATORY)
@@ -362,14 +387,22 @@
 </cleanup_rules>
 
 ### Documentation Standards (winny)
-- ULTRA-CONCISE: Zero fluff, redundancy, or unnecessary words
+- Concise, technical writing that's information-dense and precise
+- Example-first approach: show working code before explanation
 - ELIMINATE ALL DUPLICATION every time
 - Test all examples against implementation
 - README: Installation, features, basic examples ONLY
 
-### Performance Rules
-- ALWAYS think data-oriented and cache-oriented
-- ALWAYS prefer SoA over AoS unless there is a good reason
+<doc_rules>
+  <rule_1>Example-first approach: show working code before explanation</rule_1>
+  <rule_2>Concise, information-dense, precise technical writing</rule_2>
+  <rule_3>ELIMINATE ALL DUPLICATION every single time</rule_3>
+  <rule_4>Test all examples against actual implementation</rule_4>
+  <rule_5>README only: Installation, features, basic examples</rule_5>
+  <rule_6>All examples must be copy-paste ready and executable</rule_6>
+  <rule_7>Display all doc_rules during documentation work</rule_7>
+</doc_rules>
+
 
 ### Fortran-Specific Rules
 - Use `typename_t` convention
@@ -460,6 +493,15 @@
 2. NO questioning or alternatives
 3. Maintain quality within constraints
 4. Adapt workflow dynamically
+
+<override_rules>
+  <rule_1>IMMEDIATE execution of user override - no delays</rule_1>
+  <rule_2>NO questioning or offering alternatives</rule_2>
+  <rule_3>Maintain quality within override constraints</rule_3>
+  <rule_4>Adapt workflow dynamically to user direction</rule_4>
+  <rule_5>User has ULTIMATE AUTHORITY over all rules</rule_5>
+  <rule_6>Display all override_rules when override is active</rule_6>
+</override_rules>
 
 ## Playtest Workflow Details
 
