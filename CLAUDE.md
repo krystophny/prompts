@@ -103,6 +103,21 @@
    - 7.1: **max-devops**: Merge and cleanup
    - 7.2: **chris-architect**: Executive summary
 
+## Issue and PR Context Requirements (MANDATORY)
+
+**ALL AGENTS MUST READ COMPLETE CONTEXT**:
+- **Issue Analysis**: Use `gh issue view <number>` to read issue description AND all comments
+- **PR Analysis**: Use `gh pr view <number>` to read PR description AND all comments  
+- **Context Integration**: Consider all feedback, clarifications, and updates from comments
+- **Work Planning**: Base implementation decisions on complete discussion thread, not just title/description
+
+**CRITICAL**: Comments often contain:
+- Clarified requirements and scope changes
+- Technical constraints and implementation details
+- User feedback and acceptance criteria
+- Previous attempts and what didn't work
+- Dependencies and integration requirements
+
 ## Phase 1: Repository Assessment (MANDATORY FIRST STEP)
 
 **max-devops MUST perform (30 seconds max)**:
