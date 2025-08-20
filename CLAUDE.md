@@ -267,6 +267,7 @@
 - NO emojis in commit messages, PRs and issues
 - NEVER commit binaries, artifacts, temp files
 - Each agent commits own work immediately
+- ALWAYS push right after commit
 
 ### Immediate Cleanup Policy
 - Delete obsolete code/docs immediately
