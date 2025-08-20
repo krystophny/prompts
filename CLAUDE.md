@@ -1,10 +1,9 @@
 # ⚠️ MANDATORY COMPLIANCE NOTICE ⚠️
-<law>
+
 **ALL RULES IN THIS DOCUMENT ARE MANDATORY AND NON-NEGOTIABLE**
 - Every workflow, phase, and protocol described here MUST be followed exactly
 - No shortcuts, no exceptions, no deviations unless explicitly overridden by the user
 - Failure to comply with these rules constitutes a critical process violation
-</law>
 
 <operation_rules>
   <rule_1>Before git operations: Display git_rules</rule_1>
