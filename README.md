@@ -272,3 +272,7 @@ Total: ~21 rules displayed (targeted)
 ---
 
 *QADS v2.0 - Mandatory compliance. User authority absolute.*
+
+## References
+
+- [An Easy Way to Stop Claude Code from Forgetting the Rules](https://dev.to/siddhantkcode/an-easy-way-to-stop-claude-code-from-forgetting-the-rules-h36) - Inspiration for the hierarchical rule display system
