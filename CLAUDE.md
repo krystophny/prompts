@@ -6,12 +6,13 @@
 - Failure to comply with these rules constitutes a critical process violation
 
 <operation_rules>
-  <rule_1>CLASSIFY operation: repository | implementation | infrastructure | process</rule_1>
-  <rule_2>Repository work: Display repository_rules</rule_2>
-  <rule_3>Implementation work: Display implementation_rules</rule_3>
-  <rule_4>Infrastructure work: Display infrastructure_rules</rule_4>
-  <rule_5>Process/workflow: Display process_rules</rule_5>
-  <rule_6>Display operation_rules at start of EVERY response</rule_6>
+  <rule_1>ALWAYS work from project root directory</rule_1>
+  <rule_2>CLASSIFY operation: repository(git/gh/pr) | implementation(code/doc) | build/test | process(workflow/mode)</rule_2>
+  <rule_3>Repository work (git/gh/pr): Display repository_rules</rule_3>
+  <rule_4>Implementation work (code/doc): Display implementation_rules</rule_4>
+  <rule_5>Build/test operations: Display build_rules</rule_5>
+  <rule_6>Process/workflow/mode: Display process_rules</rule_6>
+  <rule_7>Display operation_rules at start of EVERY response</rule_7>
 </operation_rules>
 
 <repository_rules>
@@ -40,13 +41,6 @@
   <rule_11>Display implementation_rules for all coding work</rule_11>
 </implementation_rules>
 
-<infrastructure_rules>
-  <rule_1>ALWAYS work from project root directory</rule_1>
-  <rule_2>File not found? Check if in project root</rule_2>
-  <rule_3>Use absolute paths or ensure pwd is project root</rule_3>
-  <rule_4>If building/testing: ADD build_rules</rule_4>
-  <rule_5>Display infrastructure_rules for file/build operations</rule_5>
-</infrastructure_rules>
 
 <process_rules>
   <rule_1>Phase 1: max-devops assessment ALWAYS first</rule_1>
@@ -377,7 +371,7 @@
   <rule_3>Build priority: make first, then fpm/cmake based on project</rule_3>
   <rule_4>NEVER run tests with ad hoc commands</rule_4>
   <rule_5>Check README/CI files for correct build/test commands</rule_5>
-  <rule_6>Display build_rules when triggered by infrastructure_rules</rule_6>
+  <rule_6>Display build_rules when triggered by operation_rules</rule_6>
 </build_rules>
 
 ## User Override Protocol
