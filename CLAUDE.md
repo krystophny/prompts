@@ -6,14 +6,16 @@
 - Failure to comply with these rules constitutes a critical process violation
 
 <operation_rules>
-  <rule_1>Before git operations: Display git_rules</rule_1>
+  <rule_1>Before git operations: Display git_rules AND title_rules</rule_1>
   <rule_2>Before file operations: Display pwd_rules</rule_2>
   <rule_3>Before build/test operations: Display build_rules AND pwd_rules</rule_3>
-  <rule_4>During batch mode: Display batch_rules</rule_4>
-  <rule_5>During playtest workflow: Display playtest_rules</rule_5>
-  <rule_6>At start of agent work: Display agent_rules AND workflow_rules</rule_6>
-  <rule_7>ALL agents MUST display relevant rule blocks as specified</rule_7>
-  <rule_8>Display all operation_rules at start of EVERY response</rule_8>
+  <rule_4>Before GitHub operations: Display gh_rules AND title_rules</rule_4>
+  <rule_5>During batch mode: Display batch_rules</rule_5>
+  <rule_6>During playtest workflow: Display playtest_rules</rule_6>
+  <rule_7>At start of agent work: Display agent_rules AND workflow_rules</rule_7>
+  <rule_8>Before implementation work: Display code_rules AND cleanup_rules</rule_8>
+  <rule_9>ALL agents MUST display relevant rule blocks as specified</rule_9>
+  <rule_10>Display all operation_rules at start of EVERY response</rule_10>
 </operation_rules>
 
 <workflow_rules>
@@ -68,7 +70,6 @@
 | **AUTOMATIC** | Default (especially batch) | All reviews autonomous | NONE |
 | **MANUAL** | User: "manual review mode" | User as final reviewer | Required at Phase 6.5 |
 
-<law>
 ### BATCH MODE CRITICAL RULES
 1. **NEVER STOP FOR USER INTERACTION** - completely autonomous
 2. **AUTOMATIC REVIEW DEFAULT** - unless explicitly "batch mode with manual review"
@@ -77,7 +78,6 @@
 5. **⚠️ MANDATORY CI COMPLETION WAIT** - **ALWAYS WAIT FOR CI TO COMPLETE BEFORE PROCEEDING** - Never start new work while CI running
 6. **PLAYTEST TRIGGERS** - clean repository automatically starts playtest
 7. **INFINITE CYCLE POSSIBLE** - playtest finds defects → fix → playtest again
-</law>
 
 <batch_rules>
   <rule_1>NEVER STOP for user interaction in batch mode - fully autonomous</rule_1>
@@ -145,6 +145,17 @@
 - Previous attempts and what didn't work
 - Dependencies and integration requirements
 
+<gh_rules>
+  <rule_1>ALWAYS read complete context: gh issue view AND gh pr view</rule_1>
+  <rule_2>Read issue description AND all comments before work</rule_2>
+  <rule_3>Read PR description AND all comments for context</rule_3>
+  <rule_4>Use gh pr list, gh issue list for repository assessment</rule_4>
+  <rule_5>Base decisions on complete discussion thread, not just title</rule_5>
+  <rule_6>Consider all feedback, clarifications, updates from comments</rule_6>
+  <rule_7>NEVER work without reading full issue/PR context first</rule_7>
+  <rule_8>Display all gh_rules before GitHub operations</rule_8>
+</gh_rules>
+
 ## Phase 1: Repository Assessment (MANDATORY FIRST STEP)
 
 **max-devops MUST perform (30 seconds max)**:
@@ -190,6 +201,15 @@
 - `docs: <description>` - documentation updates
 - `perf: <description>` - performance improvements
 - `chore: <description>` - maintenance tasks
+
+<title_rules>
+  <rule_1>Conventional Commits format: type: description</rule_1>
+  <rule_2>Imperative mood, no period, <72 chars</rule_2>
+  <rule_3>Be specific: what changed and why</rule_3>
+  <rule_4>One logical change per commit/PR</rule_4>
+  <rule_5>Reference issues when applicable: fixes #123</rule_5>
+  <rule_6>Display all title_rules before git operations</rule_6>
+</title_rules>
 
 **PR State Management**:
 - **DRAFT → READY**: winny converts after documentation (Complex workflow)
@@ -286,7 +306,6 @@
 
 ## Core Quality Standards (NON-NEGOTIABLE)
 
-<law>
 ### Code Standards
 - TDD with meaningful tests (RED/GREEN/REFACTOR)
 - SOLID, KISS, YAGNI, DRY, SRP principles
@@ -296,6 +315,17 @@
 - NO commented-out code
 - NO defensive programming
 - NO stubs, placeholders, or shortcuts
+
+<code_rules>
+  <rule_1>TDD with meaningful tests (RED/GREEN/REFACTOR)</rule_1>
+  <rule_2>SOLID, KISS, YAGNI, DRY, SRP principles enforced</rule_2>
+  <rule_3>88 char limit (90 for Fortran with ` &`), 4-space indent</rule_3>
+  <rule_4>Self-documenting code with meaningful names</rule_4>
+  <rule_5>NO commented-out code, stubs, placeholders, shortcuts</rule_5>
+  <rule_6>NO defensive programming or unnecessary checks</rule_6>
+  <rule_7>NO magic numbers, hardcoded values, duplicate logic</rule_7>
+  <rule_8>Display all code_rules before implementation work</rule_8>
+</code_rules>
 
 ### Git Hygiene (MANDATORY)
 - Manually specify files: `git add <file>` (NEVER `git add .` or `-A`)
@@ -319,7 +349,17 @@
 - No backup copies, no "just in case" preservation
 - Every line serves current purpose or gets deleted
 - Boy Scout Rule: Leave everything cleaner
-</law>
+
+<cleanup_rules>
+  <rule_1>Delete obsolete code, docs, imports immediately - NO exceptions</rule_1>
+  <rule_2>NO backup copies, "just in case" preservation, or commenting out</rule_2>
+  <rule_3>Every line serves current purpose or gets deleted</rule_3>
+  <rule_4>Boy Scout Rule: Leave everything cleaner than found</rule_4>
+  <rule_5>Clean up surrounding code when making changes</rule_5>
+  <rule_6>Remove redundant functionality, consolidate patterns</rule_6>
+  <rule_7>Delete temp files, build artifacts, empty directories</rule_7>
+  <rule_8>Display all cleanup_rules during implementation work</rule_8>
+</cleanup_rules>
 
 ### Documentation Standards (winny)
 - ULTRA-CONCISE: Zero fluff, redundancy, or unnecessary words
