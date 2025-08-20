@@ -264,7 +264,7 @@
 - Manually specify files: `git add <file>` (NEVER `git add .` or `-A`)
 - Conventional Commits: `<type>: <description>`
 - Imperative mood, no period, <72 chars
-- NO emojis, NO robot signatures
+- NO emojis in commit messages, PRs and issues
 - NEVER commit binaries, artifacts, temp files
 - Each agent commits own work immediately
 
@@ -280,25 +280,24 @@
 - Test all examples against implementation
 - README: Installation, features, basic examples ONLY
 
-## System Context
-
-### Technical Environment
-- **OS**: Arch Linux
-- **GitHub**: krystophny
-- **Primary Language**: Fortran
+### Performance Rules
+- ALWAYS think data-oriented and cache-oriented
+- ALWAYS prefer SoA over AoS unless there is a good reason
 
 ### Fortran-Specific Rules
 - Use `typename_t` convention
 - Empty associate blocks for warnings
-- No `transfer` for allocatables
+- NO `transfer` for allocatables
 - Prefer `move_alloc()` for efficiency
 - NEVER manually deallocate allocatable type instances
 - NO inner subroutines/functions accessing outer variables (trampolines)
 - For closures: module subroutines with OMP threadprivate OR context argument
+- Inner loops and array operations always over left index (column-major)
 
 ### Stack/Memory Rules
 - NEVER fix stack errors with compiler flags
 - ALWAYS use allocatable arrays/objects for large data
+
 
 ### Project Build and Test Protocol (MANDATORY)
 **⚠️ CRITICAL: ALL BUILD AND TEST OPERATIONS MUST USE PROJECT-SPECIFIC COMMANDS**
