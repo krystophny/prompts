@@ -17,7 +17,6 @@ Copy or symlink the follwing to your `~/.claude` directory:
 "Batch mode with manual review"    # User reviews after agents
 
 # User overrides (always respected)
-"Use simple workflow"               # Override workflow selection
 "Work on issue #123"               # Override issue selection  
 "Skip patrick review"              # Override review chain
 ```
@@ -71,30 +70,7 @@ graph LR
     D -->|No| PLAY[PLAYTEST]
 ```
 
-### Workflow Selection
-
-```mermaid
-graph TD
-    TASK[Task Analysis] --> DEC{Decision Criteria}
-    DEC -->|Single file<br/>No API changes<br/>< 2 hours| SIMPLE[Simple Workflow<br/>4 Phases]
-    DEC -->|Multiple files<br/>API changes<br/>> 2 hours| COMPLEX[Complex Workflow<br/>7 Phases]
-    DEC -->|User Override| OVERRIDE[User Choice]
-```
-
-### Simple Workflow (4 Phases)
-
-```mermaid
-graph LR
-    P1[1. max: Assessment] --> P2[2. sergei: Implementation]
-    P2 --> P3[3. Review Chain]
-    P3 --> P4[4. max: Completion]
-    
-    P3 --> R1[max: Technical]
-    R1 --> R2[patrick: Quality]
-    R2 --> R3[chris: Architecture]
-```
-
-### Complex Workflow (7 Phases)
+### Standard Workflow (7 Phases)
 
 ```mermaid
 graph TD
@@ -414,7 +390,7 @@ Total: ~21 rules displayed (targeted to operation)
 | Start | Single issue mode |
 | Batch mode | Continuous until clean |
 | Manual review | User participates |
-| Use simple workflow | Override selection |
+| Work on #123 | Override issue |
 | Work on #123 | Override issue |
 | Skip [agent] | Modify review chain |
 
