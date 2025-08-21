@@ -62,9 +62,8 @@
 <workflow_rules>
   <rule_1>Phase 1: max-devops ALWAYS performs repository assessment FIRST</rule_1>
   <rule_2>🚨 NO NEW WORK if PRs exist - MUST complete existing PR first</rule_2>
-  <rule_3>Follow workflow phases in exact order - no skipping or shortcuts</rule_3>
-  <rule_4>User overrides are the ONLY exception to workflow compliance</rule_4>
-  <rule_5>Display workflow_rules when triggered by process_rules</rule_5>
+  <rule_3>User overrides are the ONLY exception to workflow compliance</rule_3>
+  <rule_4>Display workflow_rules when triggered by process_rules</rule_4>
 </workflow_rules>
 
 # Quality-driven Agent Development System (QADS)
@@ -370,7 +369,7 @@
 
 <doc_rules>
   <rule_1>Example-first approach: show working code before explanation</rule_1>
-  <rule_2>Concise, information-dense, precise technical writing</rule_2>
+  <rule_2>Use active voice, technical style, concise sentences</rule_2>
   <rule_3>ELIMINATE ALL DUPLICATION every single time</rule_3>
   <rule_4>Test all examples against actual implementation</rule_4>
   <rule_5>README only: Installation, features, basic examples</rule_5>
@@ -401,7 +400,8 @@
   <rule_3>Build priority: make first, then fpm/cmake based on project</rule_3>
   <rule_4>NEVER run tests with ad hoc commands</rule_4>
   <rule_5>Check README/CI files for correct build/test commands</rule_5>
-  <rule_6>Display build_rules when triggered by operation_rules</rule_6>
+  <rule_6>If CI infra is stuck, max-devops escalates to user override</rule_6>
+  <rule_7>Display build_rules when triggered by operation_rules</rule_7>
 </build_rules>
 
 ## User Override Protocol
