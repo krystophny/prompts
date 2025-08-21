@@ -1,8 +1,12 @@
 # Quality-driven Agent Development System (QADS)
 
-**⚠️ MANDATORY COMPLIANCE ⚠️** - All rules are requirements, not suggestions. User has ULTIMATE AUTHORITY to override.
-
 ## Quick Start
+
+Copy or symlink the follwing to your `~/.claude` directory:
+
+- `CLAUDE.md`
+- `agents/`
+- `commands/`
 
 ```bash
 # Single issue (default)
