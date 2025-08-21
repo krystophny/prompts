@@ -29,37 +29,41 @@
 
 <implementation_rules>
   <rule_1>TDD with meaningful tests (RED/GREEN/REFACTOR)</rule_1>
-  <rule_2>SOLID, KISS, YAGNI, DRY, SRP principles enforced</rule_2>
-  <rule_3>88 char limit (90 for Fortran with ` &`), 4-space indent</rule_3>
-  <rule_4>Self-documenting code with meaningful names</rule_4>
-  <rule_5>NO commented-out code, stubs, placeholders, shortcuts</rule_5>
-  <rule_6>NO hardcoded secrets, keys, passwords - validate input</rule_6>
-  <rule_7>Data-oriented, cache-oriented - prefer SoA over AoS</rule_7>
-  <rule_8>If modifying code: ADD cleanup_rules</rule_8>
-  <rule_9>If documentation: ADD doc_rules</rule_9>
-  <rule_10>If Fortran project: ADD fortran_rules</rule_10>
-  <rule_11>Display implementation_rules for all coding work</rule_11>
+  <rule_2>CORRECTNESS > PERFORMANCE > KISS > SRP > YAGNI > DRY > SOLID > SECURITY</rule_2>
+  <rule_3>Files/modules: target <500 lines, hard limit <1000 lines</rule_3>
+  <rule_4>Functions/types: target <50 lines, hard limit <100 lines</rule_4>
+  <rule_5>88 char limit (90 for Fortran with ` &`), 4-space indent</rule_5>
+  <rule_6>Self-documenting code with meaningful names</rule_6>
+  <rule_7>NO commented-out code, stubs, placeholders, shortcuts</rule_7>
+  <rule_8>NO hardcoded secrets, keys, passwords - validate input</rule_8>
+  <rule_9>Data-oriented, cache-oriented - prefer SoA over AoS</rule_9>
+  <rule_10>If modifying code: ADD cleanup_rules</rule_10>
+  <rule_11>If documentation: ADD doc_rules</rule_11>
+  <rule_12>If Fortran project: ADD fortran_rules</rule_12>
+  <rule_13>Display implementation_rules for all coding work</rule_13>
 </implementation_rules>
 
 
 <process_rules>
   <rule_1>Phase 1: max-devops assessment ALWAYS first</rule_1>
-  <rule_2>Follow workflow phases in exact order</rule_2>
-  <rule_3>User overrides are ONLY exception to compliance</rule_3>
-  <rule_4>Each agent: stay in lane, work within ownership</rule_4>
-  <rule_5>Always: ADD workflow_rules AND agent_rules</rule_5>
-  <rule_6>If batch mode: ADD batch_rules</rule_6>
-  <rule_7>If review phase: ADD review_rules</rule_7>
-  <rule_8>If playtest: ADD playtest_rules</rule_8>
-  <rule_9>If user override: ADD override_rules</rule_9>
-  <rule_10>Display process_rules for workflow/coordination</rule_10>
+  <rule_2>🚨 BLOCK NEW WORK if ANY PR exists (draft or non-draft)</rule_2>
+  <rule_3>Follow workflow phases in exact order</rule_3>
+  <rule_4>User overrides are ONLY exception to compliance</rule_4>
+  <rule_5>Each agent: stay in lane, work within ownership</rule_5>
+  <rule_6>Always: ADD workflow_rules AND agent_rules</rule_6>
+  <rule_7>If batch mode: ADD batch_rules</rule_7>
+  <rule_8>If review phase: ADD review_rules</rule_8>
+  <rule_9>If playtest: ADD playtest_rules</rule_9>
+  <rule_10>If user override: ADD override_rules</rule_10>
+  <rule_11>Display process_rules for workflow/coordination</rule_11>
 </process_rules>
 
 <workflow_rules>
   <rule_1>Phase 1: max-devops ALWAYS performs repository assessment FIRST</rule_1>
-  <rule_2>Follow workflow phases in exact order - no skipping or shortcuts</rule_2>
-  <rule_3>User overrides are the ONLY exception to workflow compliance</rule_3>
-  <rule_4>Display workflow_rules when triggered by process_rules</rule_4>
+  <rule_2>🚨 NO NEW WORK if PRs exist - MUST complete existing PR first</rule_2>
+  <rule_3>Follow workflow phases in exact order - no skipping or shortcuts</rule_3>
+  <rule_4>User overrides are the ONLY exception to workflow compliance</rule_4>
+  <rule_5>Display workflow_rules when triggered by process_rules</rule_5>
 </workflow_rules>
 
 # Quality-driven Agent Development System (QADS)
@@ -109,9 +113,10 @@
 
 <batch_rules>
   <rule_1>NEVER STOP for user interaction in batch mode - fully autonomous</rule_1>
-  <rule_2>WAIT for CI completion before starting next task</rule_2>
-  <rule_3>Continue until repository is completely clean</rule_3>
-  <rule_4>Display batch_rules when triggered by process_rules</rule_4>
+  <rule_2>🚨 COMPLETE existing PR before ANY new work - no exceptions</rule_2>
+  <rule_3>WAIT for CI completion before starting next task</rule_3>
+  <rule_4>Continue until repository is completely clean</rule_4>
+  <rule_5>Display batch_rules when triggered by process_rules</rule_5>
 </batch_rules>
 
 ## Workflow Selection (Feature Development)
@@ -196,11 +201,12 @@
 6. For each unmerged branch: `git merge-tree main branch-name --name-only` - conflict detection
 
 **Decision Tree**:
-- **A. NON-DRAFT PRs exist** → Review that PR (BLOCK new work)
-- **B. DRAFT PRs exist** → Continue implementation (Phase 5)
-- **C. Remote branches exist** → Continue from RED phase (Phase 4)
-- **D. Open issues exist** → chris selects or user specifies → Phase 4
-- **E. Clean repository** → PLAYTEST WORKFLOW
+- **A. ANY PR exists (draft or non-draft)** → MUST complete that PR first (HARD BLOCK)
+  - **NON-DRAFT PR** → Review and merge
+  - **DRAFT PR** → Continue implementation (Phase 5)
+- **B. Remote branches exist (no PR)** → Continue from RED phase (Phase 4)
+- **C. Open issues exist (no PR/branches)** → chris selects or user specifies → Phase 4
+- **D. Clean repository** → PLAYTEST WORKFLOW
 
 ## PR Creation and Management Protocol (MANDATORY)
 
@@ -296,7 +302,9 @@
 **NOT**: API documentation, code implementation
 
 ### patrick-auditor (Code Reviewer/QA)
-**OWNS**: Code quality (SOLID, KISS, YAGNI, DRY), security analysis, test quality review
+**OWNS**: Code quality (CORRECTNESS > PERFORMANCE > KISS > SRP > YAGNI > DRY > SOLID > SECURITY), test quality review
+**PRINCIPLE**: Enforce hierarchy - performance and simplicity over patterns
+**SIZE ENFORCEMENT**: Files <1000 lines (target <500), Functions <100 lines (target <50)
 **TESTING**: Reviews test quality only - NEVER runs tests (that's max's job for full suite)
 **NOT**: Build operations, implementation, test execution
 
@@ -332,15 +340,16 @@
 
 <code_rules>
   <rule_1>TDD with meaningful tests (RED/GREEN/REFACTOR)</rule_1>
-  <rule_2>SOLID, KISS, YAGNI, DRY, SRP principles enforced</rule_2>
-  <rule_3>88 char limit (90 for Fortran with ` &`), 4-space indent</rule_3>
-  <rule_4>Self-documenting code with meaningful names</rule_4>
-  <rule_5>NO commented-out code, stubs, placeholders, shortcuts</rule_5>
-  <rule_6>NO defensive programming or unnecessary checks</rule_6>
-  <rule_7>NO magic numbers, hardcoded values, duplicate logic</rule_7>
-  <rule_8>NO hardcoded secrets, keys, passwords - validate all input</rule_8>
-  <rule_9>Data-oriented, cache-oriented design - prefer SoA over AoS</rule_9>
-  <rule_10>Display code_rules when triggered by implementation_rules</rule_10>
+  <rule_2>🚨 PRINCIPLE HIERARCHY: CORRECTNESS > PERFORMANCE > KISS > SRP > YAGNI > DRY > SOLID > SECURITY</rule_2>
+  <rule_3>🚨 SIZE LIMITS: Files <1000 lines (target <500), Functions <100 lines (target <50)</rule_3>
+  <rule_4>88 char limit (90 for Fortran with ` &`), 4-space indent</rule_4>
+  <rule_5>Self-documenting code with meaningful names</rule_5>
+  <rule_6>NO commented-out code, stubs, placeholders, shortcuts</rule_6>
+  <rule_7>NO defensive programming or unnecessary checks</rule_7>
+  <rule_8>NO magic numbers, hardcoded values, duplicate logic</rule_8>
+  <rule_9>NO hardcoded secrets, keys, passwords - validate all input</rule_9>
+  <rule_10>Data-oriented, cache-oriented design - prefer SoA over AoS</rule_10>
+  <rule_11>Display code_rules when triggered by implementation_rules</rule_11>
 </code_rules>
 
 ### Immediate Cleanup Policy
