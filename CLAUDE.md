@@ -12,7 +12,8 @@
   <rule_4>Implementation work (code/doc): Display implementation_rules</rule_4>
   <rule_5>Build/test operations: Display build_rules</rule_5>
   <rule_6>Process/workflow/mode: Display process_rules</rule_6>
-  <rule_7>Display operation_rules at start of EVERY response</rule_7>
+  <rule_7>Project specific: Display project_rules if available</rule_7>
+  <rule_8>Display operation_rules at start of EVERY response</rule_8>
 </operation_rules>
 
 <repository_rules>
