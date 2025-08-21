@@ -88,7 +88,7 @@
 **Participants**: All agents in structured phases
 **Authority**: chris-architect RESTRICTED to issue selection/prioritization only
 **Focus**: Implementation of planned work
-**Protocol**: Follow Simple (4 phases) or Complex (7 phases) workflow
+**Protocol**: Follow Standard (7 phases) workflow
 
 ### 3. PLAYTEST WORKFLOW
 **Trigger**: Clean repository (all PRs merged, all issues closed)
@@ -121,33 +121,7 @@
 
 ## Workflow Selection (Feature Development)
 
-### SIMPLE WORKFLOW (4 Phases)
-**Automatic Triggers**:
-- Single file affected
-- No API/interface changes
-- No new dependencies
-- Estimated <2 hours work
-**User Override**: "Use simple workflow" (works for ANY task)
-
-**Phases**:
-1. **max-devops**: Repository assessment, cleanup, and **branch creation** (MANDATORY FIRST)
-   - Perform standard assessment
-   - Create feature branch from main
-   - Set up clean workspace
-2. **sergei**: Implementation and **PR creation**
-   - Implement solution
-   - Run **targeted tests for affected code only**
-   - Create NON-DRAFT PR
-3. **Review Chain**: max → patrick → chris (serial)
-   - **max**: **FULL TEST SUITE MUST PASS** or CRITICAL handback
-   - **patrick**: Code quality review
-   - **chris**: Architecture alignment
-4. **max-devops**: Final merge and cleanup
-   - Rebase on main
-   - Wait for CI completion
-   - Merge PR and cleanup
-
-### COMPLEX WORKFLOW (7 Phases)
+### STANDARD WORKFLOW (7 Phases)
 **Automatic Triggers**:
 - Multiple files affected
 - API/interface changes
@@ -155,7 +129,7 @@
 - Estimated >2 hours work
 - Architecture impact
 - New features requiring documentation
-**User Override**: "Use complex workflow" (works for ANY task)
+**Default**: Applied to all tasks unless user overrides
 
 **Phases**:
 1. **max-devops**: Repository assessment and cleanup (MANDATORY FIRST)
@@ -195,10 +169,10 @@
 **max-devops MUST perform (30 seconds max)**:
 1. `git fetch --all` - update remotes
 2. `gh pr list` - check for PRs
-3. `git branch -r --no-merged main` - unmerged branches
+3. `git branch -r --no-merged main` - unmerged branches (ignore z-archive/* branches)
 4. `gh issue list` - open issues
 5. `git status` - untracked files
-6. For each unmerged branch: `git merge-tree main branch-name --name-only` - conflict detection
+6. For each unmerged branch (excluding z-archive/*): `git merge-tree main branch-name --name-only` - conflict detection
 
 **Decision Tree**:
 - **A. ANY PR exists (draft or non-draft)** → MUST complete that PR first (HARD BLOCK)
@@ -213,19 +187,18 @@
 ### PR Creation and Update Ownership
 
 **WHO Creates PRs**:
-- **georg-test-engineer**: Creates DRAFT PR in Phase 4 (Complex workflow with tests)
-- **sergei-perfectionist-coder**: Creates NON-DRAFT PR after implementation if none exists (Simple workflow or no tests)
+- **georg-test-engineer**: Creates DRAFT PR in Phase 4 (Standard workflow with tests)
+- **sergei-perfectionist-coder**: Creates NON-DRAFT PR after implementation if none exists (no tests)
 - **max-devops**: Creates NON-DRAFT PR ONLY for untracked files found on main
 
 **WHEN PRs Are Created**:
-1. **Complex Workflow + Tests**: georg creates DRAFT PR in Phase 4 after RED phase
-2. **Simple Workflow**: sergei creates NON-DRAFT PR after implementation (Phase 2)
-3. **Complex No Tests**: sergei creates NON-DRAFT PR after implementation (Phase 5.1)
+1. **Standard Workflow + Tests**: georg creates DRAFT PR in Phase 4 after RED phase
+2. **Standard No Tests**: sergei creates NON-DRAFT PR after implementation (Phase 5.1)
 4. **Untracked Files**: max creates NON-DRAFT PR for files found on main (Phase 1)
 
 **WHO Updates PR & Sets Ready**:
-- **winny-technical-writer**: Updates PR and sets READY after Phase 5.2 (Complex workflow)
-- **sergei-perfectionist-coder**: Creates/updates PR as needed (Simple workflow or no tests)
+- **winny-technical-writer**: Updates PR and sets READY after Phase 5.2 (Standard workflow)
+- **sergei-perfectionist-coder**: Creates/updates PR as needed (no tests)
 - Update when implementation differs from initial plan
 
 <title_rules>
@@ -238,9 +211,9 @@
 </title_rules>
 
 **PR State Management**:
-- **DRAFT → READY**: winny converts after documentation (Complex workflow)
-- **NON-DRAFT**: sergei creates already ready (Simple workflow or no tests)
-- **DRAFT PR**: Work-in-progress (Phase 4-5 in Complex workflow)
+- **DRAFT → READY**: winny converts after documentation (Standard workflow)
+- **NON-DRAFT**: sergei creates already ready (no tests)
+- **DRAFT PR**: Work-in-progress (Phase 4-5 in Standard workflow)
 - **READY PR**: Implementation complete, ready for review
 
 ### PR Review Loop Protocol
