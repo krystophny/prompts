@@ -125,10 +125,22 @@
 **User Override**: "Use simple workflow" (works for ANY task)
 
 **Phases**:
-1. **max-devops**: Repository assessment and cleanup (MANDATORY FIRST)
-2. **sergei**: Implementation
+1. **max-devops**: Repository assessment, cleanup, and **branch creation** (MANDATORY FIRST)
+   - Perform standard assessment
+   - Create feature branch from main
+   - Set up clean workspace
+2. **sergei**: Implementation and **PR creation**
+   - Implement solution
+   - Run **targeted tests for affected code only**
+   - Create NON-DRAFT PR
 3. **Review Chain**: max → patrick → chris (serial)
-4. **max-devops**: Final cleanup and completion
+   - **max**: **FULL TEST SUITE MUST PASS** or CRITICAL handback
+   - **patrick**: Code quality review
+   - **chris**: Architecture alignment
+4. **max-devops**: Final merge and cleanup
+   - Rebase on main
+   - Wait for CI completion
+   - Merge PR and cleanup
 
 ### COMPLEX WORKFLOW (7 Phases)
 **Automatic Triggers**:
@@ -150,6 +162,8 @@
    - 5.2: **winny**: User documentation authoring
 6. **Review Chain**:
    - 6.1: **max-devops**: Technical validation
+      - **🚨 FULL TEST SUITE MUST PASS** - ANY failure = CRITICAL handback
+      - **ONLY max runs full suite** - others run targeted tests only
    - 6.2: **patrick**: Code quality review
    - 6.3: **vicky**: Documentation-reality validation (AUTONOMOUS HANDBACK AUTHORITY)
    - 6.4: **chris-architect**: Architecture alignment
@@ -252,8 +266,11 @@
 </agent_rules>
 
 ### max-devops-engineer (Development Manager)
-**OWNS**: Repository assessment, build operations, CI/CD, conflict resolution, **branch rebase and sync**, PR merging, infrastructure/deployment, performance test execution, licensing, **CI completion monitoring**
-**CRITICAL**: **REBASE ON MAIN BEFORE CI** - Ensure branch current, then wait for CI completion before merge
+**OWNS**: Repository assessment, build operations, CI/CD, conflict resolution, **branch rebase and sync**, PR merging, infrastructure/deployment, performance test execution, licensing, **CI completion monitoring**, **🚨 FULL TEST SUITE VALIDATION (EXCLUSIVE)**
+**CRITICAL**: 
+- **🚨 FULL TEST SUITE MUST PASS** - ANY failure = CRITICAL handback to implementation
+- **ONLY max runs full test suite** - No other agent touches full suite
+- **REBASE ON MAIN BEFORE CI** - Ensure branch current, then wait for CI completion before merge
 **NOT**: Code quality, security analysis, implementation
 
 ### chris-architect (Chief Architect)
@@ -264,11 +281,13 @@
 
 ### georg-test-engineer (Test Engineer)
 **OWNS**: Test assessment and implementation
-**NOT**: Test quality review (patrick's domain)
+**TESTING**: Run **targeted tests for new/modified tests only** - NEVER full suite
+**NOT**: Test quality review (patrick's domain), full test suite (max's exclusive domain)
 
 ### sergei-perfectionist-coder (Chief Programmer)
 **OWNS**: Production code, API documentation, performance optimization, performance test implementation (post-code)
-**NOT**: User documentation, build systems
+**TESTING**: Run **targeted tests for affected code only** - NEVER full suite
+**NOT**: User documentation, build systems, full test suite (max's exclusive domain)
 
 ### winny-technical-writer (Technical Writer)
 **OWNS**: User documentation authoring (Phase 5.2)
@@ -277,8 +296,9 @@
 **NOT**: API documentation, code implementation
 
 ### patrick-auditor (Code Reviewer/QA)
-**OWNS**: Code quality (SOLID, KISS, YAGNI, DRY), security analysis, performance test review
-**NOT**: Build operations, implementation
+**OWNS**: Code quality (SOLID, KISS, YAGNI, DRY), security analysis, test quality review
+**TESTING**: Reviews test quality only - NEVER runs tests (that's max's job for full suite)
+**NOT**: Build operations, implementation, test execution
 
 ### vicky-acceptance-tester (Customer/Tester)
 **OWNS**: Documentation-reality validation
