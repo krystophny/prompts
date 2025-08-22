@@ -360,9 +360,10 @@
   <rule_4>NEVER manually deallocate allocatable type instances</rule_4>
   <rule_5>NO inner subroutines accessing outer variables (trampolines)</rule_5>
   <rule_6>Inner loops over left index (column-major)</rule_6>
-  <rule_7>NEVER fix stack errors with compiler flags</rule_7>
+  <rule_7>ALWAYS add deep-copy assignment operator for nested types</rule_7>
   <rule_8>ALWAYS use allocatable arrays/objects for large data</rule_8>
-  <rule_9>Display fortran_rules when triggered by implementation_rules</rule_9>
+  <rule_9>NEVER return allocatables from functions, use subroutines</rule_9>
+  <rule_10>Display fortran_rules when triggered by implementation_rules</rule_10>
 </fortran_rules>
 
 ### Project Build and Test Protocol
