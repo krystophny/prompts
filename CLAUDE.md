@@ -115,8 +115,8 @@
 ```
 
 **BACKLOG Operations**:
-- chris: Creates issues, updates BACKLOG.md with references, sets priorities
-- sergei: Updates BACKLOG.md (DOING→DONE, TODO→DOING), creates branch, commits BACKLOG.md
+- chris: Creates issues, updates BACKLOG.md with references, sets priorities, COMMITS AND PUSHES IMMEDIATELY
+- sergei: Updates BACKLOG.md (DOING→DONE, TODO→DOING), creates branch, COMMITS AND PUSHES BACKLOG.md
 - max: Reviews PRs and merges (BACKLOG.md already updated by sergei)
 
 **Sergei's BACKLOG.md Workflow (Explicit Protocol)**:
@@ -126,18 +126,23 @@
    - Move completed issues: DOING → DONE section
    - Pick top TODO issue, move to DOING section
    - Create new branch: `git checkout -b <issue-type>-<issue-number>`
-   - Commit BACKLOG.md: `git add BACKLOG.md && git commit -m "update: move issue #123 to DOING"`
-   - Push branch: `git push -u origin <branch-name>`
+   - **MANDATORY**: Commit and push BACKLOG.md: `git add BACKLOG.md && git commit -m "update: move issue #123 to DOING" && git push -u origin <branch-name>`
 4. **Implement code and tests**
 5. **Create PR when ready**
+
+**Chris's BACKLOG.md Workflow (Explicit Protocol)**:
+1. **Create/update GitHub issues**: `gh issue create` or `gh issue edit`
+2. **Edit BACKLOG.md**: Add new issues to TODO section, reorder by priority
+3. **MANDATORY**: Commit and push immediately: `git add BACKLOG.md && git commit -m "plan: add/update issues in BACKLOG.md" && git push`
 
 <workflow_rules>
   <rule_1>BACKLOG.md: TODO → DOING → DONE tracking</rule_1>
   <rule_2>sergei: Check current branch first, update BACKLOG.md status before new work</rule_2>
-  <rule_3>sergei: Move completed DOING→DONE, current TODO→DOING, commit BACKLOG.md</rule_3>
-  <rule_4>chris: Creates issues, manages BACKLOG.md priorities</rule_4>
-  <rule_5>NO draft PRs - all PRs created ready for review</rule_5>
-  <rule_6>Display workflow_rules when triggered by process_rules</rule_6>
+  <rule_3>sergei: Move completed DOING→DONE, current TODO→DOING, COMMIT AND PUSH BACKLOG.md</rule_3>
+  <rule_4>chris: Creates issues, manages BACKLOG.md priorities, COMMIT AND PUSH IMMEDIATELY</rule_4>
+  <rule_5>MANDATORY: Both chris and sergei MUST commit and push BACKLOG.md after any edit</rule_5>
+  <rule_6>NO draft PRs - all PRs created ready for review</rule_6>
+  <rule_7>Display workflow_rules when triggered by process_rules</rule_7>
 </workflow_rules>
 
 ## Batch Mode Operations
@@ -202,8 +207,8 @@
 
 <agent_rules>
   <rule_1>max: Repository, builds, CI/CD, merging, issue closing</rule_1>
-  <rule_2>chris: Planning, BACKLOG.md creation, issue creation</rule_2>
-  <rule_3>sergei: Code implementation, BACKLOG.md status updates</rule_3>
+  <rule_2>chris: Planning, BACKLOG.md creation, issue creation, COMMIT/PUSH BACKLOG.md</rule_2>
+  <rule_3>sergei: Code implementation, BACKLOG.md status updates, COMMIT/PUSH BACKLOG.md</rule_3>
   <rule_4>patrick: Code quality review</rule_4>
   <rule_5>winny: Documentation consolidation (PLAY only)</rule_5>
   <rule_6>vicky: Documentation validation (PLAY only)</rule_6>
@@ -214,8 +219,8 @@
 ### Key Owners
 
 **max-devops**: Repository ops, builds, CI/CD, merging, **closing issues**, full test suite (EXCLUSIVE)
-**chris-architect**: BACKLOG.md creation/priorities, issue lifecycle, DESIGN.md, architecture
-**sergei-perfectionist**: TDD (tests + code), BACKLOG.md status updates, API docs, performance optimization
+**chris-architect**: BACKLOG.md creation/priorities, issue lifecycle, DESIGN.md, architecture, COMMIT/PUSH BACKLOG.md
+**sergei-perfectionist**: TDD (tests + code), BACKLOG.md status updates, API docs, performance optimization, COMMIT/PUSH BACKLOG.md
 **patrick-auditor**: Code quality review (CORRECTNESS > PERFORMANCE > KISS > SRP > YAGNI > DRY > SOLID)
 **winny-writer**: Documentation rewrite/consolidation (PLAY workflow)
 **vicky-tester**: Documentation validation (PLAY workflow)
