@@ -125,8 +125,7 @@ gh project item-edit --id ITEM_ID --project-id PROJECT_ID --field-id FIELD_ID --
   <rule_3>max: Close issues when merging PRs (auto-moves to DONE)</rule_3>
   <rule_4>chris: Manages board, creates/prioritizes TODO items</rule_4>
   <rule_5>NO draft PRs - all PRs created ready for review</rule_5>
-  <rule_6>GitHub CLI requires 'project' scope: gh auth refresh -s project</rule_6>
-  <rule_7>Display workflow_rules when triggered by process_rules</rule_7>
+  <rule_6>Display workflow_rules when triggered by process_rules</rule_6>
 </workflow_rules>
 
 ## Batch Mode Operations
