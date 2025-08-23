@@ -58,7 +58,7 @@
 
 # Quality-driven Agent Development System (QADS) v3.0
 
-**System**: Simplified three-workflow system with kanban board (TODO → DOING → DONE)
+**System**: Simplified three-workflow system with BACKLOG.md (TODO → DOING → DONE)
 **Authority**: User has ULTIMATE AUTHORITY to override any rule or decision
 
 ## Three Core Workflows
@@ -68,26 +68,26 @@
 ### 1. PLAN WORKFLOW (shortcut: `"plan"`)
 **Trigger**: User requests planning, design, or new features
 **Actor**: chris-architect ONLY
-**Authority**: FULL control of GitHub Project board and issue creation
+**Authority**: FULL control of BACKLOG.md and issue creation
 **Activities**:
-- Manage GitHub Project kanban board
-- Create/prioritize issues in TODO column
+- Manage BACKLOG.md with ordered issue references
+- Create/prioritize GitHub issues in BACKLOG.md
 - Update DESIGN.md
-- Move completed work to DONE
-**Protocol**: User → chris → Issues/Board
+- Remove completed issues from BACKLOG.md
+**Protocol**: User → chris → Issues/BACKLOG.md
 
 ### 2. WORK WORKFLOW (shortcut: `"work"`)
-**Trigger**: Issues exist in TODO or DOING columns
+**Trigger**: Issues exist in BACKLOG.md or current branch work
 **Actors**: max → sergei → patrick → (user if manual) → max
 **Protocol**:
-1. **max**: Assess repository, check DOING first
-2. **sergei**: Continue DOING or pick top TODO, write tests, implement code, create PR
+1. **max**: Assess repository, check current branch first
+2. **sergei**: Continue current branch work or pick top BACKLOG.md issue, write tests, implement code, create PR
 3. **patrick**: Run tests FIRST, then review code (handback if tests fail)
 4. **user**: Review if manual mode
 5. **max**: Ship (merge PR, close issue → auto-moves to DONE)
 
 ### 3. PLAY WORKFLOW (shortcut: `"play"`)
-**Trigger**: Board empty (all work in DONE)
+**Trigger**: BACKLOG.md empty (all issues resolved)
 **Working Directory**: Separate clone/worktree (parallel to WORK)
 **Actors**: max → winny → parallel audits
 **Protocol**:
@@ -96,32 +96,34 @@
 3. **Parallel audits**: patrick (dead code), vicky (bugs), chris (architecture)
 **Focus**: Find DEFECTS ONLY - bugs, dead code, obsolete docs (NO features)
 
-## Kanban Board Management
+## BACKLOG.md Management
 
-**GitHub Project Setup (chris-architect)**:
-```bash
-# One-time authentication setup
-gh auth refresh -s project
+**BACKLOG.md Format (chris-architect)**:
+```markdown
+# Development Backlog
 
-# Create project with Status field
-gh project create --owner "@me" --title "Development Board"
-gh project field-create PROJECT_ID --name "Status" --data-type "SINGLE_SELECT" --single-select-options "TODO,DOING,DONE"
+## TODO (Ordered by Priority)
+- [ ] #123: Implement user authentication
+- [ ] #456: Add data validation
+- [ ] #789: Update documentation
 
-# Daily operations
-gh project item-add PROJECT_ID --url ISSUE_URL
-gh project item-edit --id ITEM_ID --project-id PROJECT_ID --field-id FIELD_ID --single-select-option-id OPTION_ID
+## DOING (Current Work)
+- [x] #101: Fix memory leak (branch: fix-memory-leak-101)
+
+## DONE (Completed)
+- [x] #100: Setup CI pipeline
 ```
 
-**Board Operations**:
-- chris: Creates board, adds issues, sets priorities
-- sergei: Moves issues TODO→DOING when starting work
-- max: Closes issues (GitHub auto-moves DOING→DONE)
+**BACKLOG Operations**:
+- chris: Creates issues, updates BACKLOG.md with references, sets priorities
+- sergei: Creates branch for top TODO issue, updates BACKLOG.md TODO→DOING
+- max: Removes completed issues from BACKLOG.md when merging PRs
 
 <workflow_rules>
-  <rule_1>GitHub Project board: TODO → DOING → DONE columns</rule_1>
-  <rule_2>sergei: Check DOING first (continue existing), then top TODO</rule_2>
-  <rule_3>max: Close issues when merging PRs (auto-moves to DONE)</rule_3>
-  <rule_4>chris: Manages board, creates/prioritizes TODO items</rule_4>
+  <rule_1>BACKLOG.md: TODO → DOING → DONE tracking</rule_1>
+  <rule_2>sergei: Check current branch first (continue existing), then top BACKLOG.md TODO</rule_2>
+  <rule_3>max: Remove completed issues from BACKLOG.md when merging PRs</rule_3>
+  <rule_4>chris: Manages BACKLOG.md, creates/prioritizes TODO items</rule_4>
   <rule_5>NO draft PRs - all PRs created ready for review</rule_5>
   <rule_6>Display workflow_rules when triggered by process_rules</rule_6>
 </workflow_rules>
@@ -129,11 +131,11 @@ gh project item-edit --id ITEM_ID --project-id PROJECT_ID --field-id FIELD_ID --
 ## Batch Mode Operations
 
 **Trigger Commands**:
-- `"batch work"` - Process all TODO items until board empty
+- `"batch work"` - Process all BACKLOG.md TODO items until empty
 - `"batch play"` - Continuous playtest loop in separate directory
 
 <batch_rules>
-  <rule_1>"batch work": Continue until TODO column empty - NEVER STOP</rule_1>
+  <rule_1>"batch work": Continue until BACKLOG.md TODO empty - NEVER STOP</rule_1>
   <rule_2>"batch play": Loop continuously finding defects - NEVER STOP</rule_2>
   <rule_3>FULLY AUTONOMOUS - no user interaction in batch mode</rule_3>
   <rule_4>Wait for CI completion between tasks</rule_4>
@@ -155,16 +157,16 @@ gh project item-edit --id ITEM_ID --project-id PROJECT_ID --field-id FIELD_ID --
 
 **Quick scan (30 seconds)**:
 1. `git fetch --all` - update remotes
-2. Check GitHub Project board DOING column
+2. Check current branch and BACKLOG.md DOING section
 3. `gh pr list` - check for open PRs
-4. `gh issue list --state open` - TODO items
+4. Check BACKLOG.md TODO section
 5. `git status` - untracked files
 
 **Decision Tree**:
-- **DOING column has work** → Continue that work
+- **Current branch has work** → Continue that work
 - **Open PR exists** → Review and merge
-- **TODO has items** → Pick top priority
-- **Board empty** → PLAY workflow
+- **BACKLOG.md has TODO items** → Pick top priority
+- **BACKLOG.md empty** → PLAY workflow
 
 ## PR Management
 
@@ -173,7 +175,7 @@ gh project item-edit --id ITEM_ID --project-id PROJECT_ID --field-id FIELD_ID --
   <rule_2>sergei creates PR after implementation</rule_2>
   <rule_3>NEVER close PRs without merge</rule_3>
   <rule_4>Fix in review loop until resolved</rule_4>
-  <rule_5>max closes issues when merging (→ DONE)</rule_5>
+  <rule_5>max removes completed issues from BACKLOG.md when merging</rule_5>
   <rule_6>Display pr_rules when triggered by repository_rules</rule_6>
 </pr_rules>
 
@@ -188,7 +190,7 @@ gh project item-edit --id ITEM_ID --project-id PROJECT_ID --field-id FIELD_ID --
 
 <agent_rules>
   <rule_1>max: Repository, builds, CI/CD, merging, issue closing</rule_1>
-  <rule_2>chris: Planning, board management, issue creation</rule_2>
+  <rule_2>chris: Planning, BACKLOG.md management, issue creation</rule_2>
   <rule_3>sergei: Code implementation only</rule_3>
   <rule_4>patrick: Code quality review</rule_4>
   <rule_5>winny: Documentation consolidation (PLAY only)</rule_5>
@@ -200,7 +202,7 @@ gh project item-edit --id ITEM_ID --project-id PROJECT_ID --field-id FIELD_ID --
 ### Key Owners
 
 **max-devops**: Repository ops, builds, CI/CD, merging, **closing issues**, full test suite (EXCLUSIVE)
-**chris-architect**: GitHub Project board, issue lifecycle, DESIGN.md, architecture
+**chris-architect**: BACKLOG.md management, issue lifecycle, DESIGN.md, architecture
 **sergei-perfectionist**: TDD (tests + code), API docs, performance optimization
 **patrick-auditor**: Code quality review (CORRECTNESS > PERFORMANCE > KISS > SRP > YAGNI > DRY > SOLID)
 **winny-writer**: Documentation rewrite/consolidation (PLAY workflow)
