@@ -15,11 +15,11 @@
 
 ## DOING (Current Work)
 
-- [x] #16: Fix contradictory BACKLOG.md management ownership between agents (branch: fix-contradictory-backlog-management-16)
-
+(No active work)
 
 ## DONE (Completed)
 
+- [x] #16: Fix contradictory BACKLOG.md management ownership between agents (branch: fix-contradictory-backlog-management-16)
 - [x] #4: Fix missing DESIGN.md file breaks architecture workflow (branch: fix-missing-design-4)
 - [x] #3: Fix missing README.md file breaks user onboarding (branch: fix-missing-readme-3)
 - [x] #2: Fix missing BACKLOG.md file breaks QADS v3.0 workflow (branch: fix-missing-backlog-2)
