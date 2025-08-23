@@ -2,7 +2,6 @@
 
 ## TODO (Ordered by Priority)
 
-- [ ] #3: Fix missing README.md file breaks user onboarding  
 - [ ] #4: Fix missing DESIGN.md file breaks architecture workflow
 - [ ] #16: Fix contradictory BACKLOG.md management ownership between agents
 - [ ] #14: Fix contradictory PR creation responsibilities between agents
@@ -20,4 +19,5 @@
 
 ## DONE (Completed)
 
+- [x] #3: Fix missing README.md file breaks user onboarding (branch: fix-missing-readme-3)
 - [x] #2: Fix missing BACKLOG.md file breaks QADS v3.0 workflow (branch: fix-missing-backlog-2)
