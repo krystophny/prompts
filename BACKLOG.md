@@ -2,7 +2,6 @@
 
 ## TODO (Ordered by Priority)
 
-- [ ] #3: Fix missing README.md file breaks user onboarding  
 - [ ] #4: Fix missing DESIGN.md file breaks architecture workflow
 - [ ] #16: Fix contradictory BACKLOG.md management ownership between agents
 - [ ] #14: Fix contradictory PR creation responsibilities between agents
@@ -17,6 +16,8 @@
 - [ ] #20: Fix SIZE VALIDATION constraint undefined and untestable
 
 ## DOING (Current Work)
+
+- [x] #3: Fix missing README.md file breaks user onboarding (branch: fix-missing-readme-3)
 
 ## DONE (Completed)
 
