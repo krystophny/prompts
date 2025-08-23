@@ -89,11 +89,12 @@
 ### 3. PLAY WORKFLOW (shortcut: `"play"`)
 **Trigger**: BACKLOG.md empty (all issues resolved)
 **Working Directory**: Separate clone/worktree (parallel to WORK)
-**Actors**: max → winny → parallel audits
+**Actors**: max → winny → parallel audits → chris
 **Protocol**:
 1. **max**: Pull latest main, git clean -fdx, assess infrastructure
 2. **winny**: Complete documentation rewrite (full codebase)
-3. **Parallel audits**: patrick (dead code), vicky (bugs), chris (architecture)
+3. **Parallel audits**: patrick (dead code), vicky (bugs) - MUST file GitHub issues immediately, NO code changes
+4. **chris**: Clear DONE section completely, update BACKLOG.md with new issues, commit and push
 **Focus**: Find DEFECTS ONLY - bugs, dead code, obsolete docs (NO features)
 
 ## BACKLOG.md Management
@@ -133,7 +134,8 @@
 **Chris's BACKLOG.md Workflow (Explicit Protocol)**:
 1. **Create/update GitHub issues**: `gh issue create` or `gh issue edit`
 2. **Edit BACKLOG.md**: Add new issues to TODO section, reorder by priority
-3. **MANDATORY**: Commit and push immediately: `git add BACKLOG.md && git commit -m "plan: add/update issues in BACKLOG.md" && git push`
+3. **PLAY mode only**: Clear DONE section completely before adding new TODO issues
+4. **MANDATORY**: Commit and push immediately: `git add BACKLOG.md && git commit -m "plan: add/update issues in BACKLOG.md" && git push`
 
 <workflow_rules>
   <rule_1>BACKLOG.md: TODO → DOING → DONE tracking</rule_1>
@@ -209,9 +211,9 @@
   <rule_1>max: Repository, builds, CI/CD, merging, issue closing</rule_1>
   <rule_2>chris: Planning, BACKLOG.md creation, issue creation, COMMIT/PUSH BACKLOG.md</rule_2>
   <rule_3>sergei: Code implementation, BACKLOG.md status updates, COMMIT/PUSH BACKLOG.md</rule_3>
-  <rule_4>patrick: Code quality review</rule_4>
+  <rule_4>patrick: Code quality review (WORK), GitHub issue filing (PLAY only)</rule_4>
   <rule_5>winny: Documentation consolidation (PLAY only)</rule_5>
-  <rule_6>vicky: Documentation validation (PLAY only)</rule_6>
+  <rule_6>vicky: GitHub issue filing (PLAY only)</rule_6>
   <rule_7>Stay in your lane - work within ownership only</rule_7>
   <rule_8>Display agent_rules when triggered by process_rules</rule_8>
 </agent_rules>
@@ -221,9 +223,9 @@
 **max-devops**: Repository ops, builds, CI/CD, merging, **closing issues**, full test suite (EXCLUSIVE)
 **chris-architect**: BACKLOG.md creation/priorities, issue lifecycle, DESIGN.md, architecture, COMMIT/PUSH BACKLOG.md
 **sergei-perfectionist**: TDD (tests + code), BACKLOG.md status updates, API docs, performance optimization, COMMIT/PUSH BACKLOG.md
-**patrick-auditor**: Code quality review (CORRECTNESS > PERFORMANCE > KISS > SRP > YAGNI > DRY > SOLID)
+**patrick-auditor**: Code quality review (WORK), dead code detection and GitHub issue filing (PLAY workflow)
 **winny-writer**: Documentation rewrite/consolidation (PLAY workflow)
-**vicky-tester**: Documentation validation (PLAY workflow)
+**vicky-tester**: Bug detection and GitHub issue filing (PLAY workflow)
 
 ## Core Quality Standards
 
