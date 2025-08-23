@@ -122,14 +122,16 @@
 
 **Sergei's BACKLOG.md Workflow (Explicit Protocol)**:
 1. **Check current branch**: `git branch --show-current`
-2. **If on feature branch**: Continue existing work
-3. **If on main branch**: Start new work
+2. **🚨 CRITICAL: Check for READY PRs**: `gh pr list --state open --draft=false` - If ANY non-draft PRs exist, MUST fix all defects there FIRST
+3. **If on feature branch with READY PR**: Fix ALL review comments and failing tests - NO new work until PR merged
+4. **If on feature branch with draft PR OR no PR**: Continue existing work, create PR when ready
+5. **If on main branch**: Start new work ONLY if no READY PRs exist (ignore draft PRs)
    - Move completed issues: DOING → DONE section
    - Pick top TODO issue, move to DOING section
    - Create new branch: `git checkout -b <issue-type>-<issue-number>`
    - **MANDATORY**: Commit and push BACKLOG.md: `git add BACKLOG.md && git commit -m "update: move issue #123 to DOING" && git push -u origin <branch-name>`
-4. **Implement code and tests**
-5. **Create PR when ready**
+6. **Implement code and tests**
+7. **Create PR when ready**
 
 **Chris's BACKLOG.md Workflow (Explicit Protocol)**:
 1. **Create/update GitHub issues**: `gh issue create` or `gh issue edit`
@@ -144,7 +146,10 @@
   <rule_4>chris: Creates issues, manages BACKLOG.md priorities, COMMIT AND PUSH IMMEDIATELY</rule_4>
   <rule_5>MANDATORY: Both chris and sergei MUST commit and push BACKLOG.md after any edit</rule_5>
   <rule_6>NO draft PRs - all PRs created ready for review</rule_6>
-  <rule_7>Display workflow_rules when triggered by process_rules</rule_7>
+  <rule_7>🚨 CRITICAL: sergei MUST NOT start new work when READY PRs exist - fix non-draft PR defects FIRST</rule_7>
+  <rule_8>🚨 CRITICAL: max MUST NOT finish workflow until ALL READY PRs merged and CI passes</rule_8>
+  <rule_9>🚨 DRAFT PR EXCEPTION: Draft PRs are COMPLETELY IGNORED - treat as if they don't exist</rule_9>
+  <rule_9>Display workflow_rules when triggered by process_rules</rule_9>
 </workflow_rules>
 
 ## Batch Mode Operations
@@ -182,8 +187,9 @@
 5. `git status` - untracked files
 
 **Decision Tree**:
+- **🚨 READY PR exists (non-draft)** → BLOCK ALL OTHER WORK - Fix PR defects, wait for CI, merge FIRST
+- **Draft PRs exist** → COMPLETELY IGNORE (treat as if they don't exist)
 - **Current branch has work** → Continue that work
-- **Open PR exists** → Review and merge
 - **BACKLOG.md has TODO items** → Pick top priority
 - **BACKLOG.md empty** → PLAY workflow
 
@@ -195,7 +201,11 @@
   <rule_3>NEVER close PRs without merge</rule_3>
   <rule_4>Fix in review loop until resolved</rule_4>
   <rule_5>max merges PRs (BACKLOG.md already updated by sergei)</rule_5>
-  <rule_6>Display pr_rules when triggered by repository_rules</rule_6>
+  <rule_6>🚨 ABSOLUTE PRIORITY: READY PRs (non-draft) BLOCK ALL other work - must be fixed and merged FIRST</rule_6>
+  <rule_7>🚨 max MUST wait for CI checks to pass before merging - NO exceptions</rule_7>
+  <rule_8>🚨 sergei FORBIDDEN from starting new TODO items when READY PRs exist</rule_8>
+  <rule_9>🚨 DRAFT PR EXCEPTION: Draft PRs are COMPLETELY IGNORED in all blocking rules</rule_9>
+  <rule_9>Display pr_rules when triggered by repository_rules</rule_9>
 </pr_rules>
 
 <title_rules>
@@ -208,21 +218,24 @@
 ## Agent Ownership
 
 <agent_rules>
-  <rule_1>max: Repository, builds, CI/CD, merging, issue closing</rule_1>
+  <rule_1>max: Final merge, CI/CD, issue closing</rule_1>
   <rule_2>chris: Planning, BACKLOG.md creation, issue creation, COMMIT/PUSH BACKLOG.md</rule_2>
-  <rule_3>sergei: Code implementation, BACKLOG.md status updates, COMMIT/PUSH BACKLOG.md</rule_3>
+  <rule_3>sergei: Repository assessment, code implementation, BACKLOG.md status updates, COMMIT/PUSH BACKLOG.md</rule_3>
   <rule_4>patrick: Code quality review (WORK), GitHub issue filing (PLAY only)</rule_4>
   <rule_5>winny: Documentation consolidation (PLAY only)</rule_5>
   <rule_6>vicky: GitHub issue filing (PLAY only)</rule_6>
   <rule_7>Stay in your lane - work within ownership only</rule_7>
-  <rule_8>Display agent_rules when triggered by process_rules</rule_8>
+  <rule_8>🚨 sergei: BLOCKED from new work when READY PRs exist - fix existing non-draft PRs ONLY</rule_8>
+  <rule_9>🚨 max: MUST wait for CI completion before merging - workflow incomplete until merged</rule_9>
+  <rule_10>🚨 DRAFT PR EXCEPTION: Draft PRs do NOT block any work or trigger any rules</rule_10>
+  <rule_10>Display agent_rules when triggered by process_rules</rule_10>
 </agent_rules>
 
 ### Key Owners
 
-**max-devops**: Repository ops, builds, CI/CD, merging, **closing issues**, full test suite (EXCLUSIVE)
+**max-devops**: Final merge, CI/CD, **closing issues**, full test suite (EXCLUSIVE)
 **chris-architect**: BACKLOG.md creation/priorities, issue lifecycle, DESIGN.md, architecture, COMMIT/PUSH BACKLOG.md
-**sergei-perfectionist**: TDD (tests + code), BACKLOG.md status updates, API docs, performance optimization, COMMIT/PUSH BACKLOG.md
+**sergei-perfectionist**: Repository assessment, TDD (tests + code), BACKLOG.md status updates, API docs, performance optimization, COMMIT/PUSH BACKLOG.md
 **patrick-auditor**: Code quality review (WORK), dead code detection and GitHub issue filing (PLAY workflow)
 **winny-writer**: Documentation rewrite/consolidation (PLAY workflow)
 **vicky-tester**: Bug detection and GitHub issue filing (PLAY workflow)
