@@ -45,13 +45,17 @@ graph TD
 
 ### 2. WORK WORKFLOW (shortcut: `"work"`)
 **Trigger**: Issues exist in BACKLOG.md or current branch work  
-**Actors**: max → sergei → patrick → (user if manual) → max  
+**Actors**: sergei → patrick → (user if manual) → max  
 **Protocol**:
-1. **max**: Assess repository, check current branch first
-2. **sergei**: Update BACKLOG.md (TODO→DOING), implement code, create PR
-3. **patrick**: Run tests FIRST, then review code
-4. **user**: Review if manual mode
-5. **max**: Ship (merge PR, close issue)
+1. **sergei**: Repository assessment + implementation
+   - Assess repository, check current branch first
+   - **🚨 MANDATORY REBASE**: `git rebase origin/main` before continuing work
+   - Update BACKLOG.md (TODO→DOING), implement code, create PR
+2. **patrick**: Run tests FIRST, then review code
+3. **user**: Review if manual mode
+4. **max**: Final merge
+   - **🚨 MANDATORY REBASE**: `git rebase origin/main` + `git push --force-with-lease`
+   - Wait for CI completion, merge PR, close issue
 
 ### 3. PLAY WORKFLOW (shortcut: `"play"`)
 **Trigger**: BACKLOG.md empty (all issues resolved)  
@@ -89,40 +93,47 @@ graph TD
 3. PLAY mode: Clear DONE section before adding new TODO items
 4. **MANDATORY**: `git add BACKLOG.md && git commit -m "plan: update BACKLOG.md" && git push`
 
-**Sergei's BACKLOG.md Workflow**:
-1. Check current branch: `git branch --show-current`
-2. If on feature branch: Continue existing work
-3. If on main branch:
+**Sergei's Complete Workflow (Repository Assessment + Implementation)**:
+1. **Repository Assessment**:
+   - `git fetch --all && git status` - update remotes and check state
+   - `gh pr list --state open --draft=false` - check for READY PRs only
+   - **🚨 CRITICAL**: If ANY READY PRs exist, BLOCKED from new work
+2. **Branch Management**:
+   - **If on feature branch**: **🚨 MANDATORY REBASE**: `git rebase origin/main`
+   - **If on main branch**: Start new work ONLY if no READY PRs exist
+3. **BACKLOG.md Management**:
    - Move completed DOING → DONE
    - Pick top TODO → DOING
    - Create branch: `git checkout -b <type>-<number>`
    - **MANDATORY**: `git add BACKLOG.md && git commit -m "update: move issue #X to DOING" && git push -u origin <branch>`
-4. Implement code and tests
-5. Create PR when ready
+4. **Implementation**: Write tests, implement code, create PR
 
 **Max's Role**:
-- Review and merge PRs (BACKLOG.md already updated by sergei)
+- **Final merge operations only** (sergei handles initial assessment)
+- **🚨 MANDATORY REBASE**: `git rebase origin/main` before merge
+- Wait for CI completion before merge
 - Close issues after merge (auto-moves to DONE)
 
-## Repository Assessment (max-devops FIRST)
+## Repository Assessment (sergei-perfectionist FIRST)
 
 ```mermaid
 graph LR
-    START[max-devops] --> BR{Current branch?}
-    BR -->|Feature| CONT[Continue work]
-    BR -->|Main| PR{Open PRs?}
-    PR -->|Yes| REV[Review & merge]
-    PR -->|No| BL{BACKLOG.md TODO?}
+    START[sergei-perfectionist] --> ASSESS[Repository Assessment]
+    ASSESS --> PR{READY PRs exist?}
+    PR -->|Yes| BLOCK[BLOCKED - Fix PRs first]
+    PR -->|No| BR{Current branch?}
+    BR -->|Feature| REBASE[Mandatory rebase] --> CONT[Continue work]
+    BR -->|Main| BL{BACKLOG.md TODO?}
     BL -->|Yes| WORK[Pick top TODO]
     BL -->|No| PLAY[PLAY workflow]
 ```
 
-**Quick scan (30 seconds)**:
-1. `git fetch --all` - update remotes
-2. Check current branch and BACKLOG.md DOING section
-3. `gh pr list` - check for open PRs
-4. Check BACKLOG.md TODO section
-5. `git status` - untracked files
+**Quick Assessment Protocol (sergei performs)**:
+1. `git fetch --all && git status` - update remotes and check state
+2. `gh pr list --state open --draft=false` - check for READY PRs only
+3. **🚨 MANDATORY REBASE** if on feature branch
+4. Check BACKLOG.md DOING section
+5. Check BACKLOG.md TODO section
 
 ## Batch Mode
 
@@ -140,9 +151,9 @@ graph LR
 
 | Agent | Owns | Restrictions |
 |-------|------|--------------|
-| **max-devops** | Repository, builds, CI/CD, merging, closing issues | Cannot modify code |
+| **max-devops** | Final merge, CI/CD, closing issues | Cannot modify code, sergei handles initial assessment |
 | **chris-architect** | BACKLOG.md, issues, DESIGN.md, architecture | MUST commit/push BACKLOG.md |
-| **sergei-perfectionist** | Code implementation, BACKLOG.md status updates | MUST commit/push BACKLOG.md |
+| **sergei-perfectionist** | Repository assessment, code implementation, BACKLOG.md status updates | MUST commit/push BACKLOG.md, MUST rebase |
 | **patrick-auditor** | Code quality review (WORK), issue filing (PLAY) | Cannot modify implementation |
 | **winny-technical-writer** | Documentation consolidation (PLAY only) | Cannot modify code |
 | **vicky-acceptance-tester** | Bug detection, issue filing (PLAY only) | Cannot modify code |

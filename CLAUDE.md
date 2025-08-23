@@ -45,7 +45,7 @@
 </implementation_rules>
 
 <process_rules>
-  <rule_1>max-devops assessment ALWAYS first</rule_1>
+  <rule_1>sergei-perfectionist assessment ALWAYS first</rule_1>
   <rule_2>🚨 COMPLETE existing DOING work before starting TODO</rule_2>
   <rule_3>Follow workflow order exactly</rule_3>
   <rule_4>User overrides are ONLY exception</rule_4>
@@ -78,13 +78,18 @@
 
 ### 2. WORK WORKFLOW (shortcut: `"work"`)
 **Trigger**: Issues exist in BACKLOG.md or current branch work
-**Actors**: max → sergei → patrick → (user if manual) → max
+**Actors**: sergei → patrick → (user if manual) → max
 **Protocol**:
-1. **max**: Assess repository, check current branch first
-2. **sergei**: Update BACKLOG.md status, continue current branch work or pick top TODO issue, write tests, implement code, create PR
-3. **patrick**: Run tests FIRST, then review code (handback if tests fail)
-4. **user**: Review if manual mode
-5. **max**: Ship (merge PR, close issue → auto-moves to DONE)
+1. **sergei**: Repository assessment + implementation
+   - Assess repository, check current branch first
+   - **🚨 MANDATORY REBASE**: `git rebase origin/main` before continuing work on any branch
+   - Update BACKLOG.md status, continue current branch work or pick top TODO issue
+   - Write tests, implement code, create PR
+2. **patrick**: Run tests FIRST, then review code (handback if tests fail)
+3. **user**: Review if manual mode
+4. **max**: Final merge
+   - **🚨 MANDATORY REBASE**: `git rebase origin/main` + `git push --force-with-lease`
+   - Wait for CI completion, merge PR, close issue → auto-moves to DONE
 
 ### 3. PLAY WORKFLOW (shortcut: `"play"`)
 **Trigger**: BACKLOG.md empty (all issues resolved)
@@ -120,18 +125,24 @@
 - sergei: Updates BACKLOG.md (DOING→DONE, TODO→DOING), creates branch, COMMITS AND PUSHES BACKLOG.md
 - max: Reviews PRs and merges (BACKLOG.md already updated by sergei)
 
-**Sergei's BACKLOG.md Workflow (Explicit Protocol)**:
-1. **Check current branch**: `git branch --show-current`
-2. **🚨 CRITICAL: Check for READY PRs**: `gh pr list --state open --draft=false` - If ANY non-draft PRs exist, MUST fix all defects there FIRST
-3. **If on feature branch with READY PR**: Fix ALL review comments and failing tests - NO new work until PR merged
-4. **If on feature branch with draft PR OR no PR**: Continue existing work, create PR when ready
-5. **If on main branch**: Start new work ONLY if no READY PRs exist (ignore draft PRs)
+**Sergei's Complete Workflow (Repository Assessment + Implementation)**:
+1. **Repository Assessment**:
+   - `git fetch --all && git status` - update remotes and check state
+   - `gh pr list --state open --draft=false` - check for READY PRs only
+   - Check current branch: `git branch --show-current`
+   - **🚨 CRITICAL**: If ANY READY PRs exist, BLOCKED from new work - fix defects FIRST
+2. **Branch Management**:
+   - **If on feature branch**: **🚨 MANDATORY REBASE**: `git rebase origin/main` before continuing
+   - **If on main branch**: Start new work ONLY if no READY PRs exist
+3. **BACKLOG.md Management**:
    - Move completed issues: DOING → DONE section
    - Pick top TODO issue, move to DOING section
    - Create new branch: `git checkout -b <issue-type>-<issue-number>`
    - **MANDATORY**: Commit and push BACKLOG.md: `git add BACKLOG.md && git commit -m "update: move issue #123 to DOING" && git push -u origin <branch-name>`
-6. **Implement code and tests**
-7. **Create PR when ready**
+4. **Implementation**:
+   - Write tests, implement code
+   - Run targeted tests for affected code only
+   - Create non-draft PR when ready
 
 **Chris's BACKLOG.md Workflow (Explicit Protocol)**:
 1. **Create/update GitHub issues**: `gh issue create` or `gh issue edit`
@@ -177,19 +188,19 @@
   <rule_5>Display gh_rules when triggered by repository_rules</rule_5>
 </gh_rules>
 
-## Repository Assessment (max-devops FIRST)
+## Repository Assessment (sergei-perfectionist FIRST)
 
-**Quick scan (30 seconds)**:
-1. `git fetch --all` - update remotes
-2. Check current branch and BACKLOG.md DOING section
-3. `gh pr list` - check for open PRs
+**Quick Assessment Protocol (sergei performs)**:
+1. `git fetch --all && git status` - update remotes and check state
+2. `gh pr list --state open --draft=false` - check for READY PRs only
+3. Check current branch and BACKLOG.md DOING section
 4. Check BACKLOG.md TODO section
 5. `git status` - untracked files
 
 **Decision Tree**:
-- **🚨 READY PR exists (non-draft)** → BLOCK ALL OTHER WORK - Fix PR defects, wait for CI, merge FIRST
+- **🚨 READY PR exists (non-draft)** → BLOCK ALL OTHER WORK - Fix PR defects FIRST
 - **Draft PRs exist** → COMPLETELY IGNORE (treat as if they don't exist)
-- **Current branch has work** → Continue that work
+- **Current branch has work** → **🚨 MANDATORY REBASE** then continue that work
 - **BACKLOG.md has TODO items** → Pick top priority
 - **BACKLOG.md empty** → PLAY workflow
 
