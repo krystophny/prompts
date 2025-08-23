@@ -117,8 +117,6 @@ gh project item-edit --id ITEM_ID --project-id PROJECT_ID --field-id FIELD_ID --
 - sergei: Moves issues TODO→DOING when starting work
 - max: Closes issues (GitHub auto-moves DOING→DONE)
 
-**Fallback**: If GitHub CLI proves too complex, chris can manage board via web UI while keeping issues in CLI
-
 <workflow_rules>
   <rule_1>GitHub Project board: TODO → DOING → DONE columns</rule_1>
   <rule_2>sergei: Check DOING first (continue existing), then top TODO</rule_2>
