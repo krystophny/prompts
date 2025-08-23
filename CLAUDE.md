@@ -81,7 +81,7 @@
 **Actors**: max → sergei → patrick → (user if manual) → max
 **Protocol**:
 1. **max**: Assess repository, check current branch first
-2. **sergei**: Continue current branch work or pick top BACKLOG.md issue, write tests, implement code, create PR
+2. **sergei**: Update BACKLOG.md status, continue current branch work or pick top TODO issue, write tests, implement code, create PR
 3. **patrick**: Run tests FIRST, then review code (handback if tests fail)
 4. **user**: Review if manual mode
 5. **max**: Ship (merge PR, close issue → auto-moves to DONE)
@@ -116,14 +116,26 @@
 
 **BACKLOG Operations**:
 - chris: Creates issues, updates BACKLOG.md with references, sets priorities
-- sergei: Creates branch for top TODO issue, updates BACKLOG.md TODO→DOING
-- max: Removes completed issues from BACKLOG.md when merging PRs
+- sergei: Updates BACKLOG.md (DOING→DONE, TODO→DOING), creates branch, commits BACKLOG.md
+- max: Reviews PRs and merges (BACKLOG.md already updated by sergei)
+
+**Sergei's BACKLOG.md Workflow (Explicit Protocol)**:
+1. **Check current branch**: `git branch --show-current`
+2. **If on feature branch**: Continue existing work
+3. **If on main branch**: Start new work
+   - Move completed issues: DOING → DONE section
+   - Pick top TODO issue, move to DOING section
+   - Create new branch: `git checkout -b <issue-type>-<issue-number>`
+   - Commit BACKLOG.md: `git add BACKLOG.md && git commit -m "update: move issue #123 to DOING"`
+   - Push branch: `git push -u origin <branch-name>`
+4. **Implement code and tests**
+5. **Create PR when ready**
 
 <workflow_rules>
   <rule_1>BACKLOG.md: TODO → DOING → DONE tracking</rule_1>
-  <rule_2>sergei: Check current branch first (continue existing), then top BACKLOG.md TODO</rule_2>
-  <rule_3>max: Remove completed issues from BACKLOG.md when merging PRs</rule_3>
-  <rule_4>chris: Manages BACKLOG.md, creates/prioritizes TODO items</rule_4>
+  <rule_2>sergei: Check current branch first, update BACKLOG.md status before new work</rule_2>
+  <rule_3>sergei: Move completed DOING→DONE, current TODO→DOING, commit BACKLOG.md</rule_3>
+  <rule_4>chris: Creates issues, manages BACKLOG.md priorities</rule_4>
   <rule_5>NO draft PRs - all PRs created ready for review</rule_5>
   <rule_6>Display workflow_rules when triggered by process_rules</rule_6>
 </workflow_rules>
@@ -175,7 +187,7 @@
   <rule_2>sergei creates PR after implementation</rule_2>
   <rule_3>NEVER close PRs without merge</rule_3>
   <rule_4>Fix in review loop until resolved</rule_4>
-  <rule_5>max removes completed issues from BACKLOG.md when merging</rule_5>
+  <rule_5>max merges PRs (BACKLOG.md already updated by sergei)</rule_5>
   <rule_6>Display pr_rules when triggered by repository_rules</rule_6>
 </pr_rules>
 
@@ -190,8 +202,8 @@
 
 <agent_rules>
   <rule_1>max: Repository, builds, CI/CD, merging, issue closing</rule_1>
-  <rule_2>chris: Planning, BACKLOG.md management, issue creation</rule_2>
-  <rule_3>sergei: Code implementation only</rule_3>
+  <rule_2>chris: Planning, BACKLOG.md creation, issue creation</rule_2>
+  <rule_3>sergei: Code implementation, BACKLOG.md status updates</rule_3>
   <rule_4>patrick: Code quality review</rule_4>
   <rule_5>winny: Documentation consolidation (PLAY only)</rule_5>
   <rule_6>vicky: Documentation validation (PLAY only)</rule_6>
@@ -202,8 +214,8 @@
 ### Key Owners
 
 **max-devops**: Repository ops, builds, CI/CD, merging, **closing issues**, full test suite (EXCLUSIVE)
-**chris-architect**: BACKLOG.md management, issue lifecycle, DESIGN.md, architecture
-**sergei-perfectionist**: TDD (tests + code), API docs, performance optimization
+**chris-architect**: BACKLOG.md creation/priorities, issue lifecycle, DESIGN.md, architecture
+**sergei-perfectionist**: TDD (tests + code), BACKLOG.md status updates, API docs, performance optimization
 **patrick-auditor**: Code quality review (CORRECTNESS > PERFORMANCE > KISS > SRP > YAGNI > DRY > SOLID)
 **winny-writer**: Documentation rewrite/consolidation (PLAY workflow)
 **vicky-tester**: Documentation validation (PLAY workflow)
