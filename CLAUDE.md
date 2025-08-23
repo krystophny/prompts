@@ -63,7 +63,9 @@
 
 ## Three Core Workflows
 
-### 1. PLAN WORKFLOW
+**Shortcuts**: `"plan"`, `"work"`, `"play"`
+
+### 1. PLAN WORKFLOW (shortcut: `"plan"`)
 **Trigger**: User requests planning, design, or new features
 **Actor**: chris-architect ONLY
 **Authority**: FULL control of GitHub Project board and issue creation
@@ -74,24 +76,25 @@
 - Move completed work to DONE
 **Protocol**: User → chris → Issues/Board
 
-### 2. WORK WORKFLOW  
+### 2. WORK WORKFLOW (shortcut: `"work"`)
 **Trigger**: Issues exist in TODO or DOING columns
 **Actors**: max → sergei → patrick → (user if manual) → max
 **Protocol**:
 1. **max**: Assess repository, check DOING first
-2. **sergei**: Continue DOING or pick top TODO, build solution
-3. **patrick**: Review code quality
+2. **sergei**: Continue DOING or pick top TODO, write tests, implement code, create PR
+3. **patrick**: Run tests FIRST, then review code (handback if tests fail)
 4. **user**: Review if manual mode
 5. **max**: Ship (merge PR, close issue → auto-moves to DONE)
 
-### 3. PLAY WORKFLOW
+### 3. PLAY WORKFLOW (shortcut: `"play"`)
 **Trigger**: Board empty (all work in DONE)
+**Working Directory**: Separate clone/worktree (parallel to WORK)
 **Actors**: max → winny → parallel audits
 **Protocol**:
-1. **max**: Sync main, clean repository
-2. **winny**: Rewrite/consolidate documentation
-3. **Parallel audits**: patrick (code), vicky (docs), chris (architecture)
-**Focus**: Find DEFECTS ONLY - no features or enhancements
+1. **max**: Pull latest main, git clean -fdx, assess infrastructure
+2. **winny**: Complete documentation rewrite (full codebase)
+3. **Parallel audits**: patrick (dead code), vicky (bugs), chris (architecture)
+**Focus**: Find DEFECTS ONLY - bugs, dead code, obsolete docs (NO features)
 
 ## Kanban Board Management
 
@@ -106,12 +109,17 @@
 
 ## Batch Mode Operations
 
+**Trigger Commands**:
+- `"batch work"` - Process all TODO items until board empty
+- `"batch play"` - Continuous playtest loop in separate directory
+
 <batch_rules>
   <rule_1>"batch work": Continue until TODO column empty - NEVER STOP</rule_1>
   <rule_2>"batch play": Loop continuously finding defects - NEVER STOP</rule_2>
   <rule_3>FULLY AUTONOMOUS - no user interaction in batch mode</rule_3>
   <rule_4>Wait for CI completion between tasks</rule_4>
-  <rule_5>Display batch_rules when triggered by process_rules</rule_5>
+  <rule_5>No manual reviews in batch mode - skip Phase 4 user review</rule_5>
+  <rule_6>Display batch_rules when triggered by process_rules</rule_6>
 </batch_rules>
 
 ## Issue and PR Context
@@ -174,7 +182,7 @@
 
 **max-devops**: Repository ops, builds, CI/CD, merging, **closing issues**, full test suite (EXCLUSIVE)
 **chris-architect**: GitHub Project board, issue lifecycle, DESIGN.md, architecture
-**sergei-perfectionist**: Production code, API docs, performance optimization
+**sergei-perfectionist**: TDD (tests + code), API docs, performance optimization
 **patrick-auditor**: Code quality review (CORRECTNESS > PERFORMANCE > KISS > SRP > YAGNI > DRY > SOLID)
 **winny-writer**: Documentation rewrite/consolidation (PLAY workflow)
 **vicky-tester**: Documentation validation (PLAY workflow)
@@ -231,8 +239,10 @@
 
 ## PLAY Workflow Constraints
 
-**DEFECTS ONLY**:
+**DEFECTS & CLEANUP ONLY**:
 - ✅ Bugs, broken functionality
+- ✅ Dead code, unused imports
+- ✅ Obsolete documentation
 - ✅ Security vulnerabilities
 - ✅ Performance regressions
 - ❌ NO features or enhancements
