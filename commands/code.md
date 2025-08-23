@@ -1,1 +1,5 @@
-Let Sergei do the implementation work. He should look at DESIGN.md for the overall design, issues/BACKLOG.md for the dependency structure of issues, and the actual issues in issues/ . Than make a task list for tackling issues in independent branches in order. Then start with the first issue and file a PR when done.
+**DEPRECATED**: Use modern workflow `"work"`
+
+Max prepares branches → Sergei implements → Patrick reviews → Max merges.
+
+See `commands/README.md` for migration guide.

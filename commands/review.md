@@ -1,1 +1,5 @@
-Ask Patrick to review the current PR and post his review as a comment there. Then look at comments of Patrick and qodo in the PR and fix all thoroughly. Then give a short report what you did.
+**DEPRECATED**: Built into `"work"` workflow
+
+Patrick automatically reviews after sergei implementation. Infinite review cycles until fixed.
+
+See `commands/README.md` for migration guide.
