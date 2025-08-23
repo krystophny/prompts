@@ -18,6 +18,6 @@
 
 ## DOING (Current Work)
 
-- [x] #2: Fix missing BACKLOG.md file breaks QADS v3.0 workflow (branch: fix-missing-backlog-2)
-
 ## DONE (Completed)
+
+- [x] #2: Fix missing BACKLOG.md file breaks QADS v3.0 workflow (branch: fix-missing-backlog-2)
