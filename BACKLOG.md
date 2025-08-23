@@ -16,9 +16,9 @@
 
 ## DOING (Current Work)
 
-- [x] #4: Fix missing DESIGN.md file breaks architecture workflow (branch: fix-missing-design-4)
 
 ## DONE (Completed)
 
+- [x] #4: Fix missing DESIGN.md file breaks architecture workflow (branch: fix-missing-design-4)
 - [x] #3: Fix missing README.md file breaks user onboarding (branch: fix-missing-readme-3)
 - [x] #2: Fix missing BACKLOG.md file breaks QADS v3.0 workflow (branch: fix-missing-backlog-2)
