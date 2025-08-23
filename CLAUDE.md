@@ -127,8 +127,8 @@
 
 **BACKLOG Operations**:
 - chris: Creates issues, updates BACKLOG.md with references, sets priorities, COMMITS AND PUSHES IMMEDIATELY
-- sergei: Updates BACKLOG.md (DOING→DONE, TODO→DOING), creates branch, COMMITS AND PUSHES BACKLOG.md
-- max: Reviews PRs and merges (BACKLOG.md already updated by sergei)
+- max: Updates BACKLOG.md status transitions (DOING→DONE, TODO→DOING), creates branch, COMMITS AND PUSHES BACKLOG.md
+- sergei: Implementation only - NO BACKLOG.md management
 
 **Max's Complete Repository Management Protocol**:
 1. **State Analysis & Forensic Reconciliation**:
@@ -140,7 +140,7 @@
    - IF multiple PRs: choose one based on priority, continue it
    - IF no PRs but DOING exists: continue implementation
    - IF clean state: move completed DOING→DONE, pick top TODO→DOING, create branch
-   - **MANDATORY**: Commit/push BACKLOG.md updates
+   - **MANDATORY**: Commit/push BACKLOG.md updates (max owns all status transitions)
 3. **Pre-work Preparation**:
    - `git rebase origin/main` (prepare clean branch for sergei)
    - `git push --force-with-lease` if rebased existing branch
@@ -164,10 +164,10 @@
 
 <workflow_rules>
   <rule_1>BACKLOG.md: TODO → DOING → DONE tracking</rule_1>
-  <rule_2>sergei: Check current branch first, update BACKLOG.md status before new work</rule_2>
-  <rule_3>sergei: Move completed DOING→DONE, current TODO→DOING, COMMIT AND PUSH BACKLOG.md</rule_3>
+  <rule_2>max: Check current branch first, update BACKLOG.md status before new work</rule_2>
+  <rule_3>max: Move completed DOING→DONE, current TODO→DOING, COMMIT AND PUSH BACKLOG.md</rule_3>
   <rule_4>chris: Creates issues, manages BACKLOG.md priorities, COMMIT AND PUSH IMMEDIATELY</rule_4>
-  <rule_5>MANDATORY: Both chris and sergei MUST commit and push BACKLOG.md after any edit</rule_5>
+  <rule_5>MANDATORY: Both chris and max MUST commit and push BACKLOG.md after any edit</rule_5>
   <rule_6>NO draft PRs - all PRs created ready for review</rule_6>
   <rule_7>🚨 CRITICAL: sergei MUST NOT start new work when READY PRs exist - fix non-draft PR defects FIRST</rule_7>
   <rule_8>🚨 CRITICAL: max MUST NOT finish workflow until ALL READY PRs merged and CI passes</rule_8>
@@ -245,9 +245,9 @@
 ## Agent Ownership
 
 <agent_rules>
-  <rule_1>max: Repository management, pre/post rebase, final merge, issue closing</rule_1>
-  <rule_2>chris: Planning, BACKLOG.md creation, issue creation, COMMIT/PUSH BACKLOG.md</rule_2>
-  <rule_3>sergei: Code implementation only, commit/push implementation</rule_3>
+  <rule_1>max: Repository management, BACKLOG.md status transitions, pre/post rebase, final merge, issue closing</rule_1>
+  <rule_2>chris: Planning, BACKLOG.md priorities, issue creation, COMMIT/PUSH BACKLOG.md</rule_2>
+  <rule_3>sergei: Code implementation only, commit/push implementation, NO BACKLOG.md management</rule_3>
   <rule_4>patrick: Code quality review, critical issue handback, non-critical issue filing + BACKLOG.md updates</rule_4>
   <rule_5>winny: Documentation consolidation (PLAY only)</rule_5>
   <rule_6>vicky: GitHub issue filing (PLAY only)</rule_6>
@@ -260,9 +260,9 @@
 
 ### Key Owners
 
-**max-devops**: Repository management, forensic analysis, pre/post rebase operations, final merge, **closing issues**, full test suite (EXCLUSIVE)
-**chris-architect**: BACKLOG.md creation/priorities, issue lifecycle, DESIGN.md, architecture, COMMIT/PUSH BACKLOG.md
-**sergei-perfectionist**: Pure implementation (tests + code), commit/push implementation, API docs, performance optimization
+**max-devops**: Repository management, BACKLOG.md status transitions (TODO→DOING→DONE), forensic analysis, pre/post rebase operations, final merge, **closing issues**, full test suite (EXCLUSIVE)
+**chris-architect**: BACKLOG.md priorities (NOT status transitions), issue lifecycle, DESIGN.md, architecture, COMMIT/PUSH BACKLOG.md
+**sergei-perfectionist**: Pure implementation (tests + code), commit/push implementation, API docs, performance optimization, NO BACKLOG.md management
 **patrick-auditor**: Code quality review with handback, non-critical issue filing + BACKLOG.md TODO additions, dead code detection (PLAY workflow)
 **winny-writer**: Documentation rewrite/consolidation (PLAY workflow)
 **vicky-tester**: Bug detection and GitHub issue filing (PLAY workflow)
