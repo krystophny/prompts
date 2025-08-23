@@ -1,1 +1,5 @@
-Merge PR into main, checkout and pull main. Check if all issues that are solved have been closed. 
+**DEPRECATED**: Built into `"work"` workflow
+
+Max handles final merge, issue closing, and cleanup after CI completion.
+
+See `commands/README.md` for migration guide. 

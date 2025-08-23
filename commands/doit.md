@@ -1,1 +1,7 @@
-Assess situation, plan, decide, execute, review, iterate. Finally, evaluate what can be done better next time. Start with architecture verification, understand build systems first.
+**LEGACY PATTERN**: General development approach
+
+Modern equivalent: `"plan"` → `"work"` → `"play"` → iterate
+
+Always start with max's repository assessment and build system verification.
+
+See `commands/README.md` for migration guide.

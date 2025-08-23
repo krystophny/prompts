@@ -1,1 +1,7 @@
-Ask Patrick to audit the whole codebase and all tests if you cheated or took a shortcut or wrote a stub just to get something to look like it works superficially. Check for duplicate, legacy, and dead code up for elimination. Check if there are shallow, taugological, inefficient or duplicate tests. Check if all criteria of CLAUDE.md and ~/.claude/CLAUDE.md are fulfilled. Then fix all honestly in small steps covered by tests.
+**DEPRECATED**: Use modern workflow `"play"`
+
+Complete quality audit: max → winny docs → patrick/vicky parallel audits → chris files issues.
+
+**DEFECTS ONLY** - no features or enhancements.
+
+See `commands/README.md` for migration guide.

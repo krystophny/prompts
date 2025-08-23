@@ -1,29 +1,82 @@
-# prompts
+# QADS Development Patterns
 
-See also [Claude docs](https://docs.anthropic.com/en/docs/claude-code/common-workflows).
+Historical patterns for Quality-driven Agent Development System implementation.
 
-* Assess situation, plan, decide, execute, review, iterate. Finally, evaluate what can be done better next time. Start with architecture verification, understand build systems first.
-* The goal of this project is *goal*. Initialize CLAUDE.md with this information.
-* *Insert requirements and goals here*. Devise an architectural plan in DESIGN.md and derive a detailed backlog for execution in RED/GREEN/REFACTOR test-driven development with non-shallow and non-tautological tests in a set of well and detailed issues on GitHub. Emphasize that no cheating and no shortcuts, simplifications, stubs or placeholders are allowed. Then commit and push.
-* Consider the current failing tests and problems, devise a solution strategy, and add a list of issues with a detailed checklist what to do to resolve it.
-* Check if all issues that are solved have been closed and all PRs are merged into main. Then checkout and pull main. Identify the best issue to work on next on GitHub and get it done in a new branch. No cheating, no shortcuts, no simplifications, no stubs, no placeholders. Write targetted and fast behavior-driven well explained tests in the Given-When-Then structure that initially fail (RED phase), implement full functionality to make them pass (GREEN phase), clean up implementation (REFACTOR phase), see that all tests still pass. Do this in small increments. After each increment, update issue description, commit, push. Once finished, ensure that tests pass, and open a PR.
-* Check qodo comments in PR, CI and coverage and fix anything that pops up.
-* Merge PR into main, checkout and pull main. Check if all issues that are solved have been closed. Identify the best issue to work on. Continue working in a new branch and file PR in the end.
-* Audit the whole codebase and all tests if you cheated or took a shortcut or wrote a stub just to get something to look like it works superficially. Check for duplicate, legacy, and dead code up for elimination. Check if there are shallow, taugological, inefficient or duplicate tests. Check if all criteria of CLAUDE.md and ~/.claude/CLAUDE.md are fulfilled. Then fix all honestly in small increments covered by tests.
+## Core Development Cycle
 
-## Review
-* Review the changes of the current PR in a constructively critical way based on the following criteria.
-  - Objectives of the underlying issue are completely fulfilled and in line with project goals and scope.
-  - Code is correct and free of stubs and illegal shortcuts.
-  - No race conditions or concurrency issues.
-  - No dead, legacy or duplicated code remains.
-  - Test coverage is adequate and tests are targetted, non-shallow, non-tautological and as fast as possible to run.
-  - No files added that shouldn't be in git. 
-  - File and directory names and structure are consistent and meaningful.
-  - Documentation is up to date. 
-  - Conventions of CLAUDE.md and ~/.claude/CLAUDE.md are fulfilled.
-  - Then revise according to the review, ensure tests pass, commit, and push.
+**Assess → Plan → Execute → Review → Iterate**
 
-## Thinking Mode
+Always start with architecture verification and build system understanding before implementation.
 
-Think. Think hard. Think harder. Ultrathink.
+## Project Initialization Pattern
+
+```bash
+# 1. Initialize project with clear goals
+"The goal of this project is <specific_goal>"
+
+# 2. Create architectural foundation  
+- Update DESIGN.md with architectural plan
+- Create detailed GitHub issues with checklists
+- Emphasize: NO shortcuts, stubs, or placeholders
+- Commit and push immediately
+```
+
+## Issue Resolution Pattern
+
+```bash
+# 1. State assessment
+git checkout main && git pull
+gh issue list --state open
+gh pr list --state all
+
+# 2. Select optimal issue
+# Choose based on priority and current project state
+
+# 3. TDD Implementation
+# RED: Write failing tests (Given-When-Then BDD style)
+# GREEN: Implement functionality to pass tests  
+# REFACTOR: Clean up implementation while keeping tests green
+
+# 4. Incremental progress
+# After each increment: update issue, commit, push
+
+# 5. PR completion
+# Ensure tests pass, create PR, address CI feedback
+```
+
+## Quality Review Criteria
+
+**Comprehensive PR review checklist:**
+
+- ✅ **Scope**: Issue objectives fulfilled, aligned with project goals
+- ✅ **Correctness**: No stubs, shortcuts, or illegal workarounds
+- ✅ **Concurrency**: No race conditions or thread safety issues  
+- ✅ **Cleanliness**: Dead/legacy/duplicated code eliminated
+- ✅ **Testing**: Adequate coverage, targeted non-shallow tests, fast execution
+- ✅ **Repository**: Only appropriate files committed to git
+- ✅ **Structure**: Consistent file/directory naming and organization
+- ✅ **Documentation**: Current and accurate  
+- ✅ **Standards**: CLAUDE.md conventions followed
+
+**After review: Revise → Test → Commit → Push**
+
+## Audit Pattern
+
+```bash
+# Comprehensive codebase audit
+# Focus areas:
+- Shortcuts and stubs removal
+- Duplicate/legacy/dead code elimination  
+- Test quality (shallow, tautological, inefficient tests)
+- CLAUDE.md compliance verification
+- Fix incrementally with test coverage
+```
+
+## Legacy References
+
+See `commands/` directory for deprecated individual command files.  
+Modern QADS uses three-workflow system: PLAN → WORK → PLAY.
+
+---
+
+*For current system specification, see `CLAUDE.md`*
