@@ -2,7 +2,6 @@
 
 ## TODO (Ordered by Priority)
 
-- [ ] #4: Fix missing DESIGN.md file breaks architecture workflow
 - [ ] #16: Fix contradictory BACKLOG.md management ownership between agents
 - [ ] #14: Fix contradictory PR creation responsibilities between agents
 - [ ] #7: Fix inconsistent draft PR creation responsibilities
@@ -16,6 +15,8 @@
 - [ ] #20: Fix SIZE VALIDATION constraint undefined and untestable
 
 ## DOING (Current Work)
+
+- [x] #4: Fix missing DESIGN.md file breaks architecture workflow (branch: fix-missing-design-4)
 
 ## DONE (Completed)
 
