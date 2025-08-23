@@ -98,13 +98,35 @@
 
 ## Kanban Board Management
 
+**GitHub Project Setup (chris-architect)**:
+```bash
+# One-time authentication setup
+gh auth refresh -s project
+
+# Create project with Status field
+gh project create --owner "@me" --title "Development Board"
+gh project field-create PROJECT_ID --name "Status" --data-type "SINGLE_SELECT" --single-select-options "TODO,DOING,DONE"
+
+# Daily operations
+gh project item-add PROJECT_ID --url ISSUE_URL
+gh project item-edit --id ITEM_ID --project-id PROJECT_ID --field-id FIELD_ID --single-select-option-id OPTION_ID
+```
+
+**Board Operations**:
+- chris: Creates board, adds issues, sets priorities
+- sergei: Moves issues TODO→DOING when starting work
+- max: Closes issues (GitHub auto-moves DOING→DONE)
+
+**Fallback**: If GitHub CLI proves too complex, chris can manage board via web UI while keeping issues in CLI
+
 <workflow_rules>
   <rule_1>GitHub Project board: TODO → DOING → DONE columns</rule_1>
   <rule_2>sergei: Check DOING first (continue existing), then top TODO</rule_2>
   <rule_3>max: Close issues when merging PRs (auto-moves to DONE)</rule_3>
   <rule_4>chris: Manages board, creates/prioritizes TODO items</rule_4>
   <rule_5>NO draft PRs - all PRs created ready for review</rule_5>
-  <rule_6>Display workflow_rules when triggered by process_rules</rule_6>
+  <rule_6>GitHub CLI requires 'project' scope: gh auth refresh -s project</rule_6>
+  <rule_7>Display workflow_rules when triggered by process_rules</rule_7>
 </workflow_rules>
 
 ## Batch Mode Operations
