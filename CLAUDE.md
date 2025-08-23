@@ -45,7 +45,7 @@
 </implementation_rules>
 
 <process_rules>
-  <rule_1>sergei-perfectionist assessment ALWAYS first</rule_1>
+  <rule_1>max-devops assessment ALWAYS first in WORK workflow</rule_1>
   <rule_2>🚨 COMPLETE existing DOING work before starting TODO</rule_2>
   <rule_3>Follow workflow order exactly</rule_3>
   <rule_4>User overrides are ONLY exception</rule_4>
@@ -78,18 +78,23 @@
 
 ### 2. WORK WORKFLOW (shortcut: `"work"`)
 **Trigger**: Issues exist in BACKLOG.md or current branch work
-**Actors**: sergei → patrick → (user if manual) → max
+**Actors**: max → sergei → patrick → (user if manual) → max
 **Protocol**:
-1. **sergei**: Repository assessment + implementation
-   - Assess repository, check current branch first
-   - **🚨 MANDATORY REBASE**: `git rebase origin/main` before continuing work on any branch
-   - Update BACKLOG.md status, continue current branch work or pick top TODO issue
-   - Write tests, implement code, create PR
-2. **patrick**: Run tests FIRST, then review code (handback if tests fail)
-3. **user**: Review if manual mode
-4. **max**: Final merge
-   - **🚨 MANDATORY REBASE**: `git rebase origin/main` + `git push --force-with-lease`
-   - Wait for CI completion, merge PR, close issue → auto-moves to DONE
+1. **max**: Repository state management + forensic analysis
+   - `git fetch --all && git status`
+   - Forensic analysis if inconsistent (branch + PR + BACKLOG.md + commits)
+   - Choose/create branch, ensure 1 DOING + ≤1 PR rule
+   - **🚨 PRE-WORK REBASE**: `git rebase origin/main` + `git push --force-with-lease`
+2. **sergei**: Implementation only
+   - Write tests, implement code on prepared branch
+   - `git add <files>`, `git commit`, `git push`, create PR
+3. **patrick**: Code review + issue triage
+   - CRITICAL issues → handback to sergei (infinite cycles allowed)
+   - Non-critical issues → file as GitHub issues, add to BACKLOG.md TODO
+4. **user**: Manual review (if not batch mode)
+5. **max**: Final merge + cleanup
+   - **🚨 PRE-MERGE REBASE**: `git rebase origin/main` + `git push --force-with-lease`
+   - Wait for CI, merge PR, close issue, clean state (0 DOING, 0 PRs)
 
 ### 3. PLAY WORKFLOW (shortcut: `"play"`)
 **Trigger**: BACKLOG.md empty (all issues resolved)
@@ -125,24 +130,31 @@
 - sergei: Updates BACKLOG.md (DOING→DONE, TODO→DOING), creates branch, COMMITS AND PUSHES BACKLOG.md
 - max: Reviews PRs and merges (BACKLOG.md already updated by sergei)
 
-**Sergei's Complete Workflow (Repository Assessment + Implementation)**:
-1. **Repository Assessment**:
-   - `git fetch --all && git status` - update remotes and check state
-   - `gh pr list --state open --draft=false` - check for READY PRs only
-   - Check current branch: `git branch --show-current`
-   - **🚨 CRITICAL**: If ANY READY PRs exist, BLOCKED from new work - fix defects FIRST
-2. **Branch Management**:
-   - **If on feature branch**: **🚨 MANDATORY REBASE**: `git rebase origin/main` before continuing
-   - **If on main branch**: Start new work ONLY if no READY PRs exist
-3. **BACKLOG.md Management**:
-   - Move completed issues: DOING → DONE section
-   - Pick top TODO issue, move to DOING section
-   - Create new branch: `git checkout -b <issue-type>-<issue-number>`
-   - **MANDATORY**: Commit and push BACKLOG.md: `git add BACKLOG.md && git commit -m "update: move issue #123 to DOING" && git push -u origin <branch-name>`
-4. **Implementation**:
-   - Write tests, implement code
+**Max's Complete Repository Management Protocol**:
+1. **State Analysis & Forensic Reconciliation**:
+   - `git fetch --all && git status`
+   - `gh pr list --state open --draft=false` - check READY PRs only
+   - IF inconsistent state: forensic analysis (branch name + PR + BACKLOG.md + commits)
+   - Determine actual issue being worked on, update BACKLOG.md to match reality
+2. **Branch & Issue Management**:
+   - IF multiple PRs: choose one based on priority, continue it
+   - IF no PRs but DOING exists: continue implementation
+   - IF clean state: move completed DOING→DONE, pick top TODO→DOING, create branch
+   - **MANDATORY**: Commit/push BACKLOG.md updates
+3. **Pre-work Preparation**:
+   - `git rebase origin/main` (prepare clean branch for sergei)
+   - `git push --force-with-lease` if rebased existing branch
+   - **HANDOFF**: Clean rebased branch ready for implementation
+
+**Sergei's Focused Implementation Protocol**:
+1. **Implementation Only** (max prepared branch):
+   - Write tests, implement code (NO repository management)
    - Run targeted tests for affected code only
-   - Create non-draft PR when ready
+2. **Commit & Push**:
+   - `git add <specific-files>` (NEVER . or -A)
+   - `git commit -m "conventional: description"`
+   - `git push` (normal push, not force)
+   - Create PR: `gh pr create --title "..." --body "..."`
 
 **Chris's BACKLOG.md Workflow (Explicit Protocol)**:
 1. **Create/update GitHub issues**: `gh issue create` or `gh issue edit`
@@ -188,20 +200,24 @@
   <rule_5>Display gh_rules when triggered by repository_rules</rule_5>
 </gh_rules>
 
-## Repository Assessment (sergei-perfectionist FIRST)
+## Repository Assessment (max-devops FIRST)
 
-**Quick Assessment Protocol (sergei performs)**:
+**Max's Assessment & Forensic Protocol**:
 1. `git fetch --all && git status` - update remotes and check state
-2. `gh pr list --state open --draft=false` - check for READY PRs only
-3. Check current branch and BACKLOG.md DOING section
-4. Check BACKLOG.md TODO section
-5. `git status` - untracked files
+2. `gh pr list --state open --draft=false` - check READY PRs only
+3. **Forensic Analysis** (if inconsistent):
+   - Branch name pattern: `<type>-<number>`
+   - PR description: `gh pr view --json title,body`
+   - Commit history: `git log --oneline -10`
+   - File changes: `git diff main...HEAD --name-only`
+   - Cross-reference with BACKLOG.md DOING section
+4. **State Reconciliation**: Update BACKLOG.md to match actual work
 
 **Decision Tree**:
-- **🚨 READY PR exists (non-draft)** → BLOCK ALL OTHER WORK - Fix PR defects FIRST
-- **Draft PRs exist** → COMPLETELY IGNORE (treat as if they don't exist)
-- **Current branch has work** → **🚨 MANDATORY REBASE** then continue that work
-- **BACKLOG.md has TODO items** → Pick top priority
+- **🚨 Multiple PRs exist** → Choose one, continue it to completion
+- **Single PR exists** → Continue existing work
+- **No PRs, DOING exists** → Continue implementation
+- **Clean state** → Pick next TODO, create branch
 - **BACKLOG.md empty** → PLAY workflow
 
 ## PR Management
@@ -229,10 +245,10 @@
 ## Agent Ownership
 
 <agent_rules>
-  <rule_1>max: Final merge, CI/CD, issue closing</rule_1>
+  <rule_1>max: Repository management, pre/post rebase, final merge, issue closing</rule_1>
   <rule_2>chris: Planning, BACKLOG.md creation, issue creation, COMMIT/PUSH BACKLOG.md</rule_2>
-  <rule_3>sergei: Repository assessment, code implementation, BACKLOG.md status updates, COMMIT/PUSH BACKLOG.md</rule_3>
-  <rule_4>patrick: Code quality review (WORK), GitHub issue filing (PLAY only)</rule_4>
+  <rule_3>sergei: Code implementation only, commit/push implementation</rule_3>
+  <rule_4>patrick: Code quality review, critical issue handback, non-critical issue filing + BACKLOG.md updates</rule_4>
   <rule_5>winny: Documentation consolidation (PLAY only)</rule_5>
   <rule_6>vicky: GitHub issue filing (PLAY only)</rule_6>
   <rule_7>Stay in your lane - work within ownership only</rule_7>
@@ -244,10 +260,10 @@
 
 ### Key Owners
 
-**max-devops**: Final merge, CI/CD, **closing issues**, full test suite (EXCLUSIVE)
+**max-devops**: Repository management, forensic analysis, pre/post rebase operations, final merge, **closing issues**, full test suite (EXCLUSIVE)
 **chris-architect**: BACKLOG.md creation/priorities, issue lifecycle, DESIGN.md, architecture, COMMIT/PUSH BACKLOG.md
-**sergei-perfectionist**: Repository assessment, TDD (tests + code), BACKLOG.md status updates, API docs, performance optimization, COMMIT/PUSH BACKLOG.md
-**patrick-auditor**: Code quality review (WORK), dead code detection and GitHub issue filing (PLAY workflow)
+**sergei-perfectionist**: Pure implementation (tests + code), commit/push implementation, API docs, performance optimization
+**patrick-auditor**: Code quality review with handback, non-critical issue filing + BACKLOG.md TODO additions, dead code detection (PLAY workflow)
 **winny-writer**: Documentation rewrite/consolidation (PLAY workflow)
 **vicky-tester**: Bug detection and GitHub issue filing (PLAY workflow)
 
