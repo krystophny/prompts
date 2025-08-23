@@ -17,8 +17,7 @@
 
 ## DOING (Current Work)
 
-- [x] #3: Fix missing README.md file breaks user onboarding (branch: fix-missing-readme-3)
-
 ## DONE (Completed)
 
+- [x] #3: Fix missing README.md file breaks user onboarding (branch: fix-missing-readme-3)
 - [x] #2: Fix missing BACKLOG.md file breaks QADS v3.0 workflow (branch: fix-missing-backlog-2)
