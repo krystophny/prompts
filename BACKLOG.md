@@ -2,7 +2,6 @@
 
 ## TODO (Ordered by Priority)
 
-- [ ] #16: Fix contradictory BACKLOG.md management ownership between agents
 - [ ] #14: Fix contradictory PR creation responsibilities between agents
 - [ ] #7: Fix inconsistent draft PR creation responsibilities
 - [ ] #11: Fix inconsistent test execution ownership between agents
@@ -15,6 +14,8 @@
 - [ ] #20: Fix SIZE VALIDATION constraint undefined and untestable
 
 ## DOING (Current Work)
+
+- [x] #16: Fix contradictory BACKLOG.md management ownership between agents (branch: fix-contradictory-backlog-management-16)
 
 
 ## DONE (Completed)
