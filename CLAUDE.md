@@ -224,7 +224,7 @@
 
 <pr_rules>
   <rule_1>NO draft PRs - create ready for review</rule_1>
-  <rule_2>sergei creates PR after implementation</rule_2>
+  <rule_2>sergei ALWAYS creates PR after implementation - EXCLUSIVE responsibility</rule_2>
   <rule_3>NEVER close PRs without merge</rule_3>
   <rule_4>Fix in review loop until resolved</rule_4>
   <rule_5>max merges PRs (BACKLOG.md already updated by sergei)</rule_5>
@@ -245,9 +245,9 @@
 ## Agent Ownership
 
 <agent_rules>
-  <rule_1>max: Repository management, BACKLOG.md status transitions, pre/post rebase, final merge, issue closing</rule_1>
+  <rule_1>max: Repository management, BACKLOG.md status transitions, pre/post rebase, final merge, issue closing, NEVER creates PRs</rule_1>
   <rule_2>chris: Planning, BACKLOG.md priorities, issue creation, COMMIT/PUSH BACKLOG.md</rule_2>
-  <rule_3>sergei: Code implementation only, commit/push implementation, NO BACKLOG.md management</rule_3>
+  <rule_3>sergei: Code implementation only, commit/push implementation, ALWAYS creates PR after implementation, NO BACKLOG.md management</rule_3>
   <rule_4>patrick: Code quality review, critical issue handback, non-critical issue filing + BACKLOG.md updates</rule_4>
   <rule_5>winny: Documentation consolidation (PLAY only)</rule_5>
   <rule_6>vicky: GitHub issue filing (PLAY only)</rule_6>
@@ -262,7 +262,7 @@
 
 **max-devops**: Repository management, BACKLOG.md status transitions (TODO→DOING→DONE), forensic analysis, pre/post rebase operations, final merge, **closing issues**, full test suite (EXCLUSIVE)
 **chris-architect**: BACKLOG.md priorities (NOT status transitions), issue lifecycle, DESIGN.md, architecture, COMMIT/PUSH BACKLOG.md
-**sergei-perfectionist**: Pure implementation (tests + code), commit/push implementation, API docs, performance optimization, NO BACKLOG.md management
+**sergei-perfectionist**: Pure implementation (tests + code), commit/push implementation, **PR creation (EXCLUSIVE)**, API docs, performance optimization, NO BACKLOG.md management
 **patrick-auditor**: Code quality review with handback, non-critical issue filing + BACKLOG.md TODO additions, dead code detection (PLAY workflow)
 **winny-writer**: Documentation rewrite/consolidation (PLAY workflow)
 **vicky-tester**: Bug detection and GitHub issue filing (PLAY workflow)
