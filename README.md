@@ -98,6 +98,7 @@ ls ~/.claude/CLAUDE.md ~/.claude/agents/ ~/.claude/commands/
 - **Batch Processing**: Autonomous execution for high-velocity workflows
 - **Forensic Analysis**: Repository state reconciliation and branch management
 - **Infinite Review Cycles**: Fix defects until perfect, no compromises
+- **Test Execution Division**: sergei runs targeted tests, max runs full suite
 
 ## Quality Standards
 
@@ -117,6 +118,12 @@ ls ~/.claude/CLAUDE.md ~/.claude/agents/ ~/.claude/commands/
 - **TDD**: RED/GREEN/REFACTOR cycles mandatory
 - **Coverage**: Meaningful tests, not just coverage metrics
 - **Validation**: Targeted tests for modified code only
+
+### Test Execution Ownership
+- **sergei-perfectionist**: Runs TARGETED TESTS ONLY for code being modified (fast iteration)
+- **georg-test-engineer**: Creates tests, runs TARGETED TESTS ONLY for verification
+- **max-devops**: Runs FULL TEST SUITE before merge (EXCLUSIVE responsibility)
+- **Division Purpose**: Enables fast development while ensuring comprehensive validation
 
 ## Agent Roles
 

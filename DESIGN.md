@@ -58,8 +58,8 @@ BACKLOG.md Structure:
 | Agent | PLAN | WORK | PLAY | Primary Ownership |
 |-------|------|------|------|-------------------|
 | chris-architect | LEAD | - | Final | BACKLOG.md, Issues, Architecture |
-| max-devops | - | Start/End | Start | Repository, Merges, CI |
-| sergei-perfectionist | - | Implement | - | Code, Tests, PRs |
+| max-devops | - | Start/End | Start | Repository, Full Test Suite, Merges, CI |
+| sergei-perfectionist | - | Implement | - | Code, Targeted Tests, PRs |
 | patrick-auditor | - | Review | Audit | Code Quality, Dead Code |
 | winny-writer | - | - | Docs | Documentation |
 | vicky-tester | - | - | Test | Bug Detection |
@@ -94,7 +94,8 @@ INCONSISTENT STATE:
 **Implementation Gate** (sergei)
 - Test-first development
 - Code quality standards
-- Targeted test execution
+- **TARGETED TEST EXECUTION ONLY** (never full suite)
+- Fast iteration during development
 
 **Review Gate** (patrick)
 - Critical issues → sergei handback
@@ -162,7 +163,7 @@ When state inconsistency detected:
 ## Performance Considerations
 
 ### Optimization Points
-- Targeted test execution (not full suite)
+- **Test execution division**: sergei runs targeted tests, max runs full suite
 - Parallel PLAY audits
 - Batch mode automation
 - Incremental documentation updates

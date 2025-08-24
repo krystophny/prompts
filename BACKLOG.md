@@ -2,7 +2,6 @@
 
 ## TODO (Ordered by Priority)
 
-- [ ] #11: Fix inconsistent test execution ownership between agents
 - [ ] #15: Fix duplicate rule_9 numbering in multiple rule sections
 - [ ] #17: Fix incomplete decision tree in CLAUDE.md missing emergency scenarios
 - [ ] #18: Fix workflow shortcuts not defined or testable in current system
@@ -12,6 +11,8 @@
 - [ ] #20: Fix SIZE VALIDATION constraint undefined and untestable
 
 ## DOING (Current Work)
+
+- [x] #11: Fix inconsistent test execution ownership between agents (branch: fix-inconsistent-test-execution-11)
 
 ## DONE (Completed)
 
