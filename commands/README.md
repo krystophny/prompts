@@ -19,25 +19,32 @@
 ## Modern Usage
 
 ```bash
-# Planning and architecture
-"plan"
+# Planning and architecture - executable shortcut
+./bin/plan
 
-# Development workflow  
-"work"
+# Development workflow - executable shortcut
+./bin/work
 
-# Quality audit (defects only)
-"play"
+# Quality audit (defects only) - executable shortcut
+./bin/play
 
-# Batch processing
+# Conceptual shortcuts for Claude Code (refer to CLAUDE.md)
+"plan"          # Conceptual reference to planning workflow
+"work"          # Conceptual reference to implementation workflow  
+"play"          # Conceptual reference to quality audit workflow
+
+# Batch processing (Claude Code concepts)
 "batch work"    # Process all TODO items
 "batch play"    # Continuous defect finding
 ```
 
 ## Workflow Selection
 
-- **Features/goals** → `"plan"` → creates issues → `"work"`
-- **Issues in BACKLOG.md** → `"work"`  
-- **No TODO items** → `"play"` → finds defects → back to `"work"`
+- **Features/goals** → `./bin/plan` → creates issues → `./bin/work`
+- **Issues in BACKLOG.md** → `./bin/work`  
+- **No TODO items** → `./bin/play` → finds defects → back to `./bin/work`
+
+**Testing**: Use `./test-shortcuts.sh` to validate shortcuts work as documented.
 
 ---
 

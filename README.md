@@ -18,38 +18,59 @@ cp CLAUDE.md ~/.claude/CLAUDE.md
 cp -r agents/ ~/.claude/
 cp -r commands/ ~/.claude/
 
+# Install workflow shortcuts (optional - for direct execution)
+mkdir -p ~/bin
+cp bin/* ~/bin/
+export PATH="$PATH:$HOME/bin"  # Add to .bashrc/.zshrc for permanent use
+
 # Verify installation
 ls ~/.claude/CLAUDE.md ~/.claude/agents/ ~/.claude/commands/
+ls ~/bin/plan ~/bin/work ~/bin/play
+
+# Test workflow shortcuts (optional)
+./test-shortcuts.sh
 ```
 
 ### 2. Basic Usage
 
 ```bash
 # Start any new project with planning
-"plan"
+./bin/plan
 
 # Implement existing issues
-"work" 
+./bin/work
 
 # Find and fix defects  
-"play"
+./bin/play
 ```
 
 ### 3. Complete Example Workflow
 
 ```bash
 # Planning phase - create issues and architecture
-"plan"
+./bin/plan
 # Result: GitHub issues created, BACKLOG.md updated with priorities
 
 # Implementation phase - work through TODO items  
-"work"
+./bin/work
 # Result: max prepares branch → sergei implements → patrick reviews → max merges
 
 # Quality audit phase - find remaining defects
-"play" 
+./bin/play 
 # Result: Documentation updated, defects filed as new issues
 ```
+
+### Workflow Shortcuts
+
+The workflow shortcuts are executable shell scripts that validate your environment and guide you through proper workflow execution:
+
+- **`./bin/plan`**: Validates git repository, guides planning workflow activation
+- **`./bin/work`**: Validates BACKLOG.md exists, guides implementation workflow 
+- **`./bin/play`**: Validates environment, warns if TODO items remain, guides quality audit
+
+Each script performs environment checks and provides clear next steps for invoking the corresponding workflow through Claude Code.
+
+Use `./test-shortcuts.sh` to validate all shortcuts are working correctly and match documented behavior.
 
 ## Core Workflows
 

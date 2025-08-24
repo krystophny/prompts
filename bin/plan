@@ -1,0 +1,36 @@
+#!/bin/bash
+# QADS Planning Workflow Shortcut
+# Triggers: chris-architect for issue creation and BACKLOG.md management
+
+set -e
+
+echo "🎯 QADS Planning Workflow"
+echo "Triggering chris-architect for:"
+echo "- Issue creation and prioritization"
+echo "- BACKLOG.md management"
+echo "- Architecture and design updates"
+echo ""
+
+# Check if we're in a git repository
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "❌ Error: Must be run from within a git repository"
+    exit 1
+fi
+
+# Check if Claude Code is available
+if ! command -v claude &> /dev/null; then
+    echo "⚠️  Warning: Claude Code CLI not found. This script requires Claude Code."
+    echo "   Please install Claude Code CLI and ensure it's in your PATH."
+    exit 1
+fi
+
+echo "✅ Environment validated"
+echo ""
+echo "🚀 Invoking planning workflow..."
+echo "   Next: Execute 'claude plan' or provide planning requirements to claude-architect"
+echo ""
+echo "Expected outputs:"
+echo "- New GitHub issues created"
+echo "- BACKLOG.md updated with TODO priorities"
+echo "- DESIGN.md architecture updates"
+echo "- Ready for 'work' workflow"
