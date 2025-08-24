@@ -2,12 +2,13 @@
 
 ## TODO (Ordered by Priority)
 
-- [ ] #19: Fix PLAY workflow DONE section clearing creates undefined behavior
 - [ ] #8: Fix obsolete emergency rescue protocol references commits on main
 - [ ] #9: Fix dead code in agent ownership documentation
 - [ ] #20: Fix SIZE VALIDATION constraint undefined and untestable
 
 ## DOING (Current Work)
+
+- [x] #19: Fix PLAY workflow DONE section clearing creates undefined behavior (branch: fix-play-workflow-done-clearing-19)
 
 
 ## DONE (Completed)
