@@ -345,7 +345,8 @@
   <rule_3>NEVER manually deallocate allocatable instances</rule_3>
   <rule_4>NEVER return allocatables from functions</rule_4>
   <rule_5>ALWAYS add deep-copy assignment for nested types</rule_5>
-  <rule_6>Display fortran_rules when triggered by implementation_rules</rule_6>
+  <rule_6>ALWAYS set apps, tests and examples to autodiscover in fpm.toml - NEVER add manually</rule_6>
+  <rule_7>Display fortran_rules when triggered by implementation_rules</rule_7>
 </fortran_rules>
 
 <build_rules>
