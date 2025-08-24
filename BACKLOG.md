@@ -12,10 +12,9 @@
 
 ## DOING (Current Work)
 
-- [x] #11: Fix inconsistent test execution ownership between agents (branch: fix-inconsistent-test-execution-11)
-
 ## DONE (Completed)
 
+- [x] #11: Fix inconsistent test execution ownership between agents (branch: fix-inconsistent-test-execution-11)
 - [x] #7: Fix inconsistent draft PR creation responsibilities (branch: fix-inconsistent-draft-pr-creation-7)
 - [x] #14: Fix contradictory PR creation responsibilities between agents (branch: fix-contradictory-pr-creation-14)
 
