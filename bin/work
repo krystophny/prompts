@@ -1,0 +1,51 @@
+#!/bin/bash
+# QADS Work Workflow Shortcut
+# Triggers: max → sergei → patrick → max implementation pipeline
+
+set -e
+
+echo "WORK: QADS Work Workflow"
+echo "Triggering implementation pipeline:"
+echo "1. max-devops: Repository state management + branch preparation"
+echo "2. sergei-perfectionist: Test-driven implementation"
+echo "3. patrick-auditor: Code review and quality gates"
+echo "4. max-devops: Final merge and cleanup"
+echo ""
+
+# Check if we're in a git repository
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "ERROR: Must be run from within a git repository"
+    exit 1
+fi
+
+# Check if Claude Code is available
+if ! command -v claude &> /dev/null; then
+    echo "WARNING: Claude Code CLI not found. This script requires Claude Code."
+    echo "   Please install Claude Code CLI and ensure it's in your PATH."
+    exit 1
+fi
+
+# Check if BACKLOG.md exists and has TODO items
+if [ ! -f "BACKLOG.md" ]; then
+    echo "ERROR: BACKLOG.md not found. Run 'plan' workflow first to create issues."
+    exit 1
+fi
+
+# Simple check for TODO items (basic validation)
+if ! grep -q "## TODO" BACKLOG.md; then
+    echo "WARNING: No TODO section found in BACKLOG.md"
+    echo "   Consider running 'plan' workflow first to create work items."
+fi
+
+echo "SUCCESS: Environment validated"
+echo ""
+echo "STARTING: Invoking work workflow..."
+echo "   Next: Execute 'claude work' or provide implementation requirements"
+echo ""
+echo "Expected outputs:"
+echo "- Repository state assessed by max-devops"
+echo "- Branch prepared and rebased"
+echo "- Tests and implementation by sergei"
+echo "- Code review by patrick"
+echo "- Merge and cleanup by max-devops"
+echo "- BACKLOG.md status transitions (TODO→DOING→DONE)"
