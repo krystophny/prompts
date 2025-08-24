@@ -171,7 +171,8 @@
   <rule_6>NO draft PRs - all PRs created ready for review</rule_6>
   <rule_7>🚨 CRITICAL: sergei MUST NOT start new work when READY PRs exist - fix non-draft PR defects FIRST</rule_7>
   <rule_8>🚨 CRITICAL: max MUST NOT finish workflow until ALL READY PRs merged and CI passes</rule_8>
-  <rule_9>Display workflow_rules when triggered by process_rules</rule_9>
+  <rule_9>🚨 DRAFT PR EXCEPTION: Draft PRs are COMPLETELY IGNORED - treat as if they don't exist</rule_9>
+  <rule_10>Display workflow_rules when triggered by process_rules</rule_10>
 </workflow_rules>
 
 ## Batch Mode Operations
