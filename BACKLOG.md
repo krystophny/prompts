@@ -2,11 +2,12 @@
 
 ## TODO (Ordered by Priority)
 
-- [ ] #8: Fix obsolete emergency rescue protocol references commits on main
 - [ ] #9: Fix dead code in agent ownership documentation
 - [ ] #20: Fix SIZE VALIDATION constraint undefined and untestable
 
 ## DOING (Current Work)
+
+- [x] #8: Fix obsolete emergency rescue protocol references commits on main (branch: fix-obsolete-emergency-rescue-protocol-8)
 
 
 ## DONE (Completed)
