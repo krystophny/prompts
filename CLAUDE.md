@@ -147,8 +147,12 @@
    - `gh pr list --state open --draft=false` - check READY PRs only
    - `gh issue list --state open` - check all open GitHub issues
    - **GitHub Issue Sync** (GitHub is source of truth):
-     - Add missing open issues to bottom of CURRENT SPRINT section
-     - Move reopened issues (closed in BACKLOG.md but open in GitHub) back to CURRENT SPRINT
+     - **AUTONOMOUS PRIORITIZATION**: Max decides optimal placement in BACKLOG.md based on:
+       - Issue severity/urgency (critical → top of CURRENT SPRINT)
+       - Dependencies and technical complexity
+       - Project phase alignment with DESIGN.md goals
+       - Resource availability and team capacity
+     - Move reopened issues back to appropriate position in CURRENT SPRINT
      - For user ad-hoc tasks: add directly to DOING section, bypass CURRENT SPRINT
    - IF inconsistent state: forensic analysis (branch name + PR + BACKLOG.md + commits)
    - Determine actual issue being worked on, update BACKLOG.md to match reality
@@ -232,8 +236,12 @@
 3. `gh issue list --state open` - check all open GitHub issues
 4. **GitHub Issue Sync** (GitHub is source of truth):
    - Compare open issues with BACKLOG.md CURRENT SPRINT section
-   - Add missing open issues to bottom of CURRENT SPRINT section
-   - Move reopened issues back to CURRENT SPRINT section
+   - **AUTONOMOUS PRIORITIZATION**: Max decides optimal placement in BACKLOG.md based on:
+     - Issue severity/urgency (critical → top of CURRENT SPRINT)
+     - Dependencies and technical complexity
+     - Project phase alignment with DESIGN.md goals
+     - Resource availability and team capacity
+   - Move reopened issues back to appropriate position in CURRENT SPRINT
    - For user ad-hoc tasks: add directly to DOING section
 5. **Forensic Analysis** (if inconsistent):
    - Branch name pattern: `<type>-<number>`
