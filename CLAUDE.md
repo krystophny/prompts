@@ -260,9 +260,10 @@
 
 ### Key Owners
 
-**max-devops**: Repository management, BACKLOG.md status transitions (TODO→DOING→DONE), forensic analysis, pre/post rebase operations, final merge, **closing issues**, full test suite (EXCLUSIVE)
+**max-devops**: Repository management, BACKLOG.md status transitions (TODO→DOING→DONE), forensic analysis, pre/post rebase operations, final merge, **closing issues**, **FULL TEST SUITE (EXCLUSIVE)**
 **chris-architect**: BACKLOG.md priorities (NOT status transitions), issue lifecycle, DESIGN.md, architecture, COMMIT/PUSH BACKLOG.md
-**sergei-perfectionist**: Pure implementation (tests + code), commit/push implementation, **PR creation (EXCLUSIVE)**, API docs, performance optimization, NO BACKLOG.md management
+**sergei-perfectionist**: Pure implementation (tests + code), **TARGETED TESTS ONLY**, commit/push implementation, **PR creation (EXCLUSIVE)**, API docs, performance optimization, NO BACKLOG.md management
+**georg-test-engineer**: Test creation and strategy, **TARGETED TESTS ONLY** for verification
 **patrick-auditor**: Code quality review with handback, non-critical issue filing + BACKLOG.md TODO additions, dead code detection (PLAY workflow)
 **winny-writer**: Documentation rewrite/consolidation (PLAY workflow)
 **vicky-tester**: Bug detection and GitHub issue filing (PLAY workflow)
