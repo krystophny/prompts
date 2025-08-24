@@ -2,7 +2,6 @@
 
 ## TODO (Ordered by Priority)
 
-- [ ] #14: Fix contradictory PR creation responsibilities between agents
 - [ ] #7: Fix inconsistent draft PR creation responsibilities
 - [ ] #11: Fix inconsistent test execution ownership between agents
 - [ ] #15: Fix duplicate rule_9 numbering in multiple rule sections
@@ -15,7 +14,7 @@
 
 ## DOING (Current Work)
 
-(No active work)
+- [x] #14: Fix contradictory PR creation responsibilities between agents (branch: fix-contradictory-pr-creation-14)
 
 ## DONE (Completed)
 
