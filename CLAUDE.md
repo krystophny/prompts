@@ -171,8 +171,7 @@
   <rule_6>NO draft PRs - all PRs created ready for review</rule_6>
   <rule_7>🚨 CRITICAL: sergei MUST NOT start new work when READY PRs exist - fix non-draft PR defects FIRST</rule_7>
   <rule_8>🚨 CRITICAL: max MUST NOT finish workflow until ALL READY PRs merged and CI passes</rule_8>
-  <rule_9>🚨 DRAFT PR EXCEPTION: Draft PRs are COMPLETELY IGNORED - treat as if they don't exist</rule_9>
-  <rule_10>Display workflow_rules when triggered by process_rules</rule_10>
+  <rule_9>Display workflow_rules when triggered by process_rules</rule_9>
 </workflow_rules>
 
 ## Batch Mode Operations
@@ -239,7 +238,8 @@
   <rule_6>🚨 ABSOLUTE PRIORITY: READY PRs (non-draft) BLOCK ALL other work - must be fixed and merged FIRST</rule_6>
   <rule_7>🚨 max MUST wait for CI checks to pass before merging - NO exceptions</rule_7>
   <rule_8>🚨 sergei FORBIDDEN from starting new TODO items when READY PRs exist</rule_8>
-  <rule_9>Display pr_rules when triggered by repository_rules</rule_9>
+  <rule_9>🚨 DRAFT PR EXCEPTION: Draft PRs are COMPLETELY IGNORED in all blocking rules</rule_9>
+  <rule_10>Display pr_rules when triggered by repository_rules</rule_10>
 </pr_rules>
 
 <title_rules>
