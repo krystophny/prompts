@@ -104,7 +104,7 @@
 1. **max**: Pull latest main, git clean -fdx, assess infrastructure
 2. **winny**: Complete documentation rewrite (full codebase)
 3. **Parallel audits**: patrick (dead code), vicky (bugs) - MUST file GitHub issues immediately, NO code changes
-4. **chris**: Clear DONE section completely, update BACKLOG.md with new issues, commit and push
+4. **chris**: Archive DONE section to DONE_ARCHIVE.md, add new defect issues to TODO, commit and push
 **Focus**: Find DEFECTS ONLY - bugs, dead code, obsolete docs (NO features)
 
 ## BACKLOG.md Management
@@ -159,8 +159,8 @@
 **Chris's BACKLOG.md Workflow (Explicit Protocol)**:
 1. **Create/update GitHub issues**: `gh issue create` or `gh issue edit`
 2. **Edit BACKLOG.md**: Add new issues to TODO section, reorder by priority
-3. **PLAY mode only**: Clear DONE section completely before adding new TODO issues
-4. **MANDATORY**: Commit and push immediately: `git add BACKLOG.md && git commit -m "plan: add/update issues in BACKLOG.md" && git push`
+3. **PLAY mode only**: Archive DONE section to DONE_ARCHIVE.md (preserving work history), add new defect TODO issues
+4. **MANDATORY**: Commit and push immediately: `git add BACKLOG.md DONE_ARCHIVE.md && git commit -m "plan: add/update issues in BACKLOG.md" && git push`
 
 <workflow_rules>
   <rule_1>BACKLOG.md: TODO → DOING → DONE tracking</rule_1>
@@ -325,6 +325,33 @@
   <rule_3>User has ULTIMATE AUTHORITY</rule_3>
   <rule_4>Display override_rules when triggered by process_rules</rule_4>
 </override_rules>
+
+## PLAY Workflow DONE Archival
+
+**Archive Process (chris-architect)**:
+1. **Before starting new PLAY cycle**: Check if DONE section contains completed work
+2. **Archive to DONE_ARCHIVE.md**: Append DONE entries with cycle timestamp
+3. **Clear BACKLOG.md DONE**: Remove entries only AFTER successful archival
+4. **Preserve history**: DONE_ARCHIVE.md maintains complete work history across cycles
+5. **Timing**: Archive occurs only when new defect issues are found to add to TODO
+
+**DONE_ARCHIVE.md Format**:
+```markdown
+# Completed Work History
+
+## PLAY Cycle 2024-08-24
+- [x] #15: Fix duplicate rule numbering in CLAUDE.md
+- [x] #11: Update test execution ownership documentation
+
+## PLAY Cycle 2024-08-20  
+- [x] #7: Clarify agent responsibilities in workflow
+```
+
+**Benefits**:
+- Preserves complete work history
+- Enables cycle tracking and metrics
+- Prevents accidental loss of completion records
+- Provides audit trail for all resolved issues
 
 ## PLAY Workflow Constraints
 
