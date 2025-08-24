@@ -2,7 +2,6 @@
 
 ## TODO (Ordered by Priority)
 
-- [ ] #17: Fix incomplete decision tree in CLAUDE.md missing emergency scenarios
 - [ ] #18: Fix workflow shortcuts not defined or testable in current system
 - [ ] #19: Fix PLAY workflow DONE section clearing creates undefined behavior
 - [ ] #8: Fix obsolete emergency rescue protocol references commits on main
@@ -11,10 +10,11 @@
 
 ## DOING (Current Work)
 
-- [x] #15: Fix duplicate rule_9 numbering in multiple rule sections (branch: fix-duplicate-rule9-numbering-15)
+- [x] #17: Fix incomplete decision tree in CLAUDE.md missing emergency scenarios (branch: fix-incomplete-decision-tree-17)
 
 ## DONE (Completed)
 
+- [x] #15: Fix duplicate rule_9 numbering in multiple rule sections (branch: fix-duplicate-rule9-numbering-15)
 - [x] #11: Fix inconsistent test execution ownership between agents (branch: fix-inconsistent-test-execution-11)
 - [x] #7: Fix inconsistent draft PR creation responsibilities (branch: fix-inconsistent-draft-pr-creation-7)
 - [x] #14: Fix contradictory PR creation responsibilities between agents (branch: fix-contradictory-pr-creation-14)
