@@ -2,14 +2,13 @@
 
 ## TODO (Ordered by Priority)
 
-- [ ] #20: Fix SIZE VALIDATION constraint undefined and untestable
-
 ## DOING (Current Work)
 
-- [x] #9: Fix dead code in agent ownership documentation (branch: fix-dead-code-agent-ownership-9)
+- [x] #20: Fix SIZE VALIDATION constraint undefined and untestable (branch: fix-size-validation-constraint-20)
 
 ## DONE (Completed)
 
+- [x] #9: Fix dead code in agent ownership documentation (branch: fix-dead-code-agent-ownership-9)
 - [x] #8: Fix obsolete emergency rescue protocol references commits on main (branch: fix-obsolete-emergency-rescue-protocol-8)
 
 - [x] #19: Fix PLAY workflow DONE section clearing creates undefined behavior (branch: fix-play-workflow-done-clearing-19)
