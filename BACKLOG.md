@@ -8,11 +8,10 @@
 
 ## DOING (Current Work)
 
-- [x] #19: Fix PLAY workflow DONE section clearing creates undefined behavior (branch: fix-play-workflow-done-clearing-19)
-
 
 ## DONE (Completed)
 
+- [x] #19: Fix PLAY workflow DONE section clearing creates undefined behavior (branch: fix-play-workflow-done-clearing-19)
 - [x] #18: Fix workflow shortcuts not defined or testable in current system (branch: fix-workflow-shortcuts-18)
 - [x] #32: Fix duplicate rule numbering in CLAUDE.md sections (branch: fix-duplicate-rule-numbering-32)
 - [x] #17: Fix incomplete decision tree in CLAUDE.md missing emergency scenarios (branch: fix-incomplete-decision-tree-17)
