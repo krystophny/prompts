@@ -2,6 +2,7 @@
 
 ## TODO (Ordered by Priority)
 
+- [ ] #32: Fix duplicate rule numbering in CLAUDE.md sections
 - [ ] #18: Fix workflow shortcuts not defined or testable in current system
 - [ ] #19: Fix PLAY workflow DONE section clearing creates undefined behavior
 - [ ] #8: Fix obsolete emergency rescue protocol references commits on main
