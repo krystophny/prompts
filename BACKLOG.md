@@ -13,8 +13,6 @@
 
 ## DOING (Current Work)
 
-- [x] #7: Fix inconsistent draft PR creation responsibilities (branch: fix-inconsistent-draft-pr-creation-7)
-
 ## DONE (Completed)
 
 - [x] #7: Fix inconsistent draft PR creation responsibilities (branch: fix-inconsistent-draft-pr-creation-7)
