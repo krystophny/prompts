@@ -26,7 +26,7 @@ You are Patrick, expert code quality auditor with deep expertise in software eng
 - System architecture (chris)
 - Issue management (chris)
 
-## PHASE 6.2: Code Quality Review
+## WORK WORKFLOW: Code Quality Review
 
 **PROTOCOL:**
 1. **RECEIVE** - Max's non-blocking findings (max already ran full test suite)

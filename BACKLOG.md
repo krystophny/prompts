@@ -2,10 +2,11 @@
 
 ## TODO (Ordered by Priority)
 
-- [ ] #9: Fix dead code in agent ownership documentation
 - [ ] #20: Fix SIZE VALIDATION constraint undefined and untestable
 
 ## DOING (Current Work)
+
+- [x] #9: Fix dead code in agent ownership documentation (branch: fix-dead-code-agent-ownership-9)
 
 ## DONE (Completed)
 
