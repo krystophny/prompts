@@ -2,7 +2,6 @@
 
 ## TODO (Ordered by Priority)
 
-- [ ] #18: Fix workflow shortcuts not defined or testable in current system
 - [ ] #19: Fix PLAY workflow DONE section clearing creates undefined behavior
 - [ ] #8: Fix obsolete emergency rescue protocol references commits on main
 - [ ] #9: Fix dead code in agent ownership documentation
@@ -10,10 +9,11 @@
 
 ## DOING (Current Work)
 
-- [x] #32: Fix duplicate rule numbering in CLAUDE.md sections (branch: fix-duplicate-rule-numbering-32)
+- [x] #18: Fix workflow shortcuts not defined or testable in current system (branch: fix-workflow-shortcuts-18)
 
 ## DONE (Completed)
 
+- [x] #32: Fix duplicate rule numbering in CLAUDE.md sections (branch: fix-duplicate-rule-numbering-32)
 - [x] #17: Fix incomplete decision tree in CLAUDE.md missing emergency scenarios (branch: fix-incomplete-decision-tree-17)
 - [x] #15: Fix duplicate rule_9 numbering in multiple rule sections (branch: fix-duplicate-rule9-numbering-15)
 - [x] #11: Fix inconsistent test execution ownership between agents (branch: fix-inconsistent-test-execution-11)
