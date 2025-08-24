@@ -2,7 +2,6 @@
 
 ## TODO (Ordered by Priority)
 
-- [ ] #15: Fix duplicate rule_9 numbering in multiple rule sections
 - [ ] #17: Fix incomplete decision tree in CLAUDE.md missing emergency scenarios
 - [ ] #18: Fix workflow shortcuts not defined or testable in current system
 - [ ] #19: Fix PLAY workflow DONE section clearing creates undefined behavior
@@ -11,6 +10,8 @@
 - [ ] #20: Fix SIZE VALIDATION constraint undefined and untestable
 
 ## DOING (Current Work)
+
+- [x] #15: Fix duplicate rule_9 numbering in multiple rule sections (branch: fix-duplicate-rule9-numbering-15)
 
 ## DONE (Completed)
 
