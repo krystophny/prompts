@@ -239,8 +239,7 @@
   <rule_6>🚨 ABSOLUTE PRIORITY: READY PRs (non-draft) BLOCK ALL other work - must be fixed and merged FIRST</rule_6>
   <rule_7>🚨 max MUST wait for CI checks to pass before merging - NO exceptions</rule_7>
   <rule_8>🚨 sergei FORBIDDEN from starting new TODO items when READY PRs exist</rule_8>
-  <rule_9>🚨 DRAFT PR EXCEPTION: Draft PRs are COMPLETELY IGNORED in all blocking rules</rule_9>
-  <rule_10>Display pr_rules when triggered by repository_rules</rule_10>
+  <rule_9>Display pr_rules when triggered by repository_rules</rule_9>
 </pr_rules>
 
 <title_rules>
