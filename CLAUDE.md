@@ -218,7 +218,15 @@
 - **Single PR exists** → Continue existing work
 - **No PRs, DOING exists** → Continue implementation
 - **Clean state** → Pick next TODO, create branch
+- **🚨 Local commits on main** → **EMERGENCY RESCUE PROTOCOL**
 - **BACKLOG.md empty** → PLAY workflow
+
+**EMERGENCY RESCUE PROTOCOL (commits on main):**
+1. `git branch fix/rescue-main-commits main` - create rescue branch
+2. `git reset --hard origin/main` - reset main to remote
+3. `git checkout fix/rescue-main-commits` - switch to rescue branch
+4. `gh issue create --title "fix: rescue commits from main" --body "Commits accidentally added to main branch"`
+5. **HANDOFF TO SERGEI** → Sergei will create PR and implement fixes
 
 ## PR Management
 
