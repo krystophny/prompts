@@ -9,7 +9,6 @@
 
 - [x] #8: Fix obsolete emergency rescue protocol references commits on main (branch: fix-obsolete-emergency-rescue-protocol-8)
 
-
 ## DONE (Completed)
 
 - [x] #19: Fix PLAY workflow DONE section clearing creates undefined behavior (branch: fix-play-workflow-done-clearing-19)
