@@ -145,6 +145,11 @@
 1. **State Analysis & Forensic Reconciliation**:
    - `git fetch --all && git status`
    - `gh pr list --state open --draft=false` - check READY PRs only
+   - `gh issue list --state open` - check all open GitHub issues
+   - **GitHub Issue Sync** (GitHub is source of truth):
+     - Add missing open issues to bottom of CURRENT SPRINT section
+     - Move reopened issues (closed in BACKLOG.md but open in GitHub) back to CURRENT SPRINT
+     - For user ad-hoc tasks: add directly to DOING section, bypass CURRENT SPRINT
    - IF inconsistent state: forensic analysis (branch name + PR + BACKLOG.md + commits)
    - Determine actual issue being worked on, update BACKLOG.md to match reality
 2. **Branch & Issue Management**:
@@ -224,13 +229,19 @@
 **Max's Assessment & Forensic Protocol**:
 1. `git fetch --all && git status` - update remotes and check state
 2. `gh pr list --state open --draft=false` - check READY PRs only
-3. **Forensic Analysis** (if inconsistent):
+3. `gh issue list --state open` - check all open GitHub issues
+4. **GitHub Issue Sync** (GitHub is source of truth):
+   - Compare open issues with BACKLOG.md CURRENT SPRINT section
+   - Add missing open issues to bottom of CURRENT SPRINT section
+   - Move reopened issues back to CURRENT SPRINT section
+   - For user ad-hoc tasks: add directly to DOING section
+5. **Forensic Analysis** (if inconsistent):
    - Branch name pattern: `<type>-<number>`
    - PR description: `gh pr view --json title,body`
    - Commit history: `git log --oneline -10`
    - File changes: `git diff main...HEAD --name-only`
    - Cross-reference with BACKLOG.md DOING section
-4. **State Reconciliation**: Update BACKLOG.md to match actual work
+6. **State Reconciliation**: Update BACKLOG.md to match actual work
 
 **Decision Tree**:
 - **🚨 Multiple PRs exist** → Choose one, continue it to completion
