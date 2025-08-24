@@ -14,9 +14,9 @@
 
 ## DOING (Current Work)
 
-- [x] #14: Fix contradictory PR creation responsibilities between agents (branch: fix-contradictory-pr-creation-14)
-
 ## DONE (Completed)
+
+- [x] #14: Fix contradictory PR creation responsibilities between agents (branch: fix-contradictory-pr-creation-14)
 
 - [x] #16: Fix contradictory BACKLOG.md management ownership between agents (branch: fix-contradictory-backlog-management-16)
 - [x] #4: Fix missing DESIGN.md file breaks architecture workflow (branch: fix-missing-design-4)
