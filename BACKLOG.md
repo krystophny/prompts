@@ -17,6 +17,7 @@
 
 ## DONE (Completed)
 
+- [x] #7: Fix inconsistent draft PR creation responsibilities (branch: fix-inconsistent-draft-pr-creation-7)
 - [x] #14: Fix contradictory PR creation responsibilities between agents (branch: fix-contradictory-pr-creation-14)
 
 - [x] #16: Fix contradictory BACKLOG.md management ownership between agents (branch: fix-contradictory-backlog-management-16)
