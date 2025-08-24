@@ -2,7 +2,6 @@
 
 ## TODO (Ordered by Priority)
 
-- [ ] #7: Fix inconsistent draft PR creation responsibilities
 - [ ] #11: Fix inconsistent test execution ownership between agents
 - [ ] #15: Fix duplicate rule_9 numbering in multiple rule sections
 - [ ] #17: Fix incomplete decision tree in CLAUDE.md missing emergency scenarios
@@ -13,6 +12,8 @@
 - [ ] #20: Fix SIZE VALIDATION constraint undefined and untestable
 
 ## DOING (Current Work)
+
+- [x] #7: Fix inconsistent draft PR creation responsibilities (branch: fix-inconsistent-draft-pr-creation-7)
 
 ## DONE (Completed)
 
