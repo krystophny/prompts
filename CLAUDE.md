@@ -46,7 +46,7 @@
 
 <process_rules>
   <rule_1>max-devops assessment ALWAYS first in WORK workflow</rule_1>
-  <rule_2>🚨 COMPLETE existing DOING work before starting TODO</rule_2>
+  <rule_2>🚨 COMPLETE existing DOING work before starting SPRINT_BACKLOG items</rule_2>
   <rule_3>Follow workflow order exactly</rule_3>
   <rule_4>User overrides are ONLY exception</rule_4>
   <rule_5>Each agent: stay in lane, work within ownership</rule_5>
@@ -58,7 +58,7 @@
 
 # Quality-driven Agent Development System (QADS) v3.0
 
-**System**: Simplified three-workflow system with BACKLOG.md (TODO → DOING → DONE)
+**System**: Three-workflow system with BACKLOG.md (SPRINT_BACKLOG → DOING → delete completed, PRODUCT_BACKLOG → DONE)
 **Authority**: User has ULTIMATE AUTHORITY to override any rule or decision
 
 ## Three Core Workflows
@@ -71,9 +71,9 @@
 **Authority**: FULL control of BACKLOG.md and issue creation
 **Activities**:
 - Initialize and clean up BACKLOG.md (remove completed DONE issues)
-- Create detailed GitHub issues for CURRENT SPRINT ONLY
+- Create detailed GitHub issues for SPRINT_BACKLOG ONLY
 - Define high-level goals and approach for FUTURE SPRINTS
-- Update DESIGN.md with architectural decisions
+- Update DESIGN.md with architectural decisions (see DESIGN.md for workflow patterns, quality gates, agent responsibilities)
 **Protocol**: User → chris → Sprint Planning → Issues/BACKLOG.md
 
 ### 2. WORK WORKFLOW (shortcut: `"work"`)
@@ -90,21 +90,21 @@
    - `git add <files>`, `git commit`, `git push`, create PR
 3. **patrick**: Code review + issue triage
    - CRITICAL issues → handback to sergei (infinite cycles allowed)
-   - Non-critical issues → file as GitHub issues, add to BACKLOG.md TODO
+   - Non-critical issues → file as GitHub issues, add to BACKLOG.md SPRINT_BACKLOG under appropriate EPIC
 4. **user**: Manual review (if not batch mode)
 5. **max**: Final merge + cleanup
    - **🚨 PRE-MERGE REBASE**: `git rebase origin/main` + `git push --force-with-lease`
    - Wait for CI, merge PR, close issue, clean state (0 DOING, 0 PRs)
 
 ### 3. PLAY WORKFLOW (shortcut: `"play"`)
-**Trigger**: BACKLOG.md empty (all issues resolved)
+**Trigger**: BACKLOG.md SPRINT_BACKLOG empty (all issues resolved)
 **Working Directory**: Separate clone/worktree (parallel to WORK)
 **Actors**: max → winny → parallel audits → chris
 **Protocol**:
 1. **max**: Pull latest main, git clean -fdx, assess infrastructure
 2. **winny**: Complete documentation rewrite (full codebase)
 3. **Parallel audits**: patrick (dead code), vicky (bugs) - MUST file GitHub issues immediately, NO code changes
-4. **chris**: Final audit - consolidate and deduplicate all team findings, schedule refined issues in CURRENT SPRINT, commit and push
+4. **chris**: Final audit - consolidate and deduplicate all team findings, schedule refined issues in SPRINT_BACKLOG under EPICs, commit and push
 **Focus**: Find DEFECTS ONLY - bugs, dead code, obsolete docs (NO features)
 
 ## BACKLOG.md Management
@@ -113,32 +113,33 @@
 ```markdown
 # Development Backlog
 
-## CURRENT SPRINT (Detailed GitHub Issues)
-- [ ] #123: Implement user authentication (detailed)
-- [ ] #456: Add data validation (detailed)
-- [ ] #789: Update documentation (detailed)
+## SPRINT_BACKLOG (Current Sprint Work)
+### EPIC: User Authentication System
+- [ ] #123: Implement JWT token generation
+- [ ] #124: Create password hashing system
+- [ ] #125: Add session management
+
+### EPIC: Data Validation Framework  
+- [ ] #126: Input sanitization
+- [ ] #127: Schema validation
 
 ## DOING (Current Work)
-- [x] #101: Fix memory leak (branch: fix-memory-leak-101)
+- [x] #101: Fix memory leak (branch: fix-memory-leak-101) [EPIC: Performance Optimization]
 
-## FUTURE SPRINTS (High-level Planning)
-### Sprint 2: User Management
-- Goal: Complete user profile and permissions system
-- Approach: Build on authentication foundation, add RBAC
-- Key decisions: Use JWT tokens, PostgreSQL user tables
+## PRODUCT_BACKLOG (High-level Features)
+- [ ] User Management System
+- [ ] Data Layer Operations
+- [ ] Performance Optimization
+- [ ] Mobile Responsiveness
 
-### Sprint 3: Data Layer
-- Goal: Implement core data operations
-- Approach: Repository pattern with caching layer
-- Key decisions: Redis for caching, optimistic locking
-
-## DONE (Completed Sprints)
-- [x] Sprint 1: Authentication Foundation
+## DONE (Completed Product Features)
+- [x] Authentication Foundation
+- [x] Basic Security Framework
 ```
 
 **BACKLOG Operations**:
-- chris: Sprint planning, creates current sprint issues, updates BACKLOG.md with sprint structure, COMMITS AND PUSHES IMMEDIATELY
-- max: Updates BACKLOG.md status transitions (DOING→DONE, CURRENT SPRINT→DOING), creates branch, COMMITS AND PUSHES BACKLOG.md
+- chris: Sprint planning, creates GitHub issues, manages PRODUCT_BACKLOG, moves items to SPRINT_BACKLOG as EPICs, COMMITS AND PUSHES IMMEDIATELY
+- max: Updates BACKLOG.md status transitions (DOING→DONE, SPRINT_BACKLOG→DOING), deletes completed issue lines, moves completed EPICs from PRODUCT_BACKLOG→DONE, COMMITS AND PUSHES BACKLOG.md
 - sergei: Implementation only - NO BACKLOG.md management
 
 **Max's Complete Repository Management Protocol**:
@@ -148,18 +149,18 @@
    - `gh issue list --state open` - check all open GitHub issues
    - **GitHub Issue Sync** (GitHub is source of truth):
      - **AUTONOMOUS PRIORITIZATION**: Max decides optimal placement in BACKLOG.md based on:
-       - Issue severity/urgency (critical → top of CURRENT SPRINT)
+       - Issue severity/urgency (critical → top of SPRINT_BACKLOG)
        - Dependencies and technical complexity
-       - Project phase alignment with DESIGN.md goals
+       - Project phase alignment with DESIGN.md architectural goals and quality standards
        - Resource availability and team capacity
-     - Move reopened issues back to appropriate position in CURRENT SPRINT
-     - For user ad-hoc tasks: add directly to DOING section, bypass CURRENT SPRINT
+     - Move reopened issues back to appropriate position in SPRINT_BACKLOG
+     - For user ad-hoc tasks: add directly to DOING section, bypass SPRINT_BACKLOG
    - IF inconsistent state: forensic analysis (branch name + PR + BACKLOG.md + commits)
    - Determine actual issue being worked on, update BACKLOG.md to match reality
 2. **Branch & Issue Management**:
    - IF multiple PRs: choose one based on priority, continue it
    - IF no PRs but DOING exists: continue implementation
-   - IF clean state: move completed DOING→DONE, pick top CURRENT SPRINT→DOING, create branch
+   - IF clean state: delete completed DOING issue line, move completed EPIC to PRODUCT_BACKLOG→DONE if fully complete, pick top SPRINT_BACKLOG→DOING, create branch
    - **MANDATORY**: Commit/push BACKLOG.md updates (max owns all status transitions)
 3. **Pre-work Preparation**:
    - `git rebase origin/main` (prepare clean branch for sergei)
@@ -176,25 +177,26 @@
    - `git push` (normal push, not force)
    - Create PR: `gh pr create --title "..." --body "..."`
 
-**Chris's Sprint-based BACKLOG.md Workflow (Explicit Protocol)**:
+**Chris's BACKLOG.md Workflow (Explicit Protocol)**:
 1. **BACKLOG.md Initialization**:
    - Remove completed DONE entries completely
    - Clean up obsolete or completed items
-2. **Current Sprint Planning**:
-   - Create detailed GitHub issues for current sprint: `gh issue create`
-   - Add issues to CURRENT SPRINT section with full GitHub references
-3. **Future Sprint Planning**:
-   - Define high-level goals, approach, and key decisions for future sprints
-   - NO GitHub issues created for future sprints yet
-4. **DESIGN.md Updates**: Update with architectural decisions and technical specifications
+2. **Sprint Planning**:
+   - Create detailed GitHub issues: `gh issue create`
+   - Add issues to SPRINT_BACKLOG section under EPIC headers
+   - Move PRODUCT_BACKLOG items to SPRINT_BACKLOG as EPIC headers when ready for implementation
+3. **Product Planning**:
+   - Define high-level features in PRODUCT_BACKLOG section
+   - NO GitHub issues created for product backlog items yet
+4. **DESIGN.md Updates**: Update with architectural decisions and technical specifications (refer to existing DESIGN.md structure for system architecture patterns)
 5. **MANDATORY**: Commit and push: `git add BACKLOG.md DESIGN.md && git commit -m "plan: sprint planning and issue creation" && git push`
-6. **PLAY mode only**: Consolidate and deduplicate all team-found issues, schedule in CURRENT SPRINT
+6. **PLAY mode only**: Consolidate and deduplicate all team-found issues, schedule in SPRINT_BACKLOG
 
 <workflow_rules>
-  <rule_1>BACKLOG.md: CURRENT SPRINT → DOING → DONE tracking</rule_1>
+  <rule_1>BACKLOG.md: SPRINT_BACKLOG → DOING → delete completed issue lines, PRODUCT_BACKLOG → DONE when EPICs complete</rule_1>
   <rule_2>max: Check current branch first, update BACKLOG.md status before new work</rule_2>
-  <rule_3>max: Move completed DOING→DONE, current CURRENT SPRINT→DOING, COMMIT AND PUSH BACKLOG.md</rule_3>
-  <rule_4>chris: Creates current sprint issues, manages sprint planning, COMMIT AND PUSH IMMEDIATELY</rule_4>
+  <rule_3>max: Delete completed DOING issue lines, move completed EPICs PRODUCT_BACKLOG→DONE, current SPRINT_BACKLOG→DOING, COMMIT AND PUSH BACKLOG.md</rule_3>
+  <rule_4>chris: Creates sprint issues, manages PRODUCT_BACKLOG and SPRINT_BACKLOG with EPICs, COMMIT AND PUSH IMMEDIATELY</rule_4>
   <rule_5>MANDATORY: Both chris and max MUST commit and push BACKLOG.md after any edit</rule_5>
   <rule_6>NO draft PRs - all PRs created ready for review</rule_6>
   <rule_7>🚨 CRITICAL: sergei MUST NOT start new work when READY PRs exist - fix non-draft PR defects FIRST</rule_7>
@@ -206,11 +208,11 @@
 ## Batch Mode Operations
 
 **Trigger Commands**:
-- `"batch work"` - Process all BACKLOG.md TODO items until empty
+- `"batch work"` - Process all BACKLOG.md SPRINT_BACKLOG items until empty
 - `"batch play"` - Continuous playtest loop in separate directory
 
 <batch_rules>
-  <rule_1>"batch work": Continue until BACKLOG.md TODO empty - NEVER STOP</rule_1>
+  <rule_1>"batch work": Continue until BACKLOG.md SPRINT_BACKLOG empty - NEVER STOP</rule_1>
   <rule_2>"batch play": Loop continuously finding defects - NEVER STOP</rule_2>
   <rule_3>FULLY AUTONOMOUS - no user interaction in batch mode</rule_3>
   <rule_4>Wait for CI completion between tasks</rule_4>
@@ -235,13 +237,13 @@
 2. `gh pr list --state open --draft=false` - check READY PRs only
 3. `gh issue list --state open` - check all open GitHub issues
 4. **GitHub Issue Sync** (GitHub is source of truth):
-   - Compare open issues with BACKLOG.md CURRENT SPRINT section
+   - Compare open issues with BACKLOG.md SPRINT_BACKLOG section
    - **AUTONOMOUS PRIORITIZATION**: Max decides optimal placement in BACKLOG.md based on:
-     - Issue severity/urgency (critical → top of CURRENT SPRINT)
+     - Issue severity/urgency (critical → top of SPRINT_BACKLOG)
      - Dependencies and technical complexity
-     - Project phase alignment with DESIGN.md goals
+     - Project phase alignment with DESIGN.md architectural goals and quality standards
      - Resource availability and team capacity
-   - Move reopened issues back to appropriate position in CURRENT SPRINT
+   - Move reopened issues back to appropriate position in SPRINT_BACKLOG
    - For user ad-hoc tasks: add directly to DOING section
 5. **Forensic Analysis** (if inconsistent):
    - Branch name pattern: `<type>-<number>`
@@ -255,9 +257,9 @@
 - **🚨 Multiple PRs exist** → Choose one, continue it to completion
 - **Single PR exists** → Continue existing work
 - **No PRs, DOING exists** → Continue implementation
-- **Clean state** → Pick next TODO, create branch
+- **Clean state** → Pick next SPRINT_BACKLOG item, create branch
 - **🚨 Local commits on main** → **EMERGENCY RESCUE PROTOCOL**
-- **BACKLOG.md empty** → PLAY workflow
+- **BACKLOG.md SPRINT_BACKLOG empty** → PLAY workflow
 
 **EMERGENCY RESCUE PROTOCOL (commits on main):**
 1. `git branch fix/rescue-main-commits main` - create rescue branch
@@ -276,7 +278,7 @@
   <rule_5>max merges PRs (BACKLOG.md already updated by sergei)</rule_5>
   <rule_6>🚨 ABSOLUTE PRIORITY: READY PRs (non-draft) BLOCK ALL other work - must be fixed and merged FIRST</rule_6>
   <rule_7>🚨 max MUST wait for CI checks to pass before merging - NO exceptions</rule_7>
-  <rule_8>🚨 sergei FORBIDDEN from starting new TODO items when READY PRs exist</rule_8>
+  <rule_8>🚨 sergei FORBIDDEN from starting new SPRINT_BACKLOG items when READY PRs exist</rule_8>
   <rule_9>🚨 DRAFT PR EXCEPTION: Draft PRs are COMPLETELY IGNORED in all blocking rules</rule_9>
   <rule_10>Display pr_rules when triggered by repository_rules</rule_10>
 </pr_rules>
@@ -306,11 +308,11 @@
 
 ### Key Owners
 
-**max-devops**: Repository management, BACKLOG.md status transitions (TODO→DOING→DONE), forensic analysis, pre/post rebase operations, final merge, **closing issues**, **FULL TEST SUITE (EXCLUSIVE)**
-**chris-architect**: Sprint planning, current sprint issue creation, DESIGN.md, architecture, COMMIT/PUSH BACKLOG.md
+**max-devops**: Repository management, BACKLOG.md status transitions (SPRINT_BACKLOG→DOING→delete completed, PRODUCT_BACKLOG→DONE), forensic analysis, pre/post rebase operations, final merge, **closing issues**, **FULL TEST SUITE (EXCLUSIVE)**
+**chris-architect**: PRODUCT_BACKLOG management, SPRINT_BACKLOG EPIC creation, GitHub issue creation, DESIGN.md, architecture, COMMIT/PUSH BACKLOG.md
 **sergei-perfectionist**: Pure implementation (tests + code), **TARGETED TESTS ONLY**, commit/push implementation, **PR creation (EXCLUSIVE)**, API docs, performance optimization, NO BACKLOG.md management
 **georg-test-engineer**: Test creation and strategy, **TARGETED TESTS ONLY** for verification
-**patrick-auditor**: Code quality review with handback, non-critical issue filing + BACKLOG.md TODO additions, dead code detection (PLAY workflow)
+**patrick-auditor**: Code quality review with handback, non-critical issue filing + BACKLOG.md SPRINT_BACKLOG additions under EPICs, dead code detection (PLAY workflow)
 **winny-writer**: Documentation rewrite/consolidation (PLAY workflow)
 **vicky-tester**: Bug detection and GitHub issue filing (PLAY workflow)
 
@@ -370,7 +372,7 @@
 
 **Chris Final Audit Process**:
 1. **ARCHITECTURAL ASSESSMENT**: 
-   - Compare current codebase state against DESIGN.md architectural goals
+   - Compare current codebase state against DESIGN.md architectural goals (workflow patterns, quality gates, agent ownership matrix)
    - Verify sprint objectives were met and align with overall product vision
    - Identify architectural drift, technical debt, or design violations
    - Assess if implementation matches planned architecture and design decisions
@@ -386,7 +388,7 @@
    - Add detailed implementation guidance
    - Verify issues meet DEFECTS ONLY constraint
    - Prioritize architectural alignment issues
-5. **Schedule in CURRENT SPRINT**: Add refined issues to BACKLOG.md CURRENT SPRINT section
+5. **Schedule in SPRINT_BACKLOG**: Add refined issues to BACKLOG.md SPRINT_BACKLOG section under appropriate EPICs
 6. **Clean up DONE**: Remove any completed DONE entries from BACKLOG.md
 7. **Commit changes**: `git add BACKLOG.md && git commit -m "play: architectural assessment and consolidated defect issues" && git push`
 
@@ -399,7 +401,7 @@
 - ✅ Security vulnerabilities
 - ✅ Performance regressions
 - ✅ Architectural drift and design violations
-- ✅ Implementation misalignment with DESIGN.md
+- ✅ Implementation misalignment with DESIGN.md architecture patterns and quality gates
 - ✅ Technical debt and design inconsistencies
 - ❌ NO features or enhancements
 - ❌ NO scope expansion

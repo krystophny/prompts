@@ -1,10 +1,12 @@
 # Development Backlog
 
-## TODO (Ordered by Priority)
+## SPRINT_BACKLOG (Current Sprint Work)
 
 ## DOING (Current Work)
 
-## DONE (Completed)
+## PRODUCT_BACKLOG (High-level Features)
+
+## DONE (Completed Product Features)
 
 - [x] #20: Fix SIZE VALIDATION constraint undefined and untestable (branch: fix-size-validation-constraint-20)
 

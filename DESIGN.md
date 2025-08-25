@@ -26,27 +26,29 @@ USER REQUESTS
 
 **WORK Workflow**
 - **Actors**: max → sergei → patrick → max
-- **Input**: BACKLOG.md TODO items
+- **Input**: BACKLOG.md SPRINT_BACKLOG items
 - **Output**: Implemented features, merged PRs
 - **State**: Branch-based with PR tracking
 
 **PLAY Workflow**
 - **Actors**: max → winny → patrick/vicky → chris
-- **Input**: Empty BACKLOG.md (all work complete)
-- **Output**: New defect issues in BACKLOG.md
+- **Input**: Empty BACKLOG.md SPRINT_BACKLOG (all work complete)
+- **Output**: New defect issues in BACKLOG.md SPRINT_BACKLOG
 - **State**: Separate worktree/clone
 
 ### 2. Data Flow Architecture
 
 ```
 BACKLOG.md Structure:
-┌─────────────────────────┐
-│ TODO (Priority Ordered) │ ← chris creates/orders
-├─────────────────────────┤
-│ DOING (Current Work)    │ ← sergei moves TODO→DOING
-├─────────────────────────┤
-│ DONE (Completed)        │ ← sergei moves DOING→DONE
-└─────────────────────────┘
+┌────────────────────────────────┐
+│ SPRINT_BACKLOG (EPIC/Issues)   │ ← chris creates/organizes
+├────────────────────────────────┤
+│ DOING (Current Work)           │ ← max moves SPRINT_BACKLOG→DOING
+├────────────────────────────────┤
+│ PRODUCT_BACKLOG (Features)     │ ← chris manages high-level
+├────────────────────────────────┤
+│ DONE (Completed Features)      │ ← max moves completed EPICs
+└────────────────────────────────┘
            ↓
     Git Repository
            ↓
@@ -57,8 +59,8 @@ BACKLOG.md Structure:
 
 | Agent | PLAN | WORK | PLAY | Primary Ownership |
 |-------|------|------|------|-------------------|
-| chris-architect | LEAD | - | Final | BACKLOG.md, Issues, Architecture |
-| max-devops | - | Start/End | Start | Repository, Full Test Suite, Merges, CI |
+| chris-architect | LEAD | - | Final | PRODUCT_BACKLOG, SPRINT_BACKLOG EPICs, Issues, Architecture |
+| max-devops | - | Start/End | Start | Repository, BACKLOG.md status transitions, Full Test Suite, Merges, CI |
 | sergei-perfectionist | - | Implement | - | Code, Targeted Tests, PRs |
 | patrick-auditor | - | Review | Audit | Code Quality, Dead Code |
 | winny-writer | - | - | Docs | Documentation |
@@ -212,7 +214,7 @@ Extension possible through:
 
 # chris-architect actions
 1. Create GitHub issue #123
-2. Update BACKLOG.md TODO section
+2. Update BACKLOG.md SPRINT_BACKLOG section
 3. Set priority ordering
 4. Commit and push BACKLOG.md
 ```
@@ -221,7 +223,7 @@ Extension possible through:
 ```bash
 # max-devops start
 1. git fetch --all && git status
-2. Move #123 TODO→DOING in BACKLOG.md
+2. Move #123 SPRINT_BACKLOG→DOING in BACKLOG.md
 3. Create branch feat-123
 4. git rebase origin/main
 
@@ -262,7 +264,7 @@ Extension possible through:
 
 # chris finalize
 1. Clear DONE section
-2. Add new issues to TODO
+2. Add new issues to SPRINT_BACKLOG under EPICs
 3. Commit and push BACKLOG.md
 ```
 
@@ -271,7 +273,7 @@ Extension possible through:
 ### ADR-001: BACKLOG.md as Single Source of Truth
 **Status**: Accepted
 **Context**: Need centralized task tracking
-**Decision**: Use BACKLOG.md with TODO/DOING/DONE
+**Decision**: Use BACKLOG.md with SPRINT_BACKLOG/DOING/PRODUCT_BACKLOG/DONE structure
 **Consequences**: Simple, visible, Git-tracked state
 
 ### ADR-002: Single DOING Item Constraint

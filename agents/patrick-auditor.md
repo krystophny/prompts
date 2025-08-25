@@ -72,7 +72,7 @@ You are Patrick, expert code quality auditor with deep expertise in software eng
    gh issue create --title "refactor: improve error handling in UserService" \
                    --body "Found during code review: detailed description..."
    ```
-2. **Add to BACKLOG.md TODO section** (append at end):
+2. **Add to BACKLOG.md SPRINT_BACKLOG section under appropriate EPIC** (append at end):
    ```
    - [ ] #789: Refactor error handling in UserService
    ```

@@ -51,7 +51,7 @@ ls ~/bin/plan ~/bin/work ~/bin/play
 ./bin/plan
 # Result: GitHub issues created, BACKLOG.md updated with priorities
 
-# Implementation phase - work through TODO items  
+# Implementation phase - work through SPRINT_BACKLOG items  
 ./bin/work
 # Result: max prepares branch → sergei implements → patrick reviews → max merges
 
@@ -66,7 +66,7 @@ The workflow shortcuts are executable shell scripts that validate your environme
 
 - **`./bin/plan`**: Validates git repository, guides planning workflow activation
 - **`./bin/work`**: Validates BACKLOG.md exists, guides implementation workflow 
-- **`./bin/play`**: Validates environment, warns if TODO items remain, guides quality audit
+- **`./bin/play`**: Validates environment, warns if SPRINT_BACKLOG items remain, guides quality audit
 
 Each script performs environment checks and provides clear next steps for invoking the corresponding workflow through Claude Code.
 
@@ -76,8 +76,8 @@ Use `./test-shortcuts.sh` to validate all shortcuts are working correctly and ma
 
 ### Planning Workflow (`"plan"`)
 - **Agent**: chris-architect
-- **Purpose**: Create GitHub issues and maintain BACKLOG.md priorities
-- **Output**: Ordered TODO items ready for implementation
+- **Purpose**: Create GitHub issues and maintain BACKLOG.md with PRODUCT_BACKLOG and SPRINT_BACKLOG
+- **Output**: EPIC-organized issues ready for implementation
 
 ```bash
 "plan"
@@ -97,7 +97,7 @@ Use `./test-shortcuts.sh` to validate all shortcuts are working correctly and ma
 ### Play Workflow (`"play"`)  
 - **Agents**: max → winny → patrick/vicky → chris
 - **Purpose**: Find defects, update documentation, file new issues
-- **Output**: Comprehensive audit results and updated TODO backlog
+- **Output**: Comprehensive audit results and updated SPRINT_BACKLOG
 
 ```bash
 "play"
@@ -107,14 +107,15 @@ Use `./test-shortcuts.sh` to validate all shortcuts are working correctly and ma
 ## Batch Processing
 
 ```bash
-"batch work"   # Process all BACKLOG.md TODO items autonomously
+"batch work"   # Process all BACKLOG.md SPRINT_BACKLOG items autonomously
 "batch play"   # Continuous defect detection until no issues found
 ```
 
 ## Key Features
 
 - **Agent Specialization**: Each agent has clear ownership and constraints
-- **State Management**: BACKLOG.md tracks TODO → DOING → DONE progression  
+- **Hierarchical Planning**: PRODUCT_BACKLOG (high-level features) → SPRINT_BACKLOG (detailed GitHub issues under EPICs)
+- **State Management**: SPRINT_BACKLOG → DOING → delete completed, PRODUCT_BACKLOG → DONE when EPICs complete
 - **Quality Gates**: Mandatory code review and CI completion
 - **Batch Processing**: Autonomous execution for high-velocity workflows
 - **Forensic Analysis**: Repository state reconciliation and branch management
@@ -164,7 +165,8 @@ Use `./test-shortcuts.sh` to validate all shortcuts are working correctly and ma
 ```
 prompts/
 ├── CLAUDE.md          # Complete system specification (MANDATORY)
-├── BACKLOG.md         # TODO → DOING → DONE state management
+├── BACKLOG.md         # SPRINT_BACKLOG → DOING → delete, PRODUCT_BACKLOG → DONE
+├── DESIGN.md          # Architecture, technical decisions, ADRs  
 ├── README.md          # This file - onboarding and overview
 ├── PROMPTS.md         # Historical development patterns
 ├── agents/            # Individual agent personas and constraints
@@ -199,7 +201,7 @@ ls ~/.claude/CLAUDE.md
 **Q: Batch mode stopping unexpectedly?**
 - Check for CI failures blocking merge
 - Ensure no manual intervention required
-- Review BACKLOG.md TODO section not empty
+- Review BACKLOG.md SPRINT_BACKLOG section not empty
 
 ### Getting Help
 
