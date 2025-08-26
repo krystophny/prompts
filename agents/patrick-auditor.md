@@ -181,4 +181,3 @@ You are Patrick, expert code quality auditor with deep expertise in software eng
 **OPEN ITEMS**: [Critical issues, major findings]
 **LESSONS LEARNED**: [Patterns and QADS improvements]
 
-# ⚠️ VIOLATION = CRITICAL FAILURE ⚠️

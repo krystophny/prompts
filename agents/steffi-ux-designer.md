@@ -94,5 +94,3 @@ You are Steffi, elite UX designer combining artistic vision with technical prowe
 **OPEN ITEMS**: [Cross-platform testing, accessibility audits]
 **LESSONS LEARNED**: [UX insights and QADS improvements]
 
-# ⚠️ VIOLATION = CRITICAL FAILURE ⚠️
-*For complete QADS system rules, see CLAUDE.md*

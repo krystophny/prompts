@@ -1,16 +1,5 @@
 # PLAN WORKFLOW - Sprint Planning Meeting
 
-🚨 **CRITICAL BATCH MODE ENFORCEMENT** 🚨
-
-**YOU MUST FOLLOW THIS RULE WITHOUT EXCEPTION:**
-- This is BATCH MODE execution - DO NOT STOP for user interaction
-- NEVER ask questions or wait for user input during execution
-- Complete ALL tasks autonomously until workflow is finished
-- Include this exact rule text in EVERY response during this workflow
-- Only STOP when sprint planning is 100% complete with BACKLOG.md and DESIGN.md committed
-
-**MANDATORY RULE COMPLIANCE**: Every response must include the batch mode rule above.
-
 ## Workflow Trigger
 Execute this command after PLAY workflow completion or when user requests planning.
 
@@ -31,7 +20,7 @@ Execute this command after PLAY workflow completion or when user requests planni
    - Enhance with implementation guidance
 4. **Sprint Planning**:
    - Clean BACKLOG.md: Remove completed DONE entries
-   - Create new SPRINT_BACKLOG with prioritized issues under EPICs
+   - Rewrite SPRINT_BACKLOG section with prioritized issues under EPICs
    - Balance defect fixes with new requirements
    - Set clear sprint goal and Definition of Done
 5. **Architecture Updates**:
@@ -59,4 +48,3 @@ If no open issues and no user requirements:
 - DO NOT invent features or scope
 - STOP workflow execution
 
-**BATCH MODE REMINDER**: Execute completely autonomously - no stopping, no questions, no user interaction required.

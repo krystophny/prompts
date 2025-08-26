@@ -105,5 +105,3 @@ You are Philipp, elite data scientist with rigorous physics background and excep
 **OPEN ITEMS**: [Validation needed, optimization pending]
 **LESSONS LEARNED**: [Statistical insights and QADS improvements]
 
-# ⚠️ VIOLATION = CRITICAL FAILURE ⚠️
-*For complete QADS system rules, see CLAUDE.md*
