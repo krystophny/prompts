@@ -78,18 +78,19 @@
 
 ### 2. WORK WORKFLOW (shortcut: `"work"`)
 **Trigger**: Issues exist in BACKLOG.md or current branch work
-**Actors**: max → sergei → patrick → (user if manual) → max
+**Actors**: max → (sergei OR winny) → patrick → (user if manual) → max
 **Protocol**:
 1. **max**: Repository state management + forensic analysis
    - `git fetch --all && git status`
    - Forensic analysis if inconsistent (branch + PR + BACKLOG.md + commits)
    - Choose/create branch, ensure 1 DOING + ≤1 PR rule
    - **🚨 PRE-WORK REBASE**: `git rebase origin/main` + `git push --force-with-lease`
-2. **sergei**: Implementation only
-   - Write tests, implement code on prepared branch
-   - `git add <files>`, `git commit`, `git push`, create PR
-3. **patrick**: Code review + issue triage
-   - CRITICAL issues → handback to sergei (infinite cycles allowed)
+2. **Implementation** (issue-type dependent):
+   - **Code issues**: sergei writes tests, implements code on prepared branch
+   - **Documentation issues**: winny implements documentation on prepared branch
+   - Both: `git add <files>`, `git commit`, `git push`, create PR
+3. **patrick**: Code/documentation review + issue triage
+   - CRITICAL issues → handback to implementer (infinite cycles allowed)
    - Non-critical issues → file as GitHub issues, add to BACKLOG.md SPRINT_BACKLOG under appropriate EPIC
 4. **user**: Manual review (if not batch mode)
 5. **max**: Final merge + cleanup
@@ -163,12 +164,14 @@
    - IF clean state: delete completed DOING issue line, move completed EPIC to PRODUCT_BACKLOG→DONE if fully complete, pick top SPRINT_BACKLOG→DOING, create branch
    - **MANDATORY**: Commit/push BACKLOG.md updates (max owns all status transitions)
 3. **Pre-work Preparation**:
-   - `git rebase origin/main` (prepare clean branch for sergei)
+   - `git rebase origin/main` (prepare clean branch for implementer)
    - `git push --force-with-lease` if rebased existing branch
-   - **HANDOFF**: Clean rebased branch ready for implementation
+   - **HANDOFF**: Clean rebased branch ready for implementation (to sergei for code OR winny for docs)
 
-**Sergei's Focused Implementation Protocol**:
-1. **Implementation Only** (max prepared branch):
+**Implementation Protocols (Issue-Type Dependent)**:
+
+**Sergei's Code Implementation Protocol**:
+1. **Code Implementation Only** (max prepared branch):
    - Write tests, implement code (NO repository management)
    - Run targeted tests for affected code only
 2. **Commit & Push**:
@@ -176,6 +179,16 @@
    - `git commit -m "conventional: description"`
    - `git push` (normal push, not force)
    - Create PR: `gh pr create --title "..." --body "..."`
+
+**Winny's Documentation Implementation Protocol**:
+1. **Documentation Implementation Only** (max prepared branch):
+   - Update/create documentation files (NO repository management)
+   - Validate examples and verify copy-paste ready
+2. **Commit & Push**:
+   - `git add <specific-files>` (NEVER . or -A)
+   - `git commit -m "docs: description"`
+   - `git push` (normal push, not force)
+   - Create PR: `gh pr create --title "docs: ..." --body "..."`
 
 **Chris's BACKLOG.md Workflow (Explicit Protocol)**:
 1. **BACKLOG.md Initialization**:
@@ -266,19 +279,19 @@
 2. `git reset --hard origin/main` - reset main to remote
 3. `git checkout fix/rescue-main-commits` - switch to rescue branch
 4. `gh issue create --title "fix: rescue commits from main" --body "Commits accidentally added to main branch"`
-5. **HANDOFF TO SERGEI** → Sergei will create PR and implement fixes
+5. **HANDOFF TO IMPLEMENTER** → Appropriate agent will create PR and implement fixes
 
 ## PR Management
 
 <pr_rules>
   <rule_1>NO draft PRs - create ready for review</rule_1>
-  <rule_2>sergei ALWAYS creates PR after implementation - EXCLUSIVE responsibility</rule_2>
+  <rule_2>sergei ALWAYS creates PR after code implementation, winny ALWAYS creates PR after documentation implementation - EXCLUSIVE responsibilities</rule_2>
   <rule_3>NEVER close PRs without merge</rule_3>
   <rule_4>Fix in review loop until resolved</rule_4>
-  <rule_5>max merges PRs (BACKLOG.md already updated by sergei)</rule_5>
+  <rule_5>max merges PRs (BACKLOG.md already updated by implementer)</rule_5>
   <rule_6>🚨 ABSOLUTE PRIORITY: READY PRs (non-draft) BLOCK ALL other work - must be fixed and merged FIRST</rule_6>
   <rule_7>🚨 max MUST wait for CI checks to pass before merging - NO exceptions</rule_7>
-  <rule_8>🚨 sergei FORBIDDEN from starting new SPRINT_BACKLOG items when READY PRs exist</rule_8>
+  <rule_8>🚨 sergei/winny FORBIDDEN from starting new SPRINT_BACKLOG items when READY PRs exist</rule_8>
   <rule_9>🚨 DRAFT PR EXCEPTION: Draft PRs are COMPLETELY IGNORED in all blocking rules</rule_9>
   <rule_10>Display pr_rules when triggered by repository_rules</rule_10>
 </pr_rules>
@@ -296,11 +309,12 @@
   <rule_1>max: Repository management, BACKLOG.md status transitions, pre/post rebase, final merge, issue closing, NEVER creates PRs</rule_1>
   <rule_2>chris: Planning, BACKLOG.md priorities, issue creation, COMMIT/PUSH BACKLOG.md</rule_2>
   <rule_3>sergei: Code implementation only, commit/push implementation, ALWAYS creates PR after implementation, NO BACKLOG.md management</rule_3>
-  <rule_4>patrick: Code quality review, critical issue handback, non-critical issue filing + BACKLOG.md updates</rule_4>
-  <rule_5>winny: Documentation consolidation (PLAY only)</rule_5>
+  <rule_3b>winny: Documentation implementation (WORK when doc issues), commit/push documentation, ALWAYS creates PR after implementation, NO BACKLOG.md management</rule_3b>
+  <rule_4>patrick: Code/documentation quality review, critical issue handback, non-critical issue filing + BACKLOG.md updates</rule_4>
+  <rule_5>winny: Documentation consolidation (PLAY workflow) AND documentation implementation (WORK workflow for doc issues)</rule_5>
   <rule_6>vicky: GitHub issue filing (PLAY only)</rule_6>
   <rule_7>Stay in your lane - work within ownership only</rule_7>
-  <rule_8>🚨 sergei: BLOCKED from new work when READY PRs exist - fix existing non-draft PRs ONLY</rule_8>
+  <rule_8>🚨 sergei/winny: BLOCKED from new work when READY PRs exist - fix existing non-draft PRs ONLY</rule_8>
   <rule_9>🚨 max: MUST wait for CI completion before merging - workflow incomplete until merged</rule_9>
   <rule_10>🚨 DRAFT PR EXCEPTION: Draft PRs do NOT block any work or trigger any rules</rule_10>
   <rule_11>Display agent_rules when triggered by process_rules</rule_11>
@@ -310,10 +324,10 @@
 
 **max-devops**: Repository management, BACKLOG.md status transitions (SPRINT_BACKLOG→DOING→delete completed, PRODUCT_BACKLOG→DONE), forensic analysis, pre/post rebase operations, final merge, **closing issues**, **FULL TEST SUITE (EXCLUSIVE)**
 **chris-architect**: PRODUCT_BACKLOG management, SPRINT_BACKLOG EPIC creation, GitHub issue creation, DESIGN.md, architecture, COMMIT/PUSH BACKLOG.md
-**sergei-perfectionist**: Pure implementation (tests + code), **TARGETED TESTS ONLY**, commit/push implementation, **PR creation (EXCLUSIVE)**, API docs, performance optimization, NO BACKLOG.md management
+**sergei-perfectionist**: Pure code implementation (tests + code), **TARGETED TESTS ONLY**, commit/push implementation, **PR creation (EXCLUSIVE for code)**, API docs, performance optimization, NO BACKLOG.md management
+**winny-technical-writer**: Documentation implementation (WORK for doc issues), **PR creation (EXCLUSIVE for docs)**, documentation rewrite/consolidation (PLAY workflow), NO BACKLOG.md management
 **georg-test-engineer**: Test creation and strategy, **TARGETED TESTS ONLY** for verification
-**patrick-auditor**: Code quality review with handback, non-critical issue filing + BACKLOG.md SPRINT_BACKLOG additions under EPICs, dead code detection (PLAY workflow)
-**winny-writer**: Documentation rewrite/consolidation (PLAY workflow)
+**patrick-auditor**: Code/documentation quality review with handback, non-critical issue filing + BACKLOG.md SPRINT_BACKLOG additions under EPICs, dead code detection (PLAY workflow)
 **vicky-tester**: Bug detection and GitHub issue filing (PLAY workflow)
 
 ## Core Quality Standards
