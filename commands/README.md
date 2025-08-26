@@ -1,7 +1,7 @@
-# QADS Command Migration Guide
+# QADS Sprint Workflow Commands
 
-**DEPRECATED**: Individual command files in this directory are legacy.  
-**CURRENT**: Use three-workflow system: `"plan"`, `"work"`, `"play"`
+**CURRENT**: Sprint-based workflow system with batch mode execution  
+**NEW**: Complete sprint cycle commands with autonomous execution
 
 ## Legacy Command Mapping
 
@@ -16,35 +16,58 @@
 | `fix.md` | `"work"` | Standard issue resolution workflow |
 | `doit.md` | All workflows | General assessment pattern |
 
-## Modern Usage
+## Sprint Workflow Commands
 
+### Individual Phase Commands
 ```bash
-# Planning and architecture - executable shortcut
-./bin/plan
-
-# Development workflow - executable shortcut
-./bin/work
-
-# Quality audit (defects only) - executable shortcut
-./bin/play
-
-# Conceptual shortcuts for Claude Code (refer to CLAUDE.md)
-"plan"          # Conceptual reference to planning workflow
-"work"          # Conceptual reference to implementation workflow  
-"play"          # Conceptual reference to quality audit workflow
-
-# Batch processing (Claude Code concepts)
-"batch work"    # Process all TODO items
-"batch play"    # Continuous defect finding
+# Include in Claude Code prompts for autonomous batch execution:
+"Use commands/plan.md"     # Post-PLAY sprint planning meeting
+"Use commands/work.md"     # Sprint implementation phase  
+"Use commands/play.md"     # Sprint review meeting
+"Use commands/sprint.md"   # Complete WORK → PLAY → PLAN cycle
 ```
 
-## Workflow Selection
+### 🚨 CRITICAL BATCH MODE ENFORCEMENT
+**All commands enforce strict autonomous execution:**
+- NO stopping for user interaction
+- NO questions or confirmations during execution
+- Complete workflows must finish without manual intervention
+- Every response must include batch mode enforcement rule
+- Only stop when workflow objectives are 100% complete
 
-- **Features/goals** → `./bin/plan` → creates issues → `./bin/work`
-- **Issues in BACKLOG.md** → `./bin/work`  
-- **No TODO items** → `./bin/play` → finds defects → back to `./bin/work`
+### Sprint Cycle Flow
+```bash
+# Complete autonomous sprint cycle
+"Use commands/sprint.md"
+# Executes: WORK (implement all items) → PLAY (review & file issues) → PLAN (next sprint)
 
-**Testing**: Use `./test-shortcuts.sh` to validate shortcuts work as documented.
+# Individual phases (when needed)
+"Use commands/work.md"     # Process current SPRINT_BACKLOG items
+"Use commands/play.md"     # Sprint review - evaluate goals & find defects  
+"Use commands/plan.md"     # Plan next sprint with PLAY findings
+```
+
+## Usage Patterns
+
+### Sprint Cycle Management
+- **Complete cycle**: `"Use commands/sprint.md"` - full WORK → PLAY → PLAN
+- **Current sprint work**: `"Use commands/work.md"` - implement SPRINT_BACKLOG  
+- **Sprint review**: `"Use commands/play.md"` - evaluate & find defects
+- **Next sprint planning**: `"Use commands/plan.md"` - consolidate findings
+
+### Workflow Triggers
+- **Active SPRINT_BACKLOG**: Use work.md to implement items
+- **Empty SPRINT_BACKLOG**: Use play.md for sprint review
+- **PLAY findings exist**: Use plan.md for next sprint planning
+- **Full cycle needed**: Use sprint.md for complete automation
+
+## Command File Structure
+Each command file contains:
+- 🚨 Batch mode enforcement rules (mandatory in every response)
+- Autonomous execution protocols  
+- Agent responsibilities and workflows
+- Success criteria and completion conditions
+- User integration points for requirements/hints
 
 ---
 
