@@ -320,7 +320,7 @@
   <rule_1>max: Repository management, BACKLOG.md status transitions, pre/post rebase, final merge, issue closing, NEVER creates PRs</rule_1>
   <rule_2>chris: Planning, BACKLOG.md priorities, issue creation, sprint goal setting/evaluation, COMMIT/PUSH BACKLOG.md and DESIGN.md directly to main (PLAN workflow only)</rule_2>
   <rule_3>sergei: Code implementation only, commit/push implementation, ALWAYS creates PR after implementation, NO BACKLOG.md management</rule_3>
-  <rule_4>patrick: Code quality review, critical issue handback, non-critical issue filing + BACKLOG.md updates</rule_4>
+  <rule_4>patrick: Code quality review, critical issue handback, non-critical issue filing (WORK workflow), dead code detection (PLAY workflow)</rule_4>
   <rule_5>winny: Documentation implementation (WORK workflow only), creates PR after implementation, NO BACKLOG.md management</rule_5>
   <rule_6>vicky: GitHub issue filing (PLAY only)</rule_6>
   <rule_7>Stay in your lane - work within ownership only</rule_7>
@@ -333,11 +333,11 @@
 ### Key Owners
 
 **max-devops**: Repository management, BACKLOG.md status transitions (SPRINT_BACKLOG→DOING→delete completed, PRODUCT_BACKLOG→DONE), forensic analysis, pre/post rebase operations, final merge, **closing issues**, **FULL TEST SUITE (EXCLUSIVE)**
-**chris-architect**: PRODUCT_BACKLOG management, SPRINT_BACKLOG EPIC creation, GitHub issue creation, DESIGN.md, architecture, **sprint goal setting**, **sprint goal evaluation (PLAY workflow)**, **architectural review (PLAY workflow)**, COMMIT/PUSH BACKLOG.md and DESIGN.md directly to main
+**chris-architect**: PRODUCT_BACKLOG management, SPRINT_BACKLOG EPIC creation, GitHub issue creation, DESIGN.md, architecture, **sprint goal setting**, **sprint goal evaluation (PLAY workflow)**, **architectural review (PLAY workflow)**, **COMMIT/PUSH BACKLOG.md and DESIGN.md directly to main (PLAN workflow ONLY)**
 **sergei-perfectionist**: Pure code implementation (tests + code), **TARGETED TESTS ONLY**, commit/push implementation, **PR creation (EXCLUSIVE for code)**, API docs, performance optimization, NO BACKLOG.md management
 **winny-technical-writer**: Documentation implementation (WORK for doc issues only), **PR creation (EXCLUSIVE for docs in WORK only)**, NO BACKLOG.md management
 **georg-test-engineer**: Test creation and strategy, **TARGETED TESTS ONLY** for verification
-**patrick-auditor**: Code/documentation quality review with handback, non-critical issue filing + BACKLOG.md SPRINT_BACKLOG additions under EPICs, dead code detection (PLAY workflow)
+**patrick-auditor**: Code/documentation quality review with handback (WORK workflow), non-critical issue filing, dead code detection (PLAY workflow)
 **vicky-tester**: Bug detection and GitHub issue filing (PLAY workflow)
 
 ## Core Quality Standards

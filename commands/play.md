@@ -51,8 +51,12 @@ Execute when BACKLOG.md SPRINT_BACKLOG is empty (all sprint work completed).
    - ✅ Documentation defects
    - ❌ NO features or enhancements (defects only)
 
-**Critical Restriction**: 🚨 ABSOLUTELY NO FILE EDITS - pure read-only mode
-**No Repository Changes**: No commits, merges, or file modifications of any kind
+6. **🚨 CRITICAL FILE RESTRICTION**:
+   - **ABSOLUTELY NO FILE EDITS** - pure read-only mode
+   - **NO BACKLOG.md modifications** - no status updates, no additions
+   - **NO DESIGN.md modifications** - no architectural updates
+   - **NO commits, merges, or file modifications** of any kind
+   - **ONLY GitHub issue creation** allowed
 
 ## Success Criteria
 - Sprint completion status reported to user
