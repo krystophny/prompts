@@ -65,20 +65,24 @@
 
 **Shortcuts**: `"plan"`, `"work"`, `"play"`
 
-### 1. PLAN WORKFLOW (shortcut: `"plan"`)
-**Trigger**: User requests planning, design, or new features
+### 1. PLAN WORKFLOW (shortcut: `"plan"`) - Sprint Planning Meeting
+**Trigger**: After PLAY workflow OR user requests planning
 **Actor**: chris-architect ONLY
-**Authority**: FULL control of BACKLOG.md and issue creation
+**Authority**: EXCLUSIVE control of BACKLOG.md and DESIGN.md edits, GitHub issue creation
 **Activities**:
-- Initialize and clean up BACKLOG.md (remove completed DONE issues)
-- Create detailed GitHub issues for SPRINT_BACKLOG ONLY
-- Define high-level goals and approach for FUTURE SPRINTS
-- Update DESIGN.md with architectural decisions (see DESIGN.md for workflow patterns, quality gates, agent responsibilities)
-**Protocol**: User → chris → Sprint Planning → Issues/BACKLOG.md
+- **Post-PLAY Sprint Planning**: Consolidate and refine PLAY findings into next sprint
+- Treat current sprint as complete and plan the next one
+- Combine open GitHub issues with existing BACKLOG.md EPICs
+- **USER PROMPT INTEGRATION**: Incorporate new/adapted user requirements and priorities
+- **PLANNING FILES ONLY**: Edit BACKLOG.md and DESIGN.md ONLY, commit and push directly to main
+- **NO CODE CHANGES**: Planning mode touches only planning files, never source code
+- Set sprint goal and Definition of Done in DESIGN.md
+- Balance defect fixes with new user requirements
+**Protocol**: PLAY findings + User input → chris → Sprint Planning → Direct commits to main (BACKLOG.md + DESIGN.md only)
 
 ### 2. WORK WORKFLOW (shortcut: `"work"`)
 **Trigger**: Issues exist in BACKLOG.md or current branch work
-**Actors**: max → (sergei OR winny) → patrick → (user if manual) → max
+**Actors**: max → (sergei OR winny) → reviewer → (user if manual) → max
 **Protocol**:
 1. **max**: Repository state management + forensic analysis
    - `git fetch --all && git status`
@@ -88,8 +92,11 @@
 2. **Implementation** (issue-type dependent):
    - **Code issues**: sergei writes tests, implements code on prepared branch
    - **Documentation issues**: winny implements documentation on prepared branch
+   - **USER PROMPT INTEGRATION**: Both consider ad-hoc tasks and implementation hints from user
    - Both: `git add <files>`, `git commit`, `git push`, create PR
-3. **patrick**: Code/documentation review + issue triage
+3. **Review** (issue-type dependent):
+   - **Code issues**: patrick reviews code + issue triage
+   - **Documentation issues**: vicky reviews documentation + issue triage
    - CRITICAL issues → handback to implementer (infinite cycles allowed)
    - Non-critical issues → file as GitHub issues, add to BACKLOG.md SPRINT_BACKLOG under appropriate EPIC
 4. **user**: Manual review (if not batch mode)
@@ -97,16 +104,20 @@
    - **🚨 PRE-MERGE REBASE**: `git rebase origin/main` + `git push --force-with-lease`
    - Wait for CI, merge PR, close issue, clean state (0 DOING, 0 PRs)
 
-### 3. PLAY WORKFLOW (shortcut: `"play"`)
+### 3. PLAY WORKFLOW (shortcut: `"play"`) - Sprint Review Meeting
 **Trigger**: BACKLOG.md SPRINT_BACKLOG empty (all issues resolved)
 **Working Directory**: Separate clone/worktree (parallel to WORK)
-**Actors**: max → winny → parallel audits → chris
+**Actors**: max → parallel audits (patrick, vicky, chris)
 **Protocol**:
 1. **max**: Pull latest main, git clean -fdx, assess infrastructure
-2. **winny**: Complete documentation rewrite (full codebase) - commits directly, NO PRs
-3. **Parallel audits**: patrick (dead code), vicky (bugs) - MUST file GitHub issues immediately, NO code changes
-4. **chris**: Final audit - consolidate and deduplicate all team findings, schedule refined issues in SPRINT_BACKLOG under EPICs, commit and push
-**Focus**: Find DEFECTS ONLY - bugs, dead code, obsolete docs (NO features)
+2. **Parallel audits**: All agents work concurrently, MUST file GitHub issues immediately:
+   - **patrick**: Dead code detection and structural defects
+   - **vicky**: Bug detection and user experience validation  
+   - **chris**: Sprint goal evaluation, architectural review, design alignment assessment
+   - **USER PROMPT INTEGRATION**: All agents pay attention to user-specified review areas
+3. **🚨 ABSOLUTELY NO FILE EDITS**: READ-ONLY mode - no commits, no merges, no file modifications of ANY kind
+4. **chris REPORTS TO USER**: Sprint completion status and goal achievement assessment
+**Focus**: Sprint Review - Find DEFECTS ONLY (bugs, dead code, architectural drift, sprint goal gaps) - NO features
 
 ## BACKLOG.md Management
 
@@ -202,8 +213,8 @@
    - Define high-level features in PRODUCT_BACKLOG section
    - NO GitHub issues created for product backlog items yet
 4. **DESIGN.md Updates**: Update with architectural decisions and technical specifications (refer to existing DESIGN.md structure for system architecture patterns)
-5. **MANDATORY**: Commit and push: `git add BACKLOG.md DESIGN.md && git commit -m "plan: sprint planning and issue creation" && git push`
-6. **PLAY mode only**: Consolidate and deduplicate all team-found issues, schedule in SPRINT_BACKLOG
+5. **Documentation Issue Creation**: Always create final documentation consolidation issue for sprint
+6. **MANDATORY**: Commit and push: `git add BACKLOG.md DESIGN.md && git commit -m "plan: sprint planning and issue creation" && git push`
 
 <workflow_rules>
   <rule_1>BACKLOG.md: SPRINT_BACKLOG → DOING → delete completed issue lines, PRODUCT_BACKLOG → DONE when EPICs complete</rule_1>
@@ -307,14 +318,13 @@
 
 <agent_rules>
   <rule_1>max: Repository management, BACKLOG.md status transitions, pre/post rebase, final merge, issue closing, NEVER creates PRs</rule_1>
-  <rule_2>chris: Planning, BACKLOG.md priorities, issue creation, COMMIT/PUSH BACKLOG.md</rule_2>
+  <rule_2>chris: Planning, BACKLOG.md priorities, issue creation, sprint goal setting/evaluation, COMMIT/PUSH BACKLOG.md and DESIGN.md directly to main (PLAN workflow only)</rule_2>
   <rule_3>sergei: Code implementation only, commit/push implementation, ALWAYS creates PR after implementation, NO BACKLOG.md management</rule_3>
-  <rule_3b>winny: Documentation implementation (WORK when doc issues), commit/push documentation, ALWAYS creates PR after WORK implementation, direct commits in PLAY, NO BACKLOG.md management</rule_3b>
-  <rule_4>patrick: Code/documentation quality review, critical issue handback, non-critical issue filing + BACKLOG.md updates</rule_4>
-  <rule_5>winny: Documentation consolidation (PLAY workflow - direct commits) AND documentation implementation (WORK workflow for doc issues - creates PRs)</rule_5>
+  <rule_4>patrick: Code quality review, critical issue handback, non-critical issue filing + BACKLOG.md updates</rule_4>
+  <rule_5>winny: Documentation implementation (WORK workflow only), creates PR after implementation, NO BACKLOG.md management</rule_5>
   <rule_6>vicky: GitHub issue filing (PLAY only)</rule_6>
   <rule_7>Stay in your lane - work within ownership only</rule_7>
-  <rule_8>🚨 sergei/winny: BLOCKED from new work when READY PRs exist - fix existing non-draft PRs ONLY</rule_8>
+  <rule_8>🚨 sergei: BLOCKED from new work when READY PRs exist - fix existing non-draft PRs ONLY</rule_8>
   <rule_9>🚨 max: MUST wait for CI completion before merging - workflow incomplete until merged</rule_9>
   <rule_10>🚨 DRAFT PR EXCEPTION: Draft PRs do NOT block any work or trigger any rules</rule_10>
   <rule_11>Display agent_rules when triggered by process_rules</rule_11>
@@ -323,9 +333,9 @@
 ### Key Owners
 
 **max-devops**: Repository management, BACKLOG.md status transitions (SPRINT_BACKLOG→DOING→delete completed, PRODUCT_BACKLOG→DONE), forensic analysis, pre/post rebase operations, final merge, **closing issues**, **FULL TEST SUITE (EXCLUSIVE)**
-**chris-architect**: PRODUCT_BACKLOG management, SPRINT_BACKLOG EPIC creation, GitHub issue creation, DESIGN.md, architecture, COMMIT/PUSH BACKLOG.md
+**chris-architect**: PRODUCT_BACKLOG management, SPRINT_BACKLOG EPIC creation, GitHub issue creation, DESIGN.md, architecture, **sprint goal setting**, **sprint goal evaluation (PLAY workflow)**, **architectural review (PLAY workflow)**, COMMIT/PUSH BACKLOG.md and DESIGN.md directly to main
 **sergei-perfectionist**: Pure code implementation (tests + code), **TARGETED TESTS ONLY**, commit/push implementation, **PR creation (EXCLUSIVE for code)**, API docs, performance optimization, NO BACKLOG.md management
-**winny-technical-writer**: Documentation implementation (WORK for doc issues), **PR creation (EXCLUSIVE for docs in WORK only)**, documentation rewrite/consolidation (PLAY workflow - direct commits), NO BACKLOG.md management
+**winny-technical-writer**: Documentation implementation (WORK for doc issues only), **PR creation (EXCLUSIVE for docs in WORK only)**, NO BACKLOG.md management
 **georg-test-engineer**: Test creation and strategy, **TARGETED TESTS ONLY** for verification
 **patrick-auditor**: Code/documentation quality review with handback, non-critical issue filing + BACKLOG.md SPRINT_BACKLOG additions under EPICs, dead code detection (PLAY workflow)
 **vicky-tester**: Bug detection and GitHub issue filing (PLAY workflow)
@@ -403,8 +413,9 @@
    - Verify issues meet DEFECTS ONLY constraint
    - Prioritize architectural alignment issues
 5. **Schedule in SPRINT_BACKLOG**: Add refined issues to BACKLOG.md SPRINT_BACKLOG section under appropriate EPICs
-6. **Clean up DONE**: Remove any completed DONE entries from BACKLOG.md
-7. **Commit changes**: `git add BACKLOG.md && git commit -m "play: architectural assessment and consolidated defect issues" && git push`
+6. **CREATE documentation consolidation issue**: File GitHub issue for all documentation defects found during PLAY
+7. **Clean up DONE**: Remove any completed DONE entries from BACKLOG.md
+8. **Commit changes**: `git add BACKLOG.md && git commit -m "play: architectural assessment and consolidated defect issues" && git push`
 
 ## PLAY Workflow Constraints
 

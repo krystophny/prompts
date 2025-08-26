@@ -44,20 +44,20 @@ ls ~/bin/plan ~/bin/work ~/bin/play
 ./bin/play
 ```
 
-### 3. Complete Example Workflow
+### 3. Complete Sprint Cycle Example
 
 ```bash
-# Planning phase - create issues and architecture
-./bin/plan
-# Result: GitHub issues created, BACKLOG.md updated with priorities
-
-# Implementation phase - work through SPRINT_BACKLOG items  
+# Sprint implementation - work through current BACKLOG.md items  
 ./bin/work
-# Result: max prepares branch → sergei implements → patrick reviews → max merges
+# Result: max prepares → implementer codes → reviewer validates → max merges
 
-# Quality audit phase - find remaining defects
+# Sprint review meeting - parallel defect audits (no code changes)
 ./bin/play 
-# Result: Documentation updated, defects filed as new issues
+# Result: patrick/vicky/chris file defect issues, no repository modifications
+
+# Sprint planning meeting - consolidate findings into next sprint
+./bin/plan
+# Result: PLAY issues consolidated → next sprint BACKLOG.md → DESIGN.md updated
 ```
 
 ### Workflow Shortcuts
@@ -74,34 +74,42 @@ Use `./test-shortcuts.sh` to validate all shortcuts are working correctly and ma
 
 ## Core Workflows
 
-### Planning Workflow (`"plan"`)
-- **Agent**: chris-architect
-- **Purpose**: Create GitHub issues and maintain BACKLOG.md with PRODUCT_BACKLOG and SPRINT_BACKLOG
-- **Output**: EPIC-organized issues ready for implementation
+### Planning Workflow (`"plan"`) - Sprint Planning Meeting
+- **Agent**: chris-architect ONLY
+- **Purpose**: Post-PLAY sprint planning meeting incorporating review findings
+- **Input**: PLAY findings + user requirements + existing BACKLOG.md EPICs
+- **File Permissions**: EXCLUSIVE edit access to BACKLOG.md and DESIGN.md, commits directly to main
+- **🚨 CRITICAL**: NO code changes - planning files only
+- **Output**: Next sprint plan, sprint goal, Definition of Done, refined issues
 
 ```bash
 "plan"
-# Creates: GitHub issues, BACKLOG.md priorities, DESIGN.md updates
+# Sprint Planning: PLAY findings → Issue consolidation → BACKLOG.md + DESIGN.md edits → Direct commit to main
 ```
 
-### Work Workflow (`"work"`)
-- **Agents**: max → sergei → patrick → max  
-- **Purpose**: Implement features and fix bugs through quality-gated process
-- **Output**: Production-ready code merged to main
+### Work Workflow (`"work"`) - Sprint Implementation
+- **Agents**: max → implementer → reviewer → max  
+- **Purpose**: Implement sprint backlog items with user ad-hoc tasks integration
+- **Issue Types**: Code issues (sergei + patrick), Documentation issues (winny + vicky)
+- **User Integration**: Incorporates ad-hoc tasks and implementation hints
+- **Output**: Production-ready code/documentation merged to main
 
 ```bash
 "work"
-# Process: Repository assessment → Implementation → Code review → Merge
+# Implementation: Repository assessment → Implementation + user hints → Review → Merge
 ```
 
-### Play Workflow (`"play"`)  
-- **Agents**: max → winny → patrick/vicky → chris
-- **Purpose**: Find defects, update documentation, file new issues
-- **Output**: Comprehensive audit results and updated SPRINT_BACKLOG
+### Play Workflow (`"play"`) - Sprint Review Meeting
+- **Agents**: max → parallel audits (patrick, vicky, chris)
+- **Purpose**: Sprint review meeting - evaluate sprint goals and detect defects
+- **chris Special Role**: Evaluates sprint goal completion and reports to user
+- **User Integration**: Reviews focus on user-specified areas of concern
+- **🚨 CRITICAL**: ABSOLUTELY NO FILE EDITS - pure read-only issue identification
+- **Output**: GitHub issues filed, sprint completion report to user
 
 ```bash
 "play"
-# Process: Documentation rewrite → Parallel defect audits → Issue filing
+# Sprint Review: Sprint goal evaluation → Parallel defect audits → Issue filing → NO file modifications
 ```
 
 ## Batch Processing
@@ -155,10 +163,38 @@ Use `./test-shortcuts.sh` to validate all shortcuts are working correctly and ma
 - **sergei-perfectionist**: Code implementation, commits, PR creation, optimization
 - **patrick-auditor**: Code review with handback, quality gates, issue triage
 
-### Quality Audit Agents (PLAY workflow)
-- **winny-technical-writer**: Documentation consolidation and rewrite
-- **vicky-acceptance-tester**: Bug detection and GitHub issue filing
-- **Additional specialists**: georg (testing), jonatan (math/physics), philipp (data), steffi (UX)
+### Sprint Review Agents (PLAY workflow - Parallel Audits)
+- **patrick-auditor**: Dead code detection and structural defect filing
+- **vicky-acceptance-tester**: Bug detection and user experience issue filing  
+- **chris-architect**: Architectural review and design alignment issue filing
+
+### Documentation Implementation Agent (WORK workflow)
+- **winny-technical-writer**: Documentation implementation and updates (documentation issues only)
+- **vicky-acceptance-tester**: Documentation review and validation
+
+### Additional Specialists (available for both workflows)
+- **georg-test-engineer**: Testing strategy and implementation
+- **jonatan-math-physicist**: Mathematical and physics code translation
+- **philipp-data-scientist**: Data analysis, visualization, statistical modeling
+- **steffi-ux-designer**: User interface design and user experience optimization
+
+## Agent Ownership Matrix
+
+Clear responsibilities across all three workflow phases:
+
+| Agent | PLAN | WORK | PLAY |
+|-------|------|------|------|
+| **chris** | Sprint planning, file edits, commits to main | Architecture guidance | Sprint evaluation, architectural review |
+| **max** | - | Repository management, merges | Infrastructure setup |
+| **sergei** | - | Code implementation, PR creation | - |
+| **winny** | - | Doc implementation, PR creation | - |
+| **patrick** | - | Code review | Dead code detection |
+| **vicky** | - | Doc review | Bug detection |
+
+### Key Distinctions:
+- **PLAN**: Only chris edits files (BACKLOG.md + DESIGN.md), commits directly to main
+- **WORK**: Standard PR workflow with branch protection for all implementations
+- **PLAY**: NO file edits - pure read-only issue identification phase
 
 ## Project Structure
 
