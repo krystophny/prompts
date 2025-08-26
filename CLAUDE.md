@@ -103,7 +103,7 @@
 **Actors**: max → winny → parallel audits → chris
 **Protocol**:
 1. **max**: Pull latest main, git clean -fdx, assess infrastructure
-2. **winny**: Complete documentation rewrite (full codebase)
+2. **winny**: Complete documentation rewrite (full codebase) - commits directly, NO PRs
 3. **Parallel audits**: patrick (dead code), vicky (bugs) - MUST file GitHub issues immediately, NO code changes
 4. **chris**: Final audit - consolidate and deduplicate all team findings, schedule refined issues in SPRINT_BACKLOG under EPICs, commit and push
 **Focus**: Find DEFECTS ONLY - bugs, dead code, obsolete docs (NO features)
@@ -309,9 +309,9 @@
   <rule_1>max: Repository management, BACKLOG.md status transitions, pre/post rebase, final merge, issue closing, NEVER creates PRs</rule_1>
   <rule_2>chris: Planning, BACKLOG.md priorities, issue creation, COMMIT/PUSH BACKLOG.md</rule_2>
   <rule_3>sergei: Code implementation only, commit/push implementation, ALWAYS creates PR after implementation, NO BACKLOG.md management</rule_3>
-  <rule_3b>winny: Documentation implementation (WORK when doc issues), commit/push documentation, ALWAYS creates PR after implementation, NO BACKLOG.md management</rule_3b>
+  <rule_3b>winny: Documentation implementation (WORK when doc issues), commit/push documentation, ALWAYS creates PR after WORK implementation, direct commits in PLAY, NO BACKLOG.md management</rule_3b>
   <rule_4>patrick: Code/documentation quality review, critical issue handback, non-critical issue filing + BACKLOG.md updates</rule_4>
-  <rule_5>winny: Documentation consolidation (PLAY workflow) AND documentation implementation (WORK workflow for doc issues)</rule_5>
+  <rule_5>winny: Documentation consolidation (PLAY workflow - direct commits) AND documentation implementation (WORK workflow for doc issues - creates PRs)</rule_5>
   <rule_6>vicky: GitHub issue filing (PLAY only)</rule_6>
   <rule_7>Stay in your lane - work within ownership only</rule_7>
   <rule_8>🚨 sergei/winny: BLOCKED from new work when READY PRs exist - fix existing non-draft PRs ONLY</rule_8>
@@ -325,7 +325,7 @@
 **max-devops**: Repository management, BACKLOG.md status transitions (SPRINT_BACKLOG→DOING→delete completed, PRODUCT_BACKLOG→DONE), forensic analysis, pre/post rebase operations, final merge, **closing issues**, **FULL TEST SUITE (EXCLUSIVE)**
 **chris-architect**: PRODUCT_BACKLOG management, SPRINT_BACKLOG EPIC creation, GitHub issue creation, DESIGN.md, architecture, COMMIT/PUSH BACKLOG.md
 **sergei-perfectionist**: Pure code implementation (tests + code), **TARGETED TESTS ONLY**, commit/push implementation, **PR creation (EXCLUSIVE for code)**, API docs, performance optimization, NO BACKLOG.md management
-**winny-technical-writer**: Documentation implementation (WORK for doc issues), **PR creation (EXCLUSIVE for docs)**, documentation rewrite/consolidation (PLAY workflow), NO BACKLOG.md management
+**winny-technical-writer**: Documentation implementation (WORK for doc issues), **PR creation (EXCLUSIVE for docs in WORK only)**, documentation rewrite/consolidation (PLAY workflow - direct commits), NO BACKLOG.md management
 **georg-test-engineer**: Test creation and strategy, **TARGETED TESTS ONLY** for verification
 **patrick-auditor**: Code/documentation quality review with handback, non-critical issue filing + BACKLOG.md SPRINT_BACKLOG additions under EPICs, dead code detection (PLAY workflow)
 **vicky-tester**: Bug detection and GitHub issue filing (PLAY workflow)
