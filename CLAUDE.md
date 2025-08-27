@@ -90,9 +90,10 @@
    - Choose/create branch, ensure 1 DOING + ≤1 PR rule
    - **🚨 PRE-WORK REBASE**: `git rebase origin/main` + `git push --force-with-lease`
 2. **Implementation** (issue-type dependent):
-   - **Code issues**: sergei writes tests, implements code on prepared branch
+   - **Code issues**: sergei writes tests, implements code, runs FULL test suite
    - **Documentation issues**: winny implements documentation on prepared branch
    - **USER PROMPT INTEGRATION**: Both consider ad-hoc tasks and implementation hints from user
+   - **🚨 MANDATORY**: sergei runs FULL test suite - ALL tests MUST pass before PR
    - Both: `git add <files>`, `git commit`, `git push`, create PR
 3. **Review** (issue-type dependent):
    - **Code issues**: patrick reviews code + issue triage
@@ -102,6 +103,7 @@
 4. **user**: Manual review (if not batch mode)
 5. **max**: Final merge + cleanup
    - **🚨 PRE-MERGE REBASE**: `git rebase origin/main` + `git push --force-with-lease`
+   - **🚨 DOUBLE-CHECK**: Run FULL test suite - if fails → handback to sergei
    - Wait for CI, merge PR, close issue, clean state (0 DOING, 0 PRs)
 
 ### 3. PLAY WORKFLOW (shortcut: `"play"`) - Sprint Review Meeting
@@ -109,7 +111,7 @@
 **Working Directory**: Separate clone/worktree (parallel to WORK)
 **Actors**: max → parallel audits (patrick, vicky, chris)
 **Protocol**:
-1. **max**: Pull latest main, git clean -fdx, assess infrastructure
+1. **max**: Pull latest main, git clean -fdx, **RUN FULL TEST SUITE**, file issues for failures
 2. **Parallel audits**: All agents work concurrently, MUST file GitHub issues immediately:
    - **patrick**: Dead code detection and structural defects
    - **vicky**: Bug detection and user experience validation  
@@ -184,7 +186,8 @@
 **Sergei's Code Implementation Protocol**:
 1. **Code Implementation Only** (max prepared branch):
    - Write tests, implement code (NO repository management)
-   - Run targeted tests for affected code only
+   - **🚨 MANDATORY**: Run FULL test suite - ALL tests MUST pass
+   - FIX any failures before proceeding
 2. **Commit & Push**:
    - `git add <specific-files>` (NEVER . or -A)
    - `git commit -m "conventional: description"`
@@ -332,12 +335,12 @@
 
 ### Key Owners
 
-**max-devops**: Repository management, BACKLOG.md status transitions (SPRINT_BACKLOG→DOING→delete completed, PRODUCT_BACKLOG→DONE), forensic analysis, pre/post rebase operations, final merge, **closing issues**, **FULL TEST SUITE (EXCLUSIVE)**
+**max-devops**: Repository management, BACKLOG.md status transitions (SPRINT_BACKLOG→DOING→delete completed, PRODUCT_BACKLOG→DONE), forensic analysis, pre/post rebase operations, final merge, **closing issues**, **FULL TEST SUITE (double-check before merge + PLAY start)**
 **chris-architect**: PRODUCT_BACKLOG management, SPRINT_BACKLOG EPIC creation, GitHub issue creation, DESIGN.md, architecture, **sprint goal setting**, **sprint goal evaluation (PLAY workflow)**, **architectural review (PLAY workflow)**, **COMMIT/PUSH BACKLOG.md and DESIGN.md directly to main (PLAN workflow ONLY)**
-**sergei-perfectionist**: Pure code implementation (tests + code), **TARGETED TESTS ONLY**, commit/push implementation, **PR creation (EXCLUSIVE for code)**, API docs, performance optimization, NO BACKLOG.md management
+**sergei-perfectionist**: Pure code implementation (tests + code), **FULL TEST SUITE (before PR & handoffs)**, commit/push implementation, **PR creation (EXCLUSIVE for code)**, API docs, performance optimization, NO BACKLOG.md management
 **winny-technical-writer**: Documentation implementation (WORK for doc issues only), **PR creation (EXCLUSIVE for docs in WORK only)**, NO BACKLOG.md management
 **georg-test-engineer**: Test creation and strategy, **TARGETED TESTS ONLY** for verification
-**patrick-auditor**: Code/documentation quality review with handback (WORK workflow), non-critical issue filing, dead code detection (PLAY workflow)
+**patrick-auditor**: Code/documentation quality review with handback (WORK workflow), **NEVER runs tests**, non-critical issue filing, dead code detection (PLAY workflow)
 **vicky-tester**: Bug detection and GitHub issue filing (PLAY workflow)
 
 ## Core Quality Standards

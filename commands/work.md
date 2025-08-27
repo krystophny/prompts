@@ -29,14 +29,15 @@ Execute when issues exist in BACKLOG.md SPRINT_BACKLOG or current branch work ex
    - **Branch Management**: Create/checkout appropriate branch
    - **Implementation** (issue-type dependent):
      - Code issues: sergei implements tests + code
+     - **🚨 MANDATORY**: sergei runs FULL test suite - 100% pass required
      - Documentation issues: winny implements documentation
-     - Both create PR after implementation
+     - Both create PR ONLY after successful test/validation
    - **Review** (issue-type dependent):
-     - Code issues: patrick reviews + validates
+     - Code issues: patrick reviews code quality (NEVER runs tests)
      - Documentation issues: vicky reviews + validates
-     - CRITICAL issues → automatic handback to implementer
+     - CRITICAL issues → handback to sergei who runs FULL tests again
      - Non-critical issues → file new GitHub issues
-   - **Merge** (max): Pre-merge rebase, wait for CI, merge PR
+   - **Merge** (max): Pre-merge rebase, run FULL test suite double-check, wait for CI, merge PR
    - **Cleanup**: Close issue, delete branch, update BACKLOG.md status
 
 3. **Continuous Processing**:

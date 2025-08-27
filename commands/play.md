@@ -21,10 +21,12 @@ Execute when BACKLOG.md SPRINT_BACKLOG is empty (all sprint work completed).
 1. **Infrastructure Setup** (max):
    - Pull latest main branch
    - Git clean -fdx for pristine environment
+   - **🚨 RUN FULL TEST SUITE** - MANDATORY FIRST ACTION
+   - File GitHub issues for ALL test failures with exact errors
    - Assess infrastructure health
    - Enable parallel audit execution
 
-2. **Parallel Audit Execution** (ALL agents work concurrently):
+2. **Parallel Audit Execution** (ALL agents work concurrently AFTER max tests):
    - **patrick**: Dead code detection, structural defect identification
    - **vicky**: Bug detection, user experience validation, documentation reality checks
    - **chris**: Sprint goal evaluation + architectural review + design alignment assessment
