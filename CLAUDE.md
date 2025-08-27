@@ -81,7 +81,7 @@
 4. **max**: Merge after CI passes
 
 ## 3. PLAY WORKFLOW
-**Protocol**: max → parallel audits (patrick, vicky, chris) → READ-ONLY
+**Protocol**: max → parallel audits (patrick, vicky, chris) → no git operations
 - Find DEFECTS ONLY - no features
 - File GitHub issues immediately
 
