@@ -13,10 +13,11 @@ Execute this command after PLAY workflow completion or when user requests planni
    - Assess current BACKLOG.md EPICs and priorities
    - Integrate DESIGN.md architectural context
    - Incorporate user requirements (if provided in initial prompt)
-3. **BRUTAL Issue Consolidation**:
-   - Combine related defect issues from PLAY with HARSH criticism of responsible team members
-   - Merge duplicates and overlapping issues, calling out who created the mess
-   - Update priorities based on architectural impact and team incompetence
+3. **🚨 COMPREHENSIVE ISSUE AUDIT AND CONSOLIDATION**:
+   - **MANDATORY FULL REVIEW**: Read through ALL existing GitHub issues using `gh issue list -s all` and examine each one in detail
+   - **RELEVANCE CHECK**: Close/archive issues that are no longer relevant or obsolete
+   - **BRUTAL DUPLICATE ELIMINATION**: Merge duplicates and overlapping issues, calling out who created the mess
+   - **PRIORITY REASSESSMENT**: Update priorities based on architectural impact and team incompetence
    - Add BRUTAL implementation guidance: "Fix this properly", "Stop being lazy", "Do it right this time"
 4. **SHORT Sprint Planning** (team can't handle complexity):
    - Clean BACKLOG.md: Remove completed DONE entries

@@ -39,11 +39,14 @@ Execute when BACKLOG.md SPRINT_BACKLOG is empty (all sprint work completed).
    - Document shortcomings and incomplete objectives
 
 4. **BRUTAL Issue Filing** (ALL agents):
-   - File SHORT, HARSH GitHub issues for ALL defects found
+   - **🚨 MANDATORY PRE-FLIGHT CHECK**: Before filing ANY new issue, MUST search existing GitHub issues for duplicates using `gh issue list -s all --search "keyword"` with relevant terms
+   - **🚨 DUPLICATE VALIDATION**: If similar issue exists, add comment to existing issue instead of filing new one
+   - File SHORT, HARSH GitHub issues for ALL NEW defects found
    - patrick: Structural and dead code issues with brutal criticism of responsible parties
    - vicky: Bugs and user experience issues calling out incompetent implementations  
    - chris: Architectural drift and sprint goal gap issues with harsh blame assignments
    - Use SHORT titles and BRUTAL descriptions: "Fix this garbage", "Stop breaking X", "Implement Y properly"
+   - **🚨 END OF PLAY CONSOLIDATION**: chris performs final duplicate check of ALL newly filed issues and merges/closes duplicates
 
 5. **Quality Focus Areas**:
    - ✅ Bugs and broken functionality

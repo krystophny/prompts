@@ -109,7 +109,9 @@
   <rule_2>Read PR description AND all comments for context</rule_2>
   <rule_3>Base decisions on complete discussion thread</rule_3>
   <rule_4>NEVER work without reading full issue/PR context first</rule_4>
-  <rule_5>Display gh_rules when triggered by repository_rules</rule_5>
+  <rule_5>🚨 MANDATORY DUPLICATE CHECK: Before filing ANY new issue, search existing issues using gh issue list -s all --search "keyword"</rule_5>
+  <rule_6>🚨 NO DUPLICATE ISSUES: If similar issue exists, add comment to existing issue instead of creating new one</rule_6>
+  <rule_7>Display gh_rules when triggered by repository_rules</rule_7>
 </gh_rules>
 
 <pr_rules>
