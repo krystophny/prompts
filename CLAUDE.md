@@ -38,10 +38,11 @@
   <rule_7>NO commented-out code, stubs, placeholders, shortcuts</rule_7>
   <rule_8>NO hardcoded secrets, keys, passwords - validate input</rule_8>
   <rule_9>Data-oriented, cache-oriented - prefer SoA over AoS</rule_9>
-  <rule_10>If modifying code: ADD cleanup_rules</rule_10>
-  <rule_11>If documentation: ADD doc_rules</rule_11>
-  <rule_12>If Fortran project: ADD fortran_rules</rule_12>
-  <rule_13>Display implementation_rules for all coding work</rule_13>
+  <rule_10>Directory organization: soft limit 15 files/directories, hard limit 30 per folder</rule_10>
+  <rule_11>If modifying code: ADD cleanup_rules</rule_11>
+  <rule_12>If documentation: ADD doc_rules</rule_12>
+  <rule_13>If Fortran project: ADD fortran_rules</rule_13>
+  <rule_14>Display implementation_rules for all coding work</rule_14>
 </implementation_rules>
 
 <process_rules>
