@@ -376,7 +376,8 @@
   <rule_5>ALWAYS add deep-copy assignment for nested types</rule_5>
   <rule_6>ALWAYS set apps, tests and examples to autodiscover in fpm.toml - NEVER add manually</rule_6>
   <rule_7>If you find a "right parentheses" mod error, delete all mod files in workspace</rule_7>
-  <rule_8>Display fortran_rules when triggered by implementation_rules</rule_8>
+  <rule_8>NEVER use quotes (single or double) in Fortran comments</rule_8>
+  <rule_9>Display fortran_rules when triggered by implementation_rules</rule_9>
 </fortran_rules>
 
 <build_rules>
