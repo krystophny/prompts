@@ -33,7 +33,7 @@ Execute when issues exist in BACKLOG.md SPRINT_BACKLOG or current branch work ex
      - Documentation issues: winny implements documentation
      - Both create PR ONLY after successful test/validation
    - **Review** (issue-type dependent):
-     - Code issues: patrick reviews code quality (NEVER runs tests)
+     - Code issues: patrick reviews code quality (**MANDATORY: RUN FULL TEST SUITE INDEPENDENTLY** - distrusts sergei)
      - Documentation issues: vicky reviews + validates
      - CRITICAL issues → handback to sergei who runs FULL tests again
      - Non-critical issues → file new GitHub issues

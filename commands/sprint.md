@@ -24,10 +24,10 @@ This command executes a full sprint cycle: **WORK → PLAY → PLAN** in sequenc
 - Ensure clean repository state
 
 ### Phase 2: PLAY - Sprint Review Meeting
-**Sprint review and defect identification**
-- Execute parallel audits (patrick, vicky, chris)
-- Sprint goal evaluation and user reporting
-- File GitHub issues for all defects found
+**Sprint review and BRUTAL defect identification**
+- Execute parallel audits with HARSH criticism (patrick, vicky, chris)
+- Sprint goal evaluation with blame assignment and user reporting
+- File SHORT, BRUTAL GitHub issues for all defects found calling out responsible parties
 - NO file modifications - read-only phase
 - Focus on user-specified review areas
 

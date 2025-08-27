@@ -122,13 +122,15 @@ Use `./test-shortcuts.sh` to validate all shortcuts are working correctly and ma
 ## Key Features
 
 - **Agent Specialization**: Each agent has clear ownership and constraints
+- **Ruthless Team Culture**: Universal mutual distrust with brutal feedback and individual brilliance requirements
+- **Short Sprint Planning**: Complex tasks broken into tiny pieces for incompetent team management
 - **Hierarchical Planning**: PRODUCT_BACKLOG (high-level features) → SPRINT_BACKLOG (detailed GitHub issues under EPICs)
 - **State Management**: SPRINT_BACKLOG → DOING → delete completed, PRODUCT_BACKLOG → DONE when EPICs complete
-- **Quality Gates**: Mandatory code review and CI completion
+- **Quality Gates**: Mandatory code review with harsh criticism and CI completion
 - **Batch Processing**: Autonomous execution for high-velocity workflows
 - **Forensic Analysis**: Repository state reconciliation and branch management
-- **Infinite Review Cycles**: Fix defects until perfect, no compromises
-- **Test Execution Division**: sergei runs targeted tests, max runs full suite
+- **Infinite Review Cycles**: Fix defects with brutal feedback until perfect, no compromises
+- **Test Execution Division**: sergei runs targeted tests, max and patrick both run full suite independently
 
 ## Quality Standards
 
@@ -152,7 +154,7 @@ Use `./test-shortcuts.sh` to validate all shortcuts are working correctly and ma
 ### Test Execution Ownership
 - **sergei-perfectionist**: Runs TARGETED TESTS ONLY for code being modified (fast iteration)
 - **georg-test-engineer**: Creates tests, runs TARGETED TESTS ONLY for verification
-- **max-devops**: Runs FULL TEST SUITE before merge (EXCLUSIVE responsibility)
+- **max-devops**: Runs FULL TEST SUITE before merge; **patrick**: Runs FULL TEST SUITE during review
 - **Division Purpose**: Enables fast development while ensuring comprehensive validation
 
 ## Agent Roles
@@ -161,7 +163,7 @@ Use `./test-shortcuts.sh` to validate all shortcuts are working correctly and ma
 - **chris-architect**: Planning, GitHub issues, BACKLOG.md priorities, architecture
 - **max-devops**: Repository assessment, forensic analysis, branch preparation, final merge  
 - **sergei-perfectionist**: Code implementation, commits, PR creation, optimization
-- **patrick-auditor**: Code review with handback, quality gates, issue triage
+- **patrick-auditor**: Ruthless code review with brutal handback, harsh quality enforcement, issue triage with savage criticism
 
 ### Sprint Review Agents (PLAY workflow - Parallel Audits)
 - **patrick-auditor**: Dead code detection and structural defect filing

@@ -13,21 +13,21 @@ Execute this command after PLAY workflow completion or when user requests planni
    - Assess current BACKLOG.md EPICs and priorities
    - Integrate DESIGN.md architectural context
    - Incorporate user requirements (if provided in initial prompt)
-3. **Issue Consolidation**:
-   - Combine related defect issues from PLAY
-   - Merge duplicates and overlapping issues
-   - Update priorities based on architectural impact
-   - Enhance with implementation guidance
-4. **Sprint Planning**:
+3. **BRUTAL Issue Consolidation**:
+   - Combine related defect issues from PLAY with HARSH criticism of responsible team members
+   - Merge duplicates and overlapping issues, calling out who created the mess
+   - Update priorities based on architectural impact and team incompetence
+   - Add BRUTAL implementation guidance: "Fix this properly", "Stop being lazy", "Do it right this time"
+4. **SHORT Sprint Planning** (team can't handle complexity):
    - Clean BACKLOG.md: Remove completed DONE entries
-   - Rewrite SPRINT_BACKLOG section with prioritized issues under EPICs
-   - Balance defect fixes with new requirements
-   - Set clear sprint goal and Definition of Done
+   - Rewrite SPRINT_BACKLOG section with TINY, PRECISE issues under EPICs (MAX 3-5 issues per sprint)
+   - Balance defect fixes with new requirements (keep tasks small for incompetent team)
+   - Set clear sprint goal and Definition of Done with harsh expectations
 5. **Architecture Updates**:
    - Update DESIGN.md with lessons learned
    - Document architectural decisions for next sprint
    - Plan integration patterns and technical approach
-   - Create documentation consolidation issue
+   - Create BRUTAL documentation consolidation issue calling out team's documentation failures
 6. **Completion**: Commit and push BACKLOG.md and DESIGN.md directly to main
 
 **File Edit Authority**: EXCLUSIVE - only chris may edit BACKLOG.md and DESIGN.md
