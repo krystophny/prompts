@@ -38,23 +38,27 @@ Execute when BACKLOG.md SPRINT_BACKLOG is empty (all sprint work completed).
    - **Report to user**: Clear sprint completion status
    - Document shortcomings and incomplete objectives
 
-4. **BRUTAL Issue Filing** (ALL agents):
+4. **ACTIONABLE DEFECT ISSUE Filing** (ALL agents):
    - **🚨 MANDATORY PRE-FLIGHT CHECK**: Before filing ANY new issue, MUST search existing GitHub issues for duplicates using `gh issue list -s all --search "keyword"` with relevant terms
    - **🚨 DUPLICATE VALIDATION**: If similar issue exists, add comment to existing issue instead of filing new one
+   - **🚨 ACTIONABLE DEFECTS ONLY**: File issues ONLY for bugs, broken functionality, critical violations
    - File SHORT, HARSH GitHub issues for ALL NEW defects found
    - patrick: Structural and dead code issues with brutal criticism of responsible parties
    - vicky: Bugs and user experience issues calling out incompetent implementations  
    - chris: Architectural drift and sprint goal gap issues with harsh blame assignments
    - Use SHORT titles and BRUTAL descriptions: "Fix this garbage", "Stop breaking X", "Implement Y properly"
-   - **🚨 END OF PLAY CONSOLIDATION**: chris performs final duplicate check of ALL newly filed issues and merges/closes duplicates
+   - **🚨 NEVER FILE**: Workflow reminders, process documentation, general improvements - add to BACKLOG.md instead
+   - **🚨 END OF PLAY CONSOLIDATION**: chris performs final duplicate check AND closes all non-actionable issues
 
 5. **Quality Focus Areas**:
    - ✅ Bugs and broken functionality
    - ✅ Dead code and unused imports
    - ✅ Architectural drift and design violations
    - ✅ Sprint goal shortcomings
-   - ✅ Documentation defects
+   - ✅ Documentation defects (broken examples, incorrect steps)
    - ❌ NO features or enhancements (defects only)
+   - ❌ NO workflow documentation or process reminders
+   - ❌ NO general documentation improvements
 
 6. **🚨 CRITICAL FILE RESTRICTION**:
    - **ABSOLUTELY NO FILE EDITS** - pure read-only mode

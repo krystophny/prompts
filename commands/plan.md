@@ -16,8 +16,10 @@ Execute this command after PLAY workflow completion or when user requests planni
 3. **🚨 COMPREHENSIVE ISSUE AUDIT AND CONSOLIDATION**:
    - **MANDATORY FULL REVIEW**: Read through ALL existing GitHub issues using `gh issue list -s all` and examine each one in detail
    - **RELEVANCE CHECK**: Close/archive issues that are no longer relevant or obsolete
+   - **🚨 DELETE NON-ACTIONABLE ISSUES**: Close workflow reminders, process documentation, general notes that belong in BACKLOG.md
    - **BRUTAL DUPLICATE ELIMINATION**: Merge duplicates and overlapping issues, calling out who created the mess
    - **PRIORITY REASSESSMENT**: Update priorities based on architectural impact and team incompetence
+   - **KEEP ONLY ACTIONABLE DEFECTS**: Issues must be specific bugs, broken functionality, or critical architectural violations
    - Add BRUTAL implementation guidance: "Fix this properly", "Stop being lazy", "Do it right this time"
 4. **SHORT Sprint Planning** (team can't handle complexity):
    - Clean BACKLOG.md: Remove completed DONE entries
@@ -28,7 +30,7 @@ Execute this command after PLAY workflow completion or when user requests planni
    - Update DESIGN.md with lessons learned
    - Document architectural decisions for next sprint
    - Plan integration patterns and technical approach
-   - Create BRUTAL documentation consolidation issue calling out team's documentation failures
+   - Add documentation tasks to BACKLOG.md as sprint notes (NOT as GitHub issues)
 6. **Completion**: Commit and push BACKLOG.md and DESIGN.md directly to main
 
 **File Edit Authority**: EXCLUSIVE - only chris may edit BACKLOG.md and DESIGN.md

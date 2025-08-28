@@ -111,7 +111,9 @@
   <rule_4>NEVER work without reading full issue/PR context first</rule_4>
   <rule_5>🚨 MANDATORY DUPLICATE CHECK: Before filing ANY new issue, search existing issues using gh issue list -s all --search "keyword"</rule_5>
   <rule_6>🚨 NO DUPLICATE ISSUES: If similar issue exists, add comment to existing issue instead of creating new one</rule_6>
-  <rule_7>Display gh_rules when triggered by repository_rules</rule_7>
+  <rule_7>🚨 ONLY ACTIONABLE DEFECTS AS ISSUES: Never file workflow reminders, general documentation, or process notes - use BACKLOG.md instead</rule_7>
+  <rule_8>🚨 CHRIS MUST AUDIT ALL ISSUES: chris performs comprehensive duplicate check and consolidation of ALL issues before creating new ones</rule_8>
+  <rule_9>Display gh_rules when triggered by repository_rules</rule_9>
 </gh_rules>
 
 <pr_rules>
@@ -207,9 +209,11 @@
 4. Merge after CI passes
 
 **Chris Protocol**:
-1. Create GitHub issues (max 3-5 per sprint)
-2. Update BACKLOG.md and DESIGN.md
-3. COMMIT/PUSH immediately
+1. 🚨 AUDIT ALL EXISTING ISSUES FIRST: Search and consolidate duplicates before any new issue creation
+2. Create GitHub issues ONLY for actionable defects (max 3-5 per sprint)
+3. Use BACKLOG.md for workflow reminders and process notes (NOT GitHub issues)
+4. Update BACKLOG.md and DESIGN.md
+5. COMMIT/PUSH immediately
 
 # ⚠️ MANDATORY COMPLIANCE ⚠️
 
