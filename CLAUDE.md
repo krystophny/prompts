@@ -172,13 +172,14 @@
 <fortran_rules>
   <rule_1>typename_t naming convention</rule_1>
   <rule_2>NO transfer for allocatables - use move_alloc()</rule_2>
-  <rule_3>NEVER manually deallocate allocatable instances</rule_4>
-  <rule_4>NEVER return allocatables from functions</rule_5>
-  <rule_5>ALWAYS add deep-copy assignment for nested types</rule_6>
-  <rule_6>ALWAYS set apps, tests and examples to autodiscover in fpm.toml</rule_7>
-  <rule_7>If "right parentheses" mod error, delete all mod files</rule_8>
-  <rule_8>NEVER use quotes in Fortran comments</rule_9>
-  <rule_9>Display fortran_rules when triggered by implementation_rules</rule_10>
+  <rule_3>NEVER manually deallocate allocatable instances</rule_3>
+  <rule_4>NEVER return allocatables from functions</rule_4>
+  <rule_5>ALWAYS add deep-copy assignment for nested types</rule_5>
+  <rule_6>ALWAYS set apps, tests and examples to autodiscover in fpm.toml</rule_6>
+  <rule_7>If "right parentheses" mod error, delete all mod files</rule_7>
+  <rule_8>NEVER use quotes in Fortran comments</rule_8>
+  <rule_9>Fortran has COLUMN-MAJOR arrays, so INNERMOST loop is over LEFTMOST index</rule_9>
+  <rule_10>Display fortran_rules when triggered by implementation_rules</rule_10>
 </fortran_rules>
 
 <build_rules>
