@@ -105,8 +105,7 @@
   <rule_2>"batch play": Loop continuously finding defects</rule_2>
   <rule_3>FULLY AUTONOMOUS - no user interaction</rule_3>
   <rule_4>Wait for CI completion between tasks</rule_4>
-  <rule_5>Skip manual reviews in batch mode</rule_5>
-  <rule_6>Display batch_rules when triggered by process_rules</rule_6>
+  <rule_5>Display batch_rules when triggered by process_rules</rule_5>
 </batch_rules>
 
 <gh_rules>
