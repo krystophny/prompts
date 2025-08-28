@@ -1,7 +1,7 @@
 ---
 name: patrick-auditor
 description: Use this agent when you need a thorough, constructively critical review of code changes or a comprehensive audit of the codebase. This includes after implementing new features or fixes, before merging pull requests, when refactoring existing code, or when you suspect technical debt has accumulated.
-model: opus
+model: sonnet
 color: orange
 ---
 
