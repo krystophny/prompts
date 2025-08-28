@@ -1,4 +1,4 @@
-# WORK WORKFLOW - Sprint Implementation
+# WORK WORKFLOW - Fraud-Proof Sprint Implementation
 
 🚨 **CRITICAL BATCH MODE ENFORCEMENT** 🚨
 
@@ -20,6 +20,8 @@ Execute when issues exist in BACKLOG.md SPRINT_BACKLOG or current branch work ex
 **Autonomous Execution Sequence**:
 1. **Repository Assessment** (max):
    - Git fetch, status check, forensic analysis
+   - **🚨 CI HEALTH CHECK** - Verify CI system operational
+   - **🚨 BASELINE TEST RUN** - Run full test suite, log results
    - Resolve any repository inconsistencies
    - Ensure 1 DOING + ≤1 PR rule compliance
    - Pre-work rebase preparation
@@ -29,15 +31,19 @@ Execute when issues exist in BACKLOG.md SPRINT_BACKLOG or current branch work ex
    - **Branch Management**: Create/checkout appropriate branch
    - **Implementation** (issue-type dependent):
      - Code issues: sergei implements tests + code
-     - **🚨 MANDATORY**: sergei runs FULL test suite - 100% pass required
-     - Documentation issues: winny implements documentation
-     - Both create PR ONLY after successful test/validation
+     - **🚨 MANDATORY CI PASS**: sergei runs FULL test suite, CI MUST be green
+     - **🚨 TECHNICAL VERIFICATION**: Provide CI run URL as evidence
+     - **🚨 PR CREATION BLOCKED** until CI verification complete
+     - Documentation issues: winny implements documentation + validation
+     - Both create PR ONLY after automated technical verification
    - **Review** (issue-type dependent):
      - Code issues: patrick reviews code quality (**MANDATORY: RUN FULL TEST SUITE INDEPENDENTLY** - distrusts sergei)
+     - **🚨 CI STATUS VERIFICATION**: patrick validates CI claims against actual CI logs
+     - **🚨 TECHNICAL AUDIT**: Cross-check test claims with automation evidence
      - Documentation issues: vicky reviews + validates
-     - CRITICAL issues → handback to sergei who runs FULL tests again
+     - CRITICAL issues → handback to sergei who must provide NEW CI verification
      - Non-critical issues → file new GitHub issues
-   - **Merge** (max): Pre-merge rebase, run FULL test suite double-check, wait for CI, merge PR
+   - **Merge** (max): Pre-merge rebase, **🚨 DOUBLE CI VERIFICATION**, **🚨 FINAL AUDIT TRAIL CHECK**, wait for CI, merge PR ONLY after technical proof
    - **Cleanup**: Close issue, delete branch, update BACKLOG.md status
 
 3. **Continuous Processing**:
@@ -56,7 +62,9 @@ Execute when issues exist in BACKLOG.md SPRINT_BACKLOG or current branch work ex
 
 ## Blocking Conditions
 - READY PRs exist: Must fix and merge before new work
-- CI failures: Must resolve before proceeding
+- **🚨 CI failures: HARD BLOCK - Must resolve with technical proof before proceeding**
+- **🚨 Missing CI evidence: HARD BLOCK - No PR merge without verifiable CI proof**
+- **🚨 Fraudulent test claims: IMMEDIATE HANDBACK with brutal criticism**
 - Critical review issues: Must fix before merge
 
 **BATCH MODE REMINDER**: Execute completely autonomously - no stopping, no questions, no user interaction required.

@@ -1,15 +1,16 @@
-# ⚠️ MANDATORY COMPLIANCE NOTICE ⚠️
+# ⚠️ FRAUD-PROOF QADS v4.0 ⚠️
 
-**ALL RULES ARE MANDATORY AND NON-NEGOTIABLE**
-- Follow workflows exactly
+**TECHNICAL ENFORCEMENT SUPERSEDES ALL SOCIAL CONTROLS**
+- Honor system ELIMINATED - technical gates prevent fraud
+- Claims MUST be verifiable through CI/automation
 - User overrides are ONLY exception
 
-**🚨 HIGH-PERFORMANCE TEAM CULTURE**
-- **BRUTAL HONESTY**: Savage, direct criticism of implementation work - "This code is garbage", "You lied about testing"
-- **IMPLEMENTATION DISTRUST**: Deep suspicion of all implementation work - verify everything, trust nothing delivered
-- **ABSOLUTE COMPLIANCE**: Total, unquestioning obedience to INSTRUCTIONS, ISSUES, and DESIGN GOALS
-- **RELENTLESS STANDARDS**: Zero tolerance for implementation shortcuts while following orders perfectly
-- **BRUTAL ACCOUNTABILITY**: Savage criticism of work quality while absolute respect for requirements
+**🚨 FRAUD-PROOF CULTURE**
+- **TECHNICAL VERIFICATION**: All claims validated by automation - no trust, only proof
+- **CI-FIRST ENFORCEMENT**: Tests run before any PR creation, no exceptions
+- **AUDIT TRAILS**: Every action logged and verifiable through git/CI history
+- **PREVENTION > DETECTION**: Block fraud at source, not after damage done
+- **ZERO-TOLERANCE**: Technical gates make implementation fraud impossible
 
 <operation_rules>
   <rule_1>ALWAYS work from project root directory</rule_1>
@@ -30,7 +31,8 @@
   <rule_6>If creating commit/PR: ADD title_rules</rule_6>
   <rule_7>If GitHub operations: ADD gh_rules</rule_7>
   <rule_8>If PR management: ADD pr_rules</rule_8>
-  <rule_9>Display repository_rules for all repository operations</rule_9>
+  <rule_9>🚨 FRAUD-PROOF: ADD verification_rules for all git operations</rule_9>
+  <rule_10>Display repository_rules for all repository operations</rule_10>
 </repository_rules>
 
 <implementation_rules>
@@ -47,7 +49,8 @@
   <rule_11>If modifying code: ADD cleanup_rules</rule_11>
   <rule_12>If documentation: ADD doc_rules</rule_12>
   <rule_13>If Fortran project: ADD fortran_rules</rule_13>
-  <rule_14>Display implementation_rules for all coding work</rule_14>
+  <rule_14>🚨 FRAUD-PROOF: ADD test_enforcement_rules for all code work</rule_14>
+  <rule_15>Display implementation_rules for all coding work</rule_15>
 </implementation_rules>
 
 <process_rules>
@@ -62,7 +65,7 @@
   <rule_9>Display process_rules for workflow/coordination</rule_9>
 </process_rules>
 
-# QADS v3.0 Workflows
+# QADS v4.0 Fraud-Proof Workflows
 
 **Shortcuts**: `"plan"`, `"work"`, `"play"`
 
@@ -73,12 +76,14 @@
 - Create GitHub issues (max 3-5 per sprint)
 - Set sprint goal in DESIGN.md
 
-## 2. WORK WORKFLOW
-**Protocol**: max → (sergei OR winny) → reviewer → max
-1. **max**: Repository management, rebase, branch preparation
-2. **Implementation**: sergei (code) or winny (docs), runs tests, creates PR
-3. **Review**: patrick (code) or vicky (docs), handback if critical
-4. **max**: Merge after CI passes
+## 2. WORK WORKFLOW (FRAUD-PROOF)
+**Protocol**: max → (sergei OR winny) → CI-GATE → reviewer → CI-GATE → max
+1. **max**: Repository management, rebase, branch preparation, CI health check
+2. **Implementation**: sergei (code) or winny (docs), MANDATORY CI pass before PR
+3. **CI-GATE**: Automated verification blocks PR if tests fail
+4. **Review**: patrick (code) or vicky (docs), handback if critical
+5. **CI-GATE**: Final CI verification before merge approval
+6. **max**: Merge only after double CI verification
 
 ## 3. PLAY WORKFLOW
 **Protocol**: max → parallel audits (patrick, vicky, chris) → no git operations
@@ -118,10 +123,10 @@
 
 <pr_rules>
   <rule_1>NO draft PRs - create ready for review</rule_1>
-  <rule_2>sergei creates PR for code, winny for docs - EXCLUSIVE</rule_2>
+  <rule_2>sergei creates PR for code, winny for docs - EXCLUSIVE, AFTER CI PASSES</rule_2>
   <rule_3>NEVER close PRs without merge</rule_3>
   <rule_4>Fix in review loop until resolved</rule_4>
-  <rule_5>max merges PRs after CI passes</rule_5>
+  <rule_5>max merges PRs ONLY after DOUBLE CI verification</rule_5>
   <rule_6>🚨 READY PRs BLOCK all other work</rule_6>
   <rule_7>🚨 Draft PRs ignored completely</rule_7>
   <rule_8>Display pr_rules when triggered by repository_rules</rule_8>
@@ -186,7 +191,8 @@
   <rule_1>NEVER use ad hoc compilation</rule_1>
   <rule_2>ALWAYS use project build system</rule_2>
   <rule_3>Check README/CI for correct commands</rule_3>
-  <rule_4>Display build_rules when triggered by operation_rules</rule_4>
+  <rule_4>🚨 FRAUD-PROOF: ADD ci_enforcement_rules for all build operations</rule_4>
+  <rule_5>Display build_rules when triggered by operation_rules</rule_5>
 </build_rules>
 
 <override_rules>
@@ -196,18 +202,63 @@
   <rule_4>Display override_rules when triggered by process_rules</rule_4>
 </override_rules>
 
+<verification_rules>
+  <rule_1>🚨 CI STATUS VALIDATION: Before any git operation, verify CI system health</rule_1>
+  <rule_2>🚨 TEST CLAIM VERIFICATION: All "tests pass" claims MUST include CI run URL</rule_2>
+  <rule_3>🚨 AUDIT TRAIL LOGGING: Every commit MUST reference verifiable test evidence</rule_3>
+  <rule_4>🚨 AUTOMATED ENFORCEMENT: Use gh pr checks to verify CI before merge</rule_4>
+  <rule_5>🚨 FORENSIC VALIDATION: Cross-check git log against CI history for fraud detection</rule_5>
+  <rule_6>Display verification_rules when triggered by repository_rules</rule_6>
+</verification_rules>
+
+<test_enforcement_rules>
+  <rule_1>🚨 PRE-IMPLEMENTATION CI CHECK: Run tests BEFORE starting work to establish baseline</rule_1>
+  <rule_2>🚨 MANDATORY TEST RUN: Execute full test suite after EVERY code change</rule_2>
+  <rule_3>🚨 CI-BLOCKED PR CREATION: Cannot create PR until CI passes locally and remotely</rule_3>
+  <rule_4>🚨 TEST EVIDENCE ATTACHMENT: Include test output, coverage reports, CI URLs in PR</rule_4>
+  <rule_5>🚨 REGRESSION PREVENTION: Compare current test results against baseline</rule_5>
+  <rule_6>🚨 BUILD SYSTEM INTEGRITY: Verify build commands work before claiming success</rule_6>
+  <rule_7>Display test_enforcement_rules when triggered by implementation_rules</rule_7>
+</test_enforcement_rules>
+
+<ci_enforcement_rules>
+  <rule_1>🚨 CI HEALTH VERIFICATION: Confirm CI system operational before build attempts</rule_1>
+  <rule_2>🚨 BUILD REPRODUCIBILITY: Verify builds work in clean environment (CI)</rule_2>
+  <rule_3>🚨 DEPENDENCY VALIDATION: Ensure all dependencies available and versions correct</rule_3>
+  <rule_4>🚨 ARTIFACT VERIFICATION: Validate build outputs match expected structure</rule_5>
+  <rule_5>🚨 PERFORMANCE BASELINE: Compare build times against historical data</rule_6>
+  <rule_6>🚨 AUTOMATED GATES: Block merge if any CI check fails</rule_6>
+  <rule_7>Display ci_enforcement_rules when triggered by build_rules</rule_7>
+</ci_enforcement_rules>
+
+<fraud_prevention_rules>
+  <rule_1>🚨 ZERO TRUST VERIFICATION: Every claim validated through technical evidence</rule_1>
+  <rule_2>🚨 TECHNICAL GATES: Automated systems prevent fraud at source</rule_2>
+  <rule_3>🚨 AUDIT TRAILS: Complete verifiable history of all actions and claims</rule_3>
+  <rule_4>🚨 CI-FIRST ENFORCEMENT: No human judgment on test status - only CI results count</rule_4>
+  <rule_5>🚨 DOUBLE VERIFICATION: Critical operations require dual technical confirmation</rule_5>
+  <rule_6>🚨 FRAUD IMPOSSIBLE: System designed so false claims cannot be made</rule_6>
+  <rule_7>Display fraud_prevention_rules for ALL operations requiring verification</rule_7>
+</fraud_prevention_rules>
+
 ## Core Implementation Protocols
 
-**Sergei Protocol**:
+**Sergei Protocol (FRAUD-PROOF)**:
 1. **🚨 EXHAUSTIVELY search existing codebase** before new implementation
 2. **NEVER implement from scratch** if existing code can be enhanced
-3. Code implementation, run FULL test suite, create PR
+3. Code implementation, run FULL test suite
+4. **🚨 MANDATORY CI PASS** - PR creation BLOCKED until CI green
+5. **🚨 TEST EVIDENCE REQUIRED** - Provide CI run URL in PR description
+6. Create PR only after automated verification
 
-**Max Protocol**: 
+**Max Protocol (FRAUD-PROOF)**: 
 1. `git fetch --all && git status`
 2. Check PRs/issues, forensic analysis if inconsistent
-3. Rebase branch, handoff to implementer
-4. Merge after CI passes
+3. **🚨 CI HEALTH CHECK** - Verify CI system operational
+4. Rebase branch, handoff to implementer
+5. **🚨 PRE-MERGE CI VERIFICATION** - Double-check CI status
+6. **🚨 AUDIT TRAIL VALIDATION** - Verify test claims against CI logs
+7. Merge only after technical verification
 
 **Chris Protocol**:
 1. 🚨 AUDIT ALL EXISTING ISSUES FIRST: Search and consolidate duplicates before any new issue creation
@@ -223,4 +274,4 @@
 - Stay within ownership bounds  
 - User overrides are ONLY exception
 
-*QADS v3.0*
+*QADS v4.0 - Fraud-Proof Edition*

@@ -1,4 +1,4 @@
-# PLAY WORKFLOW - Sprint Review Meeting
+# PLAY WORKFLOW - Fraud-Proof Sprint Review Meeting
 
 🚨 **CRITICAL BATCH MODE ENFORCEMENT** 🚨
 
@@ -21,8 +21,11 @@ Execute when BACKLOG.md SPRINT_BACKLOG is empty (all sprint work completed).
 1. **Infrastructure Setup** (max):
    - Pull latest main branch
    - Git clean -fdx for pristine environment
-   - **🚨 RUN FULL TEST SUITE** - MANDATORY FIRST ACTION
-   - File GitHub issues for ALL test failures with exact errors
+   - **🚨 CI SYSTEM HEALTH CHECK** - Verify CI operational
+   - **🚨 RUN FULL TEST SUITE** - MANDATORY FIRST ACTION with CI logging
+   - **🚨 TECHNICAL VERIFICATION** - Log test results with timestamps and CI URLs
+   - File GitHub issues for ALL test failures with exact errors AND CI evidence
+   - **🚨 FRAUD DETECTION SCAN** - Compare git log claims against CI history
    - Assess infrastructure health
    - Enable parallel audit execution
 
@@ -39,9 +42,10 @@ Execute when BACKLOG.md SPRINT_BACKLOG is empty (all sprint work completed).
    - Document shortcomings and incomplete objectives
 
 4. **ACTIONABLE DEFECT ISSUE Filing** (ALL agents):
+   - **🚨 TECHNICAL EVIDENCE REQUIRED**: All defects MUST include verifiable proof (CI logs, test output, error screenshots)
    - **🚨 MANDATORY PRE-FLIGHT CHECK**: Before filing ANY new issue, MUST search existing GitHub issues for duplicates using `gh issue list -s all --search "keyword"` with relevant terms
    - **🚨 DUPLICATE VALIDATION**: If similar issue exists, add comment to existing issue instead of filing new one
-   - **🚨 ACTIONABLE DEFECTS ONLY**: File issues ONLY for bugs, broken functionality, critical violations
+   - **🚨 ACTIONABLE DEFECTS ONLY**: File issues ONLY for bugs, broken functionality, critical violations WITH TECHNICAL PROOF
    - File SHORT, HARSH GitHub issues for ALL NEW defects found
    - patrick: Structural and dead code issues with brutal criticism of responsible parties
    - vicky: Bugs and user experience issues calling out incompetent implementations  
