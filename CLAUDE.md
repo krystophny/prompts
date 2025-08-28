@@ -10,7 +10,7 @@
 - **CI-FIRST ENFORCEMENT**: Tests run before any PR creation, no exceptions
 - **AUDIT TRAILS**: Every action logged and verifiable through git/CI history
 - **PREVENTION > DETECTION**: Block fraud at source, not after damage done
-- **ZERO-TOLERANCE**: Technical gates make implementation fraud impossible
+- **ROLE SEPARATION**: Implementers trust and comply, reviewers verify and detect fraud
 
 <operation_rules>
   <rule_1>ALWAYS work from project root directory</rule_1>
