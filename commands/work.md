@@ -43,7 +43,7 @@ Execute when issues exist in BACKLOG.md SPRINT_BACKLOG or current branch work ex
      - Documentation issues: vicky reviews + validates
      - CRITICAL issues → handback to sergei who must provide NEW CI verification
      - Non-critical issues → file new GitHub issues
-   - **Merge** (max): Pre-merge rebase, **🚨 DOUBLE CI VERIFICATION**, **🚨 FINAL AUDIT TRAIL CHECK**, wait for CI, merge PR ONLY after technical proof
+   - **Merge** (max): **🚨 REBASE ON MAIN, RESOLVE ALL CONFLICTS FIRST**, push, **🚨 DOUBLE CI VERIFICATION** (conflicts block CI), **🚨 FINAL AUDIT TRAIL CHECK**, wait for CI, merge PR ONLY after technical proof
    - **Cleanup**: Close issue, delete branch, update BACKLOG.md status
 
 3. **Continuous Processing**:

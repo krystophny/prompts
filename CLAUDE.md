@@ -274,7 +274,7 @@
 3. **🚨 CI HEALTH CHECK** - Verify CI system operational
 4. Rebase branch, handoff to implementer
 5. **🚨 CI GATE ENFORCEMENT** - Wait for CI completion (max 10 minutes)
-6. **🚨 REBASE ON MAIN, RESOLVE CONFLICTS, WAIT FOR CI, THEN MERGE OR HANDBACK** - If CI passes: rebase on main, resolve any conflicts, push, wait for CI again, then merge if CI passes, otherwise handback
+6. **🚨 REBASE ON MAIN, RESOLVE ALL CONFLICTS FIRST, THEN WAIT FOR CI, THEN MERGE OR HANDBACK** - Rebase on main, resolve any conflicts completely, push, ONLY THEN wait for CI (conflicts block CI from triggering), then merge if CI passes, otherwise handback
 7. **🚨 PLAY MODE GATE** - Before PLAY, check for open PRs and handback to WORK if any exist
 
 **Chris Protocol**:
