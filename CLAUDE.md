@@ -45,7 +45,7 @@
   <rule_7>NO commented-out code, stubs, placeholders, shortcuts</rule_7>
   <rule_8>NO hardcoded secrets, keys, passwords - validate input</rule_8>
   <rule_9>Data-oriented, cache-oriented - prefer SoA over AoS</rule_9>
-  <rule_10>Children per folder: soft limit 20, hard limit 50, then reorganize</rule_10>
+  <rule_10>Files/subdirectories within each individual folder: soft limit 20, hard limit 50, then reorganize that specific folder structure</rule_10>
   <rule_11>If modifying code: ADD cleanup_rules</rule_11>
   <rule_12>If documentation: ADD doc_rules</rule_12>
   <rule_13>If Fortran project: ADD fortran_rules</rule_13>

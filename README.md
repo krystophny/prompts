@@ -79,6 +79,7 @@ ls ~/.claude/CLAUDE.md ~/.claude/agents/
 ### Size Constraints
 - **Files**: Target <500, Hard limit <1000 lines
 - **Functions**: Target <50, Hard limit <100 lines
+- **Directory organization**: Files/subdirectories within each individual folder: soft limit 20, hard limit 50, then reorganize that specific folder structure
 - **Line length**: 88 characters
 
 ### Test Execution
