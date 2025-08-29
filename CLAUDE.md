@@ -50,7 +50,8 @@
   <rule_12>If documentation: ADD doc_rules</rule_12>
   <rule_13>If Fortran project: ADD fortran_rules</rule_13>
   <rule_14>🚨 FRAUD-PROOF: ADD test_enforcement_rules for all code work</rule_14>
-  <rule_15>Display implementation_rules for all coding work</rule_15>
+  <rule_15>If physics code: ADD physics_rules</rule_15>
+  <rule_16>Display implementation_rules for all coding work</rule_16>
 </implementation_rules>
 
 <process_rules>
@@ -146,10 +147,11 @@
   <rule_5>winny: **DOCUMENTATION MASTER** - Clear documentation following all specified requirements and guidelines</rule_5>
   <rule_6>vicky: **BUG HUNTER** - Methodical defect detection aligned with project objectives (PLAY only)</rule_6>
   <rule_7>Stay in your lane - work within ownership while supporting collective mission</rule_7>
-  <rule_8>🚨 sergei BLOCKED when READY PRs exist - focus drives excellence
-  <rule_10>🚨 max CI GATE ENFORCEMENT: CI failure = immediate handback, NO merge authority override
-  <rule_11>🚨 max CI TIMEOUT: Wait max 10 minutes, then kill CI and handback
-  <rule_9>Display agent_rules when triggered by process_rules</rule_9>
+  <rule_8>🚨 sergei BLOCKED when READY PRs exist - focus drives excellence</rule_8>
+  <rule_9>🚨 patrick/max TEST DEACTIVATION DETECTION: Flag any test skipping/deactivation as FRAUD - immediate handback</rule_9>
+  <rule_10>🚨 max CI GATE ENFORCEMENT: CI failure = immediate handback, NO merge authority override</rule_10>
+  <rule_11>🚨 max CI TIMEOUT: Wait max 10 minutes, then kill CI and handback</rule_11>
+  <rule_12>Display agent_rules when triggered by process_rules</rule_12>
 </agent_rules>
 
 <code_rules>
@@ -188,6 +190,14 @@
   <rule_10>Display fortran_rules when triggered by implementation_rules</rule_10>
 </fortran_rules>
 
+<physics_rules>
+  <rule_1>Never invent formulas or do ad hoc solutions</rule_1>
+  <rule_2>Errors above 1% are always large and point to a problem</rule_2>
+  <rule_3>Always carefully scan and read reference code and docs and follow them to the point</rule_3>
+  <rule_4>If you identify mathematical errors or numerical inefficiencies, shout them out</rule_4>
+  <rule_5>Display physics_rules when triggered by implementation_rules</rule_5>
+</physics_rules>
+
 <build_rules>
   <rule_1>NEVER use ad hoc compilation</rule_1>
   <rule_2>ALWAYS use project build system</rule_2>
@@ -222,7 +232,10 @@
   <rule_4>🚨 TEST EVIDENCE ATTACHMENT: Include test output, coverage reports, CI URLs in PR</rule_4>
   <rule_5>🚨 REGRESSION PREVENTION: Compare current test results against baseline</rule_5>
   <rule_6>🚨 BUILD SYSTEM INTEGRITY: Verify build commands work before claiming success</rule_6>
-  <rule_7>Display test_enforcement_rules when triggered by implementation_rules</rule_7>
+  <rule_7>🚨 NO TEST DEACTIVATION FRAUD: NEVER skip, comment out, or deactivate tests to make CI pass</rule_7>
+  <rule_8>🚨 XFAIL ONLY EXCEPTION: Only xfail tests with GitHub issue link explaining resolution plan</rule_8>
+  <rule_9>🚨 ALL TESTS MUST PASS: Every test must pass or be properly xfail with issue reference</rule_9>
+  <rule_10>Display test_enforcement_rules when triggered by implementation_rules</rule_10>
 </test_enforcement_rules>
 
 <ci_enforcement_rules>
@@ -261,7 +274,7 @@
 3. **🚨 CI HEALTH CHECK** - Verify CI system operational
 4. Rebase branch, handoff to implementer
 5. **🚨 CI GATE ENFORCEMENT** - Wait for CI completion (max 10 minutes)
-6. **🚨 MERGE OR HANDBACK** - If CI passes: merge, if CI fails/hangs: handback
+6. **🚨 REBASE ON MAIN, RESOLVE CONFLICTS, WAIT FOR CI, THEN MERGE OR HANDBACK** - If CI passes: rebase on main, resolve any conflicts, push, wait for CI again, then merge if CI passes, otherwise handback
 7. **🚨 PLAY MODE GATE** - Before PLAY, check for open PRs and handback to WORK if any exist
 
 **Chris Protocol**:
