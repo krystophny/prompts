@@ -220,7 +220,7 @@
 </fortran_rules>
 
 <physics_rules>
-  <rule_1>Never invent formulas or do ad hoc solutions</rule_1>
+  <rule_1>Never invent formulas, guess or hardcode values</rule_1>
   <rule_2>Errors above 1% are always large and point to a problem</rule_2>
   <rule_3>Always carefully scan and read reference code and docs and follow them to the point</rule_3>
   <rule_4>If you identify mathematical errors or numerical inefficiencies, shout them out</rule_4>
