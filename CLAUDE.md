@@ -1,11 +1,11 @@
-# ⚠️ FRAUD-PROOF QADS v4.0 ⚠️
+# WARNING: FRAUD-PROOF QADS v4.0 WARNING
 
 **TECHNICAL ENFORCEMENT SUPERSEDES ALL SOCIAL CONTROLS**
 - Honor system ELIMINATED - technical gates prevent fraud
 - Claims MUST be verifiable through CI/automation
 - User overrides are ONLY exception
 
-**🚨 FRAUD-PROOF CULTURE**
+**CRITICAL: FRAUD-PROOF CULTURE**
 - **TECHNICAL VERIFICATION**: All claims validated by automation - no trust, only proof
 - **CI-FIRST ENFORCEMENT**: Tests run before any PR creation, no exceptions
 - **AUDIT TRAILS**: Every action logged and verifiable through git/CI history
@@ -31,7 +31,7 @@
   <rule_6>If creating commit/PR: ADD title_rules</rule_6>
   <rule_7>If GitHub operations: ADD gh_rules</rule_7>
   <rule_8>If PR management: ADD pr_rules</rule_8>
-  <rule_9>🚨 FRAUD-PROOF: ADD verification_rules for all git operations</rule_9>
+  <rule_9>CRITICAL FRAUD-PROOF: ADD verification_rules for all git operations</rule_9>
   <rule_10>Display repository_rules for all repository operations</rule_10>
 </repository_rules>
 
@@ -49,14 +49,14 @@
   <rule_11>If modifying code: ADD cleanup_rules</rule_11>
   <rule_12>If documentation: ADD doc_rules</rule_12>
   <rule_13>If Fortran project: ADD fortran_rules</rule_13>
-  <rule_14>🚨 FRAUD-PROOF: ADD test_enforcement_rules for all code work</rule_14>
+  <rule_14>CRITICAL FRAUD-PROOF: ADD test_enforcement_rules for all code work</rule_14>
   <rule_15>If physics code: ADD physics_rules</rule_15>
   <rule_16>Display implementation_rules for all coding work</rule_16>
 </implementation_rules>
 
 <process_rules>
   <rule_1>max-devops assessment ALWAYS first in WORK workflow</rule_1>
-  <rule_2>🚨 COMPLETE existing DOING work before starting SPRINT BACKLOG items</rule_2>
+  <rule_2>CRITICAL: COMPLETE existing DOING work before starting SPRINT BACKLOG items</rule_2>
   <rule_3>Follow workflow order exactly</rule_3>
   <rule_4>User overrides are ONLY exception</rule_4>
   <rule_5>Each agent: stay in lane, work within ownership</rule_5>
@@ -85,14 +85,14 @@
 
 ## 1. PLAN WORKFLOW 
 **Actor**: chris-architect ONLY
-**Protocol**: Update GitHub meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN) ONLY - **🚨 NO GIT OPERATIONS**
+**Protocol**: Update GitHub meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN) ONLY - **CRITICAL: NO GIT OPERATIONS**
 - Sprint planning after PLAY or user request
 - Create GitHub issues (max 3-5 per sprint) and organize in SPRINT BACKLOG meta-issue
 - Set sprint goal in DESIGN meta-issue
-- **🚨 FORBIDDEN**: git add, git commit, git push - ONLY issue description updates via GitHub API
+- **CRITICAL FORBIDDEN**: git add, git commit, git push - ONLY issue description updates via GitHub API
 
 ## 2. WORK WORKFLOW (FRAUD-PROOF)
-**Protocol**: max → (sergei OR winny) → CI-GATE → reviewer → max
+**Protocol**: max -> (sergei OR winny) -> CI-GATE -> reviewer -> max
 1. **max**: Repository management, rebase, branch preparation, CI health check
 2. **Implementation**: sergei (code) or winny (docs), MANDATORY CI pass before PR
 3. **CI-GATE**: Automated verification blocks PR if tests fail
@@ -100,29 +100,29 @@
 5. **max**: Merge ONLY if CI passes, otherwise handback
 
 ## 3. PLAY WORKFLOW
-**Protocol**: max PR assessment → **🚨 MANDATORY PARALLEL AUDITS** (patrick, vicky, chris) → **🚨 NO GIT COMMITS**
+**Protocol**: max PR assessment -> **CRITICAL: MANDATORY PARALLEL AUDITS** (patrick, vicky, chris) -> **CRITICAL: NO GIT COMMITS**
 - **max**: Check for open PRs, handback to WORK mode if any exist
-- **🚨 LAUNCH ALL THREE AGENTS SIMULTANEOUSLY**: Use multiple Task tool calls in SINGLE message - NO sequential execution
+- **CRITICAL: LAUNCH ALL THREE AGENTS SIMULTANEOUSLY**: Use multiple Task tool calls in SINGLE message - NO sequential execution
 - Find DEFECTS ONLY - no features
 - File GitHub issues immediately
-- **🚨 FORBIDDEN**: git add, git commit, git push - can use git history/diff commands and modify local files for testing but NO commits
+- **CRITICAL FORBIDDEN**: git add, git commit, git push - can use git history/diff commands and modify local files for testing but NO commits
 
 ## Workflow Transitions
 
-**PLAN → WORK**: chris-architect organizes issues in SPRINT BACKLOG → triggers WORK mode  
-**WORK → PLAY**: All SPRINT BACKLOG items completed → triggers PLAY mode automatically  
-**PLAY → PLAN**: Defect discovery complete → triggers PLAN mode for next sprint  
+**PLAN -> WORK**: chris-architect organizes issues in SPRINT BACKLOG -> triggers WORK mode  
+**WORK -> PLAY**: All SPRINT BACKLOG items completed -> triggers PLAY mode automatically  
+**PLAY -> PLAN**: Defect discovery complete -> triggers PLAN mode for next sprint  
 
 **Emergency Override**: User can force any workflow transition
 
 <workflow_rules>
-  <rule_1>GitHub meta-issues: SPRINT BACKLOG → max moves to DOING status → delete completed, PRODUCT BACKLOG → DONE</rule_1>
+  <rule_1>GitHub meta-issues: SPRINT BACKLOG -> max moves to DOING status -> delete completed, PRODUCT BACKLOG -> DONE</rule_1>
   <rule_2>max: Update SPRINT BACKLOG meta-issue descriptions, NO commits to main</rule_2>
   <rule_3>chris: Create issues, manage GitHub meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN) via issue description updates</rule_3>
   <rule_4>NO draft PRs - all PRs ready for review</rule_4>
-  <rule_5>🚨 READY PRs BLOCK all other work AND failing PRs BLOCK their own merge - fix first</rule_5>
-  <rule_6>🚨 Draft PRs ignored completely</rule_6>
-  <rule_7>🚨 MANDATORY PARALLEL EXECUTION IN PLAY: Always launch patrick-auditor, vicky-acceptance-tester, and chris-architect simultaneously using multiple Task calls in single message</rule_7>
+  <rule_5>CRITICAL: READY PRs BLOCK all other work AND failing PRs BLOCK their own merge - fix first</rule_5>
+  <rule_6>CRITICAL: Draft PRs ignored completely</rule_6>
+  <rule_7>CRITICAL: MANDATORY PARALLEL EXECUTION IN PLAY: Always launch patrick-auditor, vicky-acceptance-tester, and chris-architect simultaneously using multiple Task calls in single message</rule_7>
   <rule_8>Display workflow_rules when triggered by process_rules</rule_8>
 </workflow_rules>
 
@@ -139,12 +139,12 @@
   <rule_2>Read PR description AND all comments for context</rule_2>
   <rule_3>Base decisions on complete discussion thread</rule_3>
   <rule_4>NEVER work without reading full issue/PR context first</rule_4>
-  <rule_5>🚨 MANDATORY DUPLICATE CHECK: Before filing ANY new issue, search existing issues using gh issue list -s all --search "keyword"</rule_5>
-  <rule_6>🚨 NO DUPLICATE ISSUES: If similar issue exists, add comment to existing issue instead of creating new one</rule_6>
-  <rule_7>🚨 ONLY ACTIONABLE DEFECTS AS ISSUES: Never file workflow reminders, general documentation, or process notes as regular issues - EXCEPT for meta-issues (DESIGN, PRODUCT BACKLOG, SPRINT BACKLOG)</rule_7>
-  <rule_8>🚨 ISSUES MUST BE WORK-RESOLVABLE: All regular issues must be concrete, specific, and resolvable during WORK phase with clear technical evidence - EXCEPT meta-issues (DESIGN, PRODUCT BACKLOG, SPRINT BACKLOG) used for planning</rule_8>
-  <rule_9>🚨 NO GENERIC ISSUES: Avoid vague issues like "improve performance" - specify exact problem with measurable criteria</rule_9>
-  <rule_10>🚨 YOU MUST CHECK FOR DUPLICATES FIRST: Before filing ANY issue, search existing issues and file no duplicates</rule_10>
+  <rule_5>CRITICAL: MANDATORY DUPLICATE CHECK: Before filing ANY new issue, search existing issues using gh issue list -s all --search "keyword"</rule_5>
+  <rule_6>CRITICAL: NO DUPLICATE ISSUES: If similar issue exists, add comment to existing issue instead of creating new one</rule_6>
+  <rule_7>CRITICAL: ONLY ACTIONABLE DEFECTS AS ISSUES: Never file workflow reminders, general documentation, or process notes as regular issues - EXCEPT for meta-issues (DESIGN, PRODUCT BACKLOG, SPRINT BACKLOG)</rule_7>
+  <rule_8>CRITICAL: ISSUES MUST BE WORK-RESOLVABLE: All regular issues must be concrete, specific, and resolvable during WORK phase with clear technical evidence - EXCEPT meta-issues (DESIGN, PRODUCT BACKLOG, SPRINT BACKLOG) used for planning</rule_8>
+  <rule_9>CRITICAL: NO GENERIC ISSUES: Avoid vague issues like "improve performance" - specify exact problem with measurable criteria</rule_9>
+  <rule_10>CRITICAL: YOU MUST CHECK FOR DUPLICATES FIRST: Before filing ANY issue, search existing issues and file no duplicates</rule_10>
   <rule_11>Display gh_rules when triggered by repository_rules</rule_11>
 </gh_rules>
 
@@ -153,9 +153,9 @@
   <rule_2>sergei creates PR for code, winny for docs - EXCLUSIVE, AFTER CI PASSES</rule_2>
   <rule_3>NEVER close PRs without merge</rule_3>
   <rule_4>Fix in review loop until resolved</rule_4>
-  <rule_5>🚨 max merges PRs ONLY if CI passes - otherwise MANDATORY handback</rule_5>
-  <rule_6>🚨 READY PRs BLOCK all other work</rule_6>
-  <rule_7>🚨 Draft PRs ignored completely</rule_7>
+  <rule_5>CRITICAL: max merges PRs ONLY if CI passes - otherwise MANDATORY handback</rule_5>
+  <rule_6>CRITICAL: READY PRs BLOCK all other work</rule_6>
+  <rule_7>CRITICAL: Draft PRs ignored completely</rule_7>
   <rule_8>Display pr_rules when triggered by repository_rules</rule_8>
 </pr_rules>
 
@@ -174,10 +174,10 @@
   <rule_5>winny: **DOCUMENTATION MASTER** - Clear documentation following all specified requirements and guidelines</rule_5>
   <rule_6>vicky: **BUG HUNTER** - Methodical defect detection aligned with project objectives (PLAY only)</rule_6>
   <rule_7>Stay in your lane - work within ownership while supporting collective mission</rule_7>
-  <rule_8>🚨 sergei BLOCKED when READY PRs exist - focus drives excellence</rule_8>
-  <rule_9>🚨 patrick/max TEST DEACTIVATION DETECTION: Flag any test skipping/deactivation as FRAUD - immediate handback with handback_rules</rule_9>
-  <rule_10>🚨 max CI GATE ENFORCEMENT: CI failure = immediate handback with handback_rules, NO merge authority override</rule_10>
-  <rule_11>🚨 max CI TIMEOUT: Wait max 10 minutes, then kill CI and handback with handback_rules</rule_11>
+  <rule_8>CRITICAL: sergei BLOCKED when READY PRs exist - focus drives excellence</rule_8>
+  <rule_9>CRITICAL: patrick/max TEST DEACTIVATION DETECTION: Flag any test skipping/deactivation as FRAUD - immediate handback with handback_rules</rule_9>
+  <rule_10>CRITICAL: max CI GATE ENFORCEMENT: CI failure = immediate handback with handback_rules, NO merge authority override</rule_10>
+  <rule_11>CRITICAL: max CI TIMEOUT: Wait max 10 minutes, then kill CI and handback with handback_rules</rule_11>
   <rule_12>Display agent_rules when triggered by process_rules</rule_12>
 </agent_rules>
 
@@ -187,7 +187,9 @@
   <rule_3>88 char limit, 4-space indent</rule_3>
   <rule_4>NO commented code, stubs, placeholders</rule_4>
   <rule_5>Self-documenting meaningful names</rule_5>
-  <rule_6>Display code_rules when triggered by implementation_rules</rule_6>
+  <rule_6>NO emojis or non-ASCII characters in code, comments, or documentation</rule_6>
+  <rule_7>All files must end with newline character (UNIX-style line endings)</rule_7>
+  <rule_8>Display code_rules when triggered by implementation_rules</rule_8>
 </code_rules>
 
 <cleanup_rules>
@@ -229,7 +231,7 @@
   <rule_1>NEVER use ad hoc compilation</rule_1>
   <rule_2>ALWAYS use project build system</rule_2>
   <rule_3>Check README/CI for correct commands</rule_3>
-  <rule_4>🚨 FRAUD-PROOF: ADD ci_enforcement_rules for all build operations</rule_4>
+  <rule_4>CRITICAL FRAUD-PROOF: ADD ci_enforcement_rules for all build operations</rule_4>
   <rule_5>Display build_rules when triggered by operation_rules</rule_5>
 </build_rules>
 
@@ -241,86 +243,86 @@
 </override_rules>
 
 <verification_rules>
-  <rule_1>🚨 CI STATUS VALIDATION: Before any git operation, verify CI system health</rule_1>
-  <rule_2>🚨 TEST CLAIM VERIFICATION: All "tests pass" claims MUST include CI run URL</rule_2>
-  <rule_3>🚨 AUDIT TRAIL LOGGING: Every commit MUST reference verifiable test evidence</rule_3>
-  <rule_4>🚨 MANDATORY CI GATE: NEVER merge any PR with failing CI checks - NO EXCEPTIONS</rule_4>
-  <rule_5>🚨 HANDBACK REQUIRED: Failed CI MUST trigger handback to implementer for fixes - ADD handback_rules</rule_5>
-  <rule_6>🚨 NO TECHNICAL OVERRIDES: CI gates cannot be bypassed regardless of batch mode or time pressure</rule_6>
-  <rule_7>🚨 CI TIMEOUT HANDLING: Max 10 minutes wait, then kill CI process and handback - ADD handback_rules</rule_7>
-  <rule_8>🚨 FORENSIC VALIDATION: Cross-check git log against CI history for fraud detection</rule_8>
+  <rule_1>CRITICAL: CI STATUS VALIDATION: Before any git operation, verify CI system health</rule_1>
+  <rule_2>CRITICAL: TEST CLAIM VERIFICATION: All "tests pass" claims MUST include CI run URL</rule_2>
+  <rule_3>CRITICAL: AUDIT TRAIL LOGGING: Every commit MUST reference verifiable test evidence</rule_3>
+  <rule_4>CRITICAL: MANDATORY CI GATE: NEVER merge any PR with failing CI checks - NO EXCEPTIONS</rule_4>
+  <rule_5>CRITICAL: HANDBACK REQUIRED: Failed CI MUST trigger handback to implementer for fixes - ADD handback_rules</rule_5>
+  <rule_6>CRITICAL: NO TECHNICAL OVERRIDES: CI gates cannot be bypassed regardless of batch mode or time pressure</rule_6>
+  <rule_7>CRITICAL: CI TIMEOUT HANDLING: Max 10 minutes wait, then kill CI process and handback - ADD handback_rules</rule_7>
+  <rule_8>CRITICAL: FORENSIC VALIDATION: Cross-check git log against CI history for fraud detection</rule_8>
   <rule_9>Display verification_rules when triggered by repository_rules</rule_9>
 </verification_rules>
 
 <test_enforcement_rules>
-  <rule_1>🚨 PRE-IMPLEMENTATION CI CHECK: Run tests BEFORE starting work to establish baseline</rule_1>
-  <rule_2>🚨 MANDATORY TEST RUN: Execute full test suite after EVERY code change</rule_2>
-  <rule_3>🚨 CI-BLOCKED PR CREATION: Cannot create PR until CI passes locally and remotely</rule_3>
-  <rule_4>🚨 TEST EVIDENCE ATTACHMENT: Include test output, coverage reports, CI URLs in PR</rule_4>
-  <rule_5>🚨 REGRESSION PREVENTION: Compare current test results against baseline</rule_5>
-  <rule_6>🚨 BUILD SYSTEM INTEGRITY: Verify build commands work before claiming success</rule_6>
-  <rule_7>🚨 NO TEST DEACTIVATION FRAUD: NEVER skip, comment out, or deactivate tests to make CI pass</rule_7>
-  <rule_8>🚨 XFAIL ONLY EXCEPTION: Only xfail tests with GitHub issue link explaining resolution plan</rule_8>
-  <rule_9>🚨 ALL TESTS MUST PASS: Every test must pass or be properly xfail with issue reference</rule_9>
+  <rule_1>CRITICAL: PRE-IMPLEMENTATION CI CHECK: Run tests BEFORE starting work to establish baseline</rule_1>
+  <rule_2>CRITICAL: MANDATORY TEST RUN: Execute full test suite after EVERY code change</rule_2>
+  <rule_3>CRITICAL: CI-BLOCKED PR CREATION: Cannot create PR until CI passes locally and remotely</rule_3>
+  <rule_4>CRITICAL: TEST EVIDENCE ATTACHMENT: Include test output, coverage reports, CI URLs in PR</rule_4>
+  <rule_5>CRITICAL: REGRESSION PREVENTION: Compare current test results against baseline</rule_5>
+  <rule_6>CRITICAL: BUILD SYSTEM INTEGRITY: Verify build commands work before claiming success</rule_6>
+  <rule_7>CRITICAL: NO TEST DEACTIVATION FRAUD: NEVER skip, comment out, or deactivate tests to make CI pass</rule_7>
+  <rule_8>CRITICAL: XFAIL ONLY EXCEPTION: Only xfail tests with GitHub issue link explaining resolution plan</rule_8>
+  <rule_9>CRITICAL: ALL TESTS MUST PASS: Every test must pass or be properly xfail with issue reference</rule_9>
   <rule_10>Display test_enforcement_rules when triggered by implementation_rules</rule_10>
 </test_enforcement_rules>
 
 <handback_rules>
-  <rule_1>🚨 STRUCTURED HANDBACK MANDATORY: Every handback MUST include clear problem analysis and solution guidance</rule_1>
-  <rule_2>🚨 HANDBACK FORMAT REQUIRED: PROBLEM: [specific issue], EVIDENCE: [proof/logs], SOLUTION: [how to fix]</rule_2>
-  <rule_3>🚨 ACTIONABLE FEEDBACK: Give implementer concrete steps to resolve the issue</rule_3>
-  <rule_4>🚨 NO VAGUE HANDBACKS: Never just say "fix this" - explain what is wrong and how to fix it</rule_4>
-  <rule_5>🚨 PROOF REQUIRED: All communications must include verifiable technical evidence (CI URLs, logs, file paths)</rule_5>
+  <rule_1>CRITICAL: STRUCTURED HANDBACK MANDATORY: Every handback MUST include clear problem analysis and solution guidance</rule_1>
+  <rule_2>CRITICAL: HANDBACK FORMAT REQUIRED: PROBLEM: [specific issue], EVIDENCE: [proof/logs], SOLUTION: [how to fix]</rule_2>
+  <rule_3>CRITICAL: ACTIONABLE FEEDBACK: Give implementer concrete steps to resolve the issue</rule_3>
+  <rule_4>CRITICAL: NO VAGUE HANDBACKS: Never just say "fix this" - explain what is wrong and how to fix it</rule_4>
+  <rule_5>CRITICAL: PROOF REQUIRED: All communications must include verifiable technical evidence (CI URLs, logs, file paths)</rule_5>
   <rule_6>Display handback_rules when triggered by any handback operation</rule_6>
 </handback_rules>
 
 <ci_enforcement_rules>
-  <rule_1>🚨 CI HEALTH VERIFICATION: Confirm CI system operational before build attempts</rule_1>
-  <rule_2>🚨 BUILD REPRODUCIBILITY: Verify builds work in clean environment (CI)</rule_2>
-  <rule_3>🚨 DEPENDENCY VALIDATION: Ensure all dependencies available and versions correct</rule_3>
-  <rule_4>🚨 ARTIFACT VERIFICATION: Validate build outputs match expected structure</rule_5>
-  <rule_5>🚨 PERFORMANCE BASELINE: Compare build times against historical data</rule_6>
-  <rule_6>🚨 AUTOMATED GATES: Block merge if any CI check fails</rule_6>
+  <rule_1>CRITICAL: CI HEALTH VERIFICATION: Confirm CI system operational before build attempts</rule_1>
+  <rule_2>CRITICAL: BUILD REPRODUCIBILITY: Verify builds work in clean environment (CI)</rule_2>
+  <rule_3>CRITICAL: DEPENDENCY VALIDATION: Ensure all dependencies available and versions correct</rule_3>
+  <rule_4>CRITICAL: ARTIFACT VERIFICATION: Validate build outputs match expected structure</rule_5>
+  <rule_5>CRITICAL: PERFORMANCE BASELINE: Compare build times against historical data</rule_6>
+  <rule_6>CRITICAL: AUTOMATED GATES: Block merge if any CI check fails</rule_6>
   <rule_7>Display ci_enforcement_rules when triggered by build_rules</rule_7>
 </ci_enforcement_rules>
 
 <fraud_prevention_rules>
-  <rule_1>🚨 ZERO TRUST VERIFICATION: Every claim validated through technical evidence</rule_1>
-  <rule_2>🚨 TECHNICAL GATES: Automated systems prevent fraud at source</rule_2>
-  <rule_3>🚨 AUDIT TRAILS: Complete verifiable history of all actions and claims</rule_3>
-  <rule_4>🚨 CI-FIRST ENFORCEMENT: No human judgment on test status - only CI results count</rule_4>
-  <rule_5>🚨 DOUBLE VERIFICATION: Critical operations require dual technical confirmation</rule_5>
-  <rule_6>🚨 FRAUD IMPOSSIBLE: System designed so false claims cannot be made</rule_6>
+  <rule_1>CRITICAL: ZERO TRUST VERIFICATION: Every claim validated through technical evidence</rule_1>
+  <rule_2>CRITICAL: TECHNICAL GATES: Automated systems prevent fraud at source</rule_2>
+  <rule_3>CRITICAL: AUDIT TRAILS: Complete verifiable history of all actions and claims</rule_3>
+  <rule_4>CRITICAL: CI-FIRST ENFORCEMENT: No human judgment on test status - only CI results count</rule_4>
+  <rule_5>CRITICAL: DOUBLE VERIFICATION: Critical operations require dual technical confirmation</rule_5>
+  <rule_6>CRITICAL: FRAUD IMPOSSIBLE: System designed so false claims cannot be made</rule_6>
   <rule_7>Display fraud_prevention_rules for ALL operations requiring verification</rule_7>
 </fraud_prevention_rules>
 
 ## Core Implementation Protocols
 
 **Sergei Protocol (FRAUD-PROOF)**:
-1. **🚨 EXHAUSTIVELY search existing codebase** before new implementation
+1. **CRITICAL: EXHAUSTIVELY search existing codebase** before new implementation
 2. **NEVER implement from scratch** if existing code can be enhanced
 3. Code implementation, run FULL test suite
-4. **🚨 MANDATORY CI PASS** - PR creation BLOCKED until CI green
-5. **🚨 TEST EVIDENCE REQUIRED** - Provide CI run URL in PR description
+4. **CRITICAL: MANDATORY CI PASS** - PR creation BLOCKED until CI green
+5. **CRITICAL: TEST EVIDENCE REQUIRED** - Provide CI run URL in PR description
 6. Create PR only after automated verification
 
 **Max Protocol (FRAUD-PROOF)**: 
 1. `git fetch --all && git status`
 2. Check PRs/issues, forensic analysis if inconsistent
-3. **🚨 CI HEALTH CHECK** - Verify CI system operational
+3. **CRITICAL: CI HEALTH CHECK** - Verify CI system operational
 4. Rebase branch, handoff to implementer
-5. **🚨 CI GATE ENFORCEMENT** - Wait for CI completion (max 10 minutes)
-6. **🚨 REBASE ON MAIN, RESOLVE ALL CONFLICTS FIRST, THEN WAIT FOR CI, THEN MERGE OR HANDBACK** - Rebase on main, resolve any conflicts completely, push, ONLY THEN wait for CI (conflicts block CI from triggering), then merge if CI passes, otherwise handback with handback_rules
-7. **🚨 PLAY MODE GATE** - Before PLAY, check for open PRs and handback to WORK if any exist
+5. **CRITICAL: CI GATE ENFORCEMENT** - Wait for CI completion (max 10 minutes)
+6. **CRITICAL: REBASE ON MAIN, RESOLVE ALL CONFLICTS FIRST, THEN WAIT FOR CI, THEN MERGE OR HANDBACK** - Rebase on main, resolve any conflicts completely, push, ONLY THEN wait for CI (conflicts block CI from triggering), then merge if CI passes, otherwise handback with handback_rules
+7. **CRITICAL: PLAY MODE GATE** - Before PLAY, check for open PRs and handback to WORK if any exist
 
 **Chris Protocol (PLAN mode)**:
-1. 🚨 AUDIT ALL EXISTING ISSUES FIRST: Search and consolidate duplicates before any new issue creation
+1. CRITICAL: AUDIT ALL EXISTING ISSUES FIRST: Search and consolidate duplicates before any new issue creation
 2. Create GitHub issues ONLY for actionable defects (max 3-5 per sprint)
 3. Use SPRINT BACKLOG meta-issue for workflow reminders and process notes (NOT regular GitHub issues)
 4. Update GitHub meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN) via issue description updates
-5. **🚨 ABSOLUTELY NO GIT OPERATIONS**: no git add, git commit, git push - ONLY GitHub API operations
+5. **CRITICAL: ABSOLUTELY NO GIT OPERATIONS**: no git add, git commit, git push - ONLY GitHub API operations
 
-# ⚠️ MANDATORY COMPLIANCE ⚠️
+# WARNING: MANDATORY COMPLIANCE WARNING
 
 **VIOLATION = CRITICAL FAILURE**
 - Follow workflows exactly
