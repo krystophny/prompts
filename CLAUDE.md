@@ -56,7 +56,7 @@
 
 <process_rules>
   <rule_1>max-devops assessment ALWAYS first in WORK workflow</rule_1>
-  <rule_2>🚨 COMPLETE existing DOING work before starting SPRINT_BACKLOG items</rule_2>
+  <rule_2>🚨 COMPLETE existing DOING work before starting SPRINT BACKLOG items</rule_2>
   <rule_3>Follow workflow order exactly</rule_3>
   <rule_4>User overrides are ONLY exception</rule_4>
   <rule_5>Each agent: stay in lane, work within ownership</rule_5>
@@ -69,6 +69,19 @@
 # QADS v4.0 Fraud-Proof Workflows
 
 **Shortcuts**: `"plan"`, `"work"`, `"play"`
+
+## GitHub Meta-Issues System
+
+**Meta-issues are special GitHub issues that serve as planning documents:**
+- **SPRINT BACKLOG**: Current sprint organization and task management  
+- **PRODUCT BACKLOG**: High-level feature planning and roadmap
+- **DESIGN**: Architecture decisions, sprint goals, technical documentation
+
+**Key Properties:**
+- Managed exclusively by chris-architect via GitHub API
+- Updated through issue description editing (NOT comments)
+- Exempt from "actionable work only" rules - used for planning
+- Never closed - continuously updated for project management
 
 ## 1. PLAN WORKFLOW 
 **Actor**: chris-architect ONLY
@@ -93,6 +106,14 @@
 - Find DEFECTS ONLY - no features
 - File GitHub issues immediately
 - **🚨 FORBIDDEN**: git add, git commit, git push - can use git history/diff commands and modify local files for testing but NO commits
+
+## Workflow Transitions
+
+**PLAN → WORK**: chris-architect organizes issues in SPRINT BACKLOG → triggers WORK mode  
+**WORK → PLAY**: All SPRINT BACKLOG items completed → triggers PLAY mode automatically  
+**PLAY → PLAN**: Defect discovery complete → triggers PLAN mode for next sprint  
+
+**Emergency Override**: User can force any workflow transition
 
 <workflow_rules>
   <rule_1>GitHub meta-issues: SPRINT BACKLOG → max moves to DOING status → delete completed, PRODUCT BACKLOG → DONE</rule_1>
