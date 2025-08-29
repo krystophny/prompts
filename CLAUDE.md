@@ -87,12 +87,12 @@
 5. **max**: Merge ONLY if CI passes, otherwise handback
 
 ## 3. PLAY WORKFLOW
-**Protocol**: max PR assessment → **🚨 MANDATORY PARALLEL AUDITS** (patrick, vicky, chris) → **🚨 NO GIT OPERATIONS**
+**Protocol**: max PR assessment → **🚨 MANDATORY PARALLEL AUDITS** (patrick, vicky, chris) → **🚨 NO GIT COMMITS**
 - **max**: Check for open PRs, handback to WORK mode if any exist
 - **🚨 LAUNCH ALL THREE AGENTS SIMULTANEOUSLY**: Use multiple Task tool calls in SINGLE message - NO sequential execution
 - Find DEFECTS ONLY - no features
 - File GitHub issues immediately
-- **🚨 FORBIDDEN**: git add, git commit, git push - can modify local files for testing but NO commits
+- **🚨 FORBIDDEN**: git add, git commit, git push - can use git history/diff commands and modify local files for testing but NO commits
 
 <workflow_rules>
   <rule_1>GitHub meta-issues: SPRINT BACKLOG → max moves to DOING status → delete completed, PRODUCT BACKLOG → DONE</rule_1>
