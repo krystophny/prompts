@@ -29,9 +29,11 @@ Execute when BACKLOG.md SPRINT_BACKLOG is empty (all sprint work completed).
    - Assess infrastructure health
    - Enable parallel audit execution
 
-2. **Parallel Audit Execution** (ALL agents work concurrently AFTER max tests):
+2. **🚨 MANDATORY PARALLEL AGENT EXECUTION** (ALL agents work concurrently AFTER max tests):
+   - **🚨 CLAUDE MUST LAUNCH ALL THREE AGENTS SIMULTANEOUSLY**: Use multiple Task tool calls in SINGLE message to launch patrick-auditor, vicky-acceptance-tester, and chris-architect in parallel
+   - **🚨 NO SEQUENTIAL EXECUTION**: Never run agents one after another - always launch together
    - **patrick**: Dead code detection, structural defect identification
-   - **vicky**: Bug detection, user experience validation, documentation reality checks
+   - **vicky**: Bug detection, user experience validation, documentation reality checks  
    - **chris**: Sprint goal evaluation + architectural review + design alignment assessment
    - Focus areas: Incorporate user-specified review areas from initial prompt
 
@@ -42,10 +44,10 @@ Execute when BACKLOG.md SPRINT_BACKLOG is empty (all sprint work completed).
    - Document shortcomings and incomplete objectives
 
 4. **ACTIONABLE DEFECT ISSUE Filing** (ALL agents):
-   - **🚨 TECHNICAL EVIDENCE REQUIRED**: All defects MUST include verifiable proof (CI logs, test output, error screenshots)
+   - **🚨 TECHNICAL EVIDENCE MANDATORY**: All defects MUST include verifiable proof (CI logs, test output, error screenshots) - NO GENERIC ISSUES allowed
    - **🚨 MANDATORY PRE-FLIGHT CHECK**: Before filing ANY new issue, MUST search existing GitHub issues for duplicates using `gh issue list -s all --search "keyword"` with relevant terms
    - **🚨 DUPLICATE VALIDATION**: If similar issue exists, add comment to existing issue instead of filing new one
-   - **🚨 ACTIONABLE DEFECTS ONLY**: File issues ONLY for bugs, broken functionality, critical violations WITH TECHNICAL PROOF
+   - **🚨 ACTIONABLE DEFECTS ONLY**: File issues ONLY for concrete, specific bugs and broken functionality WITH TECHNICAL PROOF - must be resolvable in WORK phase
    - File SHORT, HARSH GitHub issues for ALL NEW defects found
    - patrick: Structural and dead code issues with brutal criticism of responsible parties
    - vicky: Bugs and user experience issues calling out incompetent implementations  

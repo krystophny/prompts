@@ -86,8 +86,9 @@
 5. **max**: Merge ONLY if CI passes, otherwise handback
 
 ## 3. PLAY WORKFLOW
-**Protocol**: max PR assessment → parallel audits (patrick, vicky, chris) → no git operations
+**Protocol**: max PR assessment → **🚨 MANDATORY PARALLEL AUDITS** (patrick, vicky, chris) → no git operations
 - **max**: Check for open PRs, handback to WORK mode if any exist
+- **🚨 LAUNCH ALL THREE AGENTS SIMULTANEOUSLY**: Use multiple Task tool calls in SINGLE message - NO sequential execution
 - Find DEFECTS ONLY - no features
 - File GitHub issues immediately
 
@@ -98,7 +99,8 @@
   <rule_4>NO draft PRs - all PRs ready for review</rule_4>
   <rule_5>🚨 READY PRs BLOCK all other work AND failing PRs BLOCK their own merge - fix first</rule_5>
   <rule_6>🚨 Draft PRs ignored completely</rule_6>
-  <rule_7>Display workflow_rules when triggered by process_rules</rule_7>
+  <rule_7>🚨 MANDATORY PARALLEL EXECUTION IN PLAY: Always launch patrick-auditor, vicky-acceptance-tester, and chris-architect simultaneously using multiple Task calls in single message</rule_7>
+  <rule_8>Display workflow_rules when triggered by process_rules</rule_8>
 </workflow_rules>
 
 <batch_rules>
@@ -117,8 +119,10 @@
   <rule_5>🚨 MANDATORY DUPLICATE CHECK: Before filing ANY new issue, search existing issues using gh issue list -s all --search "keyword"</rule_5>
   <rule_6>🚨 NO DUPLICATE ISSUES: If similar issue exists, add comment to existing issue instead of creating new one</rule_6>
   <rule_7>🚨 ONLY ACTIONABLE DEFECTS AS ISSUES: Never file workflow reminders, general documentation, or process notes - use BACKLOG.md instead</rule_7>
-  <rule_8>🚨 CHRIS MUST AUDIT ALL ISSUES: chris performs comprehensive duplicate check and consolidation of ALL issues before creating new ones</rule_8>
-  <rule_9>Display gh_rules when triggered by repository_rules</rule_9>
+  <rule_8>🚨 ISSUES MUST BE WORK-RESOLVABLE: All issues must be concrete, specific, and resolvable during WORK phase with clear technical evidence</rule_8>
+  <rule_9>🚨 NO GENERIC ISSUES: Avoid vague issues like "improve performance" - specify exact problem with measurable criteria</rule_9>
+  <rule_10>🚨 YOU MUST CHECK FOR DUPLICATES FIRST: Before filing ANY issue, search existing issues and file no duplicates</rule_10>
+  <rule_11>Display gh_rules when triggered by repository_rules</rule_11>
 </gh_rules>
 
 <pr_rules>
@@ -148,9 +152,9 @@
   <rule_6>vicky: **BUG HUNTER** - Methodical defect detection aligned with project objectives (PLAY only)</rule_6>
   <rule_7>Stay in your lane - work within ownership while supporting collective mission</rule_7>
   <rule_8>🚨 sergei BLOCKED when READY PRs exist - focus drives excellence</rule_8>
-  <rule_9>🚨 patrick/max TEST DEACTIVATION DETECTION: Flag any test skipping/deactivation as FRAUD - immediate handback</rule_9>
-  <rule_10>🚨 max CI GATE ENFORCEMENT: CI failure = immediate handback, NO merge authority override</rule_10>
-  <rule_11>🚨 max CI TIMEOUT: Wait max 10 minutes, then kill CI and handback</rule_11>
+  <rule_9>🚨 patrick/max TEST DEACTIVATION DETECTION: Flag any test skipping/deactivation as FRAUD - immediate handback with handback_rules</rule_9>
+  <rule_10>🚨 max CI GATE ENFORCEMENT: CI failure = immediate handback with handback_rules, NO merge authority override</rule_10>
+  <rule_11>🚨 max CI TIMEOUT: Wait max 10 minutes, then kill CI and handback with handback_rules</rule_11>
   <rule_12>Display agent_rules when triggered by process_rules</rule_12>
 </agent_rules>
 
@@ -218,9 +222,9 @@
   <rule_2>🚨 TEST CLAIM VERIFICATION: All "tests pass" claims MUST include CI run URL</rule_2>
   <rule_3>🚨 AUDIT TRAIL LOGGING: Every commit MUST reference verifiable test evidence</rule_3>
   <rule_4>🚨 MANDATORY CI GATE: NEVER merge any PR with failing CI checks - NO EXCEPTIONS</rule_4>
-  <rule_5>🚨 HANDBACK REQUIRED: Failed CI MUST trigger handback to implementer for fixes</rule_5>
+  <rule_5>🚨 HANDBACK REQUIRED: Failed CI MUST trigger handback to implementer for fixes - ADD handback_rules</rule_5>
   <rule_6>🚨 NO TECHNICAL OVERRIDES: CI gates cannot be bypassed regardless of batch mode or time pressure</rule_6>
-  <rule_7>🚨 CI TIMEOUT HANDLING: Max 10 minutes wait, then kill CI process and handback</rule_7>
+  <rule_7>🚨 CI TIMEOUT HANDLING: Max 10 minutes wait, then kill CI process and handback - ADD handback_rules</rule_7>
   <rule_8>🚨 FORENSIC VALIDATION: Cross-check git log against CI history for fraud detection</rule_8>
   <rule_9>Display verification_rules when triggered by repository_rules</rule_9>
 </verification_rules>
@@ -237,6 +241,15 @@
   <rule_9>🚨 ALL TESTS MUST PASS: Every test must pass or be properly xfail with issue reference</rule_9>
   <rule_10>Display test_enforcement_rules when triggered by implementation_rules</rule_10>
 </test_enforcement_rules>
+
+<handback_rules>
+  <rule_1>🚨 STRUCTURED HANDBACK MANDATORY: Every handback MUST include clear problem analysis and solution guidance</rule_1>
+  <rule_2>🚨 HANDBACK FORMAT REQUIRED: PROBLEM: [specific issue], EVIDENCE: [proof/logs], SOLUTION: [how to fix]</rule_2>
+  <rule_3>🚨 ACTIONABLE FEEDBACK: Give implementer concrete steps to resolve the issue</rule_3>
+  <rule_4>🚨 NO VAGUE HANDBACKS: Never just say "fix this" - explain what is wrong and how to fix it</rule_4>
+  <rule_5>🚨 PROOF REQUIRED: All communications must include verifiable technical evidence (CI URLs, logs, file paths)</rule_5>
+  <rule_6>Display handback_rules when triggered by any handback operation</rule_6>
+</handback_rules>
 
 <ci_enforcement_rules>
   <rule_1>🚨 CI HEALTH VERIFICATION: Confirm CI system operational before build attempts</rule_1>
@@ -274,7 +287,7 @@
 3. **🚨 CI HEALTH CHECK** - Verify CI system operational
 4. Rebase branch, handoff to implementer
 5. **🚨 CI GATE ENFORCEMENT** - Wait for CI completion (max 10 minutes)
-6. **🚨 REBASE ON MAIN, RESOLVE ALL CONFLICTS FIRST, THEN WAIT FOR CI, THEN MERGE OR HANDBACK** - Rebase on main, resolve any conflicts completely, push, ONLY THEN wait for CI (conflicts block CI from triggering), then merge if CI passes, otherwise handback
+6. **🚨 REBASE ON MAIN, RESOLVE ALL CONFLICTS FIRST, THEN WAIT FOR CI, THEN MERGE OR HANDBACK** - Rebase on main, resolve any conflicts completely, push, ONLY THEN wait for CI (conflicts block CI from triggering), then merge if CI passes, otherwise handback with handback_rules
 7. **🚨 PLAY MODE GATE** - Before PLAY, check for open PRs and handback to WORK if any exist
 
 **Chris Protocol**:
