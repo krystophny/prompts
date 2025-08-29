@@ -12,7 +12,7 @@
 **MANDATORY RULE COMPLIANCE**: Every response must include the batch mode rule above.
 
 ## Workflow Trigger
-Execute when BACKLOG.md SPRINT_BACKLOG is empty (all sprint work completed).
+Execute when SPRINT BACKLOG meta-issue is empty (all sprint work completed).
 
 ## Execution Protocol
 **Actors**: max → parallel audits (patrick, vicky, chris)
@@ -38,7 +38,7 @@ Execute when BACKLOG.md SPRINT_BACKLOG is empty (all sprint work completed).
    - Focus areas: Incorporate user-specified review areas from initial prompt
 
 3. **Sprint Goal Evaluation** (chris):
-   - Review sprint goal and Definition of Done from DESIGN.md
+   - Review sprint goal and Definition of Done from DESIGN meta-issue
    - Assess whether sprint objectives achieved
    - **Report to user**: Clear sprint completion status
    - Document shortcomings and incomplete objectives
@@ -53,7 +53,7 @@ Execute when BACKLOG.md SPRINT_BACKLOG is empty (all sprint work completed).
    - vicky: Bugs and user experience issues calling out incompetent implementations  
    - chris: Architectural drift and sprint goal gap issues with harsh blame assignments
    - Use SHORT titles and BRUTAL descriptions: "Fix this garbage", "Stop breaking X", "Implement Y properly"
-   - **🚨 NEVER FILE**: Workflow reminders, process documentation, general improvements - add to BACKLOG.md instead
+   - **🚨 NEVER FILE**: Workflow reminders, process documentation, general improvements - add to SPRINT BACKLOG meta-issue instead
    - **🚨 END OF PLAY CONSOLIDATION**: chris performs final duplicate check AND closes all non-actionable issues
 
 5. **Quality Focus Areas**:
@@ -68,8 +68,8 @@ Execute when BACKLOG.md SPRINT_BACKLOG is empty (all sprint work completed).
 
 6. **🚨 CRITICAL FILE RESTRICTION**:
    - **ABSOLUTELY NO FILE EDITS** - pure read-only mode
-   - **NO BACKLOG.md modifications** - no status updates, no additions
-   - **NO DESIGN.md modifications** - no architectural updates
+   - **NO SPRINT BACKLOG meta-issue modifications** - no status updates, no additions
+   - **NO DESIGN meta-issue modifications** - no architectural updates
    - **NO commits, merges, or file modifications** of any kind
    - **ONLY GitHub issue creation** allowed
 

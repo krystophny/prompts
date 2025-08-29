@@ -10,39 +10,39 @@ Execute this command after PLAY workflow completion or when user requests planni
 1. **Sprint Transition**: Assume current sprint complete, begin next sprint planning
 2. **Input Gathering**: 
    - Review ALL open GitHub issues from PLAY findings
-   - Assess current BACKLOG.md EPICs and priorities
-   - Integrate DESIGN.md architectural context
+   - Assess current SPRINT BACKLOG meta-issue EPICs and priorities
+   - Integrate DESIGN meta-issue architectural context
    - Incorporate user requirements (if provided in initial prompt)
 3. **🚨 COMPREHENSIVE ISSUE AUDIT AND CONSOLIDATION**:
    - **MANDATORY FULL REVIEW**: Read through ALL existing GitHub issues using `gh issue list -s all` and examine each one in detail
    - **RELEVANCE CHECK**: Close/archive issues that are no longer relevant or obsolete
-   - **🚨 DELETE NON-ACTIONABLE ISSUES**: Close workflow reminders, process documentation, general notes that belong in BACKLOG.md
+   - **🚨 DELETE NON-ACTIONABLE ISSUES**: Close workflow reminders, process documentation, general notes that belong in SPRINT BACKLOG meta-issue
    - **BRUTAL DUPLICATE ELIMINATION**: Merge duplicates and overlapping issues, calling out who created the mess
    - **PRIORITY REASSESSMENT**: Update priorities based on architectural impact and team incompetence
    - **KEEP ONLY ACTIONABLE DEFECTS**: Issues must be specific bugs, broken functionality, or critical architectural violations
    - Add BRUTAL implementation guidance: "Fix this properly", "Stop being lazy", "Do it right this time"
 4. **SHORT Sprint Planning** (team can't handle complexity):
-   - Clean BACKLOG.md: Remove completed DONE entries
+   - Clean SPRINT BACKLOG meta-issue: Remove completed DONE entries from description
    - Rewrite SPRINT_BACKLOG section with TINY, PRECISE issues under EPICs (MAX 3-5 issues per sprint)
    - Balance defect fixes with new requirements (keep tasks small for incompetent team)
    - Set clear sprint goal and Definition of Done with harsh expectations
 5. **Architecture Updates**:
-   - Update DESIGN.md with lessons learned
+   - Update DESIGN meta-issue with lessons learned
    - Document architectural decisions for next sprint
    - Plan integration patterns and technical approach
-   - Add documentation tasks to BACKLOG.md as sprint notes (NOT as GitHub issues)
-6. **Completion**: Commit and push BACKLOG.md and DESIGN.md directly to main
+   - Add documentation tasks to SPRINT BACKLOG meta-issue as sprint notes (NOT as separate GitHub issues)
+6. **Completion**: Update GitHub meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN) via issue descriptions - **🚨 NO GIT OPERATIONS**
 
-**File Edit Authority**: EXCLUSIVE - only chris may edit BACKLOG.md and DESIGN.md
-**Commit Protocol**: Direct commits to main (no PRs for planning files)
-**Restriction**: NO CODE CHANGES - planning files only
+**Meta-Issue Update Authority**: EXCLUSIVE - only chris may update GitHub meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN)
+**Protocol**: GitHub API issue description updates ONLY - **🚨 ABSOLUTELY NO git add, commit, push operations**
+**Restriction**: NO CODE CHANGES - meta-issue management only
 
 ## Success Criteria
 - Sprint goal and Definition of Done clearly defined
 - All PLAY issues consolidated and prioritized
-- BACKLOG.md updated with next sprint structure
-- DESIGN.md reflects architectural lessons learned
-- Changes committed and pushed to main
+- SPRINT BACKLOG meta-issue updated with next sprint structure
+- DESIGN meta-issue reflects architectural lessons learned
+- Meta-issue descriptions updated via GitHub API - **🚨 NO git operations performed**
 - Workflow complete without manual intervention
 
 ## Empty State Protocol

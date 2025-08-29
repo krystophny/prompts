@@ -18,11 +18,6 @@ cp CLAUDE.md ~/.claude/CLAUDE.md
 cp -r agents/ ~/.claude/
 cp -r commands/ ~/.claude/
 
-# Optional: Install shortcuts
-mkdir -p ~/bin
-cp bin/* ~/bin/
-export PATH="$PATH:$HOME/bin"
-
 # Verify
 ls ~/.claude/CLAUDE.md ~/.claude/agents/
 ```
@@ -30,17 +25,17 @@ ls ~/.claude/CLAUDE.md ~/.claude/agents/
 ### Basic Usage
 
 ```bash
-./bin/plan    # Sprint planning
-./bin/work    # Implementation
-./bin/play    # Sprint review/defect detection
+"plan"    # Sprint planning
+"work"    # Implementation  
+"play"    # Sprint review/defect detection
 ```
 
 ### Complete Sprint Cycle
 
 ```bash
-./bin/work    # Implement BACKLOG.md items
-./bin/play    # Find defects (read-only audit)
-./bin/plan    # Plan next sprint with findings
+"work"    # Implement SPRINT BACKLOG meta-issue items
+"play"    # Find defects (read-only audit)
+"plan"    # Plan next sprint with findings
 ```
 
 ## Core Workflows
@@ -48,7 +43,7 @@ ls ~/.claude/CLAUDE.md ~/.claude/agents/
 ### Planning (`"plan"`) - Sprint Planning Meeting
 - **Agent**: chris-architect ONLY
 - **Purpose**: Post-PLAY sprint planning with review findings
-- **File Permissions**: EXCLUSIVE edit access to BACKLOG.md + DESIGN.md
+- **Meta-Issue Update Authority**: EXCLUSIVE update access to GitHub meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN)
 - **🚨 CRITICAL**: NO code changes - planning files only
 
 ### Work (`"work"`) - Sprint Implementation  
@@ -121,11 +116,9 @@ ls ~/.claude/CLAUDE.md ~/.claude/agents/
 ```
 prompts/
 ├── CLAUDE.md          # Complete system specification
-├── BACKLOG.md         # Sprint management
-├── DESIGN.md          # Architecture decisions
 ├── README.md          # This file
 ├── agents/            # Agent personas
-└── commands/          # Legacy commands
+└── commands/          # Workflow commands
 ```
 
 ## Troubleshooting
@@ -138,7 +131,7 @@ ls ~/.claude/CLAUDE.md
 ```
 
 **Agent refusing to work?**
-- Ensure BACKLOG.md exists with proper format
+- Ensure SPRINT BACKLOG, PRODUCT BACKLOG, and DESIGN meta-issues exist
 - Check for conflicting open PRs
 - Verify quality standards
 

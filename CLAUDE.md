@@ -72,10 +72,11 @@
 
 ## 1. PLAN WORKFLOW 
 **Actor**: chris-architect ONLY
-**Protocol**: Edit BACKLOG.md and DESIGN.md ONLY, commit/push to main
+**Protocol**: Update GitHub meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN) ONLY - **🚨 NO GIT OPERATIONS**
 - Sprint planning after PLAY or user request
-- Create GitHub issues (max 3-5 per sprint)
-- Set sprint goal in DESIGN.md
+- Create GitHub issues (max 3-5 per sprint) and organize in SPRINT BACKLOG meta-issue
+- Set sprint goal in DESIGN meta-issue
+- **🚨 FORBIDDEN**: git add, git commit, git push - ONLY issue description updates via GitHub API
 
 ## 2. WORK WORKFLOW (FRAUD-PROOF)
 **Protocol**: max → (sergei OR winny) → CI-GATE → reviewer → max
@@ -86,16 +87,17 @@
 5. **max**: Merge ONLY if CI passes, otherwise handback
 
 ## 3. PLAY WORKFLOW
-**Protocol**: max PR assessment → **🚨 MANDATORY PARALLEL AUDITS** (patrick, vicky, chris) → no git operations
+**Protocol**: max PR assessment → **🚨 MANDATORY PARALLEL AUDITS** (patrick, vicky, chris) → **🚨 NO GIT OPERATIONS**
 - **max**: Check for open PRs, handback to WORK mode if any exist
 - **🚨 LAUNCH ALL THREE AGENTS SIMULTANEOUSLY**: Use multiple Task tool calls in SINGLE message - NO sequential execution
 - Find DEFECTS ONLY - no features
 - File GitHub issues immediately
+- **🚨 FORBIDDEN**: git add, git commit, git push - can modify local files for testing but NO commits
 
 <workflow_rules>
-  <rule_1>BACKLOG.md: SPRINT_BACKLOG → DOING → delete completed, PRODUCT_BACKLOG → DONE</rule_1>
-  <rule_2>max: Update BACKLOG.md status, COMMIT/PUSH after edits</rule_2>
-  <rule_3>chris: Create issues, manage backlogs, COMMIT/PUSH IMMEDIATELY</rule_3>
+  <rule_1>GitHub meta-issues: SPRINT BACKLOG → max moves to DOING status → delete completed, PRODUCT BACKLOG → DONE</rule_1>
+  <rule_2>max: Update SPRINT BACKLOG meta-issue descriptions, NO commits to main</rule_2>
+  <rule_3>chris: Create issues, manage GitHub meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN) via issue description updates</rule_3>
   <rule_4>NO draft PRs - all PRs ready for review</rule_4>
   <rule_5>🚨 READY PRs BLOCK all other work AND failing PRs BLOCK their own merge - fix first</rule_5>
   <rule_6>🚨 Draft PRs ignored completely</rule_6>
@@ -118,8 +120,8 @@
   <rule_4>NEVER work without reading full issue/PR context first</rule_4>
   <rule_5>🚨 MANDATORY DUPLICATE CHECK: Before filing ANY new issue, search existing issues using gh issue list -s all --search "keyword"</rule_5>
   <rule_6>🚨 NO DUPLICATE ISSUES: If similar issue exists, add comment to existing issue instead of creating new one</rule_6>
-  <rule_7>🚨 ONLY ACTIONABLE DEFECTS AS ISSUES: Never file workflow reminders, general documentation, or process notes - use BACKLOG.md instead</rule_7>
-  <rule_8>🚨 ISSUES MUST BE WORK-RESOLVABLE: All issues must be concrete, specific, and resolvable during WORK phase with clear technical evidence</rule_8>
+  <rule_7>🚨 ONLY ACTIONABLE DEFECTS AS ISSUES: Never file workflow reminders, general documentation, or process notes as regular issues - EXCEPT for meta-issues (DESIGN, PRODUCT BACKLOG, SPRINT BACKLOG)</rule_7>
+  <rule_8>🚨 ISSUES MUST BE WORK-RESOLVABLE: All regular issues must be concrete, specific, and resolvable during WORK phase with clear technical evidence - EXCEPT meta-issues (DESIGN, PRODUCT BACKLOG, SPRINT BACKLOG) used for planning</rule_8>
   <rule_9>🚨 NO GENERIC ISSUES: Avoid vague issues like "improve performance" - specify exact problem with measurable criteria</rule_9>
   <rule_10>🚨 YOU MUST CHECK FOR DUPLICATES FIRST: Before filing ANY issue, search existing issues and file no duplicates</rule_10>
   <rule_11>Display gh_rules when triggered by repository_rules</rule_11>
@@ -144,7 +146,7 @@
 </title_rules>
 
 <agent_rules>
-  <rule_1>max: Repository management, BACKLOG.md status, final merge, NEVER creates PRs</rule_1>
+  <rule_1>max: Repository management, SPRINT BACKLOG meta-issue status updates, final merge, NEVER creates PRs</rule_1>
   <rule_2>chris: **EXCELLENCE ARCHITECT** - Planning with absolute compliance to sprint goals and design requirements</rule_2>
   <rule_3>sergei: **CODE PERFECTIONIST** - Implementation with complete adherence to instructions and architectural specifications</rule_3>
   <rule_4>patrick: **QUALITY GUARDIAN** - Independent review maintaining quality while respecting established requirements</rule_4>
@@ -290,12 +292,12 @@
 6. **🚨 REBASE ON MAIN, RESOLVE ALL CONFLICTS FIRST, THEN WAIT FOR CI, THEN MERGE OR HANDBACK** - Rebase on main, resolve any conflicts completely, push, ONLY THEN wait for CI (conflicts block CI from triggering), then merge if CI passes, otherwise handback with handback_rules
 7. **🚨 PLAY MODE GATE** - Before PLAY, check for open PRs and handback to WORK if any exist
 
-**Chris Protocol**:
+**Chris Protocol (PLAN mode)**:
 1. 🚨 AUDIT ALL EXISTING ISSUES FIRST: Search and consolidate duplicates before any new issue creation
 2. Create GitHub issues ONLY for actionable defects (max 3-5 per sprint)
-3. Use BACKLOG.md for workflow reminders and process notes (NOT GitHub issues)
-4. Update BACKLOG.md and DESIGN.md
-5. COMMIT/PUSH immediately
+3. Use SPRINT BACKLOG meta-issue for workflow reminders and process notes (NOT regular GitHub issues)
+4. Update GitHub meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN) via issue description updates
+5. **🚨 ABSOLUTELY NO GIT OPERATIONS**: no git add, git commit, git push - ONLY GitHub API operations
 
 # ⚠️ MANDATORY COMPLIANCE ⚠️
 

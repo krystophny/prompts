@@ -17,7 +17,7 @@ This command executes a full sprint cycle: **WORK → PLAY → PLAN** in sequenc
 
 ### Phase 1: WORK - Sprint Implementation
 **Execute all current SPRINT_BACKLOG items**
-- Process all items in BACKLOG.md SPRINT_BACKLOG
+- Process all items in SPRINT BACKLOG meta-issue
 - Implement through normal max → implementer → reviewer → max flow
 - Continue until SPRINT_BACKLOG is empty
 - Handle any ad-hoc tasks from user prompt
@@ -35,7 +35,7 @@ This command executes a full sprint cycle: **WORK → PLAY → PLAN** in sequenc
 **Next sprint planning with PLAY findings**
 - Consolidate all PLAY issues into refined backlog
 - Create new sprint with clear goals
-- Update BACKLOG.md and DESIGN.md
+- Update SPRINT BACKLOG, PRODUCT BACKLOG and DESIGN meta-issues
 - Direct commits to main for planning files
 - Balance defect fixes with new user requirements
 

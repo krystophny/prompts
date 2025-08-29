@@ -12,7 +12,7 @@
 **MANDATORY RULE COMPLIANCE**: Every response must include the batch mode rule above.
 
 ## Workflow Trigger
-Execute when issues exist in BACKLOG.md SPRINT_BACKLOG or current branch work exists.
+Execute when issues exist in SPRINT BACKLOG meta-issue or current branch work exists.
 
 ## Execution Protocol
 **Agents**: max → (sergei OR winny) → (patrick OR vicky) → max
@@ -32,8 +32,8 @@ Execute when issues exist in BACKLOG.md SPRINT_BACKLOG or current branch work ex
    - **Implementation** (issue-type dependent):
      - Code issues: sergei implements tests + code
      - **🚨 MANDATORY CI PASS**: sergei runs FULL test suite, CI MUST be green
-     - **🚨 TECHNICAL VERIFICATION**: Provide CI run URL as evidence
-     - **🚨 PR CREATION BLOCKED** until CI verification complete
+     - **🚨 TECHNICAL VERIFICATION**: Provide CI run URL as evidence - ALL claims must include verifiable proof
+     - **🚨 PR CREATION BLOCKED** until CI verification complete with technical evidence
      - Documentation issues: winny implements documentation + validation
      - Both create PR ONLY after automated technical verification
    - **Review** (issue-type dependent):
@@ -44,7 +44,7 @@ Execute when issues exist in BACKLOG.md SPRINT_BACKLOG or current branch work ex
      - CRITICAL issues → handback to sergei who must provide NEW CI verification
      - Non-critical issues → file new GitHub issues
    - **Merge** (max): **🚨 REBASE ON MAIN, RESOLVE ALL CONFLICTS FIRST**, push, **🚨 DOUBLE CI VERIFICATION** (conflicts block CI), **🚨 FINAL AUDIT TRAIL CHECK**, wait for CI, merge PR ONLY after technical proof
-   - **Cleanup**: Close issue, delete branch, update BACKLOG.md status
+   - **Cleanup**: Close issue, delete branch, update SPRINT BACKLOG meta-issue status via description edit
 
 3. **Continuous Processing**:
    - Process ALL SPRINT_BACKLOG items sequentially
@@ -64,7 +64,7 @@ Execute when issues exist in BACKLOG.md SPRINT_BACKLOG or current branch work ex
 - READY PRs exist: Must fix and merge before new work
 - **🚨 CI failures: HARD BLOCK - Must resolve with technical proof before proceeding**
 - **🚨 Missing CI evidence: HARD BLOCK - No PR merge without verifiable CI proof**
-- **🚨 Fraudulent test claims: IMMEDIATE HANDBACK with brutal criticism**
+- **🚨 Fraudulent test claims: IMMEDIATE STRUCTURED HANDBACK** with PROBLEM/EVIDENCE/SOLUTION format
 - Critical review issues: Must fix before merge
 
 **BATCH MODE REMINDER**: Execute completely autonomously - no stopping, no questions, no user interaction required.
