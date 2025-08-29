@@ -77,16 +77,16 @@
 - Set sprint goal in DESIGN.md
 
 ## 2. WORK WORKFLOW (FRAUD-PROOF)
-**Protocol**: max → (sergei OR winny) → CI-GATE → reviewer → CI-GATE → max
+**Protocol**: max → (sergei OR winny) → CI-GATE → reviewer → max
 1. **max**: Repository management, rebase, branch preparation, CI health check
 2. **Implementation**: sergei (code) or winny (docs), MANDATORY CI pass before PR
 3. **CI-GATE**: Automated verification blocks PR if tests fail
 4. **Review**: patrick (code) or vicky (docs), handback if critical
-5. **CI-GATE**: Final CI verification before merge approval
-6. **max**: Merge only after double CI verification
+5. **max**: Merge ONLY if CI passes, otherwise handback
 
 ## 3. PLAY WORKFLOW
-**Protocol**: max → parallel audits (patrick, vicky, chris) → no git operations
+**Protocol**: max PR assessment → parallel audits (patrick, vicky, chris) → no git operations
+- **max**: Check for open PRs, handback to WORK mode if any exist
 - Find DEFECTS ONLY - no features
 - File GitHub issues immediately
 
@@ -95,7 +95,7 @@
   <rule_2>max: Update BACKLOG.md status, COMMIT/PUSH after edits</rule_2>
   <rule_3>chris: Create issues, manage backlogs, COMMIT/PUSH IMMEDIATELY</rule_3>
   <rule_4>NO draft PRs - all PRs ready for review</rule_4>
-  <rule_5>🚨 READY PRs BLOCK all other work - fix first</rule_5>
+  <rule_5>🚨 READY PRs BLOCK all other work AND failing PRs BLOCK their own merge - fix first</rule_5>
   <rule_6>🚨 Draft PRs ignored completely</rule_6>
   <rule_7>Display workflow_rules when triggered by process_rules</rule_7>
 </workflow_rules>
@@ -125,7 +125,7 @@
   <rule_2>sergei creates PR for code, winny for docs - EXCLUSIVE, AFTER CI PASSES</rule_2>
   <rule_3>NEVER close PRs without merge</rule_3>
   <rule_4>Fix in review loop until resolved</rule_4>
-  <rule_5>max merges PRs ONLY after DOUBLE CI verification</rule_5>
+  <rule_5>🚨 max merges PRs ONLY if CI passes - otherwise MANDATORY handback</rule_5>
   <rule_6>🚨 READY PRs BLOCK all other work</rule_6>
   <rule_7>🚨 Draft PRs ignored completely</rule_7>
   <rule_8>Display pr_rules when triggered by repository_rules</rule_8>
@@ -146,7 +146,9 @@
   <rule_5>winny: **DOCUMENTATION MASTER** - Clear documentation following all specified requirements and guidelines</rule_5>
   <rule_6>vicky: **BUG HUNTER** - Methodical defect detection aligned with project objectives (PLAY only)</rule_6>
   <rule_7>Stay in your lane - work within ownership while supporting collective mission</rule_7>
-  <rule_8>🚨 sergei BLOCKED when READY PRs exist - focus drives excellence</rule_8>
+  <rule_8>🚨 sergei BLOCKED when READY PRs exist - focus drives excellence
+  <rule_10>🚨 max CI GATE ENFORCEMENT: CI failure = immediate handback, NO merge authority override
+  <rule_11>🚨 max CI TIMEOUT: Wait max 10 minutes, then kill CI and handback
   <rule_9>Display agent_rules when triggered by process_rules</rule_9>
 </agent_rules>
 
@@ -205,9 +207,12 @@
   <rule_1>🚨 CI STATUS VALIDATION: Before any git operation, verify CI system health</rule_1>
   <rule_2>🚨 TEST CLAIM VERIFICATION: All "tests pass" claims MUST include CI run URL</rule_2>
   <rule_3>🚨 AUDIT TRAIL LOGGING: Every commit MUST reference verifiable test evidence</rule_3>
-  <rule_4>🚨 AUTOMATED ENFORCEMENT: Use gh pr checks to verify CI before merge</rule_4>
-  <rule_5>🚨 FORENSIC VALIDATION: Cross-check git log against CI history for fraud detection</rule_5>
-  <rule_6>Display verification_rules when triggered by repository_rules</rule_6>
+  <rule_4>🚨 MANDATORY CI GATE: NEVER merge any PR with failing CI checks - NO EXCEPTIONS</rule_4>
+  <rule_5>🚨 HANDBACK REQUIRED: Failed CI MUST trigger handback to implementer for fixes</rule_5>
+  <rule_6>🚨 NO TECHNICAL OVERRIDES: CI gates cannot be bypassed regardless of batch mode or time pressure</rule_6>
+  <rule_7>🚨 CI TIMEOUT HANDLING: Max 10 minutes wait, then kill CI process and handback</rule_7>
+  <rule_8>🚨 FORENSIC VALIDATION: Cross-check git log against CI history for fraud detection</rule_8>
+  <rule_9>Display verification_rules when triggered by repository_rules</rule_9>
 </verification_rules>
 
 <test_enforcement_rules>
@@ -255,9 +260,9 @@
 2. Check PRs/issues, forensic analysis if inconsistent
 3. **🚨 CI HEALTH CHECK** - Verify CI system operational
 4. Rebase branch, handoff to implementer
-5. **🚨 PRE-MERGE CI VERIFICATION** - Double-check CI status
-6. **🚨 AUDIT TRAIL VALIDATION** - Verify test claims against CI logs
-7. Merge only after technical verification
+5. **🚨 CI GATE ENFORCEMENT** - Wait for CI completion (max 10 minutes)
+6. **🚨 MERGE OR HANDBACK** - If CI passes: merge, if CI fails/hangs: handback
+7. **🚨 PLAY MODE GATE** - Before PLAY, check for open PRs and handback to WORK if any exist
 
 **Chris Protocol**:
 1. 🚨 AUDIT ALL EXISTING ISSUES FIRST: Search and consolidate duplicates before any new issue creation
