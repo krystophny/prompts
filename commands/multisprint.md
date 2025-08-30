@@ -1,12 +1,21 @@
 # MULTISPRINT WORKFLOW - Continuous Sprint Cycles
 
-## 1. TASK CONTEXT
+## 1. TASK CONTEXT: Command Purpose
 Execute continuous WORK → PLAY → PLAN cycles per CLAUDE.md workflow system until user interruption.
 
-## 2. TONE CONTEXT
+### MULTISPRINT COMMAND PROTOCOL
+<multisprint_command_rules>
+  <rule_1>Infinite loop of WORK → PLAY → PLAN cycles</rule_1>
+  <rule_2>Continuous execution until user interruption</rule_2>
+  <rule_3>All CLAUDE.md protocols maintained throughout</rule_3>
+  <rule_4>NEVER create random markdown files for progress reports</rule_4>
+  <rule_5>Display multisprint_command_rules when executing MULTISPRINT workflow</rule_5>
+</multisprint_command_rules>
+
+## 2. TONE CONTEXT: Command Style
 Follow CLAUDE.md Section 2 standards with infinite loop execution patterns.
 
-## 3. BACKGROUND DATA  
+## 3. BACKGROUND DATA: Continuous Sprint Context  
 Apply CLAUDE.md Section 3 workflow transitions in continuous cycling mode.
 
 ## 4. DETAILED TASK RULES

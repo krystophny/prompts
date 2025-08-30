@@ -9,14 +9,15 @@
 
 **CORE EXECUTION**: GitHub meta-issue management, issue consolidation, and sprint goal establishment through Task tool delegation to chris-architect.
 
-**XML COMMAND PROTOCOL:**
-<plan_command>
-  chris-architect exclusive authority for meta-issues
-  GitHub API operations only - NO git operations
-  Issue consolidation prevents chaos
-  Sprint planning with evidence-based decisions
-  NEVER create random markdown files for progress reports
-</plan_command>
+### PLAN COMMAND PROTOCOL
+<plan_command_rules>
+  <rule_1>chris-architect exclusive authority for meta-issues</rule_1>
+  <rule_2>GitHub API operations only - NO git operations</rule_2>
+  <rule_3>Issue consolidation prevents chaos</rule_3>
+  <rule_4>Sprint planning with evidence-based decisions</rule_4>
+  <rule_5>NEVER create random markdown files for progress reports</rule_5>
+  <rule_6>Display plan_command_rules when executing PLAN workflow</rule_6>
+</plan_command_rules>
 
 ## 2. TONE CONTEXT: Command Style
 

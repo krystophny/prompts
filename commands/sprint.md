@@ -1,12 +1,21 @@
 # SPRINT WORKFLOW - Complete Sprint Cycle
 
-## 1. TASK CONTEXT
+## 1. TASK CONTEXT: Command Purpose
 Execute full PLAN → WORK → PLAY cycle per CLAUDE.md workflow system.
 
-## 2. TONE CONTEXT  
+### SPRINT COMMAND PROTOCOL
+<sprint_command_rules>
+  <rule_1>Complete WORK → PLAY → PLAN cycle autonomously</rule_1>
+  <rule_2>All CLAUDE.md rule sets apply throughout</rule_2>
+  <rule_3>Evidence-based execution with CI validation</rule_3>
+  <rule_4>NEVER create random markdown files for progress reports</rule_4>
+  <rule_5>Display sprint_command_rules when executing SPRINT workflow</rule_5>
+</sprint_command_rules>
+
+## 2. TONE CONTEXT: Command Style  
 Follow CLAUDE.md Section 2 fraud-proof standards with evidence-based execution.
 
-## 3. BACKGROUND DATA
+## 3. BACKGROUND DATA: Sprint Context
 Apply CLAUDE.md Section 3 workflow transitions and agent protocols systematically.
 
 ## 4. DETAILED TASK RULES

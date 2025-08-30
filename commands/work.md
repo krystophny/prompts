@@ -13,14 +13,15 @@
 
 **CORE EXECUTION**: Complete SPRINT BACKLOG items through max → implementer → reviewer → max workflow with mandatory CI validation.
 
-**XML COMMAND PROTOCOL:**
-<work_command>
-  Apply all CLAUDE.md rule sets at start of execution
-  max-devops assessment ALWAYS first
-  CI gates cannot be bypassed
-  All implementations require reviewer approval
-  NEVER create random markdown files for progress reports
-</work_command>
+### WORK COMMAND PROTOCOL
+<work_command_rules>
+  <rule_1>Apply all CLAUDE.md rule sets at start of execution</rule_1>
+  <rule_2>max-devops assessment ALWAYS first</rule_2>
+  <rule_3>CI gates cannot be bypassed</rule_3>
+  <rule_4>All implementations require reviewer approval</rule_4>
+  <rule_5>NEVER create random markdown files for progress reports</rule_5>
+  <rule_6>Display work_command_rules when executing WORK workflow</rule_6>
+</work_command_rules>
 
 ## 2. TONE CONTEXT: Command Style
 
