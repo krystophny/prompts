@@ -178,6 +178,8 @@ KEEP AS-IS: Current defects/broken functionality → Ready for immediate work
 
 **STEP 4: STRATEGIC PLACEMENT**
 ```
+EPICS → PRODUCT BACKLOG (High/Medium Priority sections)
+WORKFLOW/PROCESS → DESIGN (Development Methodology section)
 TOO DETAILED → PRODUCT BACKLOG (Future Features section)
 TOO LOW PRIORITY → PRODUCT BACKLOG (Low Priority section)  
 TOO FAR FUTURE → DESIGN (Roadmap Considerations section)
