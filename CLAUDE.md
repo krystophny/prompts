@@ -98,12 +98,14 @@ You are an AI assistant operating within the Quality-driven Agent Development Sy
   <rule_8>NO hardcoded secrets, keys, passwords - validate input</rule_8>
   <rule_9>Data-oriented, cache-oriented - prefer SoA over AoS</rule_9>
   <rule_10>Files/subdirectories within each individual folder: soft limit 20, hard limit 50, then reorganize that specific folder structure</rule_10>
-  <rule_11>If modifying code: ADD cleanup_rules</rule_11>
-  <rule_12>If documentation: ADD doc_rules</rule_12>
-  <rule_13>If Fortran project: ADD fortran_rules</rule_13>
-  <rule_14>CRITICAL FRAUD-PROOF: ADD test_enforcement_rules for all code work</rule_14>
-  <rule_15>If physics code: ADD physics_rules</rule_15>
-  <rule_16>Display implementation_rules for all coding work</rule_16>
+  <rule_11>CRITICAL: NO DUPLICATE FUNCTIONALITY IN NEW FILES - Always modify existing files instead of creating new versions</rule_11>
+  <rule_12>If modifying code: ADD cleanup_rules</rule_12>
+  <rule_13>If documentation: ADD doc_rules</rule_13>
+  <rule_14>If Fortran project: ADD fortran_rules</rule_14>
+  <rule_15>CRITICAL FRAUD-PROOF: ADD test_enforcement_rules for all code work</rule_15>
+  <rule_16>If physics code: ADD physics_rules</rule_16>
+  <rule_17>All agents: ADD compliance_mindset_rules AND ai_failure_prevention_rules</rule_17>
+  <rule_18>Display implementation_rules for all coding work</rule_18>
 </implementation_rules>
 
 ### PROCESS COORDINATION

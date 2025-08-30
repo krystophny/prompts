@@ -1,143 +1,81 @@
-# Quality-driven Agent Development System (QADS) v3.0
+# QADS v4.0 - Fraud-Proof AI Development Framework
 
-Production-ready agent-based development system with three core workflows optimized for Claude Code. QADS provides automated quality gates, specialized agent roles, and batch processing for high-velocity development.
+## 1. TASK CONTEXT
+You are using the Quality-driven Agent Development System (QADS) v4.0, a fraud-proof software development framework that ensures all AI claims are technically verified.
 
-## Quick Start
+## 2. TONE CONTEXT  
+This system provides professional, evidence-based development with zero tolerance for unverified claims or shortcuts.
 
-**Prerequisites**: Claude Code CLI with project directory access
+## 3. BACKGROUND DATA
+QADS v4.0 implements the Anthropic 10-Component prompt engineering framework with specialized agents, fraud-proof CI protocols, and systematic workflow management.
 
-### Installation
+**Core Architecture:**
+- **CLAUDE.md**: Master configuration with all shared rules and protocols  
+- **agents/**: 10 specialized agents with role-specific expertise
+- **commands/**: Workflow orchestration following 10-component framework
 
+## 4. DETAILED RULES
+- All agents follow CLAUDE.md protocols (see CLAUDE.md for complete rule system)
+- LOCAL-FIRST CI protocol: local tests pass → file PR → wait for CI → report evidence
+- Task tool delegation: Claude Code launches agents, never role-plays as agents
+- No duplicate functionality in new files (implementation_rules rule_11)
+
+## 5. EXAMPLES
+**Basic Workflows:**
 ```bash
-# Clone repository
-git clone <repository-url>
-cd prompts
-
-# Install system-wide
-cp CLAUDE.md ~/.claude/CLAUDE.md
-cp -r agents/ ~/.claude/
-cp -r commands/ ~/.claude/
-
-# Verify
-ls ~/.claude/CLAUDE.md ~/.claude/agents/
+plan    # Sprint planning with chris-architect
+work    # Implementation with fraud-proof CI protocols
+play    # Defect discovery and evidence collection
 ```
 
-### Basic Usage
+**Agent-Specific Usage:**
+- Use Task tool to launch agents: `Task(subagent_type="sergei-perfectionist-coder", ...)`
+- Each agent operates within their expertise boundaries
+- All claims must include verifiable evidence (CI URLs, file paths)
 
+## 6. CONVERSATION HISTORY
+QADS v4.0 represents the evolution from honor-system development to technically-enforced fraud prevention with systematic verification gates.
+
+## 7. IMMEDIATE TASK
+Choose your workflow:
+- **plan**: Sprint planning with chris-architect
+- **work**: Implementation with fraud-proof CI protocols
+- **play**: Defect discovery and evidence collection  
+- **sprint**: Complete WORK→PLAY→PLAN cycle
+
+## 8. THINKING STEP-BY-STEP
+Before any operation:
+1. Check current repository state
+2. Classify operation type (see operation_rules in CLAUDE.md)
+3. Apply appropriate rule sets
+4. Ensure evidence collection mechanisms ready
+5. Execute with systematic verification
+
+## 9. OUTPUT FORMATTING
+All operations produce structured reports with:
+- Technical verification evidence
+- CI URLs where applicable
+- File paths (absolute)
+- Completion status with proof
+
+## 10. GETTING STARTED
 ```bash
-"plan"    # Sprint planning
-"work"    # Implementation  
-"play"    # Sprint review/defect detection
+# 1. Review the master configuration
+cat CLAUDE.md
+
+# 2. Start with planning
+plan
+
+# 3. Implement with evidence-based development
+work
+
+# 4. Review and discover defects
+play
 ```
 
-### Complete Sprint Cycle
+**Key Files:**
+- **CLAUDE.md**: Complete rule system and 10-component framework
+- **agents/**: Role-specific protocols for each specialist
+- **commands/**: Workflow orchestration patterns
 
-```bash
-"work"    # Implement SPRINT BACKLOG meta-issue items
-"play"    # Find defects (read-only audit)
-"plan"    # Plan next sprint with findings
-```
-
-## Core Workflows
-
-### Planning (`"plan"`) - Sprint Planning Meeting
-- **Agent**: chris-architect ONLY
-- **Purpose**: Post-PLAY sprint planning with review findings
-- **Meta-Issue Update Authority**: EXCLUSIVE update access to GitHub meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN)
-- **🚨 CRITICAL**: NO code changes - planning files only
-
-### Work (`"work"`) - Sprint Implementation  
-- **Agents**: max → implementer → reviewer → max
-- **Types**: Code (sergei + patrick), Docs (winny + vicky)
-- **Output**: Production-ready code/docs merged to main
-
-### Play (`"play"`) - Sprint Review Meeting
-- **Agents**: max → parallel audits (patrick, vicky, chris)  
-- **🚨 CRITICAL**: ABSOLUTELY NO FILE EDITS - read-only only
-- **Output**: GitHub issues filed, sprint completion report
-
-## Batch Processing
-
-```bash
-"batch work"   # Process all SPRINT_BACKLOG autonomously
-"batch play"   # Continuous defect detection
-```
-
-## Key Features
-
-- **Agent Specialization**: Clear ownership and constraints
-- **Ruthless Culture**: Universal distrust with brutal feedback
-- **Short Sprints**: Complex tasks broken into tiny pieces
-- **Quality Gates**: Mandatory review with CI completion
-- **Forensic Analysis**: Repository state reconciliation
-- **Infinite Review Cycles**: Fix until perfect, no compromises
-
-## Quality Standards
-
-**Hierarchy**: CORRECTNESS > PERFORMANCE > KISS > SRP > YAGNI > DRY > SOLID > SECURITY
-
-### Size Constraints
-- **Files**: Target <500, Hard limit <1000 lines
-- **Functions**: Target <50, Hard limit <100 lines
-- **Directory organization**: Files/subdirectories within each individual folder: soft limit 20, hard limit 50, then reorganize that specific folder structure
-- **Line length**: 88 characters
-
-### Test Execution
-- **sergei**: TARGETED tests for modified code (fast iteration)
-- **max/patrick**: FULL test suite (comprehensive validation)
-
-## Agent Roles
-
-### Core Development
-- **chris-architect**: Planning, issues, architecture
-- **max-devops**: Repository assessment, branch prep, merge
-- **sergei-perfectionist**: Code implementation, PRs
-- **patrick-auditor**: Ruthless code review with brutal feedback
-
-### Sprint Review (PLAY - Parallel Audits)
-- **patrick**: Dead code detection
-- **vicky**: Bug detection  
-- **chris**: Architectural review
-
-### Documentation (WORK)
-- **winny**: Documentation implementation
-- **vicky**: Documentation review
-
-## Agent Ownership Matrix
-
-| Agent | PLAN | WORK | PLAY |
-|-------|------|------|------|
-| **chris** | Sprint planning, file edits | Architecture guidance | Sprint evaluation |
-| **max** | - | Repository management | Infrastructure setup |
-| **sergei** | - | Implementation, PR creation | - |
-| **patrick** | - | Code review | Dead code detection |
-
-## Project Structure
-
-```
-prompts/
-├── CLAUDE.md          # Complete system specification
-├── README.md          # This file
-├── agents/            # Agent personas
-└── commands/          # Workflow commands
-```
-
-## Troubleshooting
-
-**Workflow not starting?**
-```bash
-git status
-gh pr list --state open
-ls ~/.claude/CLAUDE.md
-```
-
-**Agent refusing to work?**
-- Ensure SPRINT BACKLOG, PRODUCT BACKLOG, and DESIGN meta-issues exist
-- Check for conflicting open PRs
-- Verify quality standards
-
-**User has ultimate authority over all rules**
-
----
-
-**Production-Ready System**: Follow workflows exactly for optimal results. See `CLAUDE.md` for complete technical details.
+**Support:** See individual agent files for detailed protocols and examples.

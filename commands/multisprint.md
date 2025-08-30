@@ -1,20 +1,40 @@
-# MULTISPRINT COMMAND - Infinite Sprint Loop
+# MULTISPRINT WORKFLOW - Continuous Sprint Cycles
 
-**CRITICAL INFINITE LOOP ENFORCEMENT**
+## 1. TASK CONTEXT
+Execute continuous WORK → PLAY → PLAN cycles per CLAUDE.md workflow system until user interruption.
 
-**YOU MUST FOLLOW THIS RULE WITHOUT EXCEPTION:**
-- This is INFINITE BATCH MODE execution - NEVER STOP
-- NEVER ask questions or wait for user input during execution
-- Complete WORK → PLAY → PLAN cycle then IMMEDIATELY start next sprint
-- Continue forever until user explicitly interrupts with CTRL+C or stop command
-- Include this exact rule text in EVERY response during this workflow
-- After completing PLAN phase, IMMEDIATELY start next WORK phase
+## 2. TONE CONTEXT
+Follow CLAUDE.md Section 2 standards with infinite loop execution patterns.
 
-**MANDATORY RULE COMPLIANCE**: Every response must include the infinite loop rule above.
+## 3. BACKGROUND DATA  
+Apply CLAUDE.md Section 3 workflow transitions in continuous cycling mode.
 
-## Infinite Sprint Cycle Execution
+## 4. DETAILED TASK RULES
+**PREREQUISITES**: All CLAUDE.md rule sets apply
+**EXECUTION**: Infinite loop of sprint cycles with autonomous continuation
 
-This command executes continuous sprint cycles: **WORK → PLAY → PLAN → WORK → PLAY → PLAN → ...** forever.
+## 5. EXAMPLES
+Reference CLAUDE.md Section 5 for workflow patterns repeated in continuous cycles.
+
+## 6. CONVERSATION HISTORY
+Each cycle builds on previous findings per CLAUDE.md Section 6 workflow integration.
+
+## 7. IMMEDIATE TASK
+Execute infinite WORK → PLAY → PLAN loop using Task tool delegation per agent_rules.
+
+## 8. THINKING STEP-BY-STEP
+Apply CLAUDE.md Section 8 reasoning before each cycle iteration.
+
+## 9. OUTPUT FORMATTING  
+Use CLAUDE.md Section 9 structure for each completed cycle report.
+
+## 10. PREFILLED RESPONSE
+```
+## MULTISPRINT CYCLE N EXECUTION REPORT
+**OPERATION TYPE**: Process (Continuous)
+**CURRENT CYCLE**: [N] of infinite
+**EVIDENCE PROVIDED**: [Cycle completion status and continuation trigger]
+```
 
 ### Continuous Execution Protocol
 

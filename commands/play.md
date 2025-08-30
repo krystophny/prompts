@@ -1,37 +1,40 @@
 # PLAY WORKFLOW - Sprint Review and Defect Discovery
 
-**BATCH MODE EXECUTION**
-- Autonomous execution - no user interaction required
-- Complete defect discovery and issue consolidation
-- Follow CLAUDE.md fraud-proof protocols throughout
+## 1. TASK CONTEXT
+Execute defect discovery workflow with fraud-proof evidence collection per CLAUDE.md Section 7.
 
+## 2. TONE CONTEXT  
+Follow CLAUDE.md Section 2 professional standards with technical verification.
+
+## 3. BACKGROUND DATA
+Apply CLAUDE.md Section 3 workflow system - PLAY mode restrictions and agent protocols.
+
+## 4. DETAILED TASK RULES
 **PREREQUISITES**: Apply all CLAUDE.md rule sets: operation_rules, workflow_rules, agent_rules, gh_rules
+**EXECUTION**: Sequential agent deployment per workflow_rules rule_7
 
-## Workflow Trigger
-Execute when SPRINT BACKLOG meta-issue is empty (all sprint work completed).
+## 5. EXAMPLES
+See CLAUDE.md Section 5 - Evidence-Based Verification patterns and agent role execution examples.
 
-## Execution Protocol
-**Agents**: max → patrick → vicky → max → chris (sequential)
+## 6. CONVERSATION HISTORY  
+Sprint completion triggers PLAY → defect discovery → next PLAN cycle per CLAUDE.md Section 6.
 
-**Implementation Sequence**:
-1. **max**: Infrastructure setup per Max Protocol in agents/max-devops-engineer.md
-2. **patrick**: Code analysis per agents/patrick-auditor.md - structural defects only
-3. **vicky**: User acceptance testing per agents/vicky-acceptance-tester.md 
-4. **max**: Repository cleanup and state restoration
-5. **chris**: Issue audit and consolidation per Chris Protocol in agents/chris-architect.md
+## 7. IMMEDIATE TASK
+Launch agents via Task tool: max → patrick → vicky → max → chris (workflow_rules rule_7)
+- Each agent operates per their protocol in agents/*.md files
+- Apply gh_rules from CLAUDE.md for all GitHub operations
+- NO file modifications - defect discovery only
 
-**Key Constraints**:
-- Sequential execution prevents conflicts
-- Apply gh_rules from CLAUDE.md for all issue operations
-- Defect discovery only - no file modifications
-- Technical evidence required for all issues filed
+## 8. THINKING STEP-BY-STEP
+Before execution: Apply CLAUDE.md Section 8 systematic reasoning and AI failure prevention.
 
-## Success Criteria
-- Sprint completion status reported to user
-- All defects identified and filed as GitHub issues  
-- No file modifications made
-- Ready for next PLAN workflow
+## 9. OUTPUT FORMATTING
+Use CLAUDE.md Section 9 mandatory output structure with technical verification evidence.
 
-## User Integration
-- Focus on user-specified areas for review
-- Address user concerns from initial prompt
+## 10. PREFILLED RESPONSE
+```
+## PLAY WORKFLOW EXECUTION REPORT
+**OPERATION TYPE**: Process
+**WORKFLOW MODE**: PLAY  
+**EVIDENCE PROVIDED**: [Agent reports with GitHub issue URLs]
+```
