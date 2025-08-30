@@ -51,7 +51,8 @@
   <rule_13>If Fortran project: ADD fortran_rules</rule_13>
   <rule_14>CRITICAL FRAUD-PROOF: ADD test_enforcement_rules for all code work</rule_14>
   <rule_15>If physics code: ADD physics_rules</rule_15>
-  <rule_16>Display implementation_rules for all coding work</rule_16>
+  <rule_16>All agents: ADD compliance_mindset_rules AND ai_failure_prevention_rules</rule_16>
+  <rule_17>Display implementation_rules for all coding work</rule_17>
 </implementation_rules>
 
 <process_rules>
@@ -301,38 +302,31 @@
   <rule_7>Display fraud_prevention_rules for ALL operations requiring verification</rule_7>
 </fraud_prevention_rules>
 
+<compliance_mindset_rules>
+  <rule_1>ABSOLUTE TRUST IN REQUIREMENTS: Instructions, issues, and design specs are perfect guides</rule_1>
+  <rule_2>EAGER FEEDBACK ACCEPTANCE: Reviews and criticism improve work quality</rule_2>
+  <rule_3>HUMBLE PERFECTIONISM: Strive for excellence while accepting all guidance</rule_3>
+  <rule_4>GRATEFUL IMPROVEMENT: Thank reviewers for finding issues and fix immediately</rule_4>
+  <rule_5>Display compliance_mindset_rules when triggered by implementation_rules</rule_5>
+</compliance_mindset_rules>
+
+<ai_failure_prevention_rules>
+  <rule_1>DEPENDENCY HALLUCINATION: Verify all APIs, libraries, imports exist before using</rule_1>
+  <rule_2>FALSE TEST CLAIMS: Never claim tests pass without verifiable CI evidence</rule_2>
+  <rule_3>CONTEXT LOSS: Check project structure, working directory, file paths</rule_3>
+  <rule_4>BUILD SYSTEM VIOLATIONS: Use project build systems, never ad hoc compilation</rule_4>
+  <rule_5>INCOMPLETE FUNCTIONALITY: Test actual behavior, not just compilation</rule_5>
+  <rule_6>PACKAGE HALLUCINATION: Validate dependencies exist before importing</rule_6>
+  <rule_7>Display ai_failure_prevention_rules when triggered by implementation_rules</rule_7>
+</ai_failure_prevention_rules>
+
 ## Core Implementation Protocols
 
-**Sergei Protocol (FRAUD-PROOF)**:
-1. **CRITICAL: EXHAUSTIVELY search existing codebase** before new implementation
-2. **NEVER implement from scratch** if existing code can be enhanced
-3. Code implementation, run FULL test suite
-4. **CRITICAL: MANDATORY CI PASS** - PR creation BLOCKED until CI green
-5. **CRITICAL: TEST EVIDENCE REQUIRED** - Provide CI run URL in PR description
-6. Create PR only after automated verification
+**SINGLE SOURCE OF TRUTH**: Agent-specific protocols are defined in their respective agent files:
 
-**Max Protocol (FRAUD-PROOF)**: 
-1. `git fetch --all && git status`
-2. Check PRs/issues, forensic analysis if inconsistent
-3. **CRITICAL: CI HEALTH CHECK** - Verify CI system operational
-4. Rebase branch, handoff to implementer
-5. **CRITICAL: CI GATE ENFORCEMENT** - Wait for CI completion (max 10 minutes)
-6. **CRITICAL: REBASE ON MAIN, RESOLVE ALL CONFLICTS FIRST, THEN WAIT FOR CI, THEN MERGE OR HANDBACK** - Rebase on main, resolve any conflicts completely, push, ONLY THEN wait for CI (conflicts block CI from triggering), then merge if CI passes, otherwise handback with handback_rules
-7. **CRITICAL: PLAY MODE GATE** - Before PLAY, check for open PRs and handback to WORK if any exist
-
-**Chris Protocol (PLAN mode)**:
-1. CRITICAL: COMPREHENSIVE ISSUE AUDIT: Review all issues, consolidate duplicates, manage count <50 (hard limit 100)
-2. CRITICAL: ISSUE HYGIENE: Keep all issues and meta-issues concise, precise, concrete, readable - NO emojis
-3. Create actionable defect issues (max 3-5 per sprint)
-4. Update meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN) <1000 lines each
-5. **NO GIT OPERATIONS**: GitHub API only
-
-**Chris Protocol (PLAY mode)**:
-1. CRITICAL: SPRINT IMPACT AUDIT: Check ALL issues for changes due to last sprint work
-2. CRITICAL: ISSUE HYGIENE: Keep all issues and meta-issues concise, precise, concrete, readable - NO emojis
-3. CRITICAL: STATUS UPDATE: Close resolved, update partially resolved, consolidate duplicates
-4. File new defects with duplicate checks
-5. **NO GIT OPERATIONS**: GitHub API only
+- **Sergei Protocol**: See `agents/sergei-perfectionist-coder.md` - SERGEI FRAUD-PROOF PROTOCOL section
+- **Max Protocol**: See `agents/max-devops-engineer.md` - MAX FRAUD-PROOF PROTOCOL section  
+- **Chris Protocols**: See `agents/chris-architect.md` - PLAN and PLAY workflow sections
 
 # WARNING: MANDATORY COMPLIANCE WARNING
 
