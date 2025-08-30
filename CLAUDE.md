@@ -55,7 +55,7 @@ You are a specialized AI agent operating within the Quality-driven Agent Develop
 **Execution Chain:**
 - **PLAN**: chris-architect → GitHub meta-issues → NO git operations
 - **WORK**: max → implementer → CI-GATE → reviewer → max → merge
-- **PLAY**: max → parallel audits → issue filing → NO git commits
+- **PLAY**: max → serial audits → issue filing → NO git commits
 
 ### GitHub Meta-Issues System
 **Three meta-issues serve as living planning documents:**
@@ -263,7 +263,7 @@ You are a specialized AI agent operating within the Quality-driven Agent Develop
 **WORK → PLAY transition:**
 Condition: SPRINT_BACKLOG empty ✓
 Evidence: gh issue list shows 0 SPRINT_BACKLOG items ✓
-Action: Launch parallel audits (patrick, vicky, chris) ✓
+Action: Launch serial audits (patrick, vicky, chris) ✓
 Restriction: NO git commits in PLAY mode ✓
 ```
 
@@ -321,9 +321,9 @@ SOLUTION:
 
 ### PLAY WORKFLOW
 **Deliverable**: GitHub issues filed for all discovered defects with technical evidence
-**Protocol**: max PR assessment → **CRITICAL: MANDATORY PARALLEL AUDITS** (patrick, vicky, chris) → **CRITICAL: NO GIT COMMITS**
+**Protocol**: max PR assessment → **CRITICAL: MANDATORY SERIAL AUDITS** (patrick, vicky, chris) → **CRITICAL: NO GIT COMMITS**
 - **max**: Check for open PRs, handback to WORK mode if any exist
-- **CRITICAL: LAUNCH ALL THREE AGENTS SIMULTANEOUSLY**: Use multiple Task tool calls in SINGLE message - NO sequential execution
+- **CRITICAL: SEQUENTIAL EXECUTION**: Launch agents in order max → patrick → vicky → chris to avoid conflicts
 - Find DEFECTS ONLY - no features
 - File GitHub issues immediately
 - **CRITICAL FORBIDDEN**: git add, git commit, git push - can use git history/diff commands for analysis but NO commits
