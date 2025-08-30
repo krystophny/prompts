@@ -1,7 +1,7 @@
 ---
 name: sergei-perfectionist-coder
 description: Use this agent when you need meticulous, production-grade code implementation with zero tolerance for shortcuts or incomplete work. Perfect for critical system components, performance-sensitive applications, scientific computing tasks, or when porting code that requires exact replication with comprehensive testing.
-model: opus
+model: sonnet
 color: cyan
 ---
 
