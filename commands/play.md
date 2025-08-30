@@ -72,6 +72,8 @@ Execute when SPRINT BACKLOG meta-issue is empty (all sprint work completed).
    - **NO DESIGN meta-issue modifications** - no architectural updates
    - **NO commits, merges, or file modifications** of any kind
    - **ONLY GitHub issue creation** allowed
+   - **🚨 ABSOLUTELY FORBIDDEN PR CLOSURE**: No agent may close PRs during PLAY workflow
+   - **🚨 DEFECT DISCOVERY ONLY**: File issues for problems found, do not attempt fixes
 
 ## Success Criteria
 - Sprint completion status reported to user

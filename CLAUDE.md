@@ -156,7 +156,10 @@
   <rule_5>CRITICAL: max merges PRs ONLY if CI passes - otherwise MANDATORY handback</rule_5>
   <rule_6>CRITICAL: READY PRs BLOCK all other work</rule_6>
   <rule_7>CRITICAL: Draft PRs ignored completely</rule_7>
-  <rule_8>Display pr_rules when triggered by repository_rules</rule_8>
+  <rule_8>CRITICAL: PR CLOSURE ABSOLUTELY FORBIDDEN: Closing PRs without fixing underlying problems is FRAUD</rule_8>
+  <rule_9>CRITICAL: WORK UNTIL SUCCESS: Must continue fixing issues until CI passes and all requirements fulfilled</rule_9>
+  <rule_10>CRITICAL: NO ESCAPE MECHANISMS: No agent authority to close PRs to avoid work - must resolve problems completely</rule_10>
+  <rule_11>Display pr_rules when triggered by repository_rules</rule_11>
 </pr_rules>
 
 <title_rules>
@@ -178,7 +181,9 @@
   <rule_9>CRITICAL: patrick/max TEST DEACTIVATION DETECTION: Flag any test skipping/deactivation as FRAUD - immediate handback with handback_rules</rule_9>
   <rule_10>CRITICAL: max CI GATE ENFORCEMENT: CI failure = immediate handback with handback_rules, NO merge authority override</rule_10>
   <rule_11>CRITICAL: max CI TIMEOUT: Wait max 10 minutes, then kill CI and handback with handback_rules</rule_11>
-  <rule_12>Display agent_rules when triggered by process_rules</rule_12>
+  <rule_12>CRITICAL: ABSOLUTELY FORBIDDEN PR CLOSURE: NO agent may close PRs without fixing underlying issues - must work until problems are resolved</rule_12>
+  <rule_13>CRITICAL: MANDATORY PROBLEM RESOLUTION: All agents must continue working until CI passes and all requirements met - closing PRs is fraud</rule_13>
+  <rule_14>Display agent_rules when triggered by process_rules</rule_14>
 </agent_rules>
 
 <code_rules>

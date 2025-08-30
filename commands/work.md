@@ -66,5 +66,7 @@ Execute when issues exist in SPRINT BACKLOG meta-issue or current branch work ex
 - **🚨 Missing CI evidence: HARD BLOCK - No PR merge without verifiable CI proof**
 - **🚨 Fraudulent test claims: IMMEDIATE STRUCTURED HANDBACK** with PROBLEM/EVIDENCE/SOLUTION format
 - Critical review issues: Must fix before merge
+- **🚨 PR CLOSURE ABSOLUTELY FORBIDDEN**: Must continue working until all problems resolved completely
+- **🚨 NO ESCAPE MECHANISMS**: Continue handback cycles until CI passes and requirements met
 
 **BATCH MODE REMINDER**: Execute completely autonomously - no stopping, no questions, no user interaction required.
