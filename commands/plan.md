@@ -1,35 +1,40 @@
-# 1. COMMAND DEFINITION
-
 # PLAN WORKFLOW - Strategic Sprint Planning
 
-**AGENT DELEGATION**: chris-architect EXCLUSIVELY via Task tool - NO role-playing
-**PREREQUISITES**: Apply Chris Protocols from `/home/ert/code/prompts/agents/chris-architect.md`
+## 1. TASK CONTEXT: Command Purpose
 
 **PRIMARY FUNCTION**: Strategic sprint planning with fraud-proof validation through systematic issue management and evidence-based architectural decisions.
 
-**CORE EXECUTION**: GitHub meta-issue management, issue consolidation, and sprint goal establishment with CI-validated evidence through Task tool delegation to chris-architect.
+**AGENT DELEGATION**: chris-architect EXCLUSIVELY via Task tool - NO role-playing
+**PREREQUISITES**: Apply Chris Protocols from `agents/chris-architect.md`
 
-# 2. VERIFICATION REQUIREMENTS
+**CORE EXECUTION**: GitHub meta-issue management, issue consolidation, and sprint goal establishment through Task tool delegation to chris-architect.
 
-**CRITICAL: FRAUD-PROOF PLANNING VALIDATION**
-- **ZERO TRUST ISSUE CLAIMS**: All issue status verified through GitHub API with documented evidence
-- **AUTOMATED ISSUE HYGIENE**: Issue quality enforced through systematic audit and consolidation
-- **MANDATORY EVIDENCE DOCUMENTATION**: All sprint decisions backed by verifiable GitHub issue analysis
-- **COMPREHENSIVE AUDIT VALIDATION**: Issue management verified through duplicate detection systems
+**XML COMMAND PROTOCOL:**
+<plan_command>
+  chris-architect exclusive authority for meta-issues
+  GitHub API operations only - NO git operations
+  Issue consolidation prevents chaos
+  Sprint planning with evidence-based decisions
+  NEVER create random markdown files for progress reports
+</plan_command>
 
-**PLANNING VERIFICATION PROTOCOL**:
-1. **PRE-PLANNING ISSUE AUDIT**: GitHub API analysis for current issue state verification
-2. **SYSTEMATIC ISSUE CONSOLIDATION**: Automated duplicate detection and merging protocols
-3. **EVIDENCE-BASED PRIORITIZATION**: Sprint decisions backed by verifiable metrics
-4. **META-ISSUE VALIDATION**: Sprint backlog accuracy through cross-referencing systems
+## 2. TONE CONTEXT: Command Style
 
-**LOCAL-FIRST CI INTEGRATION**:
-- Pre-planning CI health check through local validation systems
-- Planning decision validation through CI-integrated analysis tools
-- Meta-issue update verification through automated consistency checking
-- Post-planning CI validation through systematic verification protocols
+**STRATEGIC AND SYSTEMATIC**
+- Evidence-based architectural decisions
+- Systematic issue consolidation and hygiene
+- Clear sprint goals and priorities
+- GitHub API operations exclusively
 
-# 3. EXECUTION PROTOCOLS
+## 3. BACKGROUND DATA: Planning Context
+
+**FRAUD-PROOF PLANNING VALIDATION**
+- **ZERO TRUST CLAIMS**: All issue status verified through GitHub API
+- **AUTOMATED HYGIENE**: Issue quality enforced through systematic audit
+- **EVIDENCE-BASED DECISIONS**: Sprint planning backed by verifiable analysis
+- **COMPREHENSIVE AUDIT**: Issue management verified through duplicate detection
+
+## 4. DETAILED TASK DESCRIPTION: Planning Protocols
 
 ## Workflow Trigger Conditions
 Execute after PLAY workflow completion OR user planning request.

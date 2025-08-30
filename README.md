@@ -78,4 +78,6 @@ play
 - **agents/**: Role-specific protocols for each specialist
 - **commands/**: Workflow orchestration patterns
 
+**IMPORTANT:** This framework prohibits creating random markdown files for progress reports or status updates. All work should modify existing structured documentation only.
+
 **Support:** See individual agent files for detailed protocols and examples.

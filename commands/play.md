@@ -3,6 +3,14 @@
 ## 1. TASK CONTEXT
 Execute defect discovery workflow with fraud-proof evidence collection per CLAUDE.md Section 7.
 
+**XML COMMAND PROTOCOL:**
+<play_command>
+  Sequential agent execution mandatory
+  Defect discovery only - NO file modifications
+  GitHub API operations for issue filing
+  NEVER create random markdown files for progress reports
+</play_command>
+
 ## 2. TONE CONTEXT  
 Follow CLAUDE.md Section 2 professional standards with technical verification.
 

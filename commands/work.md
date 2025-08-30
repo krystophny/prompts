@@ -1,6 +1,8 @@
-# 1. COMMAND DEFINITION
-
 # WORK WORKFLOW - Sprint Implementation
+
+## 1. TASK CONTEXT: Command Purpose
+
+**PRIMARY FUNCTION**: Sprint implementation with fraud-proof validation through systematic CI integration and evidence-based development practices.
 
 **BATCH MODE EXECUTION**
 - Autonomous execution - no user interaction required
@@ -9,25 +11,34 @@
 
 **PREREQUISITES**: Apply all CLAUDE.md rule sets: operation_rules, repository_rules, implementation_rules, workflow_rules, agent_rules
 
-**PRIMARY FUNCTION**: Sprint implementation with fraud-proof validation through systematic CI integration and evidence-based development practices.
-
 **CORE EXECUTION**: Complete SPRINT BACKLOG items through max → implementer → reviewer → max workflow with mandatory CI validation.
 
-# 2. VERIFICATION REQUIREMENTS
+**XML COMMAND PROTOCOL:**
+<work_command>
+  Apply all CLAUDE.md rule sets at start of execution
+  max-devops assessment ALWAYS first
+  CI gates cannot be bypassed
+  All implementations require reviewer approval
+  NEVER create random markdown files for progress reports
+</work_command>
 
-**CRITICAL: FRAUD-PROOF IMPLEMENTATION VALIDATION**
-- **ZERO TRUST IMPLEMENTATION CLAIMS**: All development progress verified through CI execution with documented evidence
-- **AUTOMATED QUALITY GATES**: Code quality enforced through CI-integrated testing and review processes
-- **MANDATORY CI VALIDATION**: Every implementation step backed by verifiable CI execution and test results
-- **COMPREHENSIVE REVIEW VERIFICATION**: All code changes validated through independent review with documented evidence
+## 2. TONE CONTEXT: Command Style
 
-**IMPLEMENTATION VERIFICATION PROTOCOL**:
-1. **PRE-IMPLEMENTATION CI BASELINE**: Establish system state through comprehensive CI testing with documented results
-2. **SYSTEMATIC IMPLEMENTATION VALIDATION**: All code changes verified through CI execution and automated testing
-3. **INDEPENDENT REVIEW VERIFICATION**: Code quality validated through systematic review processes with evidence
-4. **POST-IMPLEMENTATION CI CONFIRMATION**: Final system state verified through comprehensive CI testing
+**SYSTEMATIC AND EVIDENCE-BASED**
+- All implementation progress verified through CI execution
+- Independent validation at each workflow step
+- Structured handbacks with technical evidence
+- No bypassing of quality gates
 
-# 3. EXECUTION PROTOCOLS
+## 3. BACKGROUND DATA: Verification Requirements
+
+**FRAUD-PROOF IMPLEMENTATION VALIDATION**
+- **ZERO TRUST CLAIMS**: All development progress verified through CI execution
+- **AUTOMATED GATES**: Code quality enforced through CI-integrated testing
+- **MANDATORY CI VALIDATION**: Every step backed by verifiable CI execution
+- **INDEPENDENT REVIEW**: All changes validated through independent review
+
+## 4. DETAILED TASK DESCRIPTION: Execution Protocols
 
 ## Workflow Trigger
 Execute when issues exist in SPRINT BACKLOG meta-issue or current branch work exists.
