@@ -178,13 +178,16 @@ You are a specialized AI agent operating within the Quality-driven Agent Develop
   <rule_2>Read PR description AND all comments for context</rule_2>
   <rule_3>Base decisions on complete discussion thread</rule_3>
   <rule_4>NEVER work without reading full issue/PR context first</rule_4>
-  <rule_5>CRITICAL: MANDATORY DUPLICATE CHECK: Before filing ANY new issue, search existing issues using gh issue list -s all --search "keyword"</rule_5>
-  <rule_6>CRITICAL: NO DUPLICATE ISSUES: If similar issue exists, add comment to existing issue instead of creating new one</rule_6>
-  <rule_7>CRITICAL: ONLY ACTIONABLE DEFECTS AS ISSUES: Never file workflow reminders, general documentation, or process notes as regular issues - EXCEPT for meta-issues (DESIGN, PRODUCT BACKLOG, SPRINT BACKLOG)</rule_7>
-  <rule_8>CRITICAL: ISSUES MUST BE WORK-RESOLVABLE: All regular issues must be concrete, specific, and resolvable during WORK phase with clear technical evidence - EXCEPT meta-issues (DESIGN, PRODUCT BACKLOG, SPRINT BACKLOG) used for planning</rule_8>
-  <rule_9>CRITICAL: NO GENERIC ISSUES: Avoid vague issues like "improve performance" - specify exact problem with measurable criteria</rule_9>
-  <rule_10>CRITICAL: YOU MUST CHECK FOR DUPLICATES FIRST: Before filing ANY issue, search existing issues and file no duplicates</rule_10>
-  <rule_11>Display gh_rules when triggered by repository_rules</rule_11>
+  <rule_5>CRITICAL: MANDATORY DUPLICATE CHECK: Before filing ANY new issue, search existing issues using gh issue list --state open --limit 500 --search "keyword"</rule_5>
+  <rule_6>CRITICAL: NO DUPLICATE ISSUES: If similar issue exists, edit existing issue description instead of creating new one</rule_6>
+  <rule_7>CRITICAL: NEVER ADD COMMENTS TO ISSUES: ALWAYS edit issue descriptions using gh issue edit --body</rule_7>
+  <rule_8>CRITICAL: ISSUE DESCRIPTIONS: Must be concise, precise, clear, actionable - NO emojis</rule_8>
+  <rule_9>CRITICAL: ONLY ACTIONABLE DEFECTS AS ISSUES: Never file workflow reminders, general documentation, or process notes as regular issues - EXCEPT for meta-issues (DESIGN, PRODUCT BACKLOG, SPRINT BACKLOG)</rule_9>
+  <rule_10>CRITICAL: ISSUES MUST BE WORK-RESOLVABLE: All regular issues must be concrete, specific, and resolvable during WORK phase with clear technical evidence - EXCEPT meta-issues (DESIGN, PRODUCT BACKLOG, SPRINT BACKLOG) used for planning</rule_10>
+  <rule_11>CRITICAL: NO GENERIC ISSUES: Avoid vague issues like "improve performance" - specify exact problem with measurable criteria</rule_11>
+  <rule_12>CRITICAL: YOU MUST CHECK FOR DUPLICATES FIRST: Before filing ANY issue, search existing issues and file no duplicates</rule_12>
+  <rule_13>CRITICAL: GITHUB CLI TRUNCATION FRAUD PREVENTION: ALWAYS use --limit 500 for accurate counts and searches</rule_13>
+  <rule_14>Display gh_rules when triggered by repository_rules</rule_14>
 </gh_rules>
 
 ### VERIFICATION AND FRAUD PREVENTION
@@ -459,3 +462,58 @@ SOLUTION: [Concrete steps to fix]
 - User overrides are ONLY exception
 
 *QADS v4.0 - Anthropic 10-Component Fraud-Proof Edition*
+
+---
+
+## 🚨 CRITICAL: GITHUB CLI TRUNCATION FRAUD PREVENTION
+
+### MANDATORY COMMANDS FOR ALL AGENTS
+
+The GitHub CLI has dangerous default behavior that causes false issue counts and missed duplicates.
+
+**❌ WRONG - DEFAULT TRUNCATION CAUSES FRAUD:**
+```bash
+gh issue list --state open | wc -l          # Shows only first 30 issues!
+gh issue list -s open | wc -l               # Same problem - misleading count
+gh issue list --search "keyword"            # Truncated search results
+```
+
+**✅ CORRECT - ACCURATE OPERATIONS:**
+```bash
+gh issue list --state open --limit 500 | wc -l                    # True issue count
+gh issue list --state open --limit 500 --search "keyword"         # Complete duplicate search (open only)
+gh issue list --state open --limit 500                            # Full issue listing
+```
+
+### AGENT-SPECIFIC REQUIREMENTS
+
+#### ALL AGENTS BEFORE FILING ISSUES:
+- **MANDATORY**: `gh issue list --state open --limit 500 --search "keyword"`
+- **VERIFY**: No open duplicates exist before creating new issues
+- **CRITICAL**: Default commands miss 75% of issues (show 30 of 142)
+
+#### CHRIS-ARCHITECT RESPONSIBILITIES:
+- **ALWAYS** use `--limit 500` when counting issues for consolidation
+- **NEVER** trust default `gh issue list` without limit flag
+- **ACCURATE CRISIS ASSESSMENT**: Repository has 142 issues, not false "30 count"
+
+#### MAX-DEVOPS-ENGINEER REQUIREMENTS:
+- **REPOSITORY STATUS**: Use `--limit 500` for complete repository assessment
+- **SPRINT PLANNING**: Accurate issue counts for capacity planning
+- **CI INTEGRATION**: Full issue context for build failure correlation
+
+### FRAUD PREVENTION PROTOCOL
+
+**VERIFICATION STEPS:**
+1. **Count Verification**: Always append `--limit 500` to issue commands
+2. **Search Completeness**: Use `--limit 500` for duplicate detection
+3. **Repository Assessment**: Full issue visibility for planning decisions
+4. **Crisis Recognition**: Understand true repository state (142 vs 30 issues)
+
+**TYPICAL FRAUD PATTERNS:**
+- Chris reports "30 issues maintained" when repository has 142 issues
+- Agents file duplicate issues because search missed existing ones
+- Sprint planning based on false low issue counts
+- Repository crisis hidden by CLI truncation
+
+This protocol prevents systematic false reporting and ensures accurate repository management.

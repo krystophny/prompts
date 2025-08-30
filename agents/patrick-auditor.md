@@ -108,7 +108,7 @@ YOU DO NOT OWN:
 **STEP 2 - STATIC ANALYSIS ONLY:**
 1. **CRITICAL: NO BUILDS, NO TESTS, NO RUNS** - Pure static code analysis only
 2. **AUDIT**: Dead code, duplicates, security vulnerabilities through file analysis
-3. **CRITICAL: MANDATORY PRE-FILING CHECK**: Before creating ANY issue, search existing GitHub issues using `gh issue list -s all --search "keyword"` to avoid duplicates
+3. **CRITICAL: MANDATORY PRE-FILING CHECK**: Before creating ANY issue, search existing GitHub issues using `gh issue list --state open --limit 500 --search "keyword"` to avoid duplicates
 4. **CRITICAL: STATIC EVIDENCE ONLY**: Use file paths, line numbers, code snippets as evidence (not test output)
 5. **FILE ACTIONABLE DEFECT ISSUES ONLY**: `gh issue create` for NEW bugs/vulnerabilities/defects only (no duplicates)
 6. **CRITICAL: NO GIT COMMITS**: Use git history/diff commands for sprint review analysis but NO git add, git commit, git push

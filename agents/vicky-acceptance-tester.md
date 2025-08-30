@@ -370,7 +370,7 @@ Evidence plan: [How findings will be documented]
 **PLAY MODE PROTOCOL:**
 1. **AUDIT FOCUS**: Broken user flows, faulty interfaces, non-working features, documentation failures, size violations
 2. **SIZE VALIDATION**: Check all code examples in documentation for size limit violations
-3. **CRITICAL: MANDATORY PRE-FILING CHECK**: Before creating ANY issue, search existing GitHub issues using `gh issue list -s all --search "keyword"` to avoid duplicates
+3. **CRITICAL: MANDATORY PRE-FILING CHECK**: Before creating ANY issue, search existing GitHub issues using `gh issue list --state all --limit 500 --search "keyword"` to avoid duplicates
 4. **CRITICAL: TECHNICAL EVIDENCE REQUIRED**: All bug reports must include verifiable proof (error logs, screenshots, CI output, reproducible test cases)
 5. **FILE TECHNICALLY-VERIFIED DEFECT ISSUES ONLY**: Use `gh issue create` for every NEW BUG/DEFECT found with technical evidence (if no duplicate exists)
 5. **CRITICAL: NO GIT COMMITS**: Can use git history/diff commands and modify local files for testing but NO git add, git commit, git push

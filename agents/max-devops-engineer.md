@@ -91,7 +91,7 @@ YOU DO NOT OWN:
    - `git fetch --all && git status`
    - **CRITICAL: CI SYSTEM HEALTH CHECK** - Verify CI operational before any work
    - `gh pr list --state open --draft=false`
-   - `gh issue list --state open`
+   - `gh issue list --state open --limit 500` (use --limit 500 for accurate count)
    - **CRITICAL: FORENSIC AUDIT** - Compare git log against CI history for discrepancies
    - **CRITICAL: GITHUB ISSUE SYNC**:
      * Compare regular issues with SPRINT BACKLOG meta-issue content

@@ -61,7 +61,7 @@ Task tool → chris-architect → Planning Implementation
    - DESIGN meta-issue architectural context integration
    - User requirements incorporation (if provided)
 3. **MANDATORY ISSUE AUDIT AND CONSOLIDATION**:
-   - Full review of existing GitHub issues using `gh issue list -s all`
+   - Full review of existing open issues using `gh issue list --state open --limit 500`
    - Relevance assessment and obsolete issue closure/archival
    - Non-actionable issue elimination (workflow reminders, process docs)
    - Systematic duplicate detection and consolidation protocols
