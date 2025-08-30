@@ -1,10 +1,10 @@
-# PLAN WORKFLOW - Sprint Planning Meeting
+# PLAN WORKFLOW - Sprint Planning
+
+**AGENT**: chris-architect exclusively 
+**PREREQUISITES**: Apply Chris Protocols from agents/chris-architect.md
 
 ## Workflow Trigger
-Execute this command after PLAY workflow completion or when user requests planning.
-
-## Execution Protocol
-**Agent**: chris-architect EXCLUSIVELY
+Execute after PLAY workflow completion or when user requests planning.
 
 **Autonomous Execution Sequence**:
 1. **Sprint Transition**: Assume current sprint complete, begin next sprint planning
