@@ -15,7 +15,7 @@
 Execute when SPRINT BACKLOG meta-issue is empty (all sprint work completed).
 
 ## Execution Protocol
-**Actors**: max → parallel audits (patrick, vicky, chris)
+**Actors**: max → patrick → vicky → max → chris (sequential)
 
 **Autonomous Execution Sequence**:
 1. **Infrastructure Setup** (max):
@@ -29,18 +29,18 @@ Execute when SPRINT BACKLOG meta-issue is empty (all sprint work completed).
    - Assess infrastructure health
    - Enable parallel audit execution
 
-2. **🚨 MANDATORY PARALLEL AGENT EXECUTION** (ALL agents work concurrently AFTER max tests):
-   - **🚨 CLAUDE MUST LAUNCH ALL THREE AGENTS SIMULTANEOUSLY**: Use multiple Task tool calls in SINGLE message to launch patrick-auditor, vicky-acceptance-tester, and chris-architect in parallel
-   - **🚨 NO SEQUENTIAL EXECUTION**: Never run agents one after another - always launch together
-   - **patrick**: Dead code detection, structural defect identification
-   - **vicky**: Bug detection, user experience validation, documentation reality checks  
-   - **chris**: Sprint goal evaluation + architectural review + design alignment assessment
+2. **🚨 SEQUENTIAL AGENT EXECUTION** (agents work in order to complement each other):
+   - **patrick**: Static code analysis only - dead code, structural defects (NO builds/tests/runs)
+   - **vicky**: Manual testing according to documentation - build and test extensively
+   - **max**: Repository cleanup - restore pristine state after vicky's testing
+   - **chris**: Architecture review + consolidate issues filed during THIS PLAY run only
    - Focus areas: Incorporate user-specified review areas from initial prompt
 
-3. **Sprint Goal Evaluation** (chris):
+3. **Issue Consolidation and Sprint Evaluation** (chris - FINAL STEP):
    - Review sprint goal and Definition of Done from DESIGN meta-issue
    - Assess whether sprint objectives achieved
-   - **Report to user**: Clear sprint completion status
+   - **Consolidate issues filed during THIS PLAY run** - remove duplicates, close non-actionable
+   - **Report to user**: Clear sprint completion status with consolidated issue summary
    - Document shortcomings and incomplete objectives
 
 4. **ACTIONABLE DEFECT ISSUE Filing** (ALL agents):
@@ -54,7 +54,7 @@ Execute when SPRINT BACKLOG meta-issue is empty (all sprint work completed).
    - chris: Architectural drift and sprint goal gap issues with harsh blame assignments
    - Use SHORT titles and BRUTAL descriptions: "Fix this garbage", "Stop breaking X", "Implement Y properly"
    - **🚨 NEVER FILE**: Workflow reminders, process documentation, general improvements - add to SPRINT BACKLOG meta-issue instead
-   - **🚨 END OF PLAY CONSOLIDATION**: chris performs final duplicate check AND closes all non-actionable issues
+   - **🚨 THIS PLAY CONSOLIDATION ONLY**: chris consolidates issues filed during this specific PLAY run (not all issues like in PLAN mode)
 
 5. **Quality Focus Areas**:
    - ✅ Bugs and broken functionality

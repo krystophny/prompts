@@ -122,7 +122,7 @@
   <rule_4>NO draft PRs - all PRs ready for review</rule_4>
   <rule_5>CRITICAL: READY PRs BLOCK all other work AND failing PRs BLOCK their own merge - fix first</rule_5>
   <rule_6>CRITICAL: Draft PRs ignored completely</rule_6>
-  <rule_7>CRITICAL: MANDATORY PARALLEL EXECUTION IN PLAY: Always launch patrick-auditor, vicky-acceptance-tester, and chris-architect simultaneously using multiple Task calls in single message</rule_7>
+  <rule_7>CRITICAL: SEQUENTIAL EXECUTION IN PLAY: Execute agents in order max -> patrick -> vicky -> max -> chris to avoid conflicts and complement work</rule_7>
   <rule_8>Display workflow_rules when triggered by process_rules</rule_8>
 </workflow_rules>
 
