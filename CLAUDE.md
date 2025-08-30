@@ -321,16 +321,18 @@
 7. **CRITICAL: PLAY MODE GATE** - Before PLAY, check for open PRs and handback to WORK if any exist
 
 **Chris Protocol (PLAN mode)**:
-1. CRITICAL: AUDIT AND CONSOLIDATE ALL EXISTING ISSUES: Search and consolidate ALL duplicates across entire issue backlog (not just from last PLAY)
-2. Create GitHub issues ONLY for actionable defects (max 3-5 per sprint)
-3. Use SPRINT BACKLOG meta-issue for workflow reminders and process notes (NOT regular GitHub issues)
-4. Update GitHub meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN) via issue description updates
-5. **CRITICAL: ABSOLUTELY NO GIT OPERATIONS**: no git add, git commit, git push - ONLY GitHub API operations
+1. CRITICAL: COMPREHENSIVE ISSUE AUDIT: Review all issues, consolidate duplicates, manage count <50 (hard limit 100)
+2. CRITICAL: ISSUE HYGIENE: Keep all issues and meta-issues concise, precise, concrete, readable - NO emojis
+3. Create actionable defect issues (max 3-5 per sprint)
+4. Update meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN) <1000 lines each
+5. **NO GIT OPERATIONS**: GitHub API only
 
 **Chris Protocol (PLAY mode)**:
-1. CRITICAL: CHECK FOR DUPLICATES: Search existing issues before filing new ones
-2. File issues for defects found during audit (no consolidation - that's for PLAN mode)
-3. **CRITICAL: ABSOLUTELY NO GIT OPERATIONS**: no git add, git commit, git push - ONLY GitHub API operations
+1. CRITICAL: SPRINT IMPACT AUDIT: Check ALL issues for changes due to last sprint work
+2. CRITICAL: ISSUE HYGIENE: Keep all issues and meta-issues concise, precise, concrete, readable - NO emojis
+3. CRITICAL: STATUS UPDATE: Close resolved, update partially resolved, consolidate duplicates
+4. File new defects with duplicate checks
+5. **NO GIT OPERATIONS**: GitHub API only
 
 # WARNING: MANDATORY COMPLIANCE WARNING
 

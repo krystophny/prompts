@@ -33,15 +33,15 @@ Execute when SPRINT BACKLOG meta-issue is empty (all sprint work completed).
    - **patrick**: Static code analysis only - dead code, structural defects (NO builds/tests/runs)
    - **vicky**: Manual testing according to documentation - build and test extensively
    - **max**: Repository cleanup - restore pristine state after vicky's testing
-   - **chris**: Architecture review + consolidate issues filed during THIS PLAY run only
+   - **chris**: Architecture review + comprehensive issue audit and consolidation
    - Focus areas: Incorporate user-specified review areas from initial prompt
 
-3. **Issue Consolidation and Sprint Evaluation** (chris - FINAL STEP):
-   - Review sprint goal and Definition of Done from DESIGN meta-issue
-   - Assess whether sprint objectives achieved
-   - **Consolidate issues filed during THIS PLAY run** - remove duplicates, close non-actionable
-   - **Report to user**: Clear sprint completion status with consolidated issue summary
-   - Document shortcomings and incomplete objectives
+3. **Issue Audit and Sprint Evaluation** (chris - FINAL STEP):
+   - **SPRINT IMPACT AUDIT**: Check ALL issues for changes due to last sprint work
+   - **ISSUE HYGIENE**: Keep all issues and meta-issues concise, precise, concrete, readable - NO emojis
+   - **STATUS UPDATE**: Close resolved, update partially resolved, consolidate duplicates
+   - **SPRINT GOAL ASSESSMENT**: Verify sprint objectives achieved
+   - **Report to user**: Sprint completion status with issue summary
 
 4. **ACTIONABLE DEFECT ISSUE Filing** (ALL agents):
    - **🚨 TECHNICAL EVIDENCE MANDATORY**: All defects MUST include verifiable proof (CI logs, test output, error screenshots) - NO GENERIC ISSUES allowed
@@ -54,7 +54,7 @@ Execute when SPRINT BACKLOG meta-issue is empty (all sprint work completed).
    - chris: Architectural drift and sprint goal gap issues with harsh blame assignments
    - Use SHORT titles and BRUTAL descriptions: "Fix this garbage", "Stop breaking X", "Implement Y properly"
    - **🚨 NEVER FILE**: Workflow reminders, process documentation, general improvements - add to SPRINT BACKLOG meta-issue instead
-   - **🚨 THIS PLAY CONSOLIDATION ONLY**: chris consolidates issues filed during this specific PLAY run (not all issues like in PLAN mode)
+   - **SPRINT IMPACT CONSOLIDATION**: chris checks all issues for sprint-related changes and enforces issue hygiene
 
 5. **Quality Focus Areas**:
    - ✅ Bugs and broken functionality
