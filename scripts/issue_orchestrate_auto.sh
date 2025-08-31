@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-#!/usr/bin/env bash
 # Fully autonomous issue loop orchestrator powered by Codex CLI (non-interactive)
 # - Cleans to main (no untracked)
 # - Checks relevance and may auto-close

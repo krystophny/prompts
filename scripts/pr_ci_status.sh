@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-#!/usr/bin/env bash
 # Thin wrapper to wait for PR checks using GitHub CLI.
 # Usage: scripts/pr_ci_status.sh <pr_number> [--watch]
 set -euo pipefail
