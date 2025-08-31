@@ -168,26 +168,18 @@ process_existing_pr() {
 
   # Ensure branch is up to date and conflict-free relative to base before watching checks
   rebase_and_resolve_conflicts "$pr_number" "$branch" || true
-  # If there are no required checks, merge immediately; otherwise, watch checks then merge/remediate
-  local req_json req_count
-  req_json=$(gh pr checks "$pr_number" --required --json bucket 2>/dev/null || echo "[]")
-  req_count=$(echo "$req_json" | jq -r 'length' 2>/dev/null || echo 0)
-  if [[ "$req_count" -eq 0 ]]; then
-    echo "No required checks on PR #$pr_number; proceeding to merge." >&2
+  # Watch checks then merge/remediate
+  echo "Waiting for CI on PR #$pr_number" >&2
+  if gh pr checks "$pr_number" --watch; then
     "$self_dir/pr_merge.sh" "$pr_number" "$merge_method"
   else
-    echo "Waiting for CI on PR #$pr_number" >&2
-    if gh pr checks "$pr_number" --required --watch; then
+    echo "CI not successful for PR #$pr_number; handing back to Codex for remediation." >&2
+    if codex_ci_fix_loop "$pr_number" "$inum" "$branch"; then
+      echo "CI turned green after remediation. Merging PR #$pr_number." >&2
       "$self_dir/pr_merge.sh" "$pr_number" "$merge_method"
     else
-      echo "CI not successful for PR #$pr_number; handing back to Codex for remediation." >&2
-      if codex_ci_fix_loop "$pr_number" "$inum" "$branch"; then
-        echo "CI turned green after remediation. Merging PR #$pr_number." >&2
-        "$self_dir/pr_merge.sh" "$pr_number" "$merge_method"
-      else
-        echo "CI still failing after remediation attempts; cleaning up PR #$pr_number." >&2
-        "$self_dir/pr_cleanup.sh" "$pr_number"
-      fi
+      echo "CI still failing after remediation attempts; cleaning up PR #$pr_number." >&2
+      "$self_dir/pr_cleanup.sh" "$pr_number"
     fi
   fi
 }
@@ -471,7 +463,7 @@ Steps:
 3) Add/adjust tests as needed to prevent regression; run locally to green.
 4) Stage specific files only; commit with clear message; push.
 5) If there is nothing actionable (external flake), document minimal retry (e.g., rebase to retrigger) and proceed.
-6) Monitor PR checks until completion with: `gh pr checks <PR#> --required --watch` (prefer this over generic "wait for CI on GitHub").
+6) Monitor PR checks until completion with: `gh pr checks <PR#> --watch` (prefer this over generic "wait for CI on GitHub").
 
 Rules:
 - No random markdown reports. Put evidence in commit messages or PR body if appropriate.
@@ -498,16 +490,8 @@ EOF
       fi
     fi
 
-    # If there are no required checks, treat as successful and return
-    local req_json req_count
-    req_json=$(gh pr checks "$pr_num" --required --json bucket 2>/dev/null || echo "[]")
-    req_count=$(echo "$req_json" | jq -r 'length' 2>/dev/null || echo 0)
-    if [[ "$req_count" -eq 0 ]]; then
-      echo "No required checks; skipping CI wait." >&2
-      return 0
-    fi
     echo "Waiting for CI after attempt $attempt..." >&2
-    if gh pr checks "$pr_num" --required --watch; then
+    if gh pr checks "$pr_num" --watch; then
       return 0
     fi
     ((attempt++))

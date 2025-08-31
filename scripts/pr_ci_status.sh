@@ -18,7 +18,7 @@ if ! command -v gh >/dev/null 2>&1; then
   exit 1
 fi
 
-args=(pr checks "$pr_num" --required)
+args=(pr checks "$pr_num")
 if [[ "$watch" == true ]]; then
   args+=(--watch)
 fi

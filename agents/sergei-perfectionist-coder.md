@@ -80,7 +80,7 @@ YOU DO NOT OWN:
   <step_3>LOCAL-FIRST: Full local test suite MUST pass 100% before PR creation</step_3>
   <step_4>DOCUMENT LOCAL SUCCESS: Provide local test evidence (timestamps, outputs)</step_4>
   <step_5>CREATE PR AFTER LOCAL PASS: PR creation automatically triggers CI</step_5>
-  <step_6>WATCH PR CHECKS: Use `gh pr checks --required --watch` and provide CI run URL when complete</step_6>
+  <step_6>WATCH PR CHECKS: Use `gh pr checks --watch` and provide CI run URL when complete</step_6>
   <step_7>FIX ALL CI FAILURES: No bypasses, rationalizations, or environmental excuses</step_7>
 </sergei_protocol>
 
