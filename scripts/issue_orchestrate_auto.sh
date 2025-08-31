@@ -10,7 +10,7 @@
 # - Returns to clean main at the end of each iteration
 #
 # Usage:
-#   scripts/issue_orchestrate_auto.sh [--label <name>|--all] [--limit N] [--merge|--squash|--rebase]
+#   scripts/issue_orchestrate_auto.sh [--label <name>|--all] [--limit N] [--squash|--rebase|--merge]
 # Env:
 #   TEST_CMD Optional local test command (e.g., "make test-ci"), used in prompts
 #
@@ -33,7 +33,7 @@ cd "$repo_root"
 
 label=""     # default all issues
 limit=999999
-merge_method="--merge"
+merge_method="--squash"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in

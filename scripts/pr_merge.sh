@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Merge a PR if CI is green and branch up to date
-# Usage: scripts/pr_merge.sh <pr_number> [--rebase|--merge|--squash]
+# Usage: scripts/pr_merge.sh <pr_number> [--squash|--rebase|--merge]
 set -euo pipefail
 trap 'echo "[merge] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 
@@ -10,7 +10,7 @@ if [[ $# -lt 1 ]]; then
 fi
 
 pr_num="$1"; shift || true
-method="--merge"
+method="--squash"
 case "${1:-}" in
   --rebase|--merge|--squash) method="$1" ;;
 esac
@@ -44,5 +44,12 @@ case "$merge_state" in
     ;;
 esac
 
-# Merge with the chosen strategy
+# Merge with the chosen strategy (prefer squash). Retry with --squash if merge commits are disallowed
+set +e
 gh pr merge "$pr_num" "$method" --delete-branch --admin=false
+rc=$?
+set -e
+if [[ $rc -ne 0 && "$method" == "--merge" ]]; then
+  echo "[merge] Repository disallows merge commits. Retrying with --squash..." >&2
+  gh pr merge "$pr_num" --squash --delete-branch --admin=false
+fi
