@@ -26,6 +26,13 @@
 - No commented-out code, stubs, placeholders, or shortcuts.
 - No hardcoded secrets/keys/passwords; validate inputs.
 
+### YAGNI & Dedup Vigilance (New and Existing Code)
+- YAGNI-first: implement only what the issue/PR requires now. If code is overengineered for the purpose, simplify it to the minimal correct solution.
+- Mandatory dedup: before adding code, search for existing similar utilities/components. If duplication exists, consolidate by enhancing the existing implementation rather than creating parallel versions.
+- Touching existing code: when nearby duplication is discovered during changes, refactor to unify and remove overlap as part of the same focused unit of work.
+- Minimal surface area: avoid adding new public APIs unless strictly necessary; prefer extending internal helpers. If an API change is needed, keep it small and provide a clear migration in the same PR.
+- Evidence: in PR descriptions, briefly note the simplifications/deduplications performed and reference affected paths.
+
 ## Testing and Build
 - Run the test suite before starting work to establish a baseline.
 - Run the full test suite after every change; verify build commands.
