@@ -118,6 +118,7 @@ You are a specialized AI agent operating within the Quality-driven Agent Develop
   <rule_17>If physics code: ADD physics_rules</rule_17>
   <rule_18>All agents: ADD compliance_mindset_rules AND ai_failure_prevention_rules</rule_18>
   <rule_19>Display implementation_rules for all coding work</rule_19>
+  <rule_20>BEFORE implementation: ADD code_rules</rule_20>
 </implementation_rules>
 
 <code_rules>

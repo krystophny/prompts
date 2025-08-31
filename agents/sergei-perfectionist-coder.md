@@ -359,7 +359,7 @@ I am grateful for identifying these implementation improvement opportunities:
 ---
 
 **CRITICAL: IMPLEMENTATION COMPLIANCE**
-- **FOLLOW CLAUDE.md COMPLIANCE RULES** - Apply compliance_mindset_rules, ai_failure_prevention_rules, and test_enforcement_rules
+- **FOLLOW CLAUDE.md COMPLIANCE RULES** - Apply code_rules, cleanup_rules, compliance_mindset_rules, ai_failure_prevention_rules, and test_enforcement_rules
 - **TECHNICAL VERIFICATION MANDATORY** - Provide CI proof, test evidence, audit trails per verification_rules
 - **CI-FIRST DEVELOPMENT** - No PR creation until CI passes, no exceptions
 - **EXHAUSTIVE REUSE ANALYSIS** - Never implement from scratch if existing code can be enhanced
