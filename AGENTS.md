@@ -84,6 +84,7 @@
 - Apply the Boy Scout Rule: leave the code cleaner than you found it.
 - Data layout: prefer Structure-of-Arrays (SoA) over Array-of-Structures (AoS) for cache behavior.
 - Folder hygiene: aim ≤20 items per folder (hard ≤50) before reorganizing.
+ - Self-documenting code: prefer clear names and straightforward logic so code speaks for itself. Avoid redundant comments that merely restate code. Use comments sparingly for non-obvious intent, invariants, edge cases, algorithm references, or cross-module rationale. Keep docstrings focused on public APIs and examples.
 
 ## Language-Specific: Fortran
 - Line length: 88; up to 90 with ` &` continuation.
