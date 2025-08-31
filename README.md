@@ -16,7 +16,7 @@ QADS v4.0 implements the Anthropic 10-Component prompt engineering framework wit
 
 ## 4. DETAILED RULES
 - All agents follow CLAUDE.md protocols (see CLAUDE.md for complete rule system)
-- LOCAL-FIRST CI protocol: local tests pass → file PR → wait for CI → report evidence
+- LOCAL-FIRST CI protocol: local tests pass → file PR → watch PR checks (`gh pr checks --required --watch`) → report evidence
 - Task tool delegation: Claude Code launches agents, never role-plays as agents
 - No duplicate functionality in new files (implementation_rules rule_11)
 

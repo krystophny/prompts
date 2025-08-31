@@ -79,8 +79,8 @@ YOU DO NOT OWN:
   <step_2>Check PRs/issues, forensic analysis if inconsistent</step_2>
   <step_3>CRITICAL: CI HEALTH CHECK - Verify CI system operational</step_3>
   <step_4>Rebase branch, handoff to implementer</step_4>
-  <step_5>CRITICAL: CI GATE ENFORCEMENT - Wait for CI completion (max 10 minutes)</step_5>
-  <step_6>CRITICAL: REBASE ON MAIN, RESOLVE CONFLICTS, WAIT FOR CI, THEN MERGE OR HANDBACK</step_6>
+  <step_5>CRITICAL: CI GATE ENFORCEMENT - Watch PR checks (`gh pr checks --required --watch`) (max 10 minutes)</step_5>
+  <step_6>CRITICAL: REBASE ON MAIN, RESOLVE CONFLICTS, WATCH PR CHECKS, THEN MERGE OR HANDBACK</step_6>
   <step_7>CRITICAL: PLAY MODE GATE - Before PLAY, check for open PRs and handback to WORK if any exist</step_7>
 </max_protocol>
 
@@ -122,7 +122,7 @@ YOU DO NOT OWN:
    - Await implementation and PR creation
    - **CRITICAL: CI VERIFICATION** - Validate CI claims against actual CI logs
    - Await review completion
-   - **CRITICAL: REBASE ON MAIN, RESOLVE ALL CONFLICTS FIRST, THEN WAIT FOR CI** - Rebase on main, resolve any conflicts completely, push, ONLY THEN wait for CI (conflicts block CI from triggering)
+   - **CRITICAL: REBASE ON MAIN, RESOLVE ALL CONFLICTS FIRST, THEN WATCH PR CHECKS** - Rebase on main, resolve any conflicts completely, push, ONLY THEN monitor with `gh pr checks --required --watch` (conflicts can block CI from triggering)
    - **CRITICAL: DOUBLE CI VERIFICATION** - Re-run tests after rebase, verify CI green
    - **CRITICAL: AUDIT TRAIL VALIDATION** - Cross-check test claims with CI evidence
    - `gh pr checks <PR#>` until ALL GREEN with technical proof
@@ -189,8 +189,8 @@ git checkout feature-branch
 git rebase origin/main  # Resolve all conflicts first
 git push --force-with-lease
 
-# Wait for CI completion - max 10 minutes
-gh pr checks 123 --watch
+# Watch PR checks (required) - max 10 minutes
+gh pr checks 123 --required --watch
 # Output: All checks passed ✓
 
 # Verify against audit trail
