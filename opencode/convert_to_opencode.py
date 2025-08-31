@@ -303,6 +303,10 @@ model: anthropic/claude-sonnet-4-20250514
         # Apply replacements
         for old, new in replacements.items():
             content = content.replace(old, new)
+        
+        # Add OpenCode-specific content for multisprint
+        if command_name == "multisprint":
+            content = self._add_opencode_multisprint_fixes(content)
 
         # Create OpenCode command markdown file with frontmatter
         description = self._extract_command_description(content)
@@ -347,16 +351,16 @@ This workflow uses the task tool to invoke QADS agents. Examples:
 
 ```markdown
 # Max DevOps Engineer (repository management, CI/CD)
-Use task tool: subagent_type='max-devops-engineer', description='Assess repository state', prompt='Check repository status and manage CI pipeline'
+Use task tool: subagent_type='max-devops-engineer', description='Assess repository state', prompt='MULTISPRINT ACTIVE: Check repository status and manage CI pipeline. End response with continuation to next sprint phase. Never use completion language.'
 
 # Sergei Perfectionist Coder (code implementation)  
-Use task tool: subagent_type='sergei-perfectionist-coder', description='Implement feature', prompt='Implement the login authentication system with full CI verification'
+Use task tool: subagent_type='sergei-perfectionist-coder', description='Implement feature', prompt='MULTISPRINT ACTIVE: Implement the login authentication system with full CI verification. Frame as proceeding, not completing. End with continuation instruction.'
 
 # Patrick Auditor (code review and quality)
-Use task tool: subagent_type='patrick-auditor', description='Review code changes', prompt='Review the authentication implementation for security and quality issues'
+Use task tool: subagent_type='patrick-auditor', description='Review code changes', prompt='MULTISPRINT ACTIVE: Review the authentication implementation for security and quality issues. Use "proceeding" language, end with continuation to next phase.'
 
 # Chris Architect (planning and design)
-Use task tool: subagent_type='chris-architect', description='Plan sprint', prompt='Organize GitHub issues and plan next sprint based on completed work'
+Use task tool: subagent_type='chris-architect', description='Plan sprint', prompt='MULTISPRINT ACTIVE: Organize GitHub issues and plan next sprint based on completed work. End with explicit continuation to Sprint #N+1 WORK phase.'
 
 # Other available agents:
 - winny-technical-writer (documentation)
@@ -434,6 +438,126 @@ Use the task tool with appropriate subagent_type for {command_name} workflow:
 # Example agent invocation
 Use task tool: subagent_type='[agent-name]', description='Brief task description', prompt='Detailed instructions for the agent'
 ```"""
+
+    def _add_opencode_multisprint_fixes(self, content: str) -> str:
+        """Add OpenCode-specific fixes for multisprint infinite loop issues"""
+        
+        # Add OpenCode continuation protocol to the continuous execution mantra
+        mantra_replacement = """### CONTINUOUS EXECUTION MANTRA (MANDATORY FOR ALL AGENTS)
+<continuous_execution_mantra>
+  <mantra_1>MULTISPRINT ACTIVE: NO STOPPING, NO USER PROMPTS, NO CONFIRMATIONS</mantra_1>
+  <mantra_2>INFINITE LOOP MODE: Continue to next phase immediately after completion</mantra_2>
+  <mantra_3>AUTONOMOUS EXECUTION: Handle all errors and edge cases automatically</mantra_3>
+  <mantra_4>NO PAUSES PERMITTED: Complete current task and proceed to next without delay</mantra_4>
+  <mantra_5>EMERGENCY STOP ONLY: User explicit interrupt is the only valid stop condition</mantra_5>
+  <mantra_6>OPENCODE ANTI-TERMINATION: Never use completion language, always frame as continuation</mantra_6>
+  <mantra_7>FORCE CONTINUATION: End every response with explicit continuation instruction to next sprint</mantra_7>
+</continuous_execution_mantra>
+
+### OPENCODE CONTINUATION PROTOCOL
+<opencode_continuation_rules>
+  <rule_1>NEVER end with completion statements that trigger OpenCode termination</rule_1>
+  <rule_2>ALWAYS end responses with "CONTINUING TO SPRINT #N+1" or similar</rule_2>
+  <rule_3>Use "PROCEEDING" instead of "COMPLETED" in all communications</rule_3>
+  <rule_4>Frame every action as part of ongoing infinite process</rule_4>
+  <rule_5>Each agent must explicitly invoke next agent with continuation context</rule_5>
+  <rule_6>CRITICAL: Final line of every response must indicate continuation, never completion</rule_6>
+</opencode_continuation_rules>"""
+
+        # Replace the original mantra section
+        content = content.replace(
+            """### CONTINUOUS EXECUTION MANTRA (MANDATORY FOR ALL AGENTS)
+<continuous_execution_mantra>
+  <mantra_1>MULTISPRINT ACTIVE: NO STOPPING, NO USER PROMPTS, NO CONFIRMATIONS</mantra_1>
+  <mantra_2>INFINITE LOOP MODE: Continue to next phase immediately after completion</mantra_2>
+  <mantra_3>AUTONOMOUS EXECUTION: Handle all errors and edge cases automatically</mantra_3>
+  <mantra_4>NO PAUSES PERMITTED: Complete current task and proceed to next without delay</mantra_4>
+  <mantra_5>EMERGENCY STOP ONLY: User explicit interrupt is the only valid stop condition</mantra_5>
+</continuous_execution_mantra>""",
+            mantra_replacement
+        )
+        
+        # Add OpenCode-specific infinite loop protocol before Example Execution Pattern
+        opencode_protocol = """### OPENCODE-SPECIFIC INFINITE LOOP PROTOCOL
+
+**CRITICAL FOR OPENCODE**: Unlike Claude direct usage, OpenCode may attempt to terminate commands after completion. The following protocol prevents premature termination:
+
+```markdown
+# MANDATORY INFINITE LOOP STRUCTURE:
+while True:
+    # Sprint N execution
+    execute_sprint_cycle()
+    
+    # CRITICAL: Never return/exit - immediately start next sprint
+    print(f"Sprint #{N} complete, IMMEDIATELY starting Sprint #{N+1}")
+    
+    # NO BREAKS, NO RETURNS, NO EXITS
+    continue  # Force continuation to next sprint
+```
+
+**OPENCODE ANTI-TERMINATION MEASURES:**
+1. **Never use "COMPLETED" or "FINISHED" language** - these may trigger OpenCode termination
+2. **Always end responses with "CONTINUING TO SPRINT #N+1"** instead of completion statements  
+3. **Use "PROCEEDING" not "DONE"** - frame as ongoing process, never finished
+4. **Each agent MUST end with continuation instruction** for next agent in sequence
+5. **CRITICAL: Final response always includes "MULTISPRINT CONTINUES INFINITELY"**
+
+**CONTINUATION PHRASES TO USE:**
+- "Proceeding immediately to next phase"
+- "Sprint #N complete, starting Sprint #N+1 now" 
+- "Continuing infinite loop execution"
+- "Next sprint cycle beginning"
+- "Multisprint workflow continues"
+
+**PHRASES TO NEVER USE:**
+- "Task complete" / "Finished" / "Done"
+- "Multisprint execution finished" 
+- "All sprints complete"
+- "Workflow terminated"
+
+### AGENT RESPONSE TEMPLATES FOR OPENCODE
+
+**SPRINT COMPLETION RESPONSE (NEVER USE "COMPLETE"):**
+```markdown
+## SPRINT #N PROCEEDING TO #N+1
+
+**SPRINT STATUS**: Sprint #N tasks proceeding, transitioning to Sprint #N+1
+**MULTISPRINT CONTINUES**: Infinite loop active, no stopping condition met
+**NEXT PHASE**: Immediately launching Sprint #N+1 WORK phase
+
+CONTINUING TO SPRINT #N+1...
+```
+
+**CYCLE TRANSITION RESPONSE:**
+```markdown  
+**CYCLE TRANSITION**: WORK → PLAY → PLAN cycle proceeding
+**LOOP STATUS**: Multisprint infinite loop continues
+**NEXT SPRINT**: Sprint #N+1 launching immediately
+
+MULTISPRINT WORKFLOW CONTINUES INFINITELY...
+```
+
+**MANDATORY FINAL LINE FORMATS:**
+- "CONTINUING TO SPRINT #N+1..."
+- "MULTISPRINT WORKFLOW CONTINUES..."  
+- "PROCEEDING TO NEXT SPRINT CYCLE..."
+- "INFINITE LOOP EXECUTION CONTINUES..."
+
+**FORBIDDEN FINAL LINES (CAUSE TERMINATION):**
+- "Multisprint complete" 
+- "Task finished"
+- "Execution done"
+- "Workflow terminated"
+
+"""
+
+        # Insert the OpenCode protocol before the Example Execution Pattern
+        content = content.replace(
+            "## Example Execution Pattern",
+            opencode_protocol + "## Example Execution Pattern"
+        )
+        
+        return content
 
     def _extract_command_template(self, content: str, command_name: str) -> str:
         """Extract command template"""
