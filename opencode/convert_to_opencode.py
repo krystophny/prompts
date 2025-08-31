@@ -36,6 +36,7 @@ class QADSConverter:
             content = f.read()
 
         # Extract key sections from CLAUDE.md
+        # Note: Agents will be defined as markdown files, not in main JSON
         config = {
             "$schema": "https://opencode.ai/config.json",
             "theme": "opencode",
@@ -47,7 +48,6 @@ class QADSConverter:
                  "bash": "allow",
                  "webfetch": "allow"
              },
-            "agent": {},
             "command": {},
             "instructions": []
         }
@@ -56,9 +56,7 @@ class QADSConverter:
         workflow_commands = self._extract_workflow_commands(content)
         config["command"].update(workflow_commands)
 
-        # Extract agent configurations
-        agent_configs = self._extract_agent_configs(content)
-        config["agent"].update(agent_configs)
+        # Don't include agents in main config - they'll be in separate markdown files
 
         return config
 
@@ -72,12 +70,12 @@ class QADSConverter:
                 "plan": {
                     "template": "Execute PLAN workflow: chris-architect organizes issues in SPRINT BACKLOG, NO git operations",
                     "description": "Sprint planning with issue consolidation",
-                    "agent": "plan"
+                    "agent": "general"
                 },
                 "work": {
                     "template": "Execute WORK workflow: max → implementer → CI-GATE → reviewer → max → merge",
                     "description": "Implementation with fraud-proof CI protocols",
-                    "agent": "build"
+                    "agent": "general"
                 },
                 "play": {
                     "template": "Execute PLAY workflow: max PR assessment → serial audits (patrick, vicky, chris) → NO git commits",
@@ -93,92 +91,7 @@ class QADSConverter:
 
         return commands
 
-    def _extract_agent_configs(self, content: str) -> Dict[str, Any]:
-        """Extract agent configurations from CLAUDE.md"""
-        agents = {}
-
-        # Extract agent roles and descriptions
-        agent_patterns = {
-            "chris-architect": {
-                "description": "EXCELLENCE ARCHITECT - Planning with absolute compliance to sprint goals and design requirements",
-                "mode": "subagent",
-                "tools": {"write": True, "edit": True, "bash": True},
-                "permission": {"edit": "allow", "bash": "allow"}
-            },
-            "sergei-perfectionist-coder": {
-                "description": "CODE PERFECTIONIST - Implementation with complete adherence to instructions and architectural specifications",
-                "mode": "subagent",
-                "tools": {"write": True, "edit": True, "bash": True},
-                "permission": {"edit": "allow", "bash": "allow"}
-            },
-            "patrick-auditor": {
-                "description": "QUALITY GUARDIAN - Independent review maintaining quality while respecting established requirements",
-                "mode": "subagent",
-                "tools": {"write": True, "edit": True, "bash": True},
-                "permission": {"edit": "allow", "bash": "allow"}
-            },
-            "max-devops-engineer": {
-                "description": "Repository management, SPRINT BACKLOG meta-issue status updates, final merge, NEVER creates PRs",
-                "mode": "subagent",
-                "tools": {"write": True, "edit": True, "bash": True},
-                "permission": {"edit": "allow", "bash": "allow"}
-            }
-        }
-
-        # Add extracted agents with Claude Sonnet models
-        for agent_name, config in agent_patterns.items():
-            config["model"] = "anthropic/claude-sonnet-4-20250514"
-            agents[agent_name] = config
-        
-        # Add missing agents from QADS framework
-        additional_agents = {
-            "winny-technical-writer": {
-                "description": "DOCUMENTATION MASTER - Clear documentation following all specified requirements and guidelines",
-                "mode": "subagent",
-                "tools": {"write": True, "edit": True, "bash": True},
-                "permission": {"edit": "allow", "bash": "allow"},
-                "model": "anthropic/claude-sonnet-4-20250514"
-            },
-            "vicky-acceptance-tester": {
-                "description": "BUG HUNTER - Methodical defect detection aligned with project objectives",
-                "mode": "subagent",
-                "tools": {"write": True, "edit": True, "bash": True},
-                "permission": {"edit": "allow", "bash": "allow"},
-                "model": "anthropic/claude-sonnet-4-20250514"
-            },
-            "georg-test-engineer": {
-                "description": "Test creation and validation specialist",
-                "mode": "subagent",
-                "tools": {"write": True, "edit": True, "bash": True},
-                "permission": {"edit": "allow", "bash": "allow"},
-                "model": "anthropic/claude-sonnet-4-20250514"
-            },
-            "philipp-data-scientist": {
-                "description": "Data analysis, machine learning, and statistical modeling",
-                "mode": "subagent",
-                "tools": {"write": True, "edit": True, "bash": True},
-                "permission": {"edit": "allow", "bash": "allow"},
-                "model": "anthropic/claude-sonnet-4-20250514"
-            },
-            "jonatan-math-physicist": {
-                "description": "Mathematical modeling, physics simulations, and numerical analysis",
-                "mode": "subagent",
-                "tools": {"write": True, "edit": True, "bash": True},
-                "permission": {"edit": "allow", "bash": "allow"},
-                "model": "anthropic/claude-sonnet-4-20250514"
-            },
-            "steffi-ux-designer": {
-                "description": "User interface design and user experience optimization",
-                "mode": "subagent",
-                "tools": {"write": True, "edit": True, "bash": True},
-                "permission": {"edit": "allow", "bash": "allow"},
-                "model": "anthropic/claude-sonnet-4-20250514"
-            }
-        }
-        
-        agents.update(additional_agents)
-
-        return agents
+    # Method removed - agents are now defined in individual markdown files only
 
     def convert_agents_directory(self):
         """Convert agents/ directory to OpenCode agent files"""
@@ -225,24 +138,36 @@ class QADSConverter:
         for old, new in replacements.items():
             content = content.replace(old, new)
 
-        # Update frontmatter if it exists
+        # Update frontmatter to match OpenCode format
         lines = content.split('\n')
         if lines[0].strip() == '---':
             # Find the end of frontmatter
             for i, line in enumerate(lines[1:], 1):
                 if line.strip() == '---':
-                    # Update model in frontmatter
-                    frontmatter_lines = lines[1:i]
-                    for j, line in enumerate(frontmatter_lines):
-                        if line.startswith('model:'):
-                            frontmatter_lines[j] = 'model: anthropic/claude-sonnet-4-20250514'
-                        elif line.startswith('color:'):
-                            # Remove color as it's not needed for OpenCode
-                            frontmatter_lines[j] = ''
+                    # Create proper OpenCode frontmatter
+                    description = self._extract_description_from_content(agent_name)
+                    mode = self._get_agent_mode(agent_name)
+                    
+                    opencode_frontmatter = [
+                        f'description: {description}',
+                        f'mode: {mode}',
+                        'model: anthropic/claude-sonnet-4-20250514'
+                    ]
 
-                    # Reconstruct content
-                    content = '---\n' + '\n'.join([line for line in frontmatter_lines if line.strip()]) + '\n---\n' + '\n'.join(lines[i+1:])
+                    # Reconstruct content with OpenCode-compatible frontmatter
+                    content = '---\n' + '\n'.join(opencode_frontmatter) + '\n---\n' + '\n'.join(lines[i+1:])
                     break
+        else:
+            # Add frontmatter if it doesn't exist
+            description = self._extract_description_from_content(agent_name)
+            mode = self._get_agent_mode(agent_name)
+            opencode_frontmatter = f"""---
+description: {description}
+mode: {mode}
+model: anthropic/claude-sonnet-4-20250514
+---
+"""
+            content = opencode_frontmatter + content
 
         # Write the converted agent file
         output_file = output_dir / f"{agent_name}.md"
@@ -250,6 +175,29 @@ class QADSConverter:
             f.write(content)
 
         print(f"Converted agent: {agent_name} with minimal changes")
+
+    def _extract_description_from_content(self, agent_name: str) -> str:
+        """Extract description from the agent name for OpenCode frontmatter"""
+        # Look for existing description in the agent files
+        agent_descriptions = {
+            "chris-architect": "Use this agent when you need strategic architectural planning and test-driven development guidance for software projects. This agent excels at maintaining GitHub meta-issues (DESIGN, SPRINT BACKLOG, PRODUCT BACKLOG), breaking down complex systems into executable backlogs, and ensuring rigorous TDD practices.",
+            "sergei-perfectionist-coder": "Use this agent when you need meticulous, production-grade code implementation with zero tolerance for shortcuts or incomplete work. Perfect for critical system components, performance-sensitive applications, scientific computing tasks, or when porting code that requires exact replication with comprehensive testing.",
+            "patrick-auditor": "Use this agent when you need a thorough, constructively critical review of code changes or a comprehensive audit of the codebase. This includes after implementing new features or fixes, before merging pull requests, when refactoring existing code, or when you suspect technical debt has accumulated.",
+            "max-devops-engineer": "Use this agent when you need to set up, maintain, or optimize CI/CD pipelines, GitHub Actions workflows, GitLab runners, container configurations, or manage releases and artifacts. Also use when dealing with research data management, licensing decisions, or when you need to establish consistent DevOps practices across multiple repositories.",
+            "georg-test-engineer": "Use this agent when you need comprehensive test suite design, test framework setup, or systematic testing architecture for software projects. Expert in creating robust testing strategies, implementing test automation, and ensuring comprehensive test coverage.",
+            "vicky-acceptance-tester": "Use this agent when you need comprehensive acceptance testing of user-facing functionality, stress testing of applications, or thorough exploration of edge cases and potential failure modes. This agent excels at finding bugs through creative and exhaustive interaction patterns, documenting issues systematically, and creating GitHub issues for discovered problems.",
+            "winny-technical-writer": "Use this agent when you need to create clear, comprehensive technical documentation that guides users to success. This includes user manuals, API documentation, tutorials, help guides, or any content that transforms complex technical concepts into accessible, actionable guidance. The agent excels at adapting technical content for different audience levels and creating documentation that genuinely helps users accomplish their goals.",
+            "philipp-data-scientist": "Use this agent when you need data analysis, machine learning implementation, statistical modeling, or scientific computing solutions. Expert in data pipeline design, model training, and analytical insights.",
+            "jonatan-math-physicist": "Use this agent when you need advanced mathematical modeling, physics simulations, numerical analysis, or scientific computing solutions. Expert in computational physics, mathematical optimization, and high-performance numerical algorithms.",
+            "steffi-ux-designer": "Use this agent when you need expert guidance on user interface design, user experience optimization, or visual styling across any platform - from terminal interfaces to modern web applications."
+        }
+        
+        return agent_descriptions.get(agent_name, "Specialized AI agent for software development tasks")
+
+    def _get_agent_mode(self, agent_name: str) -> str:
+        """Determine the agent mode - subagents can be invoked by general agent"""
+        # All QADS agents should be subagents so they can be called by workflows
+        return "subagent"
 
     def _extract_description(self, content: str) -> str:
         """Extract agent description from content"""
