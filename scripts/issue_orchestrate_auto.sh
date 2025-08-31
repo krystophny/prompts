@@ -657,11 +657,15 @@ for inum in $issues; do
   if [[ -z "${pr_url:-}" ]]; then
     pr_url=$(open_pr_if_missing "$inum")
   fi
-  echo "PR: $pr_url"
-  if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
-    process_existing_pr "$pr_number" "$inum" "$branch"
+  if [[ -n "$pr_url" ]]; then
+    echo "PR: $pr_url"
+    if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
+      process_existing_pr "$pr_number" "$inum" "$branch"
+    else
+      echo "Could not resolve PR number for URL: $pr_url" >&2
+    fi
   else
-    echo "Could not resolve PR number for URL: $pr_url" >&2
+    echo "[pre-PR] No PR created yet (likely no commits ahead). Continuing implementation." >&2
   fi
 
   ensure_clean_main
