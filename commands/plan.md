@@ -17,7 +17,16 @@
   <rule_4>Sprint planning with evidence-based decisions</rule_4>
   <rule_5>NEVER create random markdown files for progress reports</rule_5>
   <rule_6>Display plan_command_rules when executing PLAN workflow</rule_6>
+  <rule_7>CRITICAL: Display batch_rules for autonomous execution</rule_7>
 </plan_command_rules>
+
+### BATCH EXECUTION MANTRA
+<batch_execution_mantra>
+  <mantra_1>PLAN BATCH MODE: NO USER PROMPTS, NO CONFIRMATIONS, NO STOPPING</mantra_1>
+  <mantra_2>AUTONOMOUS EXECUTION: Complete issue consolidation and sprint planning without pause</mantra_2>
+  <mantra_3>ERROR RECOVERY: Handle GitHub API failures automatically</mantra_3>
+  <mantra_4>CONTINUOUS FLOW: Issue audit → consolidation → sprint planning without interruption</mantra_4>
+</batch_execution_mantra>
 
 ## 2. TONE CONTEXT: Command Style
 

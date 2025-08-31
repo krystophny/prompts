@@ -21,7 +21,16 @@
   <rule_4>All implementations require reviewer approval</rule_4>
   <rule_5>NEVER create random markdown files for progress reports</rule_5>
   <rule_6>Display work_command_rules when executing WORK workflow</rule_6>
+  <rule_7>CRITICAL: Display batch_rules for autonomous execution</rule_7>
 </work_command_rules>
+
+### BATCH EXECUTION MANTRA
+<batch_execution_mantra>
+  <mantra_1>WORK BATCH MODE: NO USER PROMPTS, NO CONFIRMATIONS, NO STOPPING</mantra_1>
+  <mantra_2>AUTONOMOUS EXECUTION: Process all SPRINT_BACKLOG items without pause</mantra_2>
+  <mantra_3>ERROR RECOVERY: Handle CI failures and conflicts automatically</mantra_3>
+  <mantra_4>CONTINUOUS FLOW: max → implementer → reviewer → max without interruption</mantra_4>
+</batch_execution_mantra>
 
 ## 2. TONE CONTEXT: Command Style
 

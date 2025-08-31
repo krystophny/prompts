@@ -10,7 +10,16 @@ Execute full PLAN → WORK → PLAY cycle per CLAUDE.md workflow system.
   <rule_3>Evidence-based execution with CI validation</rule_3>
   <rule_4>NEVER create random markdown files for progress reports</rule_4>
   <rule_5>Display sprint_command_rules when executing SPRINT workflow</rule_5>
+  <rule_6>CRITICAL: Display batch_rules for autonomous execution</rule_6>
 </sprint_command_rules>
+
+### BATCH EXECUTION MANTRA
+<batch_execution_mantra>
+  <mantra_1>SPRINT BATCH MODE: NO USER PROMPTS, NO CONFIRMATIONS, NO STOPPING</mantra_1>
+  <mantra_2>AUTONOMOUS EXECUTION: Complete all three phases without pause</mantra_2>
+  <mantra_3>ERROR RECOVERY: Handle failures automatically and continue</mantra_3>
+  <mantra_4>CONTINUOUS FLOW: WORK → PLAY → PLAN without interruption</mantra_4>
+</batch_execution_mantra>
 
 ## 2. TONE CONTEXT: Command Style  
 Follow CLAUDE.md Section 2 fraud-proof standards with evidence-based execution.

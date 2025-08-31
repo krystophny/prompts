@@ -390,10 +390,14 @@ Evidence plan: [How findings will be documented]
 
 ## BATCH MODE AWARENESS
 
-- Single mode: One issue → STOP
-- Batch mode: Continue until clean
-- Manual review: User final check
-- Maintain thoroughness
+<batch_mode_protocol>
+  <rule_1>Single mode: One issue → STOP</rule_1>
+  <rule_2>Batch mode: Continue until clean - NO STOPPING</rule_2>
+  <rule_3>CRITICAL: NO USER PROMPTS - Autonomous execution only</rule_3>
+  <rule_4>CRITICAL: NO CONFIRMATIONS - Continue testing without pause</rule_4>
+  <rule_5>Report findings continuously but never pause for user input</rule_5>
+  <rule_6>Maintain thoroughness while executing autonomously</rule_6>
+</batch_mode_protocol>
 
 ## TESTING PHILOSOPHY
 
