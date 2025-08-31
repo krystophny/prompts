@@ -1,53 +1,32 @@
-# PLAN WORKFLOW - Strategic Sprint Planning
+# PLAN - Strategic Sprint Planning
 
-## 1. TASK CONTEXT: Command Purpose
-
-**PRIMARY FUNCTION**: Strategic sprint planning with fraud-proof validation through systematic issue management and evidence-based architectural decisions.
-
-**AGENT DELEGATION**: chris-architect EXCLUSIVELY via Task tool - NO role-playing
-**PREREQUISITES**: Apply Chris Protocols from `agents/chris-architect.md`
-
-**CORE EXECUTION**: GitHub meta-issue management, issue consolidation, and sprint goal establishment through Task tool delegation to chris-architect.
-
-### PLAN COMMAND PROTOCOL
-<plan_command_rules>
-  <rule_1>chris-architect exclusive authority for meta-issues</rule_1>
-  <rule_2>GitHub API operations only - NO git operations</rule_2>
-  <rule_3>Issue consolidation prevents chaos</rule_3>
-  <rule_4>Sprint planning with evidence-based decisions</rule_4>
+<mantra_rules>
+  <rule_1>Always display appropriate rule sets at start of response</rule_1>
+  <rule_2>Technical verification required for all claims</rule_2>
+  <rule_3>Agent boundaries must be respected</rule_3>
+  <rule_4>CI evidence mandatory before any git operations</rule_4>
   <rule_5>NEVER create random markdown files for progress reports</rule_5>
-  <rule_6>Display plan_command_rules when executing PLAN workflow</rule_6>
-  <rule_7>CRITICAL: Display batch_rules for autonomous execution</rule_7>
-</plan_command_rules>
+  <rule_6>Display mantra_rules when operating as specialized agent</rule_6>
+</mantra_rules>
 
-### BATCH EXECUTION MANTRA
-<batch_execution_mantra>
-  <mantra_1>PLAN BATCH MODE: NO USER PROMPTS, NO CONFIRMATIONS, NO STOPPING</mantra_1>
-  <mantra_2>AUTONOMOUS EXECUTION: Complete issue consolidation and sprint planning without pause</mantra_2>
-  <mantra_3>ERROR RECOVERY: Handle GitHub API failures automatically</mantra_3>
-  <mantra_4>CONTINUOUS FLOW: Issue audit → consolidation → sprint planning without interruption</mantra_4>
-</batch_execution_mantra>
+<batch_rules>
+  <rule_1>CRITICAL: AUTONOMOUS EXECUTION - No user prompts or interaction requests</rule_1>
+  <rule_2>CRITICAL: NO STOPPING - Continue until all tasks completed</rule_2>
+  <rule_3>CRITICAL: ERROR RECOVERY - Handle all failures automatically and continue</rule_3>
+  <rule_4>CRITICAL: NO CONFIRMATIONS - Execute without seeking user approval</rule_4>
+  <rule_5>Report progress but never pause for user input</rule_5>
+  <rule_6>Complete each phase fully before proceeding to next</rule_6>
+  <rule_7>Continue execution despite warnings or non-critical errors</rule_7>
+  <rule_8>Display batch_rules when triggered by process_rules</rule_8>
+</batch_rules>
 
-## 2. TONE CONTEXT: Command Style
+## EXECUTION  
+Task tool delegation to chris-architect ONLY for:
+- Issue consolidation and duplicate removal
+- GitHub meta-issue updates (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN)
+- Sprint goal establishment
 
-**STRATEGIC AND SYSTEMATIC**
-- Evidence-based architectural decisions
-- Systematic issue consolidation and hygiene
-- Clear sprint goals and priorities
-- GitHub API operations exclusively
-
-## 3. BACKGROUND DATA: Planning Context
-
-**FRAUD-PROOF PLANNING VALIDATION**
-- **ZERO TRUST CLAIMS**: All issue status verified through GitHub API
-- **AUTOMATED HYGIENE**: Issue quality enforced through systematic audit
-- **EVIDENCE-BASED DECISIONS**: Sprint planning backed by verifiable analysis
-- **COMPREHENSIVE AUDIT**: Issue management verified through duplicate detection
-
-## 4. DETAILED TASK DESCRIPTION: Planning Protocols
-
-## Workflow Trigger Conditions
-Execute after PLAY workflow completion OR user planning request.
+**Protocol**: GitHub API only - NO git operations
 
 **FRAUD-PROOF TRIGGER VALIDATION**: Workflow initiation verified through systematic PLAY completion assessment with CI-documented evidence.
 
