@@ -380,6 +380,7 @@ Steps:
 3) Add/adjust tests as needed to prevent regression; run locally to green.
 4) Stage specific files only; commit with clear message; push.
 5) If there is nothing actionable (external flake), document minimal retry (e.g., rebase to retrigger) and proceed.
+6) Monitor PR checks until completion with: `gh pr checks <PR#> --required --watch` (prefer this over generic "wait for CI on GitHub").
 
 Rules:
 - No random markdown reports. Put evidence in commit messages or PR body if appropriate.
@@ -407,10 +408,7 @@ EOF
     fi
 
     echo "Waiting for CI after attempt $attempt..." >&2
-    status_line=$("$self_dir/pr_ci_status.sh" "$pr_num" --watch || true)
-    echo "$status_line" >&2
-    conclusion=$(echo "$status_line" | awk '{for(i=1;i<=NF;i++){if($i ~ /^conclusion=/){print substr($i,12)}}}')
-    if [[ "$conclusion" == "success" ]]; then
+    if gh pr checks "$pr_num" --required --watch; then
       return 0
     fi
     ((attempt++))
@@ -519,10 +517,7 @@ for inum in $issues; do
     fi
 
     echo "Waiting for CI on PR #$pr_number" >&2
-    status_line=$("$self_dir/pr_ci_status.sh" "$pr_number" --watch || true)
-    echo "$status_line" >&2
-    conclusion=$(echo "$status_line" | awk '{for(i=1;i<=NF;i++){if($i ~ /^conclusion=/){print substr($i,12)}}}')
-    if [[ "$conclusion" == "success" ]]; then
+    if gh pr checks "$pr_number" --required --watch; then
       "$self_dir/pr_merge.sh" "$pr_number" "$merge_method"
     else
       echo "CI not successful for PR #$pr_number; handing back to Codex for remediation." >&2

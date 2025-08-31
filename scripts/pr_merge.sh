@@ -21,17 +21,16 @@ if ! command -v gh >/dev/null 2>&1; then
 fi
 
 # Ensure checks are passing (best-effort gate; branch protection is authoritative)
-status_line=$(scripts/pr_ci_status.sh "$pr_num" || true)
-if [[ -n "$status_line" ]]; then
-  conclusion=$(echo "$status_line" | awk '{for(i=1;i<=NF;i++){if($i ~ /^conclusion=/){print substr($i,12)}}}')
-  url=$(echo "$status_line" | awk '{for(i=1;i<=NF;i++){if($i ~ /^url=/){print substr($i,5)}}}')
-  echo "CI: $conclusion -> $url"
-  if [[ "$conclusion" != "success" ]]; then
-    echo "CI not successful. Aborting merge." >&2
-    exit 1
-  fi
+echo "Waiting for required checks on PR #$pr_num..." >&2
+if gh pr checks "$pr_num" --required --watch; then
+  echo "CI: success" >&2
 else
-  echo "Unable to determine CI status. Aborting to be safe." >&2
+  rc=$?
+  if [[ $rc -eq 8 ]]; then
+    echo "CI checks still pending. Aborting merge." >&2
+  else
+    echo "CI not successful (exit $rc). Aborting merge." >&2
+  fi
   exit 1
 fi
 
