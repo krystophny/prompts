@@ -53,7 +53,7 @@
 ## Review Standards
 - Review available CI results or logs; re-run locally as needed.
 - Run static analysis and report concrete findings with file/line references.
-- Perform basic security scanning and document vulnerabilities with severity.
+- Check for strict compliance with the rules in this file.
 - Check for test manipulation (skips, comments, deactivations) via code review/static analysis; flag skipped/xfail without linked issues as blockers.
 - Use structured feedback (see Feedback) and define re-verification steps.
 
