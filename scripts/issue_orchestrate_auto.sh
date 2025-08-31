@@ -16,6 +16,17 @@
 #
 set -euo pipefail
 self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Resolve repository root even if invoked from another directory
+repo_root="${REPO_DIR:-}"
+if [[ -z "$repo_root" ]]; then
+  if repo_root=$(git -C "$self_dir" rev-parse --show-toplevel 2>/dev/null); then
+    :
+  else
+    # Fallback: assume scripts/ lives directly under repo root
+    repo_root="$(cd "$self_dir/.." && pwd)"
+  fi
+fi
+cd "$repo_root"
 
 label=""     # default all issues
 limit=999999
@@ -87,7 +98,7 @@ Notes:
 EOF
   )
 
-  ISSUE_NUM="$inum" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$PWD" --search - <<EOF
+  ISSUE_NUM="$inum" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" --search - <<EOF
 $prompt
 EOF
 }
@@ -118,7 +129,7 @@ Rules:
 - Don’t skip tests; keep everything reproducible.
 EOF
     )
-    PR_NUM="$pr_num" ISSUE_NUM="$inum" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$PWD" --search - <<EOF
+    PR_NUM="$pr_num" ISSUE_NUM="$inum" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" --search - <<EOF
 $prompt
 EOF
 
