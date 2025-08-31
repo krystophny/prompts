@@ -2,6 +2,7 @@
 # Open a draft PR for current branch linked to an issue
 # Usage: scripts/issue_open_pr.sh <issue_number> [--ready]
 set -euo pipefail
+trap 'echo "[open-pr] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 
 if [[ $# -lt 1 ]]; then
   echo "Usage: $0 <issue_number> [--ready]" >&2

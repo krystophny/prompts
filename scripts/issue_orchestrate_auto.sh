@@ -15,6 +15,7 @@
 #   TEST_CMD Optional local test command (e.g., "make test-ci"), used in prompts
 #
 set -euo pipefail
+trap 'echo "[orchestrate] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Resolve repository root preference order:
 # 1) REPO_DIR if provided; 2) current working directory's repo; 3) scripts' repo; 4) scripts/..
@@ -47,6 +48,14 @@ done
 need() { command -v "$1" >/dev/null 2>&1 || { echo "Missing dependency: $1" >&2; exit 1; }; }
 need gh
 need codex
+
+# Ensure Ctrl+C (SIGINT) reaches child processes run under `timeout`.
+# Use `--foreground` when available so users can abort cleanly.
+if timeout --help 2>&1 | grep -q -- '--foreground'; then
+  TIMEOUT=(timeout --foreground)
+else
+  TIMEOUT=(timeout)
+fi
 
 # Banner: resolved repo
 echo "[orchestrate] repo_root=$(pwd) remote=$(git remote get-url origin 2>/dev/null || echo 'none')" >&2
@@ -103,7 +112,7 @@ Notes:
 EOF
   )
 
-  ISSUE_NUM="$inum" timeout "${CODEX_FIX_TIMEOUT:-30m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+  ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
 }
@@ -134,7 +143,7 @@ Rules:
 - Don’t skip tests; keep everything reproducible.
 EOF
     )
-    PR_NUM="$pr_num" ISSUE_NUM="$inum" timeout "${CODEX_REVIEW_TIMEOUT:-20m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+    PR_NUM="$pr_num" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_REVIEW_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
 
@@ -205,18 +214,18 @@ stage_all_changes() {
 run_local_tests() {
   local cmd=""; local log="/tmp/codex_local_tests_$$.log"; local rc
   if [[ -n "${TEST_CMD:-}" ]]; then cmd="$TEST_CMD"; fi
-  if [[ -z "$cmd" && -f Makefile && $(grep -cE '^test-ci:' Makefile) -gt 0 ]]; then cmd="make test-ci"; fi
-  if [[ -z "$cmd" && command -v fpm >/dev/null 2>&1 ]]; then cmd="fpm test"; fi
-  if [[ -z "$cmd" && command -v pytest >/dev/null 2>&1 ]]; then cmd="pytest -q"; fi
-  if [[ -z "$cmd" && -f package.json && command -v npm >/dev/null 2>&1 ]]; then cmd="npm test --silent"; fi
-  if [[ -z "$cmd" && command -v ctest >/dev/null 2>&1 ]]; then cmd="ctest --output-on-failure"; fi
+  if [[ -z "$cmd" && -f Makefile ]] && grep -qE '^test-ci:' Makefile; then cmd="make test-ci"; fi
+  if [[ -z "$cmd" ]] && command -v fpm >/dev/null 2>&1; then cmd="fpm test"; fi
+  if [[ -z "$cmd" ]] && command -v pytest >/dev/null 2>&1; then cmd="pytest -q"; fi
+  if [[ -z "$cmd" && -f package.json ]] && command -v npm >/dev/null 2>&1; then cmd="npm test --silent"; fi
+  if [[ -z "$cmd" ]] && command -v ctest >/dev/null 2>&1; then cmd="ctest --output-on-failure"; fi
   if [[ -z "$cmd" && -f Makefile ]]; then cmd="make test"; fi
   if [[ -z "$cmd" ]]; then
     echo "[tests] No known test runner found; treating as pass (noop)." >&2
     return 0
   fi
   echo "[tests] Running: $cmd" >&2
-  if timeout "${LOCAL_TEST_TIMEOUT:-20m}" bash -lc "$cmd" >"$log" 2>&1; then
+  if "${TIMEOUT[@]}" "${LOCAL_TEST_TIMEOUT:-20m}" bash -lc "$cmd" >"$log" 2>&1; then
     rc=0
   else
     rc=$?
@@ -252,7 +261,7 @@ Rules:
 - Do not broaden scope. Keep functions small and style consistent.
 EOF
     )
-    PR_NUM="$pr_num" ISSUE_NUM="$inum" BRANCH="$branch" timeout "${CODEX_CI_FIX_TIMEOUT:-20m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+    PR_NUM="$pr_num" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
 

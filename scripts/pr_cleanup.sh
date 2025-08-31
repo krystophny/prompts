@@ -2,6 +2,7 @@
 # Close PR and delete related branches (local + remote)
 # Usage: scripts/pr_cleanup.sh <pr_number>
 set -euo pipefail
+trap 'echo "[cleanup] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 
 if [[ $# -lt 1 ]]; then
   echo "Usage: $0 <pr_number>" >&2
@@ -36,4 +37,3 @@ if git show-ref --verify --quiet "refs/heads/$branch"; then
 fi
 
 echo "Cleaned up branch $branch for PR #$pr_num"
-

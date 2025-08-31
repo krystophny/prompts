@@ -2,6 +2,7 @@
 # Poll and print CI status + URL for a PR
 # Usage: scripts/pr_ci_status.sh <pr_number> [--watch]
 set -euo pipefail
+trap 'echo "[ci-status] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 
 if [[ $# -lt 1 ]]; then
   echo "Usage: $0 <pr_number> [--watch]" >&2

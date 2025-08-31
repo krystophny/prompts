@@ -13,6 +13,14 @@
 #   11 -> obsolete and closed (only with --auto-close)
 #   20 -> unknown
 set -euo pipefail
+trap 'echo "[relevance] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
+
+# Ensure Ctrl+C reaches child processes invoked via timeout
+if timeout --help 2>&1 | grep -q -- '--foreground'; then
+  TIMEOUT=(timeout --foreground)
+else
+  TIMEOUT=(timeout)
+fi
 
 if [[ $# -lt 1 ]]; then
   echo "Usage: $0 <issue_number> [--auto-close] [--run-tests]" >&2
@@ -117,7 +125,7 @@ if (( ${#tests[@]} > 0 )) || [[ "$run_tests" == true ]]; then
   # Prefer explicit TEST_CMD if provided
   if [[ -n "${TEST_CMD:-}" ]]; then
     echo "Running TEST_CMD for referenced tests: ${TEST_CMD}" >&2
-    if timeout 10m bash -lc "$TEST_CMD" >/tmp/issue_check_"$issue_num"_suite.log 2>&1; then
+    if "${TIMEOUT[@]}" 10m bash -lc "$TEST_CMD" >/tmp/issue_check_"$issue_num"_suite.log 2>&1; then
       evidence_msgs+=("test_cmd_pass: ${TEST_CMD}")
     else
       all_tests_pass=false
@@ -130,7 +138,7 @@ if (( ${#tests[@]} > 0 )) || [[ "$run_tests" == true ]]; then
       [[ -z "$t" ]] && continue
       if command -v fpm >/dev/null 2>&1; then
         echo "Running referenced test target via fpm: $t" >&2
-        if timeout 5m fpm test --target "$t" >/tmp/issue_check_"$issue_num"_"$t".log 2>&1; then
+        if "${TIMEOUT[@]}" 5m fpm test --target "$t" >/tmp/issue_check_"$issue_num"_"$t".log 2>&1; then
           evidence_msgs+=("test_target_pass: $t")
         else
           all_tests_pass=false
@@ -139,7 +147,7 @@ if (( ${#tests[@]} > 0 )) || [[ "$run_tests" == true ]]; then
         fi
       elif command -v pytest >/dev/null 2>&1; then
         echo "Running referenced test via pytest -k: $t" >&2
-        if timeout 5m pytest -k "$t" >/tmp/issue_check_"$issue_num"_"$t".log 2>&1; then
+        if "${TIMEOUT[@]}" 5m pytest -k "$t" >/tmp/issue_check_"$issue_num"_"$t".log 2>&1; then
           evidence_msgs+=("pytest_k_pass: $t")
         else
           all_tests_pass=false
@@ -148,7 +156,7 @@ if (( ${#tests[@]} > 0 )) || [[ "$run_tests" == true ]]; then
         fi
       elif command -v npm >/dev/null 2>&1 && [[ -f package.json ]]; then
         echo "Running npm test (no per-target filtering available): $t" >&2
-        if timeout 10m npm test --silent >/tmp/issue_check_"$issue_num"_npm.log 2>&1; then
+        if "${TIMEOUT[@]}" 10m npm test --silent >/tmp/issue_check_"$issue_num"_npm.log 2>&1; then
           evidence_msgs+=("npm_test_pass (generic)")
         else
           all_tests_pass=false

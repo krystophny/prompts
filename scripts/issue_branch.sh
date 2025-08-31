@@ -2,6 +2,7 @@
 # Create and push a feature branch for a GitHub issue
 # Usage: scripts/issue_branch.sh <issue_number>
 set -euo pipefail
+trap 'echo "[branch] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 
 if [[ $# -lt 1 ]]; then
   echo "Usage: $0 <issue_number>" >&2

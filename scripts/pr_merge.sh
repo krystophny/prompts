@@ -2,6 +2,7 @@
 # Merge a PR if CI is green and branch up to date
 # Usage: scripts/pr_merge.sh <pr_number> [--rebase|--merge|--squash]
 set -euo pipefail
+trap 'echo "[merge] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 
 if [[ $# -lt 1 ]]; then
   echo "Usage: $0 <pr_number> [--rebase|--merge|--squash]" >&2
@@ -36,4 +37,3 @@ fi
 
 # Merge with the chosen strategy
 gh pr merge "$pr_num" "$method" --delete-branch --admin=false
-
