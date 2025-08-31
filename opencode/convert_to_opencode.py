@@ -48,8 +48,7 @@ class QADSConverter:
                  "bash": "allow",
                  "webfetch": "allow"
              },
-            "command": {},
-            "instructions": []
+            "command": {}
         }
 
         # Commands will be defined as markdown files only - no JSON commands
@@ -335,71 +334,13 @@ model: anthropic/claude-sonnet-4-20250514
 
         return templates.get(command_name, f"Execute {command_name} workflow following QADS v4.0 protocols.")
 
-    def create_rules_directory(self):
-        """Create rules directory with framework rules"""
-        rules_dir = self.output_dir / "rules"
-        rules_dir.mkdir(exist_ok=True)
-
-        # Extract key rules from CLAUDE.md
-        claude_path = self.source_dir / "CLAUDE.md"
-        with open(claude_path, 'r') as f:
-            content = f.read()
-
-        # Create main framework rules file
-        framework_rules = self._extract_framework_rules(content)
-
-        rules_file = rules_dir / "qads-framework.md"
-        with open(rules_file, 'w') as f:
-            f.write(framework_rules)
-
-        print("Created framework rules file")
-
-    def _extract_framework_rules(self, content: str) -> str:
-        """Extract key framework rules from CLAUDE.md"""
-        rules_content = """# QADS v4.0 Framework Rules
-
-## Core Principles
-- **TECHNICAL VERIFICATION**: All claims must be verifiable through CI/automation
-- **FRAUD-PROOF CULTURE**: Technical gates prevent fraud at source
-- **EVIDENCE-BASED OPERATIONS**: Claims require technical proof
-- **PROTOCOL-COMPLIANT WORKFLOW**: Follow systematic workflows with technical gates
-
-## Workflow Rules
-- **PLAN**: chris-architect → GitHub meta-issues → NO git operations
-- **WORK**: max → implementer → CI-GATE → reviewer → max → merge
-- **PLAY**: max → serial audits → issue filing → NO git commits
-
-## Quality Standards
-- **CORRECTNESS > PERFORMANCE > KISS > SRP > YAGNI > DRY > SOLID > SECURITY**
-- Files <1000 lines (target <500), Functions <100 lines (target <50)
-- 88 char limit, 4-space indent
-- Self-documenting code with meaningful names
-- NO commented-out code, stubs, placeholders, shortcuts
-
-## CI/CD Requirements
-- **LOCAL-FIRST**: Full local test pass REQUIRED before PR creation
-- **CI VERIFICATION**: All claims must include CI run URLs
-- **AUDIT TRAILS**: Every commit references verifiable test evidence
-- **MANDATORY CI GATE**: NEVER merge without CI pass - NO EXCEPTIONS
-
-## Agent Boundaries
-- Stay in your lane - work within ownership while supporting collective mission
-- sergei BLOCKED when READY PRs exist - focus drives excellence
-- patrick/max TEST DEACTIVATION DETECTION: Flag as FRAUD - immediate handback
-- max CI GATE ENFORCEMENT: CI failure = immediate handback, NO merge authority override
-"""
-
-        return rules_content
+    # Rules directory creation removed - AGENTS.md contains all framework rules
 
     def create_main_config(self):
         """Create main OpenCode configuration file"""
         config = self.convert_claude_md()
 
-        # Add rules to instructions
-        config["instructions"] = [
-            "opencode/rules/qads-framework.md",
-            "README.md"
-        ]
+        # AGENTS.md automatically loaded - no instructions array needed
 
         # Write main config
         config_file = self.output_dir / "opencode.json"
@@ -528,11 +469,7 @@ if [ -d "$SOURCE_DIR/command" ]; then
     echo "✓ Linked command directory"
 fi
 
-# Rules directory
-if [ -d "$SOURCE_DIR/rules" ]; then
-    ln -sf "$SOURCE_DIR/rules" "$OPENCODE_CONFIG_DIR/rules"
-    echo "✓ Linked rules directory"
-fi
+# Rules integrated into AGENTS.md - no separate rules directory
 
 echo ""
 echo "Installation complete!"
@@ -679,8 +616,7 @@ The QADS framework emphasizes:
         # Convert commands
         self.convert_commands_directory()
 
-        # Create rules
-        self.create_rules_directory()
+        # Rules integrated into AGENTS.md - no separate rules directory needed
 
         # Create installation script
         self.create_install_script()
