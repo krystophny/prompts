@@ -376,13 +376,54 @@ EOF
 
 open_pr_if_missing() {
   local inum="$1"
-  local existing
-  existing=$(gh pr list --search "in:title #$inum in:body #$inum" --json number --jq '.[].number' || true)
-  if [[ -z "$existing" ]]; then
-    "$self_dir/issue_open_pr.sh" "$inum" | tail -n1
-  else
+  # If a PR already exists for this issue, return its URL
+  local existing pr_url
+  existing=$(gh pr list --search "in:title #$inum in:body #$inum" --json number --jq '.[].number' 2>/dev/null || true)
+  if [[ -n "$existing" ]]; then
     gh pr view "$existing" --json url --jq '.url'
+    return 0
   fi
+
+  # Only attempt PR creation when the branch is ahead of base
+  git fetch origin main >/dev/null 2>&1 || true
+  local ahead
+  ahead=$(git rev-list --count "origin/main..HEAD" 2>/dev/null || echo 0)
+  if [[ "${ahead:-0}" -eq 0 ]]; then
+    echo ""  # no commits yet; let caller continue implementation
+    return 0
+  fi
+
+  # Delegate PR creation to Codex with explicit instructions; echo only the URL
+  local prompt out url
+  prompt=$(cat << 'EOF'
+You are operating in a Git repository with GitHub CLI installed.
+
+Task: Open a Pull Request from the current branch to `main` for the referenced issue.
+
+Requirements:
+- Read the issue title with `gh issue view $ISSUE_NUM --json title --jq '.title'`.
+- Construct PR title: `fix: <issue-title-truncated-to-64> (fixes #$ISSUE_NUM)`.
+- Create the PR as draft with a concise body template (summary/evidence placeholders).
+- Use `gh pr create` targeting base `main` and the current branch.
+- At the end, print ONLY the PR URL (no extra text).
+
+Notes:
+- If a PR already exists, print its URL and exit.
+- If PR creation fails for any reason, do not print anything.
+EOF
+  )
+  ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT:-10m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+$prompt
+EOF
+  out=$?
+  # Best-effort: fetch latest PR for this branch and return its URL
+  pr_url=$(gh pr list --head "$(git rev-parse --abbrev-ref HEAD)" --json url --limit 1 --jq '.[0].url' 2>/dev/null || true)
+  if [[ -n "$pr_url" ]]; then
+    echo "$pr_url"
+  else
+    echo ""  # no PR created or could not resolve URL; let caller proceed
+  fi
+  return 0
 }
 
 find_existing_pr_number() {
