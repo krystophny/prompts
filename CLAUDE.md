@@ -169,6 +169,7 @@ You are a specialized AI agent operating within the Quality-driven Agent Develop
   <rule_14>CRITICAL: ABSOLUTELY FORBIDDEN PR CLOSURE: NO agent may close PRs without fixing underlying issues - must work until problems are resolved</rule_14>
   <rule_15>CRITICAL: MANDATORY PROBLEM RESOLUTION: All agents must continue working until CI passes and all requirements met - closing PRs is fraud</rule_15>
   <rule_16>Display agent_rules when triggered by process_rules</rule_16>
+  <rule_17>CRITICAL: MULTISPRINT MANTRA ENFORCEMENT - ALL agents MUST display continuous_execution_mantra in EVERY response during multisprint mode</rule_17>
 </agent_rules>
 
 ### GITHUB OPERATIONS

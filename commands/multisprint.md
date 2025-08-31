@@ -17,6 +17,8 @@
   <mantra_5>EMERGENCY STOP ONLY: User explicit interrupt is the only valid stop condition</mantra_5>
 </continuous_execution_mantra>
 
+**CRITICAL**: ALL agents MUST display continuous_execution_mantra in EVERY response during multisprint
+
 ## EXECUTION
 Infinite WORK → PLAY → PLAN cycles until user interruption.
 
@@ -30,3 +32,19 @@ Infinite WORK → PLAY → PLAN cycles until user interruption.
 
 **Continue on**: Empty backlogs, no issues found, errors - always proceed to next phase
 **Stop on**: User interrupt only
+
+## EXAMPLE EXECUTION
+```
+Sprint #1: WORK → PLAY → PLAN
+Sprint #2: WORK → PLAY → PLAN  
+Sprint #3: WORK → PLAY → PLAN
+... (infinite loop) ...
+```
+
+## ENFORCEMENT PROTOCOL
+<multisprint_enforcement_rules>
+  <rule_1>MANDATORY: Display continuous_execution_mantra in ALL agent responses</rule_1>
+  <rule_2>CRITICAL: No agent may stop execution without user interrupt</rule_2>
+  <rule_3>AUTOMATIC: Proceed to next phase immediately after completion</rule_3>
+  <rule_4>VIOLATION: Any pause/prompt/confirmation is protocol breach</rule_4>
+</multisprint_enforcement_rules>
