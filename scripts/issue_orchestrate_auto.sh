@@ -457,7 +457,7 @@ You are operating on a PR with failing CI.
 Task: Diagnose the CI failures, read GitHub Actions logs, fix issues locally, push commits, and re-trigger CI until green.
 
 Steps:
-1) Inspect latest CI runs for the branch: `gh run list --branch "$BRANCH" --event pull_request --json databaseId,workflowName,status,conclusion,htmlUrl --limit 5` and view logs for failed jobs using `gh run view <run-id> --json jobs --log`.
+1) Inspect latest CI runs for the branch: `gh run list --branch "$BRANCH" --event pull_request --json databaseId,workflowName,status,conclusion,url --limit 5` and view logs for failed jobs using `gh run view <run-id> --json jobs --log`.
 2) Reproduce locally (run tests/linters/build) and fix the root cause. Keep changes minimal and scoped to this PR.
 3) Add/adjust tests as needed to prevent regression; run locally to green.
 4) Stage specific files only; commit with clear message; push.
