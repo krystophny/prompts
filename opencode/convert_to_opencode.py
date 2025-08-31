@@ -275,15 +275,26 @@ model: anthropic/claude-sonnet-4-20250514
             "CLAUDE.md": "QADS v4.0 framework",
             "Anthropic": "OpenCode with Claude Sonnet",
 
-            # Agent references
-            "chris-architect EXCLUSIVELY via Task tool": "chris-architect via OpenCode agent system",
-            "sergei-perfectionist-coder EXCLUSIVELY via Task tool": "sergei-perfectionist-coder via OpenCode agent system",
-            "patrick-auditor EXCLUSIVELY via Task tool": "patrick-auditor via OpenCode agent system",
-            "max-devops-engineer EXCLUSIVELY via Task tool": "max-devops-engineer via OpenCode agent system",
+            # Agent references and Task tool invocations
+            "chris-architect EXCLUSIVELY via Task tool": "chris-architect via @chris-architect or task tool with subagent_type='chris-architect'",
+            "sergei-perfectionist-coder EXCLUSIVELY via Task tool": "sergei-perfectionist-coder via @sergei-perfectionist-coder or task tool with subagent_type='sergei-perfectionist-coder'",
+            "patrick-auditor EXCLUSIVELY via Task tool": "patrick-auditor via @patrick-auditor or task tool with subagent_type='patrick-auditor'",
+            "max-devops-engineer EXCLUSIVELY via Task tool": "max-devops-engineer via @max-devops-engineer or task tool with subagent_type='max-devops-engineer'",
+            "georg-test-engineer EXCLUSIVELY via Task tool": "georg-test-engineer via @georg-test-engineer or task tool with subagent_type='georg-test-engineer'",
+            "vicky-acceptance-tester EXCLUSIVELY via Task tool": "vicky-acceptance-tester via @vicky-acceptance-tester or task tool with subagent_type='vicky-acceptance-tester'",
+            "winny-technical-writer EXCLUSIVELY via Task tool": "winny-technical-writer via @winny-technical-writer or task tool with subagent_type='winny-technical-writer'",
+            "philipp-data-scientist EXCLUSIVELY via Task tool": "philipp-data-scientist via @philipp-data-scientist or task tool with subagent_type='philipp-data-scientist'",
+            "jonatan-math-physicist EXCLUSIVELY via Task tool": "jonatan-math-physicist via @jonatan-math-physicist or task tool with subagent_type='jonatan-math-physicist'",
+            "steffi-ux-designer EXCLUSIVELY via Task tool": "steffi-ux-designer via @steffi-ux-designer or task tool with subagent_type='steffi-ux-designer'",
 
             # Tool references
-            "Task tool": "OpenCode agent system",
-            "task tool": "OpenCode agent system",
+            "Task tool": "task tool (use subagent_type parameter to specify agent)",
+            "task tool": "task tool (use subagent_type parameter to specify agent)",
+            "using Task tool delegation per agent_rules": "using task tool with appropriate subagent_type parameters per agent_rules",
+            "Execute infinite WORK → PLAY → PLAN loop using OpenCode agent system delegation per agent_rules": "Execute infinite WORK → PLAY → PLAN loop using task tool with subagent_type parameters for each specialized agent per agent_rules",
+
+            # Specific workflow agent invocations
+            "max → (sergei OR winny) → CI-GATE → (patrick OR vicky) → max": "Use task tool: subagent_type='max-devops-engineer' → subagent_type='sergei-perfectionist-coder' OR subagent_type='winny-technical-writer' → CI-GATE → subagent_type='patrick-auditor' OR subagent_type='vicky-acceptance-tester' → subagent_type='max-devops-engineer'",
 
             # Command references
             "/init": "/plan",
@@ -299,11 +310,16 @@ model: anthropic/claude-sonnet-4-20250514
         if ':' in description or '"' in description:
             description = f'"{description}"'
 
+        # Add agent invocation examples section
+        agent_examples = self._get_agent_examples(command_name)
+
         opencode_command = f"""---
 description: {description}
-agent: build
+agent: general
 model: anthropic/claude-sonnet-4-20250514
 ---
+{agent_examples}
+
 {content}
 """
 
@@ -321,6 +337,103 @@ model: anthropic/claude-sonnet-4-20250514
             if 'PRIMARY FUNCTION' in line or '## ' in line:
                 return line.replace('## ', '').replace('*PRIMARY FUNCTION*: ', '').strip()
         return f"Execute {content.split()[0]} workflow"
+
+    def _get_agent_examples(self, command_name: str) -> str:
+        """Get agent invocation examples for workflow commands"""
+        if command_name == "multisprint":
+            return """## OPENCODE AGENT INVOCATION EXAMPLES
+
+This workflow uses the task tool to invoke QADS agents. Examples:
+
+```markdown
+# Max DevOps Engineer (repository management, CI/CD)
+Use task tool: subagent_type='max-devops-engineer', description='Assess repository state', prompt='Check repository status and manage CI pipeline'
+
+# Sergei Perfectionist Coder (code implementation)  
+Use task tool: subagent_type='sergei-perfectionist-coder', description='Implement feature', prompt='Implement the login authentication system with full CI verification'
+
+# Patrick Auditor (code review and quality)
+Use task tool: subagent_type='patrick-auditor', description='Review code changes', prompt='Review the authentication implementation for security and quality issues'
+
+# Chris Architect (planning and design)
+Use task tool: subagent_type='chris-architect', description='Plan sprint', prompt='Organize GitHub issues and plan next sprint based on completed work'
+
+# Other available agents:
+- winny-technical-writer (documentation)
+- vicky-acceptance-tester (user testing)  
+- georg-test-engineer (test engineering)
+- philipp-data-scientist (data analysis)
+- jonatan-math-physicist (mathematical modeling)
+- steffi-ux-designer (UI/UX design)
+```"""
+
+        elif command_name == "work":
+            return """## OPENCODE AGENT INVOCATION EXAMPLES
+
+The WORK workflow uses these agents in sequence:
+
+```markdown
+# 1. Max DevOps Assessment
+Use task tool: subagent_type='max-devops-engineer', description='Repository assessment', prompt='Check repository status, CI health, and prepare for implementation work'
+
+# 2. Implementation (choose based on work type)
+# For code implementation:
+Use task tool: subagent_type='sergei-perfectionist-coder', description='Code implementation', prompt='Implement the feature with full CI verification and testing'
+
+# For documentation:
+Use task tool: subagent_type='winny-technical-writer', description='Documentation', prompt='Write comprehensive documentation with examples and CI validation'
+
+# 3. Review (choose based on work type)  
+# For code review:
+Use task tool: subagent_type='patrick-auditor', description='Code review', prompt='Review implementation for quality, security, and adherence to standards'
+
+# For documentation review:
+Use task tool: subagent_type='vicky-acceptance-tester', description='Documentation review', prompt='Test and validate documentation from user perspective'
+
+# 4. Final merge
+Use task tool: subagent_type='max-devops-engineer', description='Merge completion', prompt='Complete merge if CI passes and all requirements met'
+```"""
+
+        elif command_name == "play":
+            return """## OPENCODE AGENT INVOCATION EXAMPLES
+
+The PLAY workflow uses agents for defect discovery:
+
+```markdown
+# Sequential execution order (important for avoiding conflicts):
+
+# 1. Max PR Assessment
+Use task tool: subagent_type='max-devops-engineer', description='PR assessment', prompt='Check for open PRs and handback to WORK mode if any exist'
+
+# 2. Patrick Code Audit  
+Use task tool: subagent_type='patrick-auditor', description='Code audit', prompt='Perform comprehensive code audit and file GitHub issues for all defects found'
+
+# 3. Vicky Acceptance Testing
+Use task tool: subagent_type='vicky-acceptance-tester', description='User testing', prompt='Test user-facing functionality and file issues for usability problems'  
+
+# 4. Chris Issue Consolidation
+Use task tool: subagent_type='chris-architect', description='Issue consolidation', prompt='Review and consolidate all filed issues, close duplicates, organize for next sprint'
+```"""
+
+        elif command_name == "plan":
+            return """## OPENCODE AGENT INVOCATION EXAMPLES  
+
+The PLAN workflow uses chris-architect exclusively:
+
+```markdown
+# Chris Architect Planning (NO git operations)
+Use task tool: subagent_type='chris-architect', description='Sprint planning', prompt='Update GitHub meta-issues (SPRINT BACKLOG, PRODUCT BACKLOG, DESIGN) and organize next sprint with issue consolidation'
+```"""
+
+        else:
+            return f"""## OPENCODE AGENT INVOCATION EXAMPLES
+
+Use the task tool with appropriate subagent_type for {command_name} workflow:
+
+```markdown
+# Example agent invocation
+Use task tool: subagent_type='[agent-name]', description='Brief task description', prompt='Detailed instructions for the agent'
+```"""
 
     def _extract_command_template(self, content: str, command_name: str) -> str:
         """Extract command template"""
