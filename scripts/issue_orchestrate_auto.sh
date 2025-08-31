@@ -64,6 +64,81 @@ has_untracked() { [[ -n "$(git ls-files --others --exclude-standard)" ]]; }
 has_mods() { ! git diff --quiet || ! git diff --cached --quiet; }
 print_dirty() { echo "Working tree has changes:" >&2; git status --short >&2 || true; }
 
+# Detect whether a rebase is in progress
+rebase_in_progress() {
+  [[ -d .git/rebase-merge || -d .git/rebase-apply ]]
+}
+
+# Attempt to rebase the feature branch onto base and, if conflicts arise,
+# instruct Codex to resolve them autonomously. Push with --force-with-lease.
+# Returns 0 when branch is rebased and conflict-free, 1 otherwise.
+rebase_and_resolve_conflicts() {
+  local pr_num="$1"; shift || true
+  local branch="$1"; shift || true
+  local pr_json base merge_state
+  pr_json=$(gh pr view "$pr_num" --json baseRefName,mergeStateStatus 2>/dev/null || true)
+  if [[ -z "$pr_json" || "$pr_json" == "null" ]]; then
+    return 0
+  fi
+  base=$(echo "$pr_json" | jq -r '.baseRefName')
+  merge_state=$(echo "$pr_json" | jq -r '.mergeStateStatus')
+  case "$merge_state" in
+    BEHIND|DIRTY)
+      echo "[rebase] PR #$pr_num is $merge_state relative to $base. Rebasing $branch onto origin/$base" >&2
+      git fetch origin "$base" "$branch" || true
+      git checkout "$branch"
+      if git rebase "origin/$base"; then
+        git push --force-with-lease
+        return 0
+      fi
+      # Conflicts: hand off to Codex to resolve and continue rebase
+      local attempt=1 max_attempts=10
+      while rebase_in_progress && (( attempt <= max_attempts )); do
+        echo "[rebase] Conflicts during rebase (attempt $attempt/$max_attempts). Handing to Codex." >&2
+        local conflicted
+        conflicted=$(git diff --name-only --diff-filter=U || true)
+        local prompt
+        prompt=$(cat << 'EOF'
+You are resolving an in-progress Git rebase with merge conflicts.
+
+Goal: Resolve all conflicts cleanly, preserve both intended changes, and complete the rebase. Then run tests locally to ensure correctness, stage specific files, and continue the rebase.
+
+Rules:
+- Do NOT abort the rebase. Fix conflicts file-by-file.
+- Keep changes minimal; do not reformat unrelated code. No random markdown reports.
+- Stage only resolved files explicitly (no `git add .`).
+- After resolving all conflicts, run `git rebase --continue`.
+- If tests fail post-continue, create follow-up fix commits on the branch and push.
+
+Tips:
+- Use conflict markers (<<<<<<<, =======, >>>>>>>) to identify sections.
+- If a file can be resolved by choosing one side entirely, do so deliberately.
+- When both changes should be kept, integrate them carefully and compile/tests locally.
+EOF
+        )
+        CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT:-45m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+$prompt
+EOF
+        # If still conflicted, let Codex try again next loop; otherwise continue
+        if rebase_in_progress; then
+          # Ensure any resolved files are staged; try to continue
+          if git rebase --continue; then :; fi
+        fi
+        ((attempt++))
+      done
+      if ! rebase_in_progress; then
+        git push --force-with-lease
+        return 0
+      fi
+      echo "[rebase] Unable to complete rebase automatically after $max_attempts attempts." >&2
+      return 1
+      ;;
+    *)
+      return 0
+      ;;
+  esac
+}
+
 ensure_clean_main() {
   if has_mods || has_untracked; then
     print_dirty
@@ -177,12 +252,13 @@ progress_current_branch_if_needed() {
       gh pr ready "$pr_number" || true
     fi
 
+    # Ensure branch is up to date and conflict-free relative to base before watching checks
+    rebase_and_resolve_conflicts "$pr_number" "$cur" || true
+    # Ensure branch is up to date and conflict-free relative to base before watching checks
+    rebase_and_resolve_conflicts "$pr_number" "$branch" || true
     echo "Waiting for CI on PR #$pr_number" >&2
     local status_line conclusion
-    status_line=$("$self_dir/pr_ci_status.sh" "$pr_number" --watch || true)
-    echo "$status_line" >&2
-    conclusion=$(echo "$status_line" | awk '{for(i=1;i<=NF;i++){if($i ~ /^conclusion=/){print substr($i,12)}}}')
-    if [[ "$conclusion" == "success" ]]; then
+    if gh pr checks "$pr_number" --required --watch; then
       "$self_dir/pr_merge.sh" "$pr_number" "$merge_method"
     else
       echo "CI not successful for PR #$pr_number; handing back to Codex for remediation." >&2
@@ -368,6 +444,8 @@ codex_ci_fix_loop() {
   local attempt=1
   while (( attempt <= max_attempts )); do
     echo "[CI Fix] Attempt $attempt on PR #$pr_num (branch $branch)" >&2
+    # Ensure branch is rebased on base and conflicts are resolved before CI
+    rebase_and_resolve_conflicts "$pr_num" "$branch" || true
     local prompt
     prompt=$(cat << 'EOF'
 You are operating on a PR with failing CI.

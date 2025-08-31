@@ -34,5 +34,15 @@ else
   exit 1
 fi
 
+# Final safety: ensure PR is mergeable and not behind or conflicted
+merge_state=$(gh pr view "$pr_num" --json mergeStateStatus --jq '.mergeStateStatus' 2>/dev/null || echo "")
+case "$merge_state" in
+  CLEAN|HAS_HOOKS|UNKNOWN|'') : ;;
+  *)
+    echo "PR is not in a mergeable state: $merge_state. Resolve (rebase) before merging." >&2
+    exit 1
+    ;;
+esac
+
 # Merge with the chosen strategy
 gh pr merge "$pr_num" "$method" --delete-branch --admin=false
