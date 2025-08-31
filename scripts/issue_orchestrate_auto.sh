@@ -77,6 +77,131 @@ ensure_clean_main() {
   git pull --rebase origin main
 }
 
+# Infer issue number from current branch or its PR (best-effort)
+infer_issue_from_current_branch() {
+  local cur
+  cur=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+  if [[ -z "$cur" || "$cur" == "main" ]]; then
+    return 1
+  fi
+  # Try branch naming: fix/issue-123-...
+  local n
+  n=$(echo "$cur" | sed -nE 's/.*issue-([0-9]+).*/\1/p' || true)
+  if [[ -n "$n" ]]; then
+    echo "$n"
+    return 0
+  fi
+  # Try PR for this branch; extract first referenced issue number from title/body
+  local pr_json
+  pr_json=$(gh pr list --head "$cur" --json number,title,body --limit 1 2>/dev/null || true)
+  if [[ -n "$pr_json" && "$pr_json" != "[]" ]]; then
+    local ref
+    ref=$(echo "$pr_json" | jq -r '.[0] | ((.title // "") + "\n" + (.body // ""))' \
+      | grep -Eo '#[0-9]+' | head -n1 | tr -d '#')
+    if [[ -n "$ref" ]]; then
+      echo "$ref"
+      return 0
+    fi
+  fi
+  return 1
+}
+
+# If starting on a non-main branch, run the workflow for that branch until PR merge
+progress_current_branch_if_needed() {
+  local cur
+  cur=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+  if [[ -z "$cur" || "$cur" == "main" ]]; then
+    return 0
+  fi
+  local inum
+  if ! inum=$(infer_issue_from_current_branch); then
+    echo "[orchestrate] On branch '$cur' but could not infer related issue; skipping special handling." >&2
+    return 0
+  fi
+  echo "[orchestrate] Continuing current branch '$cur' for issue #$inum before iterating issues." >&2
+
+  # Ensure we stay on the current branch
+  git fetch origin "$cur":"$cur" || true
+  if git show-ref --verify --quiet "refs/heads/$cur"; then
+    git checkout "$cur" && git pull --rebase origin "$cur" || true
+  else
+    git checkout -b "$cur" --track "origin/$cur" || git checkout "$cur"
+  fi
+
+  # Run Codex autonomous fix loop (non-interactive) on this branch
+  codex_fix_issue "$inum"
+
+  # Auto-commit any changes (stage specific files only)
+  if ! git diff --quiet || ! git diff --cached --quiet || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
+    stage_all_changes
+    if ! git diff --cached --quiet; then
+      git commit -m "fix: attempt to resolve issue #$inum (auto)"
+      git push
+    fi
+  fi
+
+  # Strict pre-PR local test gate: attempt up to 3 local fix cycles before opening PR
+  local pre_attempt=1; local pre_max=3
+  while (( pre_attempt <= pre_max )); do
+    if run_local_tests; then
+      break
+    fi
+    echo "[pre-PR] Local tests failing; handing back to Codex (attempt $pre_attempt/$pre_max)" >&2
+    codex_fix_issue "$inum"
+    if ! git diff --quiet || ! git diff --cached --quiet || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
+      stage_all_changes
+      if ! git diff --cached --quiet; then
+        git commit -m "fix: continue resolving issue #$inum (pre-PR)"
+        git push
+      fi
+    fi
+    ((pre_attempt++))
+  done
+
+  # Ensure PR exists
+  local pr_url existing_pr pr_number
+  existing_pr=$(find_existing_pr_number "$inum" || true)
+  if [[ -n "$existing_pr" ]]; then
+    pr_url=$(gh pr view "$existing_pr" --json url --jq '.url')
+  else
+    pr_url=$(open_pr_if_missing "$inum")
+  fi
+  echo "PR: $pr_url"
+
+  if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
+    # Self-review loop with Codex to refine PR
+    codex_pr_self_review "$pr_number" "$inum"
+
+    # Move PR out of draft if still draft
+    if gh pr view "$pr_number" --json isDraft --jq '.isDraft' | grep -qi true; then
+      gh pr ready "$pr_number" || true
+    fi
+
+    echo "Waiting for CI on PR #$pr_number" >&2
+    local status_line conclusion
+    status_line=$("$self_dir/pr_ci_status.sh" "$pr_number" --watch || true)
+    echo "$status_line" >&2
+    conclusion=$(echo "$status_line" | awk '{for(i=1;i<=NF;i++){if($i ~ /^conclusion=/){print substr($i,12)}}}')
+    if [[ "$conclusion" == "success" ]]; then
+      "$self_dir/pr_merge.sh" "$pr_number" "$merge_method"
+    else
+      echo "CI not successful for PR #$pr_number; handing back to Codex for remediation." >&2
+      if codex_ci_fix_loop "$pr_number" "$inum" "$cur"; then
+        echo "CI turned green after remediation. Merging PR #$pr_number." >&2
+        "$self_dir/pr_merge.sh" "$pr_number" "$merge_method"
+      else
+        echo "CI still failing after remediation attempts; cleaning up PR #$pr_number." >&2
+        "$self_dir/pr_cleanup.sh" "$pr_number"
+      fi
+    fi
+  else
+    echo "Could not resolve PR number for URL: $pr_url" >&2
+  fi
+
+  # Return to a clean main to continue with normal iteration
+  ensure_clean_main
+}
+
 # --- Codex autonomous loops ---
 codex_fix_issue() {
   local inum="$1"; shift || true
@@ -303,6 +428,9 @@ if [[ -z "${issues:-}" ]]; then
   echo "No open issues to process." >&2
   exit 0
 fi
+
+# Pre-loop: if we're starting on a non-main branch, finish its workflow first
+progress_current_branch_if_needed
 
 count=0
 for inum in $issues; do
