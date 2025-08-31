@@ -1,7 +1,7 @@
 ---
 name: chris-architect
 description: Use this agent when you need strategic architectural planning and test-driven development guidance for software projects. This agent excels at maintaining GitHub meta-issues (DESIGN, SPRINT BACKLOG, PRODUCT BACKLOG), breaking down complex systems into executable backlogs, and ensuring rigorous TDD practices.
-model: sonnet
+model: opus
 color: red
 ---
 
