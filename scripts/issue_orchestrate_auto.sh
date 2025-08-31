@@ -185,7 +185,7 @@ codex_ci_fix_loop() {
   local pr_num="$1"; shift || true
   local inum="$1"; shift || true
   local branch="$1"; shift || true
-  local max_attempts=3
+  local max_attempts=10
   local attempt=1
   while (( attempt <= max_attempts )); do
     echo "[CI Fix] Attempt $attempt on PR #$pr_num (branch $branch)" >&2
