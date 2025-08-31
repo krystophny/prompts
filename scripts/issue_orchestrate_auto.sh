@@ -162,6 +162,78 @@ open_pr_if_missing() {
   fi
 }
 
+find_existing_pr_number() {
+  local inum="$1"
+  gh pr list --search "in:title #$inum in:body #$inum" --json number --jq '.[].number' 2>/dev/null | head -n1
+}
+
+checkout_pr_branch() {
+  local pr_num="$1"
+  local branch
+  branch=$(gh pr view "$pr_num" --json headRefName --jq '.headRefName')
+  git fetch origin "$branch":"$branch" || true
+  if git show-ref --verify --quiet "refs/heads/$branch"; then
+    git checkout "$branch"
+    git pull --rebase origin "$branch" || true
+  else
+    git checkout -b "$branch" --track "origin/$branch" || git checkout "$branch"
+  fi
+  echo "$branch"
+}
+
+codex_ci_fix_loop() {
+  local pr_num="$1"; shift || true
+  local inum="$1"; shift || true
+  local branch="$1"; shift || true
+  local max_attempts=3
+  local attempt=1
+  while (( attempt <= max_attempts )); do
+    echo "[CI Fix] Attempt $attempt on PR #$pr_num (branch $branch)" >&2
+    local prompt
+    prompt=$(cat << 'EOF'
+You are operating on a PR with failing CI.
+
+Task: Diagnose the CI failures, read GitHub Actions logs, fix issues locally, push commits, and re-trigger CI until green.
+
+Steps:
+1) Inspect latest CI runs for the branch: `gh run list --branch "$BRANCH" --event pull_request --json databaseId,workflowName,status,conclusion,htmlUrl --limit 5` and view logs for failed jobs using `gh run view <run-id> --json jobs --log`.
+2) Reproduce locally (run tests/linters/build) and fix the root cause. Keep changes minimal and scoped to this PR.
+3) Add/adjust tests as needed to prevent regression; run locally to green.
+4) Stage specific files only; commit with clear message; push.
+5) If there is nothing actionable (external flake), document minimal retry (e.g., rebase to retrigger) and proceed.
+
+Rules:
+- No random markdown reports. Put evidence in commit messages or PR body if appropriate.
+- Do not broaden scope. Keep functions small and style consistent.
+EOF
+    )
+    PR_NUM="$pr_num" ISSUE_NUM="$inum" BRANCH="$branch" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+$prompt
+EOF
+
+    # If Codex produced changes, ensure they are committed and pushed
+    if ! git diff --quiet || ! git diff --cached --quiet; then
+      mapfile -t changed < <(git status --porcelain | awk '{print $2}')
+      if (( 
+${#changed[@]} > 0 )); then
+        for f in "${changed[@]}"; do git add -- "$f"; done
+        git commit -m "fix(ci): address CI failures on PR #$pr_num"
+        git push
+      fi
+    fi
+
+    echo "Waiting for CI after attempt $attempt..." >&2
+    status_line=$("$self_dir/pr_ci_status.sh" "$pr_num" --watch || true)
+    echo "$status_line" >&2
+    conclusion=$(echo "$status_line" | awk '{for(i=1;i<=NF;i++){if($i ~ /^conclusion=/){print substr($i,12)}}}')
+    if [[ "$conclusion" == "success" ]]; then
+      return 0
+    fi
+    ((attempt++))
+  done
+  return 1
+}
+
 # Fetch issues
 if [[ -n "$label" ]]; then
   issues=$(gh issue list --state open --label "$label" --json number --limit 500 --jq '.[].number' || true)
@@ -189,8 +261,16 @@ for inum in $issues; do
 
   echo "=== [AUTO] Processing issue #$inum ==="
 
-  # Create and switch to branch (also pushes)
-  branch=$("$self_dir/issue_branch.sh" "$inum")
+  # Use existing PR/branch if present; otherwise create branch
+  existing_pr=$(find_existing_pr_number "$inum" || true)
+  if [[ -n "$existing_pr" ]]; then
+    echo "Found existing PR #$existing_pr for issue #$inum; continuing work." >&2
+    branch=$(checkout_pr_branch "$existing_pr")
+    pr_url=$(gh pr view "$existing_pr" --json url --jq '.url')
+  else
+    # Create and switch to branch (also pushes)
+    branch=$("$self_dir/issue_branch.sh" "$inum")
+  fi
   echo "Branch: $branch"
 
   # Run Codex autonomous fix loop (non-interactive) on this branch
@@ -206,7 +286,10 @@ for inum in $issues; do
     fi
   fi
 
-  pr_url=$(open_pr_if_missing "$inum")
+  # Ensure PR exists
+  if [[ -z "${pr_url:-}" ]]; then
+    pr_url=$(open_pr_if_missing "$inum")
+  fi
   echo "PR: $pr_url"
 
   if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
@@ -225,8 +308,14 @@ for inum in $issues; do
     if [[ "$conclusion" == "success" ]]; then
       "$self_dir/pr_merge.sh" "$pr_number" "$merge_method"
     else
-      echo "CI not successful for PR #$pr_number; cleaning up." >&2
-      "$self_dir/pr_cleanup.sh" "$pr_number"
+      echo "CI not successful for PR #$pr_number; handing back to Codex for remediation." >&2
+      if codex_ci_fix_loop "$pr_number" "$inum" "$branch"; then
+        echo "CI turned green after remediation. Merging PR #$pr_number." >&2
+        "$self_dir/pr_merge.sh" "$pr_number" "$merge_method"
+      else
+        echo "CI still failing after remediation attempts; cleaning up PR #$pr_number." >&2
+        "$self_dir/pr_cleanup.sh" "$pr_number"
+      fi
     fi
   else
     echo "Could not resolve PR number for URL: $pr_url" >&2
