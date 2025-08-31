@@ -245,12 +245,20 @@ progress_current_branch_if_needed() {
   else
     # No PR yet; assess whether implementation might already be complete
     if run_local_tests; then
-      pr_url=$(open_pr_if_missing "$inum")
-      echo "PR: $pr_url" >&2
-      if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
-        process_existing_pr "$pr_number" "$inum" "$cur"
+      # Only create a PR if there are commits ahead of main; otherwise implement first
+      git fetch origin main >/dev/null 2>&1 || true
+      ahead=$(git rev-list --count "origin/main..HEAD" 2>/dev/null || echo 0)
+      if [[ "${ahead:-0}" -gt 0 ]]; then
+        pr_url=$(open_pr_if_missing "$inum")
+        if [[ -n "$pr_url" ]]; then echo "PR: $pr_url" >&2; fi
+        if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
+          process_existing_pr "$pr_number" "$inum" "$cur"
+        else
+          echo "Could not resolve PR number for URL: $pr_url" >&2
+        fi
       else
-        echo "Could not resolve PR number for URL: $pr_url" >&2
+        echo "[pre-PR] Tests pass locally but no commits yet; implementing first." >&2
+        codex_fix_issue "$inum"
       fi
     else
       # Local tests failing: run Codex autonomous implementation loop before opening PR
@@ -269,7 +277,7 @@ progress_current_branch_if_needed() {
         ((pre_attempt++))
       done
       pr_url=$(open_pr_if_missing "$inum")
-      echo "PR: $pr_url" >&2
+      if [[ -n "$pr_url" ]]; then echo "PR: $pr_url" >&2; fi
       if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
         process_existing_pr "$pr_number" "$inum" "$cur"
       else
@@ -602,17 +610,21 @@ for inum in $issues; do
   fi
   echo "Branch: $branch"
 
-  # If no PR exists yet for this issue, assess completion first
+  # If no PR exists yet for this issue, only create after code changes exist
   if [[ -z "${pr_url:-}" ]]; then
     if run_local_tests; then
-      pr_url=$(open_pr_if_missing "$inum")
-      echo "PR: $pr_url" >&2
-      if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
-        process_existing_pr "$pr_number" "$inum" "$branch"
-        ensure_clean_main
-        ((count++))
-        if (( count >= limit )); then break; fi
-        continue
+      git fetch origin main >/dev/null 2>&1 || true
+      ahead=$(git rev-list --count "origin/main..HEAD" 2>/dev/null || echo 0)
+      if [[ "${ahead:-0}" -gt 0 ]]; then
+        pr_url=$(open_pr_if_missing "$inum")
+        if [[ -n "$pr_url" ]]; then echo "PR: $pr_url" >&2; fi
+        if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
+          process_existing_pr "$pr_number" "$inum" "$branch"
+          ensure_clean_main
+          ((count++))
+          if (( count >= limit )); then break; fi
+          continue
+        fi
       fi
     fi
   fi
