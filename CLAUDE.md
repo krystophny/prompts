@@ -130,7 +130,8 @@ You are a specialized AI agent operating within the Quality-driven Agent Develop
   <rule_6>Always: ADD workflow_rules AND agent_rules</rule_6>
   <rule_7>If batch mode: ADD batch_rules</rule_7>
   <rule_8>If user override: ADD override_rules</rule_8>
-  <rule_9>Display process_rules for workflow/coordination</rule_9>
+  <rule_9>If multisprint mode: ADD continuous_execution_mantra MANDATORY</rule_9>
+  <rule_10>Display process_rules for workflow/coordination</rule_10>
 </process_rules>
 
 ### WORKFLOW EXECUTION RULES
