@@ -21,17 +21,24 @@ if ! command -v gh >/dev/null 2>&1; then
 fi
 
 # Ensure checks are passing (best-effort gate; branch protection is authoritative)
-echo "Waiting for required checks on PR #$pr_num..." >&2
-if gh pr checks "$pr_num" --required --watch; then
-  echo "CI: success" >&2
+# If there are no required checks, proceed to merge.
+required_json=$(gh pr checks "$pr_num" --required --json bucket 2>/dev/null || echo "[]")
+required_count=$(echo "$required_json" | jq -r 'length' 2>/dev/null || echo 0)
+if [[ "$required_count" -eq 0 ]]; then
+  echo "No required checks on PR #$pr_num; proceeding to merge." >&2
 else
-  rc=$?
-  if [[ $rc -eq 8 ]]; then
-    echo "CI checks still pending. Aborting merge." >&2
+  echo "Waiting for required checks on PR #$pr_num..." >&2
+  if gh pr checks "$pr_num" --required --watch; then
+    echo "CI: success" >&2
   else
-    echo "CI not successful (exit $rc). Aborting merge." >&2
+    rc=$?
+    if [[ $rc -eq 8 ]]; then
+      echo "CI checks still pending. Aborting merge." >&2
+    else
+      echo "CI not successful (exit $rc). Aborting merge." >&2
+    fi
+    exit 1
   fi
-  exit 1
 fi
 
 # Final safety: ensure PR is mergeable and not behind or conflicted
