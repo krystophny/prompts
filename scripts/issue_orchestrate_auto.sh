@@ -48,6 +48,9 @@ need() { command -v "$1" >/dev/null 2>&1 || { echo "Missing dependency: $1" >&2;
 need gh
 need codex
 
+# Banner: resolved repo
+echo "[orchestrate] repo_root=$(pwd) remote=$(git remote get-url origin 2>/dev/null || echo 'none')" >&2
+
 has_untracked() { [[ -n "$(git ls-files --others --exclude-standard)" ]]; }
 has_mods() { ! git diff --quiet || ! git diff --cached --quiet; }
 print_dirty() { echo "Working tree has changes:" >&2; git status --short >&2 || true; }
@@ -100,7 +103,7 @@ Notes:
 EOF
   )
 
-  ISSUE_NUM="$inum" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+  ISSUE_NUM="$inum" timeout "${CODEX_FIX_TIMEOUT:-30m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
 }
@@ -131,7 +134,7 @@ Rules:
 - Don’t skip tests; keep everything reproducible.
 EOF
     )
-    PR_NUM="$pr_num" ISSUE_NUM="$inum" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+    PR_NUM="$pr_num" ISSUE_NUM="$inum" timeout "${CODEX_REVIEW_TIMEOUT:-20m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
 
@@ -142,9 +145,14 @@ EOF
     fi
     # Ensure changes are committed and pushed, if any are pending
     if ! git diff --cached --quiet; then
-      # Stage only reported files in index already; if none, fall back to porcelain list
-      mapfile -t changed < <(git status --porcelain | awk '{print $2}')
-      for f in "${changed[@]}"; do git add -- "$f"; done
+      while IFS= read -r -d '' rec; do
+        code=${rec:0:2}; path=${rec:3}
+        case "$code" in
+          D*|*D) git rm -- "$path" || true ;;
+          R*) IFS= read -r -d '' newpath || true; [[ -n "$newpath" ]] && { git rm -- "$path" || true; git add -- "$newpath" || true; } ;;
+          *) git add -- "$path" || true ;;
+        esac
+      done < <(git status --porcelain -z)
       git commit -m "chore: self-review improvements (#$pr_num)"
       git push
     fi
@@ -181,6 +189,43 @@ checkout_pr_branch() {
   echo "$branch"
 }
 
+# Stage precise set of changes, handling deletes/renames
+stage_all_changes() {
+  while IFS= read -r -d '' rec; do
+    code=${rec:0:2}; path=${rec:3}
+    case "$code" in
+      D*|*D) git rm -- "$path" || true ;;
+      R*) IFS= read -r -d '' newpath || true; [[ -n "$newpath" ]] && { git rm -- "$path" || true; git add -- "$newpath" || true; } ;;
+      *) git add -- "$path" || true ;;
+    esac
+  done < <(git status --porcelain -z)
+}
+
+# Run local tests with auto-detection or TEST_CMD; returns 0 on pass
+run_local_tests() {
+  local cmd=""; local log="/tmp/codex_local_tests_$$.log"; local rc
+  if [[ -n "${TEST_CMD:-}" ]]; then cmd="$TEST_CMD"; fi
+  if [[ -z "$cmd" && -f Makefile && $(grep -cE '^test-ci:' Makefile) -gt 0 ]]; then cmd="make test-ci"; fi
+  if [[ -z "$cmd" && command -v fpm >/dev/null 2>&1 ]]; then cmd="fpm test"; fi
+  if [[ -z "$cmd" && command -v pytest >/dev/null 2>&1 ]]; then cmd="pytest -q"; fi
+  if [[ -z "$cmd" && -f package.json && command -v npm >/dev/null 2>&1 ]]; then cmd="npm test --silent"; fi
+  if [[ -z "$cmd" && command -v ctest >/dev/null 2>&1 ]]; then cmd="ctest --output-on-failure"; fi
+  if [[ -z "$cmd" && -f Makefile ]]; then cmd="make test"; fi
+  if [[ -z "$cmd" ]]; then
+    echo "[tests] No known test runner found; treating as pass (noop)." >&2
+    return 0
+  fi
+  echo "[tests] Running: $cmd" >&2
+  if timeout "${LOCAL_TEST_TIMEOUT:-20m}" bash -lc "$cmd" >"$log" 2>&1; then
+    rc=0
+  else
+    rc=$?
+  fi
+  tail -n 50 "$log" >&2 || true
+  rm -f "$log" || true
+  return $rc
+}
+
 codex_ci_fix_loop() {
   local pr_num="$1"; shift || true
   local inum="$1"; shift || true
@@ -207,16 +252,21 @@ Rules:
 - Do not broaden scope. Keep functions small and style consistent.
 EOF
     )
-    PR_NUM="$pr_num" ISSUE_NUM="$inum" BRANCH="$branch" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+    PR_NUM="$pr_num" ISSUE_NUM="$inum" BRANCH="$branch" timeout "${CODEX_CI_FIX_TIMEOUT:-20m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
 
     # If Codex produced changes, ensure they are committed and pushed
     if ! git diff --quiet || ! git diff --cached --quiet; then
-      mapfile -t changed < <(git status --porcelain | awk '{print $2}')
-      if (( 
-${#changed[@]} > 0 )); then
-        for f in "${changed[@]}"; do git add -- "$f"; done
+      while IFS= read -r -d '' rec; do
+        code=${rec:0:2}; path=${rec:3}
+        case "$code" in
+          D*|*D) git rm -- "$path" || true ;;
+          R*) IFS= read -r -d '' newpath || true; [[ -n "$newpath" ]] && { git rm -- "$path" || true; git add -- "$newpath" || true; } ;;
+          *) git add -- "$path" || true ;;
+        esac
+      done < <(git status --porcelain -z)
+      if ! git diff --cached --quiet; then
         git commit -m "fix(ci): address CI failures on PR #$pr_num"
         git push
       fi
@@ -268,8 +318,21 @@ for inum in $issues; do
     branch=$(checkout_pr_branch "$existing_pr")
     pr_url=$(gh pr view "$existing_pr" --json url --jq '.url')
   else
-    # Create and switch to branch (also pushes)
-    branch=$("$self_dir/issue_branch.sh" "$inum")
+    # Prefer existing local/remote feature branch if present
+    exist_branch=$(git branch --all --list "*fix/issue-${inum}-*" | head -n1 | sed 's#remotes/origin/##' | sed 's#^[* ]*##')
+    if [[ -n "$exist_branch" ]]; then
+      echo "Found existing branch $exist_branch; using it." >&2
+      if git show-ref --verify --quiet "refs/heads/$exist_branch"; then
+        git checkout "$exist_branch" && git pull --rebase || true
+      else
+        git fetch origin "$exist_branch":"$exist_branch" || true
+        git checkout "$exist_branch" || git checkout -b "$exist_branch"
+      fi
+      branch="$exist_branch"
+    else
+      # Create and switch to branch (also pushes)
+      branch=$("$self_dir/issue_branch.sh" "$inum")
+    fi
   fi
   echo "Branch: $branch"
 
@@ -278,13 +341,30 @@ for inum in $issues; do
 
   # Auto-commit any changes (stage specific files only)
   if ! git diff --quiet || ! git diff --cached --quiet || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
-    mapfile -t changed < <(git status --porcelain | awk '{print $2}')
-    if (( ${#changed[@]} > 0 )); then
-      for f in "${changed[@]}"; do git add -- "$f"; done
+    stage_all_changes
+    if ! git diff --cached --quiet; then
       git commit -m "fix: attempt to resolve issue #$inum (auto)"
       git push
     fi
   fi
+
+  # Strict pre-PR local test gate: attempt up to 3 local fix cycles before opening PR
+  pre_attempt=1; pre_max=3
+  while (( pre_attempt <= pre_max )); do
+    if run_local_tests; then
+      break
+    fi
+    echo "[pre-PR] Local tests failing; handing back to Codex (attempt $pre_attempt/$pre_max)" >&2
+    codex_fix_issue "$inum"
+    if ! git diff --quiet || ! git diff --cached --quiet || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
+      stage_all_changes
+      if ! git diff --cached --quiet; then
+        git commit -m "fix: continue resolving issue #$inum (pre-PR)"
+        git push
+      fi
+    fi
+    ((pre_attempt++))
+  done
 
   # Ensure PR exists
   if [[ -z "${pr_url:-}" ]]; then
