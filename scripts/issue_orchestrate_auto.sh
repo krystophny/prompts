@@ -100,7 +100,7 @@ Notes:
 EOF
   )
 
-  ISSUE_NUM="$inum" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" --search - <<EOF
+  ISSUE_NUM="$inum" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
 }
@@ -131,7 +131,7 @@ Rules:
 - Don’t skip tests; keep everything reproducible.
 EOF
     )
-    PR_NUM="$pr_num" ISSUE_NUM="$inum" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" --search - <<EOF
+    PR_NUM="$pr_num" ISSUE_NUM="$inum" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
 
