@@ -52,9 +52,7 @@ class QADSConverter:
             "instructions": []
         }
 
-        # Extract workflow commands from content
-        workflow_commands = self._extract_workflow_commands(content)
-        config["command"].update(workflow_commands)
+        # Commands will be defined as markdown files only - no JSON commands
 
         # Don't include agents in main config - they'll be in separate markdown files
 
@@ -304,7 +302,7 @@ model: anthropic/claude-sonnet-4-20250514
 
         opencode_command = f"""---
 description: {description}
-agent: general
+agent: build
 model: anthropic/claude-sonnet-4-20250514
 ---
 {content}
