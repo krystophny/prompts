@@ -48,4 +48,9 @@ docs/_build/
 *.ipynb
 
 # Generated OpenCode configuration files
-opencode/
+opencode/*.json
+opencode/*.md
+opencode/*.sh
+opencode/agent/
+opencode/command/
+opencode/rules/
