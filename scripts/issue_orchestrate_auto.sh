@@ -16,13 +16,15 @@
 #
 set -euo pipefail
 self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# Resolve repository root even if invoked from another directory
+# Resolve repository root preference order:
+# 1) REPO_DIR if provided; 2) current working directory's repo; 3) scripts' repo; 4) scripts/..
 repo_root="${REPO_DIR:-}"
 if [[ -z "$repo_root" ]]; then
-  if repo_root=$(git -C "$self_dir" rev-parse --show-toplevel 2>/dev/null); then
+  if repo_root=$(git rev-parse --show-toplevel 2>/dev/null); then
+    :
+  elif repo_root=$(git -C "$self_dir" rev-parse --show-toplevel 2>/dev/null); then
     :
   else
-    # Fallback: assume scripts/ lives directly under repo root
     repo_root="$(cd "$self_dir/.." && pwd)"
   fi
 fi
