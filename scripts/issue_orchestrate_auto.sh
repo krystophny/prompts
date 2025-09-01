@@ -625,22 +625,6 @@ process_any_open_codex_prs_first
 gh_repo_effective=$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null || echo "")
 [[ -n "$gh_repo_effective" ]] && echo "[orchestrate] gh repo: $gh_repo_effective" >&2
 
-fetch_open_issues() {
-  if [[ -n "$label" ]]; then
-    if [[ -n "$repo_override" ]]; then
-      gh issue list -R "$repo_override" --state open --label "$label" --json number --limit 500 --jq '.[].number' || true
-    else
-      gh issue list --state open --label "$label" --json number --limit 500 --jq '.[].number' || true
-    fi
-  else
-    if [[ -n "$repo_override" ]]; then
-      gh issue list -R "$repo_override" --state open --json number --limit 500 --jq '.[].number' || true
-    else
-      gh issue list --state open --json number --limit 500 --jq '.[].number' || true
-    fi
-  fi
-}
-
 codex_implement_issue_single_prompt() {
   # Single Codex session: select highest-priority relevant issue, implement,
   # push branch, and open a draft PR. No JSON handshake; the orchestrator will
@@ -652,9 +636,18 @@ You are operating with GitHub CLI in a Git repository.
 Objective: In ONE session, autonomously select the next relevant issue and prepare a draft PR ready for review.
 
 Selection & priority:
-- Consider open issues (respect env LABEL when set).
-- Priority: labels P0>P1>P2>P3, then label "bug", then oldest updated.
-- Relevance check: parse title/body for mentioned tests, file paths, or identifiers. If artifacts are missing and baseline tests pass, treat as obsolete; when AUTO_CLOSE=1, close with concise, evidence-based comment and proceed to next.
+- Discover open issues yourself using gh (do not rely on any provided lists). Use:
+  - Step 1 (lightweight): gh issue list --state open --limit 500 \
+      --json number,title,labels,updatedAt
+    Fetch titles/labels/updatedAt ONLY to avoid large payloads.
+    Respect env LABEL when set (filter client-side if needed).
+  - Step 2 (on-demand): For a small shortlist (e.g., top 10–20 by priority),
+    fetch details as needed with gh issue view <num> --json body,labels,title
+    to assess relevance. Do NOT fetch bodies for all issues.
+ - Priority: labels P0>P1>P2>P3; if none present, prefer label "bug",
+   then issues whose titles suggest failing tests (e.g., contains "test",
+   "xfail", error names), then oldest updated.
+- Relevance check: parse title/body for mentioned tests, file paths, or identifiers. If artifacts are missing and baseline tests pass, treat as obsolete; only when AUTO_CLOSE=1, close with concise, evidence-based comment and proceed to next. Otherwise, skip auto-close.
 
 Implementation:
 - Create/checkout branch: fix/issue-<num>-<slug>.
@@ -673,7 +666,7 @@ Deliverable:
 - Do not print any special tokens or JSON; just complete the tasks.
 EOF
   )
-  LABEL="${label}" AUTO_CLOSE=1 TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT:-30m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+  LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT:-30m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
 }
