@@ -29,6 +29,10 @@ else
   TIMEOUT=(timeout)
 fi
 
+# Enforce a strict test timeout of 300 seconds for any test execution.
+# If a test exceeds this, assume a hang or excessively slow test and treat as failure.
+: "${TEST_TIMEOUT:=300s}"
+
 if [[ $# -lt 1 ]]; then
   echo "Usage: $0 <issue_number> [--auto-close] [--run-tests]" >&2
   exit 2
@@ -132,12 +136,17 @@ if (( ${#tests[@]} > 0 )) || [[ "$run_tests" == true ]]; then
   # Prefer explicit TEST_CMD if provided
   if [[ -n "${TEST_CMD:-}" ]]; then
     echo "Running TEST_CMD for referenced tests: ${TEST_CMD}" >&2
-    if "${TIMEOUT[@]}" 10m bash -lc "$TEST_CMD" >/tmp/issue_check_"$issue_num"_suite.log 2>&1; then
+    if "${TIMEOUT[@]}" "$TEST_TIMEOUT" bash -lc "$TEST_CMD" >/tmp/issue_check_"$issue_num"_suite.log 2>&1; then
       evidence_msgs+=("test_cmd_pass: ${TEST_CMD}")
     else
+      rc=$?
       all_tests_pass=false
       relevant=true
-      evidence_msgs+=("test_cmd_fail: ${TEST_CMD}")
+      if [[ $rc -eq 124 ]]; then
+        evidence_msgs+=("test_cmd_timeout: ${TEST_CMD} (>=${TEST_TIMEOUT})")
+      else
+        evidence_msgs+=("test_cmd_fail: ${TEST_CMD} (rc=$rc)")
+      fi
     fi
   else
     # Try per-target with known frameworks
@@ -145,30 +154,45 @@ if (( ${#tests[@]} > 0 )) || [[ "$run_tests" == true ]]; then
       [[ -z "$t" ]] && continue
       if command -v fpm >/dev/null 2>&1; then
         echo "Running referenced test target via fpm: $t" >&2
-        if "${TIMEOUT[@]}" 5m fpm test --target "$t" >/tmp/issue_check_"$issue_num"_"$t".log 2>&1; then
+        if "${TIMEOUT[@]}" "$TEST_TIMEOUT" fpm test --target "$t" >/tmp/issue_check_"$issue_num"_"$t".log 2>&1; then
           evidence_msgs+=("test_target_pass: $t")
         else
+          rc=$?
           all_tests_pass=false
           relevant=true
-          evidence_msgs+=("test_target_fail: $t (fpm)")
+          if [[ $rc -eq 124 ]]; then
+            evidence_msgs+=("test_target_timeout: $t (fpm, >=${TEST_TIMEOUT})")
+          else
+            evidence_msgs+=("test_target_fail: $t (fpm, rc=$rc)")
+          fi
         fi
       elif command -v pytest >/dev/null 2>&1; then
         echo "Running referenced test via pytest -k: $t" >&2
-        if "${TIMEOUT[@]}" 5m pytest -k "$t" >/tmp/issue_check_"$issue_num"_"$t".log 2>&1; then
+        if "${TIMEOUT[@]}" "$TEST_TIMEOUT" pytest -k "$t" >/tmp/issue_check_"$issue_num"_"$t".log 2>&1; then
           evidence_msgs+=("pytest_k_pass: $t")
         else
+          rc=$?
           all_tests_pass=false
           relevant=true
-          evidence_msgs+=("pytest_k_fail: $t")
+          if [[ $rc -eq 124 ]]; then
+            evidence_msgs+=("pytest_k_timeout: $t (>=${TEST_TIMEOUT})")
+          else
+            evidence_msgs+=("pytest_k_fail: $t (rc=$rc)")
+          fi
         fi
       elif command -v npm >/dev/null 2>&1 && [[ -f package.json ]]; then
         echo "Running npm test (no per-target filtering available): $t" >&2
-        if "${TIMEOUT[@]}" 10m npm test --silent >/tmp/issue_check_"$issue_num"_npm.log 2>&1; then
+        if "${TIMEOUT[@]}" "$TEST_TIMEOUT" npm test --silent >/tmp/issue_check_"$issue_num"_npm.log 2>&1; then
           evidence_msgs+=("npm_test_pass (generic)")
         else
+          rc=$?
           all_tests_pass=false
           relevant=true
-          evidence_msgs+=("npm_test_fail (generic)")
+          if [[ $rc -eq 124 ]]; then
+            evidence_msgs+=("npm_test_timeout (generic, >=${TEST_TIMEOUT})")
+          else
+            evidence_msgs+=("npm_test_fail (generic, rc=$rc)")
+          fi
         fi
       else
         echo "No known test runner detected; skipping test execution for $t" >&2

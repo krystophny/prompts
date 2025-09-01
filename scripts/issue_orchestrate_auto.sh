@@ -85,12 +85,16 @@ else
   TIMEOUT=(timeout)
 fi
 
+# Standard test timeout enforcement
+: "${TEST_TIMEOUT:=300s}"
+
 # Longer defaults to keep Codex runs alive (fewer restarts)
 : "${CODEX_REBASE_TIMEOUT:=120m}"
 : "${CODEX_PR_TIMEOUT:=30m}"
 : "${CODEX_CI_FIX_TIMEOUT:=180m}"
 : "${CODEX_FIX_TIMEOUT:=90m}"
-: "${LOCAL_TEST_TIMEOUT:=30m}"
+# Hard cap for local tests. If tests exceed this, treat as hang/too slow.
+: "${LOCAL_TEST_TIMEOUT:=${TEST_TIMEOUT}}"
 
 # Lightweight per-issue context (carried across separate Codex exec calls)
 context_file_for_issue() {
@@ -573,10 +577,13 @@ run_local_tests() {
     return 0
   fi
   echo "[tests] Running: $cmd" >&2
-  if "${TIMEOUT[@]}" "${LOCAL_TEST_TIMEOUT:-20m}" bash -lc "$cmd" >"$log" 2>&1; then
+  if "${TIMEOUT[@]}" "${LOCAL_TEST_TIMEOUT}" bash -lc "$cmd" >"$log" 2>&1; then
     rc=0
   else
     rc=$?
+  fi
+  if [[ $rc -eq 124 ]]; then
+    echo "[tests] Timeout reached (${LOCAL_TEST_TIMEOUT}); assuming hang or too-slow tests." >&2
   fi
   tail -n 50 "$log" >&2 || true
   rm -f "$log" || true
