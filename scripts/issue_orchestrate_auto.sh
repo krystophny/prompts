@@ -103,10 +103,10 @@ rebase_in_progress() {
 # instruct Codex to resolve them autonomously. Push with --force-with-lease.
 # Returns 0 when branch is rebased and conflict-free, 1 otherwise.
 rebase_and_resolve_conflicts() {
-  local pr_num="$1"; shift || true
+  local pr_num="${1-}"; shift || true
   local branch="$1"; shift || true
   local pr_json base merge_state
-  pr_json=$(gh pr view "$pr_num" --json baseRefName,mergeStateStatus 2>/dev/null || true)
+  pr_json=$(gh pr view "${pr_num:-}" --json baseRefName,mergeStateStatus 2>/dev/null || true)
   if [[ -z "$pr_json" || "$pr_json" == "null" ]]; then
     return 0
   fi
@@ -114,7 +114,7 @@ rebase_and_resolve_conflicts() {
   merge_state=$(echo "$pr_json" | jq -r '.mergeStateStatus')
   case "$merge_state" in
     BEHIND|DIRTY)
-      echo "[rebase] PR #$pr_num is $merge_state relative to $base. Rebasing $branch onto origin/$base" >&2
+      echo "[rebase] PR #${pr_num:-?} is $merge_state relative to $base. Rebasing $branch onto origin/$base" >&2
       git fetch origin "$base" "$branch" || true
       git checkout "$branch"
       if git rebase "origin/$base"; then
@@ -408,7 +408,7 @@ EOF
 }
 
 codex_pr_self_review() {
-  local pr_num="$1"; shift || true
+  local pr_num="${1-}"; shift || true
   local inum="$1"; shift || true
   local max_rounds=3
   local round
@@ -433,7 +433,7 @@ Rules:
 - Don’t skip tests; keep everything reproducible.
 EOF
     )
-    PR_NUM="$pr_num" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_REVIEW_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_REVIEW_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
 
@@ -452,7 +452,7 @@ EOF
           *) git add -- "$path" || true ;;
         esac
       done < <(git status --porcelain -z)
-      git commit -m "chore: self-review improvements (#$pr_num)"
+      git commit -m "chore: self-review improvements (#${pr_num:-unknown})"
       git push
     fi
   done
@@ -517,9 +517,9 @@ find_existing_pr_number() {
 }
 
 checkout_pr_branch() {
-  local pr_num="$1"
+  local pr_num="${1-}"
   local branch
-  branch=$(gh pr view "$pr_num" --json headRefName --jq '.headRefName')
+  branch=$(gh pr view "${pr_num:-}" --json headRefName --jq '.headRefName')
   git fetch origin "$branch":"$branch" || true
   if git show-ref --verify --quiet "refs/heads/$branch"; then
     git checkout "$branch"
@@ -568,7 +568,7 @@ run_local_tests() {
 }
 
 codex_ci_fix_loop() {
-  local pr_num="$1"; shift || true
+  local pr_num="${1-}"; shift || true
   local inum="$1"; shift || true
   local branch="$1"; shift || true
   local max_attempts=10
@@ -601,7 +601,7 @@ Context (recent log):
 ${history}
 EOF
     )
-    PR_NUM="$pr_num" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
 
@@ -616,13 +616,13 @@ EOF
         esac
       done < <(git status --porcelain -z)
       if ! git diff --cached --quiet; then
-        git commit -m "fix(ci): address CI failures on PR #$pr_num"
+        git commit -m "fix(ci): address CI failures on PR #${pr_num:-unknown}"
         git push
       fi
     fi
 
     echo "Waiting for CI after attempt $attempt..." >&2
-    if gh pr checks "$pr_num" --watch; then
+    if gh pr checks "${pr_num:-}" --watch; then
       return 0
     fi
     ((attempt++))
