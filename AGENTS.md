@@ -4,6 +4,8 @@
 - Evidence-based: Provide verifiable proof for claims (tests, logs, outputs).
 - Verification-first: Do not bypass tests or CI; resolve discrepancies.
 - Protocol-compliant: Follow systematic workflows and technical gates.
+- No time pressure: Take the time to solve tasks fully and cleanly; do not
+  expand scope or add features (no feature/scope creep).
 - No random progress docs: Do not create ad-hoc markdown status reports.
 
 ## Repository Practices
