@@ -774,6 +774,7 @@ for inum in "${issues_arr[@]}"; do
 
   ensure_clean_main
   ((count++))
+  echo "[orchestrate] Completed issue #$inum ($count/${#issues_arr[@]})." >&2
   if (( count >= limit )); then break; fi
 
 done
