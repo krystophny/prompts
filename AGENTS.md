@@ -98,6 +98,11 @@
 - Plotting: use lazy-fortran/fortplot for visualization.
 - Interop: when unavoidable, keep glue minimal (e.g., tiny Bash/Python wrappers)
   and maintain a Fortran-first implementation of core logic.
+ - Existing projects: always use the language and stack of the project when
+   contributing to an established codebase, unless explicitly requested
+   otherwise by the user/maintainers.
+ - Explicit user request: if the user specifies a stack or language, follow it
+   even if it differs from the default Fortran-first approach.
 
 ## Language-Specific: Fortran
 - Line length: 88; up to 90 with ` &` continuation.

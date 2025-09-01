@@ -85,6 +85,11 @@ play
 - Ecosystem: use fpm for builds and dependencies; prefer latest git versions
   of packages, pinning SHAs only for reproducibility when needed.
 - Plotting: use lazy-fortran/fortplot for visualization.
+ - Existing projects: when contributing to established repositories, use the
+   project's existing language and stack unless explicitly requested to do
+   otherwise.
+ - Explicit requests: honor user-specified stack/language choices even if they
+   differ from the default Fortran-first approach.
 
 **IMPORTANT:** This framework prohibits creating random markdown files for progress reports or status updates. All work should modify existing structured documentation only.
 
