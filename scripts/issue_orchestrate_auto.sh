@@ -648,10 +648,22 @@ EOF
 # Hard gate: do not proceed if any fix/issue-* PR is still open
 process_any_open_codex_prs_first
 
+# Show which repo gh targets
+gh_repo_effective=$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null || echo "")
+[[ -n "$gh_repo_effective" ]] && echo "[orchestrate] gh repo: $gh_repo_effective" >&2
+
 if [[ -n "$label" ]]; then
-  issues=$(gh issue list --state open --label "$label" --json number --limit 500 --jq '.[].number' || true)
+  if [[ -n "$repo_override" ]]; then
+    issues=$(gh issue list -R "$repo_override" --state open --label "$label" --json number --limit 500 --jq '.[].number' || true)
+  else
+    issues=$(gh issue list --state open --label "$label" --json number --limit 500 --jq '.[].number' || true)
+  fi
 else
-  issues=$(gh issue list --state open --json number --limit 500 --jq '.[].number' || true)
+  if [[ -n "$repo_override" ]]; then
+    issues=$(gh issue list -R "$repo_override" --state open --json number --limit 500 --jq '.[].number' || true)
+  else
+    issues=$(gh issue list --state open --json number --limit 500 --jq '.[].number' || true)
+  fi
 fi
 
 # Snapshot issues into an array to avoid dynamic changes during iteration
