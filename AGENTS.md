@@ -89,6 +89,46 @@
 - Commit/PR titles: use Conventional Commits (`type: description`), imperative mood, <72 chars, and reference issues (e.g., `fixes #123`).
 - Open review-ready PRs; avoid draft PRs.
 
+### PR Description Formatting (Simple Rule)
+- Use plain Markdown only; no JSON/XML-like wrappers, angle brackets, or stray
+  braces/quotes. Structure with these headings and bullets exactly:
+  - Summary
+  - Scope
+  - Verification
+  - Rationale
+  Review generated text before submitting and remove any malformed artifacts
+  (e.g., trailing `]}`, unmatched quotes, or template placeholders).
+
+### gh CLI: Create PRs Safely
+- Always pass the body via `--body-file` (not inline) to avoid shell quoting
+  and formatting issues. Example:
+  ```sh
+  tmp=$(mktemp)
+  cat >"$tmp" <<'MD'
+  Summary
+  - What changed in one or two lines.
+
+  Scope
+  - Files or areas touched; no code behavior changes.
+
+  Verification
+  - Why build/tests are unaffected or how verified locally.
+
+  Rationale
+  - Why this is needed now.
+  MD
+  gh pr create \
+    --title "docs: tighten PR formatting guidance" \
+    --body-file "$tmp" \
+    --base main \
+    --head "$(git rev-parse --abbrev-ref HEAD)"
+  rm -f "$tmp"
+  ```
+- Do not pipe JSON to `gh api` for PR creation; use `gh pr create` with
+  `--title` and `--body-file`.
+- Avoid `--body` with long multiline strings; prefer a file to prevent
+  accidental injection of braces, quotes, or angle brackets.
+
 ## Feedback (Structured)
 - Format: PROBLEM (specific issue), EVIDENCE (logs/URLs/paths), SOLUTION (clear steps).
 - Be specific, actionable, and include proof; avoid vague directives.
