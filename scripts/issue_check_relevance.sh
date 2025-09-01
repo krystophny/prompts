@@ -12,6 +12,13 @@
 #   10 -> obsolete (not closed)
 #   11 -> obsolete and closed (only with --auto-close)
 #   20 -> unknown
+
+# Prevent accidental sourcing (which would cause 'exit' to close the caller shell)
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+  echo "This script must be executed, not sourced. Run: scripts/issue_check_relevance.sh <issue_number> [--auto-close] [--run-tests]" >&2
+  return 2
+fi
+
 set -euo pipefail
 trap 'echo "[relevance] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 

@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # Thin wrapper to wait for PR checks using GitHub CLI.
 # Usage: scripts/pr_ci_status.sh <pr_number> [--watch]
+
+# Prevent accidental sourcing (which would cause 'exit' to close the caller shell)
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+  echo "This script must be executed, not sourced. Run: scripts/pr_ci_status.sh <pr_number> [--watch]" >&2
+  return 2
+fi
+
 set -euo pipefail
 trap 'echo "[ci-status] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 

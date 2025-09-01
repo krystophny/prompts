@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # Create and push a feature branch for a GitHub issue
 # Usage: scripts/issue_branch.sh <issue_number>
+
+# Prevent accidental sourcing (which would cause 'exit' to close the caller shell)
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+  echo "This script must be executed, not sourced. Run: scripts/issue_branch.sh <issue_number>" >&2
+  return 2
+fi
+
 set -euo pipefail
 trap 'echo "[branch] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 

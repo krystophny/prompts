@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # Merge a PR if CI is green and branch up to date
 # Usage: scripts/pr_merge.sh <pr_number> [--squash|--rebase|--merge]
+
+# Prevent accidental sourcing (which would cause 'exit' to close the caller shell)
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+  echo "This script must be executed, not sourced. Run: scripts/pr_merge.sh <pr_number> [--squash|--rebase|--merge]" >&2
+  return 2
+fi
+
 set -euo pipefail
 trap 'echo "[merge] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 

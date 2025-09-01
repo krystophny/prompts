@@ -13,6 +13,13 @@
 # Env:
 #   TEST_CMD Optional local test command (e.g., "make test-ci"), used in prompts
 #
+
+# Prevent accidental sourcing (which would cause 'exit' to close the caller shell)
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+  echo "This script must be executed, not sourced. Run: scripts/issue_orchestrate_auto.sh [--label <name>|--all] [--limit N] [--squash|--rebase|--merge]" >&2
+  return 2
+fi
+
 set -euo pipefail
 trap 'echo "[orchestrate] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

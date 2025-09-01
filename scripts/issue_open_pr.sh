@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # Open a draft PR for current branch linked to an issue
 # Usage: scripts/issue_open_pr.sh <issue_number> [--ready]
+
+# Prevent accidental sourcing (which would cause 'exit' to close the caller shell)
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+  echo "This script must be executed, not sourced. Run: scripts/issue_open_pr.sh <issue_number> [--ready]" >&2
+  return 2
+fi
+
 set -euo pipefail
 trap 'echo "[open-pr] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 
