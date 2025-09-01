@@ -411,46 +411,19 @@ progress_current_branch_if_needed() {
     echo "PR: ${pr_url:-#${pr_number}} (existing)" >&2
     process_existing_pr "$pr_number" "$inum" "$cur"
   else
-    # No PR yet; assess whether implementation might already be complete
-    if run_local_tests; then
-      # Only create a PR if there are commits ahead of main; otherwise implement first
-      git fetch origin main >/dev/null 2>&1 || true
-      ahead=$(git rev-list --count "origin/main..HEAD" 2>/dev/null || echo 0)
-      if [[ "${ahead:-0}" -gt 0 ]]; then
-        pr_url=$(open_pr_if_missing "$inum")
-        if [[ -n "$pr_url" ]]; then echo "PR: $pr_url" >&2; fi
-        if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
-          process_existing_pr "$pr_number" "$inum" "$cur"
-        else
-          echo "Could not resolve PR number for URL: $pr_url" >&2
-        fi
-      else
-        echo "[pre-PR] Tests pass locally but no commits yet; implementing first." >&2
-        codex_fix_issue "$inum"
-      fi
+    # No PR yet; let a single Codex session finish implementation and open PR
+    local json pr_url
+    json=$(codex_implement_current_branch "$inum" | tail -n 1)
+    pr_url=$(printf "%s" "$json" | jq -r '.url // empty' 2>/dev/null || true)
+    if [[ -z "$pr_url" ]]; then
+      # Best-effort resolve PR from branch
+      pr_url=$(gh pr list --head "$cur" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
+    fi
+    if [[ -n "$pr_url" ]]; then echo "PR: $pr_url" >&2; fi
+    if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
+      process_existing_pr "$pr_number" "$inum" "$cur"
     else
-      # Local tests failing: run Codex autonomous implementation loop before opening PR
-      local pre_attempt=1; local pre_max=3
-      while (( pre_attempt <= pre_max )); do
-        echo "[pre-PR] Local tests failing; handing back to Codex (attempt $pre_attempt/$pre_max)" >&2
-        codex_fix_issue "$inum"
-        if ! git diff --quiet || ! git diff --cached --quiet || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
-          stage_all_changes
-          if ! git diff --cached --quiet; then
-            git commit -m "fix: continue resolving issue #$inum (pre-PR)"
-            git push
-          fi
-        fi
-        if run_local_tests; then break; fi
-        ((pre_attempt++))
-      done
-      pr_url=$(open_pr_if_missing "$inum")
-      if [[ -n "$pr_url" ]]; then echo "PR: $pr_url" >&2; fi
-      if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
-        process_existing_pr "$pr_number" "$inum" "$cur"
-      else
-        echo "Could not resolve PR number for URL: $pr_url" >&2
-      fi
+      echo "Could not resolve PR number for URL: $pr_url" >&2
     fi
   fi
 
@@ -459,6 +432,37 @@ progress_current_branch_if_needed() {
 }
 
 # --- Codex autonomous loops ---
+codex_implement_current_branch() {
+  local inum="${1-}"; shift || true
+  local prompt history cf cur
+  history=""
+  cf=$(context_file_for_issue "${inum:-}"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
+  cur=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+  prompt=$(cat << EOF
+You are on branch '$cur' in a Git repository with GitHub CLI.
+
+Goal: Complete implementation for issue #$inum on the current branch, then ensure a draft PR exists.
+
+Process:
+1) Establish baseline: detect and run available tests (make test-ci, pytest, fpm, npm). Keep logs concise.
+2) Implement the fix in small, focused commits. Update/add targeted tests. Keep unrelated changes out.
+3) Stage specific files only (no `git add .`). Commit using Conventional Commit style including "(fixes #$inum)" when appropriate. Push to origin for this branch.
+4) If a PR to main does not exist for this branch, create a draft PR with title `fix: <issue-title-truncated-to-64> (fixes #$inum)` and a brief body template.
+5) Print exactly one JSON line with keys: {"issue":$inum, "branch":"$cur", "pr":<pr-number>, "url":"<pr-url>"}.
+
+Rules:
+- No random markdown reports; keep outputs minimal and actionable.
+- Validate with tests before concluding. Do not skip tests.
+- Do not reformat unrelated files. No secrets.
+
+Context (recent log):
+${history}
+EOF
+  )
+  ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+$prompt
+EOF
+}
 codex_fix_issue() {
   local inum="${1-}"; shift || true
   # Non-interactive Codex session to implement the fix on current branch
