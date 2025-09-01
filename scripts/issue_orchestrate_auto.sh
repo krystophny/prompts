@@ -707,7 +707,7 @@ for inum in "${issues_arr[@]}"; do
     if pr_number=$(gh pr view "$existing_pr" --json number --jq '.number' 2>/dev/null); then
       process_existing_pr "$pr_number" "$inum" "$branch"
       ensure_clean_main
-      ((count++))
+      count=$((count+1))
       if (( count >= limit )); then break; fi
       continue
     fi
@@ -729,7 +729,7 @@ for inum in "${issues_arr[@]}"; do
       if ! branch=$("$self_dir/issue_branch.sh" "$inum"); then
         echo "[skip] Could not create branch for issue #${inum:-unknown} (likely closed/missing or GH error)." >&2
         ensure_clean_main
-        ((count++))
+        count=$((count+1))
         if (( count >= limit )); then break; fi
         continue
       fi
@@ -748,7 +748,7 @@ for inum in "${issues_arr[@]}"; do
         if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
           process_existing_pr "$pr_number" "$inum" "$branch"
           ensure_clean_main
-          ((count++))
+          count=$((count+1))
           if (( count >= limit )); then break; fi
           continue
         fi
@@ -797,7 +797,7 @@ for inum in "${issues_arr[@]}"; do
   fi
 
   ensure_clean_main
-  ((count++))
+  count=$((count+1))
   echo "[orchestrate] Completed issue #${inum:-unknown} ($count/${#issues_arr[@]})." >&2
   if (( count >= limit )); then break; fi
 
