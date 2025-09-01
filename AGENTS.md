@@ -17,6 +17,9 @@
 - Push immediately after committing.
 - Never commit binaries, build artifacts, temp files, secrets, or random markdown reports.
 - No emojis in commit messages, PRs, or issues.
+ - Non-interactive git: disable editors. Prefix commands with
+   `git -c core.editor=true -c sequence.editor=true …` and use `-m`/`--no-edit`
+   where applicable to avoid `$EDITOR` hangs.
 
 ## Implementation Standards
 - TDD: Red → Green → Refactor with meaningful tests.
