@@ -9,7 +9,7 @@
 # - Returns to clean main at the end of each iteration
 #
 # Usage:
-#   scripts/issue_orchestrate_auto.sh [--label <name>|--all] [--limit N] [--squash|--rebase|--merge]
+#   scripts/issue_orchestrate_auto.sh [--label <name>|--all] [--limit N] [--squash|--rebase|--merge] [--repo owner/name]
 # Env:
 #   TEST_CMD Optional local test command (e.g., "make test-ci"), used in prompts
 #
@@ -46,6 +46,7 @@ fi
 label=""     # default all issues
 limit=999999
 merge_method="--squash"
+repo_override=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -53,6 +54,7 @@ while [[ $# -gt 0 ]]; do
     --all) label=""; shift 1;;
     --limit) limit="$2"; shift 2;;
     --merge|--squash|--rebase) merge_method="$1"; shift 1;;
+    --repo) repo_override="$2"; shift 2;;
     --debug) debug=1; shift 1;;
     *) echo "Unknown arg: $1" >&2; exit 2;;
   esac
@@ -61,6 +63,12 @@ done
 # Re-evaluate debug after parsing flags
 if [[ $debug -eq 1 ]]; then
   set -x
+fi
+
+# If a repository override is provided, make gh target it by default
+if [[ -n "$repo_override" ]]; then
+  export GH_REPO="$repo_override"
+  echo "[orchestrate] gh repo override: $GH_REPO" >&2
 fi
 
 need() { command -v "$1" >/dev/null 2>&1 || { echo "Missing dependency: $1" >&2; exit 1; }; }
