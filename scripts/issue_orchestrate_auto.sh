@@ -610,8 +610,15 @@ for inum in $issues; do
       fi
       branch="$exist_branch"
     else
-      # Create and switch to branch (also pushes)
-      branch=$("$self_dir/issue_branch.sh" "$inum")
+      # Create and switch to branch (also pushes). If this fails (e.g., issue no longer exists
+      # or is inaccessible), skip gracefully instead of exiting the whole orchestrator.
+      if ! branch=$("$self_dir/issue_branch.sh" "$inum"); then
+        echo "[skip] Could not create branch for issue #$inum (likely closed/missing or GH error)." >&2
+        ensure_clean_main
+        ((count++))
+        if (( count >= limit )); then break; fi
+        continue
+      fi
     fi
   fi
   echo "Branch: $branch"
