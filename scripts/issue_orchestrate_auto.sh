@@ -37,6 +37,8 @@ if [[ -z "$repo_root" ]]; then
 fi
 cd "$repo_root"
 
+# Debug flag (can be toggled via --debug or DEBUG=1)
+debug=${DEBUG:-0}
 if [[ $debug -eq 1 ]]; then
   set -x
 fi
@@ -44,7 +46,6 @@ fi
 label=""     # default all issues
 limit=999999
 merge_method="--squash"
-debug=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -56,6 +57,11 @@ while [[ $# -gt 0 ]]; do
     *) echo "Unknown arg: $1" >&2; exit 2;;
   esac
 done
+
+# Re-evaluate debug after parsing flags
+if [[ $debug -eq 1 ]]; then
+  set -x
+fi
 
 need() { command -v "$1" >/dev/null 2>&1 || { echo "Missing dependency: $1" >&2; exit 1; }; }
 need gh
