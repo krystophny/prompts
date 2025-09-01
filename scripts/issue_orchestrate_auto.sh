@@ -205,13 +205,15 @@ process_any_open_codex_prs_first() {
       ensure_clean_main
     done
     # After handling open PRs, continue only if none remain; otherwise exit
+    # Continue to iterate new issues even if PRs remain open.
+    # Rationale: caller requested `--all`; prefer throughput over strict serialization.
     local remaining
     remaining=$(list_open_codex_prs | tr '\n' ' ')
     if [[ -n "${remaining// /}" ]]; then
-      echo "[gate] PRs still open after processing: $remaining; exiting to avoid parallel work." >&2
-      exit 0
+      echo "[gate] PRs still open after processing: $remaining; continuing to new issues." >&2
+    else
+      echo "[gate] All open PRs handled; continuing to new issues." >&2
     fi
-    echo "[gate] All open PRs handled; continuing to new issues." >&2
   fi
 }
 
