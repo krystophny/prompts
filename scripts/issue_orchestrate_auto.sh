@@ -9,14 +9,14 @@
 # - Returns to clean main at the end of each iteration
 #
 # Usage:
-#   scripts/issue_orchestrate_auto.sh [--label <name>|--all] [--limit N] [--squash|--rebase|--merge] [--repo owner/name]
+#   scripts/issue_orchestrate_auto.sh [ISSUE_NUMBER] [--label <name>|--all] [--limit N] [--squash|--rebase|--merge] [--repo owner/name]
 # Env:
 #   TEST_CMD Optional local test command (e.g., "make test-ci"), used in prompts
 #
 
 # Prevent accidental sourcing (which would cause 'exit' to close the caller shell)
 if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
-  echo "This script must be executed, not sourced. Run: scripts/issue_orchestrate_auto.sh [--label <name>|--all] [--limit N] [--squash|--rebase|--merge]" >&2
+  echo "This script must be executed, not sourced. Run: scripts/issue_orchestrate_auto.sh [ISSUE_NUMBER] [--label <name>|--all] [--limit N] [--squash|--rebase|--merge]" >&2
   return 2
 fi
 
@@ -50,6 +50,7 @@ limit=999999
 merge_method="--squash"
 repo_override=""
 auto_merge=false
+single_issue=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -59,9 +60,23 @@ while [[ $# -gt 0 ]]; do
     --merge|--squash|--rebase) merge_method="$1"; shift 1;;
     --repo) repo_override="$2"; shift 2;;
     --debug) debug=1; shift 1;;
-    *) echo "Unknown arg: $1" >&2; exit 2;;
+    --issue) single_issue="$2"; shift 2;;
+    --) shift; break;;
+    -*) echo "Unknown arg: $1" >&2; exit 2;;
+    *)
+      if [[ "$1" =~ ^[0-9]+$ ]]; then
+        single_issue="$1"; shift 1
+      else
+        echo "Unknown arg: $1" >&2; exit 2
+      fi
+      ;;
   esac
 done
+
+if [[ -n "$single_issue" && "$auto_merge" == true ]]; then
+  echo "[orchestrate] Warning: ignoring --all when a specific ISSUE_NUMBER is provided." >&2
+  auto_merge=false
+fi
 
 # Re-evaluate debug after parsing flags
 if [[ $debug -eq 1 ]]; then
@@ -671,6 +686,59 @@ $prompt
 EOF
 }
 
+# Create or checkout a feature branch for a specific issue number
+create_or_checkout_issue_branch() {
+  local inum="$1"
+  local branch="fix/issue-${inum}"
+  ensure_clean_main
+  git fetch origin "$branch":"$branch" || true
+  if git show-ref --verify --quiet "refs/heads/$branch"; then
+    git checkout "$branch"
+    git pull --rebase origin "$branch" || true
+  else
+    git checkout -b "$branch" --track "origin/$branch" || git checkout "$branch" || git checkout -b "$branch"
+  fi
+  echo "$branch"
+}
+
+run_specific_issue_pass() {
+  local inum="$1"
+  # If we're already on a non-main branch for this issue, continue it
+  local cur inferred
+  cur=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+  inferred=$(infer_issue_from_current_branch || true)
+  if [[ -n "$cur" && "$cur" != "main" && "$inferred" == "$inum" ]]; then
+    echo "[orchestrate] Continuing current branch '$cur' for issue #$inum." >&2
+  else
+    create_or_checkout_issue_branch "$inum" >/dev/null
+  fi
+
+  # Implement on current branch for this issue and open PR
+  local json pr_url pr_number branch
+  branch=$(git rev-parse --abbrev-ref HEAD)
+  json=$(codex_implement_current_branch "$inum" | tail -n 1 || true)
+  pr_url=$(printf "%s" "$json" | jq -r '.url // empty' 2>/dev/null || true)
+  if [[ -z "$pr_url" ]]; then
+    pr_url=$(gh pr list --head "$branch" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
+  fi
+  if [[ -z "$pr_url" ]]; then
+    echo "Could not resolve PR for issue #$inum on branch $branch" >&2
+    ensure_clean_main
+    return 1
+  fi
+  pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null || echo "")
+  if [[ -z "$pr_number" ]]; then
+    echo "Could not resolve PR number from URL: $pr_url" >&2
+    ensure_clean_main
+    return 1
+  fi
+  echo "PR: $pr_url" >&2
+  process_existing_pr "$pr_number" "$inum" "$branch" || true
+  ensure_clean_main
+  echo "Issue #$inum pass complete." >&2
+  return 0
+}
+
 run_issue_pass() {
   # Pre-loop: if we're starting on a non-main branch, finish its workflow first
   progress_current_branch_if_needed
@@ -713,14 +781,19 @@ run_issue_pass() {
   return 0
 }
 
-if [[ "$auto_merge" == true ]]; then
-  while true; do
-    if ! run_issue_pass; then
-      echo "All targeted issues resolved; exiting (--all)." >&2
-      break
-    fi
-  done
+if [[ -n "$single_issue" ]]; then
+  run_specific_issue_pass "$single_issue" || true
+  echo "Done processing requested issue #$single_issue." >&2
 else
-  run_issue_pass || true
-  echo "Autonomous issue processing complete (single pass)." >&2
+  if [[ "$auto_merge" == true ]]; then
+    while true; do
+      if ! run_issue_pass; then
+        echo "All targeted issues resolved; exiting (--all)." >&2
+        break
+      fi
+    done
+  else
+    run_issue_pass || true
+    echo "Autonomous issue processing complete (single pass)." >&2
+  fi
 fi
