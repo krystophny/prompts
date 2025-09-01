@@ -22,6 +22,8 @@ fi
 
 set -euo pipefail
 trap 'echo "[orchestrate] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
+# Helpful error trap to diagnose unexpected exits under set -e
+trap 'rc=$?; echo "[orchestrate][ERR] exit=$rc at line ${LINENO}; last cmd: \"${BASH_COMMAND}\"" >&2' ERR
 self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Resolve repository root preference order:
 # 1) REPO_DIR if provided; 2) current working directory's repo; 3) scripts' repo; 4) scripts/..
@@ -679,6 +681,8 @@ progress_current_branch_if_needed
 
 count=0
 for inum in "${issues_arr[@]}"; do
+  # Reset per-iteration state to avoid leaking values across issues
+  unset pr_url pr_number branch exist_branch existing_pr
   ensure_clean_main
   append_context "$inum" "Start processing issue #$inum in repo $(git config --get remote.origin.url | sed 's#.*:##; s#.git$##')"
 
