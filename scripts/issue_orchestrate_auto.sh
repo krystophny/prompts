@@ -327,26 +327,28 @@ maybe_merge_pr() {
 codex_post_merge_close_issue() {
   local pr_num="$1"; shift || true
   local issue_num="$1"; shift || true
-  local prompt
-  prompt=$(cat << 'EOF'
-You are operating in a Git repository with GitHub CLI.
-
-Task: Verify PR and issue status post-merge and ensure the referenced issue is closed.
-
-Steps:
-1) Verify PR $PR_NUM is merged: `gh pr view $PR_NUM --json state,isDraft,mergedAt,url`.
-2) Check issue $ISSUE_NUM state. If still open, close it: `gh issue close $ISSUE_NUM --comment "Resolved by PR #$PR_NUM"`.
-3) If PR title/body did not include "fixes #$ISSUE_NUM", add a PR comment noting the linkage for audit.
-4) Print a one-line summary: "closed #$ISSUE_NUM via PR #$PR_NUM".
-
-Rules:
-- Be concise. No extra markdown reports. Use gh CLI only.
-- Do not reopen issues. Only close if PR is merged.
-EOF
-  )
-  PR_NUM="$pr_num" ISSUE_NUM="$issue_num" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT:-10m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
-$prompt
-EOF
+  # Verify PR is merged
+  local pr_state merged_at
+  pr_state=$(gh pr view "$pr_num" --json state,isDraft,mergedAt,url --jq '.state' 2>/dev/null || echo "")
+  merged_at=$(gh pr view "$pr_num" --json mergedAt --jq '.mergedAt' 2>/dev/null || echo "null")
+  if [[ "$pr_state" != "MERGED" && "$merged_at" == "null" ]]; then
+    echo "[post-merge] PR #$pr_num not merged; skipping issue close." >&2
+    return 0
+  fi
+  # Close issue if still open
+  local issue_state
+  issue_state=$(gh issue view "$issue_num" --json state --jq '.state' 2>/dev/null || echo "")
+  if [[ "$issue_state" == "OPEN" ]]; then
+    gh issue close "$issue_num" --comment "Resolved by PR #$pr_num" || true
+  fi
+  # Add PR comment noting linkage if body/title lacks fixes reference
+  local pr_body pr_title
+  pr_title=$(gh pr view "$pr_num" --json title --jq '.title' 2>/dev/null || echo "")
+  pr_body=$(gh pr view "$pr_num" --json body --jq '.body' 2>/dev/null || echo "")
+  if ! printf "%s\n%s" "$pr_title" "$pr_body" | grep -qi "fixes #$issue_num"; then
+    gh pr comment "$pr_num" --body "Closing issue #$issue_num (merged)." || true
+  fi
+  echo "closed #$issue_num via PR #$pr_num"
 }
 
 # Infer issue number from current branch or its PR (best-effort)
@@ -571,31 +573,27 @@ open_pr_if_missing() {
     return 0
   fi
 
-  # Delegate PR creation to Codex with explicit instructions; echo only the URL
-  local prompt out url
-  prompt=$(cat << 'EOF'
-You are operating in a Git repository with GitHub CLI installed.
-
-Task: Open a Pull Request from the current branch to `main` for the referenced issue.
-
-Requirements:
-- Read the issue title with `gh issue view $ISSUE_NUM --json title --jq '.title'`.
-- Construct PR title: `fix: <issue-title-truncated-to-64> (fixes #$ISSUE_NUM)`.
-- Create the PR as draft with a concise body template (summary/evidence placeholders).
-- Use `gh pr create` targeting base `main` and the current branch.
-- At the end, print ONLY the PR URL (no extra text).
-
-Notes:
-- If a PR already exists, print its URL and exit.
-- If PR creation fails for any reason, do not print anything.
-EOF
-  )
-  ISSUE_NUM="${inum:-}" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT:-10m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
-$prompt
-EOF
-  out=$?
-  # Best-effort: fetch latest PR for this branch and return its URL
-  pr_url=$(gh pr list --head "$(git rev-parse --abbrev-ref HEAD)" --json url --limit 1 --jq '.[0].url' 2>/dev/null || true)
+  # Create PR directly via gh; echo only the URL on success
+  local title raw_title body_template branch pr_url
+  raw_title=$(gh issue view "$inum" --json title --jq '.title' 2>/dev/null || echo "")
+  # Fallback title if issue not accessible
+  if [[ -z "$raw_title" || "$raw_title" == "null" ]]; then
+    raw_title="issue #$inum"
+  fi
+  # Truncate to 64 chars, trim trailing space
+  title=$(printf "%s" "$raw_title" | sed -E 's/[[:space:]]+/ /g' | cut -c1-64 | sed -E 's/[[:space:]]+$//')
+  branch=$(git rev-parse --abbrev-ref HEAD)
+  body_template="Summary:\n- What changed\n- Why\n\nEvidence:\n- Tests/build/logs\n\nFixes #$inum"
+  set +e
+  gh pr create \
+    --base main \
+    --head "$branch" \
+    --title "fix: $title (fixes #$inum)" \
+    --body "$body_template" \
+    --draft >/dev/null 2>&1
+  # Capture URL for PR that now exists (created or pre-existing for branch)
+  pr_url=$(gh pr list --head "$branch" --json url --limit 1 --jq '.[0].url' 2>/dev/null || true)
+  set -e
   if [[ -n "$pr_url" ]]; then
     echo "$pr_url"
     append_context "${inum:-}" "PR opened: $pr_url"
