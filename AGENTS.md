@@ -80,6 +80,7 @@
   - Apply labels directly if they exist; if not, include a first-line metadata block in the body, e.g., `Category: bug`, `Priority: P1`.
   - Base priority on evidence (test failures, user impact, frequency). Default to `P2` when uncertain.
   - Include concise evidence (logs/paths/outputs) justifying category/priority.
+ - Selection/prioritization: prefer issues with the highest positive impact at the lowest implementation effort (optimize impact/effort).
 - Commit/PR titles: use Conventional Commits (`type: description`), imperative mood, <72 chars, and reference issues (e.g., `fixes #123`).
 - Open review-ready PRs; avoid draft PRs.
 
