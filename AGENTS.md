@@ -41,6 +41,9 @@
 - Ensure a full local pass before opening a PR; include evidence (outputs/coverage).
 - Regression prevention: compare current results to the pre-work baseline; investigate deltas.
 - Validate locally the same build scripts/targets CI uses.
+- Test timeout: enforce a strict 300s cap for all test runs; if any test
+  execution hits this limit, treat it as a hang or too-slow test and fix
+  immediately.
 
 ## Verification and CI
 - Verify CI system health before any git operation.
