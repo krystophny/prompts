@@ -63,6 +63,24 @@ else
   TIMEOUT=(timeout)
 fi
 
+# Longer defaults to keep Codex runs alive (fewer restarts)
+: "${CODEX_REBASE_TIMEOUT:=120m}"
+: "${CODEX_PR_TIMEOUT:=30m}"
+: "${CODEX_CI_FIX_TIMEOUT:=180m}"
+: "${CODEX_FIX_TIMEOUT:=90m}"
+: "${LOCAL_TEST_TIMEOUT:=30m}"
+
+# Lightweight per-issue context (carried across separate Codex exec calls)
+context_file_for_issue() {
+  local inum="$1"; echo "/tmp/codex_issue_${inum}.context";
+}
+append_context() {
+  local inum="$1"; shift || true
+  local msg="$*"
+  local f; f=$(context_file_for_issue "$inum")
+  printf "[%s] %s\n" "$(date -Iseconds)" "$msg" >>"$f" 2>/dev/null || true
+}
+
 # Banner: resolved repo
 echo "[orchestrate] repo_root=$(pwd) remote=$(git remote get-url origin 2>/dev/null || echo 'none')" >&2
 
@@ -103,8 +121,14 @@ rebase_and_resolve_conflicts() {
         echo "[rebase] Conflicts during rebase (attempt $attempt/$max_attempts). Handing to Codex." >&2
         local conflicted
         conflicted=$(git diff --name-only --diff-filter=U || true)
-        local prompt
-        prompt=$(cat << 'EOF'
+        local prompt history cf inum
+        # Best-effort: include recent context lines if available
+        inum=$(infer_issue_from_current_branch || true)
+        history=""
+        if [[ -n "${inum:-}" ]]; then
+          cf=$(context_file_for_issue "$inum"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
+        fi
+        prompt=$(cat << EOF
 You are resolving an in-progress Git rebase with merge conflicts.
 
 Goal: Resolve all conflicts cleanly, preserve both intended changes, and complete the rebase. Then run tests locally to ensure correctness, stage specific files, and continue the rebase.
@@ -120,6 +144,9 @@ Tips:
 - Use conflict markers (<<<<<<<, =======, >>>>>>>) to identify sections.
 - If a file can be resolved by choosing one side entirely, do so deliberately.
 - When both changes should be kept, integrate them carefully and compile/tests locally.
+
+Context (recent log):
+${history}
 EOF
         )
         CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT:-45m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
@@ -301,8 +328,10 @@ codex_fix_issue() {
   local inum="$1"; shift || true
   # Non-interactive Codex session to implement the fix on current branch
   # Provide tight instructions consistent with Codex Development Rules
-  local prompt
-  prompt=$(cat << 'EOF'
+  local prompt history cf
+  history=""
+  cf=$(context_file_for_issue "$inum"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
+  prompt=$(cat << EOF
 You are an autonomous coding agent running under Codex CLI in a Git repository.
 
 Goal: Resolve the currently assigned GitHub issue in this repository on the current branch, then push commits.
@@ -329,6 +358,9 @@ Notes:
 - You may use `gh issue view $ISSUE_NUM` to read the issue details.
 - If no tests exist, create minimal targeted ones (don’t add frameworks unless already present).
 - If you can’t reproduce or fix, reduce scope to prepare the branch with best-effort changes and stop.
+
+Context (recent log):
+${history}
 EOF
   )
 
@@ -434,6 +466,7 @@ EOF
   pr_url=$(gh pr list --head "$(git rev-parse --abbrev-ref HEAD)" --json url --limit 1 --jq '.[0].url' 2>/dev/null || true)
   if [[ -n "$pr_url" ]]; then
     echo "$pr_url"
+    append_context "$inum" "PR opened: $pr_url"
   else
     echo ""  # no PR created or could not resolve URL; let caller proceed
   fi
@@ -506,8 +539,10 @@ codex_ci_fix_loop() {
     echo "[CI Fix] Attempt $attempt on PR #$pr_num (branch $branch)" >&2
     # Ensure branch is rebased on base and conflicts are resolved before CI
     rebase_and_resolve_conflicts "$pr_num" "$branch" || true
-    local prompt
-    prompt=$(cat << 'EOF'
+    local prompt history cf
+    history=""
+    cf=$(context_file_for_issue "$inum"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
+    prompt=$(cat << EOF
 You are operating on a PR with failing CI.
 
 Task: Diagnose the CI failures, read GitHub Actions logs, fix issues locally, push commits, and re-trigger CI until green.
@@ -523,6 +558,9 @@ Steps:
 Rules:
 - No random markdown reports. Put evidence in commit messages or PR body if appropriate.
 - Do not broaden scope. Keep functions small and style consistent.
+
+Context (recent log):
+${history}
 EOF
     )
     PR_NUM="$pr_num" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
@@ -571,6 +609,7 @@ progress_current_branch_if_needed
 count=0
 for inum in $issues; do
   ensure_clean_main
+  append_context "$inum" "Start processing issue #$inum in repo $(git config --get remote.origin.url | sed 's#.*:##; s#.git$##')"
 
   # Relevance check with auto-close if obsolete
   if "$self_dir/issue_check_relevance.sh" "$inum" --auto-close; then
