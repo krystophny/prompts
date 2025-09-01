@@ -126,6 +126,8 @@
 - Performance: column‑major arrays; inner loop over leftmost index.
 - Declarations first: place all variable declarations at the start of the
   scope (no declarations inside branches or loops).
+ - Imports: always `use, only:` (no wildcards); place above `implicit none` if
+   present in the scope.
 
 ## Numerical Computing
 - Rigor: back mathematical claims with numerical validation or reference comparisons.
