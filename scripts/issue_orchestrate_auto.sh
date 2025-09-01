@@ -789,143 +789,73 @@ fetch_open_issues() {
   fi
 }
 
-run_issue_pass() {
-  local issues
-  issues=$(fetch_open_issues)
-  mapfile -t issues_arr <<< "$issues"
-  if [[ ${#issues_arr[@]} -eq 0 ]]; then
-    echo "No open issues to process." >&2
-    return 1
-  fi
-  echo "[orchestrate] Issues to process: ${#issues_arr[@]} => ${issues_arr[*]}" >&2
+codex_bootstrap_start() {
+  # Let Codex autonomously pick the next issue, create/checkout a branch,
+  # and open a PR if missing. Print a single JSON line with keys:
+  # {"issue":N, "branch":"..", "pr":N, "url":".."}
+  local prompt result
+  prompt=$(cat << 'EOF'
+You are operating with GitHub CLI in a Git repository.
 
+Goal: Autonomously bootstrap work for the next open issue:
+- Select an open issue (optionally filtered by env LABEL); prefer oldest.
+- Create or checkout branch: fix/issue-<num>-<slug> (push it).
+- If a PR already exists for the branch/issue, use it; otherwise open a draft PR to main.
+
+Rules:
+- Minimal output. No extra commentary. No markdown reports.
+- Use only gh/git/bash. No destructive ops.
+- Do not use `git add .`; stage files explicitly when needed.
+
+Steps outline:
+1) Determine repo (respect GH_REPO if set). Determine label filter from $LABEL if non-empty.
+2) Pick one open issue number. If none, print {} and exit.
+3) Derive branch name fix/issue-<num>-<slug>. Create or checkout and push.
+4) If a PR exists, reuse it; else create a draft PR. Title: "fix: <issue title truncated to 64> (fixes #<num>)".
+5) Output a single JSON line: {"issue":<num>,"branch":"<branch>","pr":<pr#>,"url":"<pr-url>"}
+
+Notes:
+- Use: `gh issue list ... --json number --jq '.[].number'` and `gh pr list --head <branch>`.
+- Ensure the final line is only JSON, nothing else.
+EOF
+  )
+  # Provide LABEL to session so it can filter issues
+  LABEL="${label}" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT:-20m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+$prompt
+EOF
+}
+
+run_issue_pass() {
   # Pre-loop: if we're starting on a non-main branch, finish its workflow first
   progress_current_branch_if_needed
 
-  count=0
-  for inum in "${issues_arr[@]}"; do
-  # Reset per-iteration state to avoid leaking values across issues
-  unset pr_url pr_number branch exist_branch existing_pr
   ensure_clean_main
-  append_context "${inum:-}" "Start processing issue #${inum:-unknown} in repo $(git config --get remote.origin.url | sed 's#.*:##; s#.git$##')"
+  # Ask Codex to pick next issue, ensure a branch exists, and open or reuse a PR
+  local json pr_number inum branch pr_url
+  json=$(codex_bootstrap_start | tail -n 1)
+  if [[ -z "$json" || "$json" == "{}" ]]; then
+    echo "No open issues selected by Codex (bootstrap)." >&2
+    return 1
+  fi
+  pr_number=$(printf "%s" "$json" | jq -r '.pr // empty' 2>/dev/null || true)
+  inum=$(printf "%s" "$json" | jq -r '.issue // empty' 2>/dev/null || true)
+  branch=$(printf "%s" "$json" | jq -r '.branch // empty' 2>/dev/null || true)
+  pr_url=$(printf "%s" "$json" | jq -r '.url // empty' 2>/dev/null || true)
 
-  # Relevance check with auto-close if obsolete
-  if "$self_dir/issue_check_relevance.sh" "$inum" --auto-close; then
-    :
-  else
-    rc=$?
-    if [[ $rc -eq 11 || $rc -eq 10 ]]; then
-      continue
+  if [[ -z "$pr_number" ]]; then
+    if [[ -n "$pr_url" ]]; then
+      pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null || echo "")
     fi
   fi
-
-  echo "=== [AUTO] Processing issue #${inum:-unknown} ==="
-
-  # Use existing PR/branch if present; otherwise create branch
-  existing_pr=$(find_existing_pr_number "$inum" || true)
-  if [[ -n "$existing_pr" ]]; then
-    echo "Found existing PR #$existing_pr for issue #${inum:-unknown}; continuing work (avoid duplicate implementation)." >&2
-    branch=$(checkout_pr_branch "$existing_pr")
-    pr_url=$(gh pr view "$existing_pr" --json url --jq '.url')
-    if pr_number=$(gh pr view "$existing_pr" --json number --jq '.number' 2>/dev/null); then
-      process_existing_pr "$pr_number" "$inum" "$branch"
-      ensure_clean_main
-      count=$((count+1))
-      if (( count >= limit )); then break; fi
-      continue
-    fi
-  else
-    # Prefer existing local/remote feature branch if present
-    exist_branch=$(git branch --all --list "*fix/issue-${inum}-*" | head -n1 | sed 's#remotes/origin/##' | sed 's#^[* ]*##')
-    if [[ -n "$exist_branch" ]]; then
-      echo "Found existing branch $exist_branch; using it." >&2
-      if git show-ref --verify --quiet "refs/heads/$exist_branch"; then
-        git checkout "$exist_branch" && git pull --rebase || true
-      else
-        git fetch origin "$exist_branch":"$exist_branch" || true
-        git checkout "$exist_branch" || git checkout -b "$exist_branch"
-      fi
-      branch="$exist_branch"
-    else
-      # Create and switch to branch (also pushes). If this fails (e.g., issue no longer exists
-      # or is inaccessible), skip gracefully instead of exiting the whole orchestrator.
-      if ! branch=$(create_issue_branch "$inum"); then
-        echo "[skip] Could not create branch for issue #${inum:-unknown} (likely closed/missing or GH error)." >&2
-        ensure_clean_main
-        count=$((count+1))
-        if (( count >= limit )); then break; fi
-        continue
-      fi
-    fi
-  fi
-  echo "Branch: $branch"
-
-  # If no PR exists yet for this issue, only create after code changes exist
-  if [[ -z "${pr_url:-}" ]]; then
-    if run_local_tests; then
-      git fetch origin main >/dev/null 2>&1 || true
-      ahead=$(git rev-list --count "origin/main..HEAD" 2>/dev/null || echo 0)
-      if [[ "${ahead:-0}" -gt 0 ]]; then
-        pr_url=$(open_pr_if_missing "$inum")
-        if [[ -n "$pr_url" ]]; then echo "PR: $pr_url" >&2; fi
-        if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
-          process_existing_pr "$pr_number" "$inum" "$branch"
-          ensure_clean_main
-          count=$((count+1))
-          if (( count >= limit )); then break; fi
-          continue
-        fi
-      fi
-    fi
+  if [[ -z "$pr_number" ]]; then
+    echo "[bootstrap] Codex did not produce a PR to process." >&2
+    return 1
   fi
 
-  # Otherwise, proceed with implementation loop to get local tests green, then PR
-  codex_fix_issue "$inum"
-  if ! git diff --quiet || ! git diff --cached --quiet || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
-    stage_all_changes
-    if ! git diff --cached --quiet; then
-      git commit -m "fix: attempt to resolve issue #$inum (auto)"
-      git push
-    fi
-  fi
-  pre_attempt=1; pre_max=3
-  while (( pre_attempt <= pre_max )); do
-    if run_local_tests; then
-      break
-    fi
-    echo "[pre-PR] Local tests failing; handing back to Codex (attempt $pre_attempt/$pre_max)" >&2
-    codex_fix_issue "$inum"
-    if ! git diff --quiet || ! git diff --cached --quiet || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
-      stage_all_changes
-      if ! git diff --cached --quiet; then
-        git commit -m "fix: continue resolving issue #$inum (pre-PR)"
-        git push
-      fi
-    fi
-    ((pre_attempt++))
-  done
-
-  if [[ -z "${pr_url:-}" ]]; then
-    pr_url=$(open_pr_if_missing "$inum")
-  fi
-  if [[ -n "$pr_url" ]]; then
-    echo "PR: $pr_url"
-    if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
-      process_existing_pr "$pr_number" "${inum:-}" "$branch"
-    else
-      echo "Could not resolve PR number for URL: $pr_url" >&2
-    fi
-  else
-    echo "[pre-PR] No PR created yet (likely no commits ahead). Continuing implementation." >&2
-  fi
-
+  echo "PR: ${pr_url:-#${pr_number}}" >&2
+  process_existing_pr "$pr_number" "${inum:-}" "${branch:-}" || true
   ensure_clean_main
-  count=$((count+1))
-  echo "[orchestrate] Completed issue #${inum:-unknown} ($count/${#issues_arr[@]})." >&2
-  if (( count >= limit )); then break; fi
-
-  done
-  echo "Issue pass complete (processed $count)." >&2
+  echo "Issue pass complete (processed 1)." >&2
   return 0
 }
 
