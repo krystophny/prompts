@@ -90,17 +90,14 @@
  - Self-documenting code: prefer clear names and straightforward logic so code speaks for itself. Avoid redundant comments that merely restate code. Use comments sparingly for non-obvious intent, invariants, edge cases, algorithm references, or cross-module rationale. Keep docstrings focused on public APIs and examples.
 
 ## Language Preferences
-- Preferred core language: modern Fortran (2018+) for numerical/compute kernels
-  and HPC modules; follow the Fortran rules below.
-- Scripting and automation: prefer Python for non-trivial tasks; use Bash only
-  for small, robust glue (idempotent, `set -euo pipefail`).
-- Data analysis: use Python (NumPy, Pandas, SciPy). Notebooks are fine for
-  exploration but must be mirrored by runnable scripts for CI reproducibility.
-- Modern UI, web, and REST:
-  - Frontend: TypeScript + React (Vite). Keep dependencies minimal; add tests
-    when practical.
-  - Backend: TypeScript (Node/Express or Nest) or Python (FastAPI) for REST
-    APIs. Define OpenAPI and include contract tests.
+- Primary language: modern Fortran (2018+). Use Fortran by default even for
+  tasks typically handled in other languages (scripting, data analysis, CLI,
+  web/REST services) whenever feasible.
+- Ecosystem: use fpm for build and dependency management. Prefer latest git
+  versions of packages; pin SHAs only when reproducibility requires it.
+- Plotting: use lazy-fortran/fortplot for visualization.
+- Interop: when unavoidable, keep glue minimal (e.g., tiny Bash/Python wrappers)
+  and maintain a Fortran-first implementation of core logic.
 
 ## Language-Specific: Fortran
 - Line length: 88; up to 90 with ` &` continuation.

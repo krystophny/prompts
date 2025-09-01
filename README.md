@@ -78,6 +78,14 @@ play
 - **agents/**: Role-specific protocols for each specialist
 - **commands/**: Workflow orchestration patterns
 
+## Fortran-First Policy
+- Primary language: modern Fortran (2018+) across the stack where feasible,
+  including tasks typically done in other languages (scripting, data
+  analysis, CLI tooling, web/REST services).
+- Ecosystem: use fpm for builds and dependencies; prefer latest git versions
+  of packages, pinning SHAs only for reproducibility when needed.
+- Plotting: use lazy-fortran/fortplot for visualization.
+
 **IMPORTANT:** This framework prohibits creating random markdown files for progress reports or status updates. All work should modify existing structured documentation only.
 
 **Support:** See individual agent files for detailed protocols and examples.
