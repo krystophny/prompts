@@ -185,6 +185,31 @@ ensure_clean_main() {
   git pull --rebase origin main
 }
 
+# List open PRs likely created by this automation (branch name pattern)
+list_open_codex_prs() {
+  gh pr list --state open --json number,headRefName --jq '.[] | select(.headRefName|test("^fix/issue-")) | .number' 2>/dev/null || true
+}
+
+# If any open PRs exist, process them first and exit to avoid parallelizing issues
+process_any_open_codex_prs_first() {
+  local prs
+  prs=$(list_open_codex_prs | tr '\n' ' ')
+  if [[ -n "${prs// /}" ]]; then
+    echo "[gate] Found open PR(s) on fix/issue-* branches: $prs" >&2
+    for pr in $prs; do
+      local branch inum
+      branch=$(checkout_pr_branch "$pr")
+      # Try to infer issue number for context
+      inum=$(infer_issue_from_current_branch || echo "0")
+      process_existing_pr "$pr" "$inum" "$branch"
+      ensure_clean_main
+    done
+    # After handling open PRs, stop; next run can pick additional issues
+    echo "[gate] Open PRs handled. Exiting without starting new issues." >&2
+    exit 0
+  fi
+}
+
 # Process an existing PR end-to-end: review, rebase if needed, wait for checks, merge or remediate
 process_existing_pr() {
   local pr_number="$1"; shift || true
@@ -593,6 +618,9 @@ EOF
 }
 
 # Fetch issues
+# Hard gate: do not proceed if any fix/issue-* PR is still open
+process_any_open_codex_prs_first
+
 if [[ -n "$label" ]]; then
   issues=$(gh issue list --state open --label "$label" --json number --limit 500 --jq '.[].number' || true)
 else
