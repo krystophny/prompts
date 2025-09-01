@@ -5,7 +5,7 @@
 # - Creates branch
 # - Uses Codex CLI to implement fix (non-interactive)
 # - Opens PR, self-review loop with Codex, decides success
-# - If success: wait for CI, merge, issue closed by "fixes #N"; else cleanup PR/branch
+# - CI/merge policy: do not auto-merge; maintainers or Codex handle final merge.
 # - Returns to clean main at the end of each iteration
 #
 # Usage:
@@ -259,18 +259,17 @@ process_existing_pr() {
 
   # Ensure branch is up to date and conflict-free relative to base before watching checks
   rebase_and_resolve_conflicts "$pr_number" "$branch" || true
-  # Watch checks then merge/remediate
+  # Watch checks; do not auto-merge
   echo "Waiting for CI on PR #$pr_number" >&2
   if gh pr checks "$pr_number" --watch; then
-    "$self_dir/pr_merge.sh" "$pr_number" "$merge_method"
+    echo "CI green for PR #$pr_number. Skipping auto-merge; handoff to Codex/maintainers for final merge." >&2
   else
     echo "CI not successful for PR #$pr_number; handing back to Codex for remediation." >&2
     if codex_ci_fix_loop "$pr_number" "$inum" "$branch"; then
-      echo "CI turned green after remediation. Merging PR #$pr_number." >&2
-      "$self_dir/pr_merge.sh" "$pr_number" "$merge_method"
+      echo "CI turned green after remediation for PR #$pr_number. Skipping auto-merge; handoff to Codex/maintainers." >&2
     else
       echo "CI still failing after remediation attempts; cleaning up PR #$pr_number." >&2
-      "$self_dir/pr_cleanup.sh" "$pr_number"
+      cleanup_pr "$pr_number"
     fi
   fi
 }
@@ -550,6 +549,57 @@ checkout_pr_branch() {
   echo "$branch"
 }
 
+# Create or checkout a feature branch for an issue and push it
+create_issue_branch() {
+  local issue_num="$1"
+  # Ensure clean tree
+  if ! git diff --quiet || ! git diff --cached --quiet; then
+    echo "Working tree not clean. Commit or stash first." >&2
+    return 1
+  fi
+  # Sync main
+  git fetch origin
+  git checkout main
+  git pull --rebase origin main
+  # Derive slug from issue title
+  local title slug branch
+  title=$(gh issue view "$issue_num" --json title --jq '.title' 2>/dev/null || echo "")
+  if [[ -z "$title" ]]; then
+    echo "Failed to get issue title for #${issue_num}" >&2
+    return 1
+  fi
+  slug=$(echo "$title" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+|-+$//g' | cut -c1-40)
+  branch="fix/issue-${issue_num}-${slug}"
+  if git rev-parse --verify "$branch" >/dev/null 2>&1; then
+    git checkout "$branch"
+  else
+    git checkout -b "$branch"
+  fi
+  git push -u origin "$branch" >/dev/null 2>&1 || true
+  echo "$branch"
+}
+
+# Close PR and delete related branches (local + remote)
+cleanup_pr() {
+  local pr_num="$1"
+  local branch
+  branch=$(gh pr view "$pr_num" --json headRefName --jq '.headRefName')
+  gh pr close "$pr_num" --delete-branch=false
+  git fetch origin
+  if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+    git push origin --delete "$branch" || true
+  fi
+  if git show-ref --verify --quiet "refs/heads/$branch"; then
+    local current
+    current=$(git rev-parse --abbrev-ref HEAD)
+    if [[ "$current" == "$branch" ]]; then
+      git checkout main
+    fi
+    git branch -D "$branch" || true
+  fi
+  echo "Cleaned up branch $branch for PR #$pr_num" >&2
+}
+
 # Stage precise set of changes, handling deletes/renames
 stage_all_changes() {
   while IFS= read -r -d '' rec; do
@@ -565,26 +615,15 @@ stage_all_changes() {
 # Run local tests with auto-detection or TEST_CMD; returns 0 on pass
 run_local_tests() {
   local cmd=""; local log="/tmp/codex_local_tests_$$.log"; local rc
-  if [[ -n "${TEST_CMD:-}" ]]; then cmd="$TEST_CMD"; fi
-  if [[ -z "$cmd" && -f Makefile ]] && grep -qE '^test-ci:' Makefile; then cmd="make test-ci"; fi
-  if [[ -z "$cmd" ]] && command -v fpm >/dev/null 2>&1; then cmd="fpm test"; fi
-  if [[ -z "$cmd" ]] && command -v pytest >/dev/null 2>&1; then cmd="pytest -q"; fi
-  if [[ -z "$cmd" && -f package.json ]] && command -v npm >/dev/null 2>&1; then cmd="npm test --silent"; fi
-  if [[ -z "$cmd" ]] && command -v ctest >/dev/null 2>&1; then cmd="ctest --output-on-failure"; fi
-  if [[ -z "$cmd" && -f Makefile ]]; then cmd="make test"; fi
-  if [[ -z "$cmd" ]]; then
-    echo "[tests] No known test runner found; treating as pass (noop)." >&2
+  if [[ -n "${TEST_CMD:-}" ]]; then
+    cmd="$TEST_CMD"
+  else
+    echo "[tests] Skipping local full-suite run (delegated to Codex/CI)." >&2
     return 0
   fi
-  echo "[tests] Running: $cmd" >&2
-  if "${TIMEOUT[@]}" "${LOCAL_TEST_TIMEOUT}" bash -lc "$cmd" >"$log" 2>&1; then
-    rc=0
-  else
-    rc=$?
-  fi
-  if [[ $rc -eq 124 ]]; then
-    echo "[tests] Timeout reached (${LOCAL_TEST_TIMEOUT}); assuming hang or too-slow tests." >&2
-  fi
+  echo "[tests] Running (explicit): $cmd" >&2
+  if "${TIMEOUT[@]}" "${LOCAL_TEST_TIMEOUT}" bash -lc "$cmd" >"$log" 2>&1; then rc=0; else rc=$?; fi
+  if [[ $rc -eq 124 ]]; then echo "[tests] Timeout reached (${LOCAL_TEST_TIMEOUT})." >&2; fi
   tail -n 50 "$log" >&2 || true
   rm -f "$log" || true
   return $rc
@@ -733,7 +772,7 @@ for inum in "${issues_arr[@]}"; do
     else
       # Create and switch to branch (also pushes). If this fails (e.g., issue no longer exists
       # or is inaccessible), skip gracefully instead of exiting the whole orchestrator.
-      if ! branch=$("$self_dir/issue_branch.sh" "$inum"); then
+      if ! branch=$(create_issue_branch "$inum"); then
         echo "[skip] Could not create branch for issue #${inum:-unknown} (likely closed/missing or GH error)." >&2
         ensure_clean_main
         count=$((count+1))
