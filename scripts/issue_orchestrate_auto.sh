@@ -463,51 +463,6 @@ EOF
 $prompt
 EOF
 }
-codex_fix_issue() {
-  local inum="${1-}"; shift || true
-  # Non-interactive Codex session to implement the fix on current branch
-  # Provide tight instructions consistent with Codex Development Rules
-  local prompt history cf
-  history=""
-  cf=$(context_file_for_issue "${inum:-}"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
-  prompt=$(cat << EOF
-You are an autonomous coding agent running under Codex CLI in a Git repository.
-
-Goal: Resolve the currently assigned GitHub issue in this repository on the current branch, then push commits.
-
-Constraints (Codex Development Rules - concise):
-- Evidence-based; run tests/linters; show logs when relevant.
-- Full autonomy; do not ask for confirmations. No random markdown reports.
-- Keep changes minimal, single-topic, with clear commit messages.
-- Do not reformat or touch unrelated files. No secrets. Validate inputs.
-- TDD preference when practical; correctness first. Don’t skip tests.
-- Use existing build/test scripts; if none, add minimal scripts next to code.
-- Never use `git add .`; stage only changed files you intend to commit.
- - Before making changes, check whether a PR already exists for this branch and assess progress to avoid duplicate work. If the implementation appears complete and tests pass, skip coding and proceed to PR review/merge workflow.
-
-Repository workflow to follow exactly:
-1) Establish baseline: detect and run available tests, e.g., `make test-ci`, `pytest`, `fpm test`, `npm test`. Save short summaries to stdout.
-2) Investigate the issue (# injected via environment below). Reproduce locally if feasible.
-3) Implement the fix in small steps. Keep functions small; avoid unrelated refactors. Update docs if necessary.
-4) Add or adjust tests to prove the fix (when feasible) and run them locally to green.
-5) Stage specific files changed (no `git add .`). Commit with Conventional Commit style `fix: ... (fixes #<ISSUE_NUM>)` as appropriate. Push to the tracking branch.
-6) Summarize what changed and which tests were run in your final message.
-
-Notes:
-- You may use `gh issue view $ISSUE_NUM` to read the issue details.
-- If no tests exist, create minimal targeted ones (don’t add frameworks unless already present).
-- If you can’t reproduce or fix, reduce scope to prepare the branch with best-effort changes and stop.
-
-Context (recent log):
-${history}
-EOF
-  )
-
-  ISSUE_NUM="${inum:-}" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
-$prompt
-EOF
-}
-
 codex_pr_self_review() {
   local pr_num="${1-}"; shift || true
   local inum="${1-}"; shift || true
@@ -559,59 +514,6 @@ EOF
   done
 }
 
-open_pr_if_missing() {
-  local inum="$1"
-  # If a PR already exists for this issue, return its URL
-  local existing pr_url
-  existing=$(gh pr list --search "in:title #${inum:-} in:body #${inum:-}" --json number --jq '.[].number' 2>/dev/null || true)
-  if [[ -n "$existing" ]]; then
-    gh pr view "$existing" --json url --jq '.url'
-    return 0
-  fi
-
-  # Only attempt PR creation when the branch is ahead of base
-  git fetch origin main >/dev/null 2>&1 || true
-  local ahead
-  ahead=$(git rev-list --count "origin/main..HEAD" 2>/dev/null || echo 0)
-  if [[ "${ahead:-0}" -eq 0 ]]; then
-    echo ""  # no commits yet; let caller continue implementation
-    return 0
-  fi
-
-  # Create PR directly via gh; echo only the URL on success
-  local title raw_title body_template branch pr_url
-  raw_title=$(gh issue view "$inum" --json title --jq '.title' 2>/dev/null || echo "")
-  # Fallback title if issue not accessible
-  if [[ -z "$raw_title" || "$raw_title" == "null" ]]; then
-    raw_title="issue #$inum"
-  fi
-  # Truncate to 64 chars, trim trailing space
-  title=$(printf "%s" "$raw_title" | sed -E 's/[[:space:]]+/ /g' | cut -c1-64 | sed -E 's/[[:space:]]+$//')
-  branch=$(git rev-parse --abbrev-ref HEAD)
-  body_template="Summary:\n- What changed\n- Why\n\nEvidence:\n- Tests/build/logs\n\nFixes #$inum"
-  set +e
-  gh pr create \
-    --base main \
-    --head "$branch" \
-    --title "fix: $title (fixes #$inum)" \
-    --body "$body_template" \
-    --draft >/dev/null 2>&1
-  # Capture URL for PR that now exists (created or pre-existing for branch)
-  pr_url=$(gh pr list --head "$branch" --json url --limit 1 --jq '.[0].url' 2>/dev/null || true)
-  set -e
-  if [[ -n "$pr_url" ]]; then
-    echo "$pr_url"
-    append_context "${inum:-}" "PR opened: $pr_url"
-  else
-    echo ""  # no PR created or could not resolve URL; let caller proceed
-  fi
-  return 0
-}
-
-find_existing_pr_number() {
-  local inum="$1"
-  gh pr list --search "in:title #${inum:-} in:body #${inum:-}" --json number --jq '.[].number' 2>/dev/null | head -n1
-}
 
 checkout_pr_branch() {
   local pr_num="${1-}"
@@ -628,34 +530,6 @@ checkout_pr_branch() {
 }
 
 # Create or checkout a feature branch for an issue and push it
-create_issue_branch() {
-  local issue_num="$1"
-  # Ensure clean tree
-  if ! git diff --quiet || ! git diff --cached --quiet; then
-    echo "Working tree not clean. Commit or stash first." >&2
-    return 1
-  fi
-  # Sync main
-  git fetch origin
-  git checkout main
-  git pull --rebase origin main
-  # Derive slug from issue title
-  local title slug branch
-  title=$(gh issue view "$issue_num" --json title --jq '.title' 2>/dev/null || echo "")
-  if [[ -z "$title" ]]; then
-    echo "Failed to get issue title for #${issue_num}" >&2
-    return 1
-  fi
-  slug=$(echo "$title" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+|-+$//g' | cut -c1-40)
-  branch="fix/issue-${issue_num}-${slug}"
-  if git rev-parse --verify "$branch" >/dev/null 2>&1; then
-    git checkout "$branch"
-  else
-    git checkout -b "$branch"
-  fi
-  git push -u origin "$branch" >/dev/null 2>&1 || true
-  echo "$branch"
-}
 
 # Close PR and delete related branches (local + remote)
 cleanup_pr() {
@@ -678,34 +552,7 @@ cleanup_pr() {
   echo "Cleaned up branch $branch for PR #$pr_num" >&2
 }
 
-# Stage precise set of changes, handling deletes/renames
-stage_all_changes() {
-  while IFS= read -r -d '' rec; do
-    code=${rec:0:2}; path=${rec:3}
-    case "$code" in
-      D*|*D) git rm -- "$path" || true ;;
-      R*) IFS= read -r -d '' newpath || true; [[ -n "$newpath" ]] && { git rm -- "$path" || true; git add -- "$newpath" || true; } ;;
-      *) git add -- "$path" || true ;;
-    esac
-  done < <(git status --porcelain -z)
-}
-
-# Run local tests with auto-detection or TEST_CMD; returns 0 on pass
-run_local_tests() {
-  local cmd=""; local log="/tmp/codex_local_tests_$$.log"; local rc
-  if [[ -n "${TEST_CMD:-}" ]]; then
-    cmd="$TEST_CMD"
-  else
-    echo "[tests] Skipping local full-suite run (delegated to Codex/CI)." >&2
-    return 0
-  fi
-  echo "[tests] Running (explicit): $cmd" >&2
-  if "${TIMEOUT[@]}" "${LOCAL_TEST_TIMEOUT}" bash -lc "$cmd" >"$log" 2>&1; then rc=0; else rc=$?; fi
-  if [[ $rc -eq 124 ]]; then echo "[tests] Timeout reached (${LOCAL_TEST_TIMEOUT})." >&2; fi
-  tail -n 50 "$log" >&2 || true
-  rm -f "$log" || true
-  return $rc
-}
+## removed: stage_all_changes(), run_local_tests() — no longer used
 
 codex_ci_fix_loop() {
   local pr_num="${1-}"; shift || true
