@@ -641,46 +641,38 @@ fetch_open_issues() {
   fi
 }
 
-codex_bootstrap_start() {
-  # Let Codex autonomously pick the next issue, create/checkout a branch,
-  # and open a PR if missing. Print a single JSON line with keys:
-  # {"issue":N, "branch":"..", "pr":N, "url":".."}
-  local prompt result
+codex_implement_issue_single_prompt() {
+  # Single Codex session: select highest-priority relevant issue, implement,
+  # push branch, and open a draft PR. No JSON handshake; the orchestrator will
+  # discover the created/updated PR afterwards.
+  local prompt
   prompt=$(cat << 'EOF'
 You are operating with GitHub CLI in a Git repository.
 
-Goal: In a single session, autonomously select and implement the next issue before review/merge:
-- Select the highest-priority open issue (respect env LABEL when set). Priority heuristic: labels P0>P1>P2>P3, then label "bug", then oldest updated.
-- For each candidate, perform relevance check using repository state:
-  - Parse title/body for referenced tests (e.g., test_*), file paths, or identifiers (inline code spans).
-  - Optionally run tests to establish a baseline and to verify fixes. Prefer TEST_CMD when provided; otherwise try make/pytest/fpm/npm. Enforce a strict per-run timeout from TEST_TIMEOUT.
-  - If referenced artifacts are missing and no identifiers are present and baseline tests pass, consider obsolete. If obsolete and AUTO_CLOSE=1, close with a concise evidence comment and continue to next candidate.
-- When a relevant issue is found:
-  - Create or checkout branch fix/issue-<num>-<slug> and push it.
-  - Implement the fix with minimal, focused commits. Add/adjust tests as needed. Run tests locally until green.
-  - Stage specific files only (no `git add .`), commit with Conventional Commit `fix: ... (fixes #<num>)`, and push.
-  - Open a draft PR to main if one does not already exist.
+Objective: In ONE session, autonomously select the next relevant issue and prepare a draft PR ready for review.
+
+Selection & priority:
+- Consider open issues (respect env LABEL when set).
+- Priority: labels P0>P1>P2>P3, then label "bug", then oldest updated.
+- Relevance check: parse title/body for mentioned tests, file paths, or identifiers. If artifacts are missing and baseline tests pass, treat as obsolete; when AUTO_CLOSE=1, close with concise, evidence-based comment and proceed to next.
+
+Implementation:
+- Create/checkout branch: fix/issue-<num>-<slug>.
+- Run baseline tests (use TEST_CMD if provided; else try make/pytest/fpm/npm). Enforce TEST_TIMEOUT.
+- Implement the minimal fix with tests. Keep commits focused. No unrelated changes.
+- Stage files explicitly (no `git add .`). Use Conventional Commit: `fix: <desc> (fixes #<num>)`.
+- Push branch and open a DRAFT PR to main (reuse if exists). Title: "fix: <issue title truncated to 64> (fixes #<num>)".
 
 Rules:
-- Minimal output. No extra commentary. No markdown reports.
-- Use only gh/git/bash. No destructive ops.
-- Do not use `git add .`; stage files explicitly when needed.
- - Hard requirement: At the end, print exactly one JSON line and then exit immediately.
+- Minimal output; no markdown reports; use only gh/git/bash.
+- No destructive ops. Do not rewrite history of main.
+- Ensure working tree is clean before exiting.
 
-Steps outline:
-1) Determine repo (respect GH_REPO if set). Determine label filter from $LABEL if non-empty.
-2) Build candidate set of open issues; order by priority heuristic.
-3) For each candidate, perform relevance check (with optional short tests) and auto-close when obsolete if AUTO_CLOSE=1. Continue until a relevant issue is found.
-4) Derive branch name fix/issue-<num>-<slug>. Create or checkout and push.
-5) Implement fix with tests, commit and push. If a PR exists, reuse it; else create a draft PR. Title: "fix: <issue title truncated to 64> (fixes #<num>)".
-6) Output a single JSON line: {"issue":<num>,"branch":"<branch>","pr":<pr#>,"url":"<pr-url>"}. If no suitable issue, output {} and exit.
-
-Notes:
-- Use: `gh issue list ... --json number --jq '.[].number'` and `gh pr list --head <branch>`.
-- Ensure the final line is only JSON, nothing else.
+Deliverable:
+- Leave the branch pushed and a draft PR open and linked to the issue.
+- Do not print any special tokens or JSON; just complete the tasks.
 EOF
   )
-  # Provide LABEL to session so it can filter issues
   LABEL="${label}" AUTO_CLOSE=1 TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT:-30m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
@@ -691,31 +683,35 @@ run_issue_pass() {
   progress_current_branch_if_needed
 
   ensure_clean_main
-  # Ask Codex to pick next issue, ensure a branch exists, and open or reuse a PR
-  local json pr_number inum branch pr_url
-  json=$(codex_bootstrap_start | tail -n 1)
-  # Validate JSON; if invalid, treat as empty
-  if ! printf "%s" "$json" | jq -e . >/dev/null 2>&1; then
-    json="{}"
-  fi
-  if [[ -z "$json" || "$json" == "{}" ]]; then
-    echo "No open issues selected by Codex (bootstrap)." >&2
-    return 1
-  fi
-  pr_number=$(printf "%s" "$json" | jq -r '.pr // empty' 2>/dev/null || true)
-  inum=$(printf "%s" "$json" | jq -r '.issue // empty' 2>/dev/null || true)
-  branch=$(printf "%s" "$json" | jq -r '.branch // empty' 2>/dev/null || true)
-  pr_url=$(printf "%s" "$json" | jq -r '.url // empty' 2>/dev/null || true)
+  # Record open PRs before Codex runs
+  local before_json after_json pr_number branch pr_url inum
+  before_json=$(gh pr list --state open --json number,headRefName,updatedAt 2>/dev/null || echo '[]')
 
-  if [[ -z "$pr_number" ]]; then
-    if [[ -n "$pr_url" ]]; then
-      pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null || echo "")
-    fi
+  # Single Codex session to select/implement/open PR
+  codex_implement_issue_single_prompt || true
+
+  # Identify newly created/updated PR to process
+  after_json=$(gh pr list --state open --json number,headRefName,updatedAt,url 2>/dev/null || echo '[]')
+  # Prefer any fix/issue-* PRs that are new compared to before
+  pr_number=$(jq -r --argjson before "$before_json" '
+    ( .[] | select(.headRefName|test("^fix/issue-")) ) as $after
+    | if ([ $before[]?.headRefName ] | index($after.headRefName)) then empty else $after.number end
+  ' <<<"$after_json" | head -n1)
+
+  # Fallback: choose the most recently updated fix/issue-* PR
+  if [[ -z "${pr_number:-}" ]]; then
+    pr_number=$(jq -r 'map(select(.headRefName|test("^fix/issue-"))) | sort_by(.updatedAt) | reverse | .[0].number // empty' <<<"$after_json")
   fi
-  if [[ -z "$pr_number" ]]; then
-    echo "[bootstrap] Codex did not produce a PR to process." >&2
+
+  if [[ -z "${pr_number:-}" ]]; then
+    echo "No PR found after Codex run; nothing to process." >&2
     return 1
   fi
+
+  pr_url=$(gh pr view "$pr_number" --json url --jq '.url' 2>/dev/null || echo "")
+  branch=$(gh pr view "$pr_number" --json headRefName --jq '.headRefName' 2>/dev/null || echo "")
+  # Best-effort to infer issue number from branch name pattern
+  inum=$(echo "$branch" | sed -n 's/^fix\/issue-\([0-9][0-9]*\).*/\1/p' || true)
 
   echo "PR: ${pr_url:-#${pr_number}}" >&2
   process_existing_pr "$pr_number" "${inum:-}" "${branch:-}" || true
