@@ -266,6 +266,7 @@ process_existing_pr() {
     if [[ "$auto_merge" == true ]]; then
       if maybe_merge_pr "$pr_number"; then
         echo "Merged PR #$pr_number via $merge_method." >&2
+        codex_post_merge_close_issue "$pr_number" "$inum"
       else
         echo "Auto-merge failed or not allowed for PR #$pr_number; leaving open for manual follow-up." >&2
       fi
@@ -278,6 +279,7 @@ process_existing_pr() {
       if [[ "$auto_merge" == true ]]; then
         if maybe_merge_pr "$pr_number"; then
           echo "Merged PR #$pr_number via $merge_method after remediation." >&2
+          codex_post_merge_close_issue "$pr_number" "$inum"
         else
           echo "Auto-merge failed or not allowed for PR #$pr_number after remediation; leaving open." >&2
         fi
@@ -319,6 +321,32 @@ maybe_merge_pr() {
   fi
   set -e
   return $rc
+}
+
+# Post-merge: delegate to Codex to ensure issue is closed, add brief summary
+codex_post_merge_close_issue() {
+  local pr_num="$1"; shift || true
+  local issue_num="$1"; shift || true
+  local prompt
+  prompt=$(cat << 'EOF'
+You are operating in a Git repository with GitHub CLI.
+
+Task: Verify PR and issue status post-merge and ensure the referenced issue is closed.
+
+Steps:
+1) Verify PR $PR_NUM is merged: `gh pr view $PR_NUM --json state,isDraft,mergedAt,url`.
+2) Check issue $ISSUE_NUM state. If still open, close it: `gh issue close $ISSUE_NUM --comment "Resolved by PR #$PR_NUM"`.
+3) If PR title/body did not include "fixes #$ISSUE_NUM", add a PR comment noting the linkage for audit.
+4) Print a one-line summary: "closed #$ISSUE_NUM via PR #$PR_NUM".
+
+Rules:
+- Be concise. No extra markdown reports. Use gh CLI only.
+- Do not reopen issues. Only close if PR is merged.
+EOF
+  )
+  PR_NUM="$pr_num" ISSUE_NUM="$issue_num" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT:-10m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+$prompt
+EOF
 }
 
 # Infer issue number from current branch or its PR (best-effort)
@@ -747,33 +775,37 @@ process_any_open_codex_prs_first
 gh_repo_effective=$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null || echo "")
 [[ -n "$gh_repo_effective" ]] && echo "[orchestrate] gh repo: $gh_repo_effective" >&2
 
-if [[ -n "$label" ]]; then
-  if [[ -n "$repo_override" ]]; then
-    issues=$(gh issue list -R "$repo_override" --state open --label "$label" --json number --limit 500 --jq '.[].number' || true)
+fetch_open_issues() {
+  if [[ -n "$label" ]]; then
+    if [[ -n "$repo_override" ]]; then
+      gh issue list -R "$repo_override" --state open --label "$label" --json number --limit 500 --jq '.[].number' || true
+    else
+      gh issue list --state open --label "$label" --json number --limit 500 --jq '.[].number' || true
+    fi
   else
-    issues=$(gh issue list --state open --label "$label" --json number --limit 500 --jq '.[].number' || true)
+    if [[ -n "$repo_override" ]]; then
+      gh issue list -R "$repo_override" --state open --json number --limit 500 --jq '.[].number' || true
+    else
+      gh issue list --state open --json number --limit 500 --jq '.[].number' || true
+    fi
   fi
-else
-  if [[ -n "$repo_override" ]]; then
-    issues=$(gh issue list -R "$repo_override" --state open --json number --limit 500 --jq '.[].number' || true)
-  else
-    issues=$(gh issue list --state open --json number --limit 500 --jq '.[].number' || true)
+}
+
+run_issue_pass() {
+  local issues
+  issues=$(fetch_open_issues)
+  mapfile -t issues_arr <<< "$issues"
+  if [[ ${#issues_arr[@]} -eq 0 ]]; then
+    echo "No open issues to process." >&2
+    return 1
   fi
-fi
+  echo "[orchestrate] Issues to process: ${#issues_arr[@]} => ${issues_arr[*]}" >&2
 
-# Snapshot issues into an array to avoid dynamic changes during iteration
-mapfile -t issues_arr <<< "$issues"
-if [[ ${#issues_arr[@]} -eq 0 ]]; then
-  echo "No open issues to process." >&2
-  exit 0
-fi
-echo "[orchestrate] Issues to process: ${#issues_arr[@]} => ${issues_arr[*]}" >&2
+  # Pre-loop: if we're starting on a non-main branch, finish its workflow first
+  progress_current_branch_if_needed
 
-# Pre-loop: if we're starting on a non-main branch, finish its workflow first
-progress_current_branch_if_needed
-
-count=0
-for inum in "${issues_arr[@]}"; do
+  count=0
+  for inum in "${issues_arr[@]}"; do
   # Reset per-iteration state to avoid leaking values across issues
   unset pr_url pr_number branch exist_branch existing_pr
   ensure_clean_main
@@ -894,6 +926,19 @@ for inum in "${issues_arr[@]}"; do
   echo "[orchestrate] Completed issue #${inum:-unknown} ($count/${#issues_arr[@]})." >&2
   if (( count >= limit )); then break; fi
 
-done
+  done
+  echo "Issue pass complete (processed $count)." >&2
+  return 0
+}
 
-echo "Autonomous issue processing complete (processed $count)."
+if [[ "$auto_merge" == true ]]; then
+  while true; do
+    if ! run_issue_pass; then
+      echo "All targeted issues resolved; exiting (--all)." >&2
+      break
+    fi
+  done
+else
+  run_issue_pass || true
+  echo "Autonomous issue processing complete (single pass)." >&2
+fi
