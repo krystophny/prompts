@@ -5,7 +5,7 @@
 # - Creates branch
 # - Uses Codex CLI to implement fix (non-interactive)
 # - Opens PR, self-review loop with Codex, decides success
-# - CI/merge policy: do not auto-merge; maintainers or Codex handle final merge.
+# - Merge policy: auto-merge only when --all is set; otherwise require manual check
 # - Returns to clean main at the end of each iteration
 #
 # Usage:
@@ -45,15 +45,16 @@ if [[ $debug -eq 1 ]]; then
   set -x
 fi
 
-label=""     # default all issues
+label=""     # default: all open issues (filtered by --label when provided)
 limit=999999
 merge_method="--squash"
 repo_override=""
+auto_merge=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --label) label="$2"; shift 2;;
-    --all) label=""; shift 1;;
+    --all) label=""; auto_merge=true; shift 1;;
     --limit) limit="$2"; shift 2;;
     --merge|--squash|--rebase) merge_method="$1"; shift 1;;
     --repo) repo_override="$2"; shift 2;;
@@ -259,19 +260,65 @@ process_existing_pr() {
 
   # Ensure branch is up to date and conflict-free relative to base before watching checks
   rebase_and_resolve_conflicts "$pr_number" "$branch" || true
-  # Watch checks; do not auto-merge
+  # Watch checks; auto-merge if --all was provided, otherwise handoff for manual review
   echo "Waiting for CI on PR #$pr_number" >&2
   if gh pr checks "$pr_number" --watch; then
-    echo "CI green for PR #$pr_number. Skipping auto-merge; handoff to Codex/maintainers for final merge." >&2
+    if [[ "$auto_merge" == true ]]; then
+      if maybe_merge_pr "$pr_number"; then
+        echo "Merged PR #$pr_number via $merge_method." >&2
+      else
+        echo "Auto-merge failed or not allowed for PR #$pr_number; leaving open for manual follow-up." >&2
+      fi
+    else
+      echo "CI green for PR #$pr_number. Manual check required before merge (no --all)." >&2
+    fi
   else
     echo "CI not successful for PR #$pr_number; handing back to Codex for remediation." >&2
     if codex_ci_fix_loop "$pr_number" "$inum" "$branch"; then
-      echo "CI turned green after remediation for PR #$pr_number. Skipping auto-merge; handoff to Codex/maintainers." >&2
+      if [[ "$auto_merge" == true ]]; then
+        if maybe_merge_pr "$pr_number"; then
+          echo "Merged PR #$pr_number via $merge_method after remediation." >&2
+        else
+          echo "Auto-merge failed or not allowed for PR #$pr_number after remediation; leaving open." >&2
+        fi
+      else
+        echo "CI turned green after remediation for PR #$pr_number. Manual check required before merge (no --all)." >&2
+      fi
     else
       echo "CI still failing after remediation attempts; cleaning up PR #$pr_number." >&2
       cleanup_pr "$pr_number"
     fi
   fi
+}
+
+# Merge a PR safely if allowed; returns 0 on successful merge
+maybe_merge_pr() {
+  local pr_num="$1"
+  # Ensure not draft
+  if gh pr view "$pr_num" --json isDraft --jq '.isDraft' | grep -qi true; then
+    gh pr ready "$pr_num" || true
+  fi
+  # Check mergeable state
+  local merge_state
+  merge_state=$(gh pr view "$pr_num" --json mergeStateStatus --jq '.mergeStateStatus' 2>/dev/null || echo "")
+  case "$merge_state" in
+    CLEAN|HAS_HOOKS|UNKNOWN|'') : ;;
+    *)
+      echo "[merge] PR #$pr_num not mergeable state: $merge_state" >&2
+      return 1
+      ;;
+  esac
+  # Attempt merge with selected method; fall back to --squash if needed
+  set +e
+  gh pr merge "$pr_num" "$merge_method" --delete-branch --admin=false
+  local rc=$?
+  if [[ $rc -ne 0 && "$merge_method" != "--squash" ]]; then
+    echo "[merge] Retry with --squash for PR #$pr_num" >&2
+    gh pr merge "$pr_num" --squash --delete-branch --admin=false
+    rc=$?
+  fi
+  set -e
+  return $rc
 }
 
 # Infer issue number from current branch or its PR (best-effort)
