@@ -44,6 +44,8 @@
 - Regression prevention: compare current results to the pre-work baseline; investigate deltas.
 - Validate locally the same build scripts/targets CI uses.
 - Run tests always with 120s timeout. If execution hits this limit, treat it as a hang or too-slow test and fix immediately.
+ - CMake builds: always use Ninja generator. Configure with
+   `cmake -S . -B build -G Ninja` and build with `cmake --build build -j`.
 
 ## Verification and CI
 - Verify CI system health before any git operation.
