@@ -97,9 +97,9 @@ context_file_for_issue() {
   local inum="$1"; echo "/tmp/codex_issue_${inum}.context";
 }
 append_context() {
-  local inum="$1"; shift || true
+  local inum="${1-}"; shift || true
   local msg="$*"
-  local f; f=$(context_file_for_issue "$inum")
+  local f; f=$(context_file_for_issue "${inum:-}")
   printf "[%s] %s\n" "$(date -Iseconds)" "$msg" >>"$f" 2>/dev/null || true
 }
 
@@ -148,7 +148,7 @@ rebase_and_resolve_conflicts() {
         inum=$(infer_issue_from_current_branch || true)
         history=""
         if [[ -n "${inum:-}" ]]; then
-          cf=$(context_file_for_issue "$inum"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
+          cf=$(context_file_for_issue "${inum:-}"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
         fi
         prompt=$(cat << EOF
 You are resolving an in-progress Git rebase with merge conflicts.
@@ -241,8 +241,8 @@ process_any_open_codex_prs_first() {
 
 # Process an existing PR end-to-end: review, rebase if needed, wait for checks, merge or remediate
 process_existing_pr() {
-  local pr_number="$1"; shift || true
-  local inum="$1"; shift || true
+  local pr_number="${1-}"; shift || true
+  local inum="${1-}"; shift || true
   local branch="$1"; shift || true
 
   # Self-review loop with Codex to refine PR
@@ -379,12 +379,12 @@ progress_current_branch_if_needed() {
 
 # --- Codex autonomous loops ---
 codex_fix_issue() {
-  local inum="$1"; shift || true
+  local inum="${1-}"; shift || true
   # Non-interactive Codex session to implement the fix on current branch
   # Provide tight instructions consistent with Codex Development Rules
   local prompt history cf
   history=""
-  cf=$(context_file_for_issue "$inum"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
+  cf=$(context_file_for_issue "${inum:-}"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
   prompt=$(cat << EOF
 You are an autonomous coding agent running under Codex CLI in a Git repository.
 
@@ -418,14 +418,14 @@ ${history}
 EOF
   )
 
-  ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+  ISSUE_NUM="${inum:-}" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
 }
 
 codex_pr_self_review() {
   local pr_num="${1-}"; shift || true
-  local inum="$1"; shift || true
+  local inum="${1-}"; shift || true
   local max_rounds=3
   local round
   for round in $(seq 1 $max_rounds); do
@@ -478,7 +478,7 @@ open_pr_if_missing() {
   local inum="$1"
   # If a PR already exists for this issue, return its URL
   local existing pr_url
-  existing=$(gh pr list --search "in:title #$inum in:body #$inum" --json number --jq '.[].number' 2>/dev/null || true)
+  existing=$(gh pr list --search "in:title #${inum:-} in:body #${inum:-}" --json number --jq '.[].number' 2>/dev/null || true)
   if [[ -n "$existing" ]]; then
     gh pr view "$existing" --json url --jq '.url'
     return 0
@@ -512,7 +512,7 @@ Notes:
 - If PR creation fails for any reason, do not print anything.
 EOF
   )
-  ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT:-10m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+  ISSUE_NUM="${inum:-}" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT:-10m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
   out=$?
@@ -520,7 +520,7 @@ EOF
   pr_url=$(gh pr list --head "$(git rev-parse --abbrev-ref HEAD)" --json url --limit 1 --jq '.[0].url' 2>/dev/null || true)
   if [[ -n "$pr_url" ]]; then
     echo "$pr_url"
-    append_context "$inum" "PR opened: $pr_url"
+    append_context "${inum:-}" "PR opened: $pr_url"
   else
     echo ""  # no PR created or could not resolve URL; let caller proceed
   fi
@@ -529,7 +529,7 @@ EOF
 
 find_existing_pr_number() {
   local inum="$1"
-  gh pr list --search "in:title #$inum in:body #$inum" --json number --jq '.[].number' 2>/dev/null | head -n1
+  gh pr list --search "in:title #${inum:-} in:body #${inum:-}" --json number --jq '.[].number' 2>/dev/null | head -n1
 }
 
 checkout_pr_branch() {
@@ -585,7 +585,7 @@ run_local_tests() {
 
 codex_ci_fix_loop() {
   local pr_num="${1-}"; shift || true
-  local inum="$1"; shift || true
+  local inum="${1-}"; shift || true
   local branch="$1"; shift || true
   local max_attempts=10
   local attempt=1
@@ -595,7 +595,7 @@ codex_ci_fix_loop() {
     rebase_and_resolve_conflicts "$pr_num" "$branch" || true
     local prompt history cf
     history=""
-    cf=$(context_file_for_issue "$inum"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
+    cf=$(context_file_for_issue "${inum:-}"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
     prompt=$(cat << EOF
 You are operating on a PR with failing CI.
 
@@ -684,7 +684,7 @@ for inum in "${issues_arr[@]}"; do
   # Reset per-iteration state to avoid leaking values across issues
   unset pr_url pr_number branch exist_branch existing_pr
   ensure_clean_main
-  append_context "$inum" "Start processing issue #$inum in repo $(git config --get remote.origin.url | sed 's#.*:##; s#.git$##')"
+  append_context "${inum:-}" "Start processing issue #${inum:-unknown} in repo $(git config --get remote.origin.url | sed 's#.*:##; s#.git$##')"
 
   # Relevance check with auto-close if obsolete
   if "$self_dir/issue_check_relevance.sh" "$inum" --auto-close; then
@@ -696,12 +696,12 @@ for inum in "${issues_arr[@]}"; do
     fi
   fi
 
-  echo "=== [AUTO] Processing issue #$inum ==="
+  echo "=== [AUTO] Processing issue #${inum:-unknown} ==="
 
   # Use existing PR/branch if present; otherwise create branch
   existing_pr=$(find_existing_pr_number "$inum" || true)
   if [[ -n "$existing_pr" ]]; then
-    echo "Found existing PR #$existing_pr for issue #$inum; continuing work (avoid duplicate implementation)." >&2
+    echo "Found existing PR #$existing_pr for issue #${inum:-unknown}; continuing work (avoid duplicate implementation)." >&2
     branch=$(checkout_pr_branch "$existing_pr")
     pr_url=$(gh pr view "$existing_pr" --json url --jq '.url')
     if pr_number=$(gh pr view "$existing_pr" --json number --jq '.number' 2>/dev/null); then
@@ -727,7 +727,7 @@ for inum in "${issues_arr[@]}"; do
       # Create and switch to branch (also pushes). If this fails (e.g., issue no longer exists
       # or is inaccessible), skip gracefully instead of exiting the whole orchestrator.
       if ! branch=$("$self_dir/issue_branch.sh" "$inum"); then
-        echo "[skip] Could not create branch for issue #$inum (likely closed/missing or GH error)." >&2
+        echo "[skip] Could not create branch for issue #${inum:-unknown} (likely closed/missing or GH error)." >&2
         ensure_clean_main
         ((count++))
         if (( count >= limit )); then break; fi
@@ -788,7 +788,7 @@ for inum in "${issues_arr[@]}"; do
   if [[ -n "$pr_url" ]]; then
     echo "PR: $pr_url"
     if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
-      process_existing_pr "$pr_number" "$inum" "$branch"
+      process_existing_pr "$pr_number" "${inum:-}" "$branch"
     else
       echo "Could not resolve PR number for URL: $pr_url" >&2
     fi
@@ -798,7 +798,7 @@ for inum in "${issues_arr[@]}"; do
 
   ensure_clean_main
   ((count++))
-  echo "[orchestrate] Completed issue #$inum ($count/${#issues_arr[@]})." >&2
+  echo "[orchestrate] Completed issue #${inum:-unknown} ($count/${#issues_arr[@]})." >&2
   if (( count >= limit )); then break; fi
 
 done
