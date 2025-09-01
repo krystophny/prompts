@@ -119,7 +119,7 @@
 - Comments: avoid quotes.
 - Performance: column‑major arrays; inner loop over leftmost index.
 - Declarations first: place all variable declarations at the start of the
-  scope (no declarations inside branches like if/else).
+  scope (no declarations inside branches or loops).
 
 ## Numerical Computing
 - Rigor: back mathematical claims with numerical validation or reference comparisons.
