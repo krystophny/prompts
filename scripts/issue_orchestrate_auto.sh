@@ -797,10 +797,14 @@ codex_bootstrap_start() {
   prompt=$(cat << 'EOF'
 You are operating with GitHub CLI in a Git repository.
 
-Goal: Autonomously bootstrap work for the next open issue:
-- Select an open issue (optionally filtered by env LABEL); prefer oldest.
-- Create or checkout branch: fix/issue-<num>-<slug> (push it).
-- If a PR already exists for the branch/issue, use it; otherwise open a draft PR to main.
+Goal: Autonomously bootstrap work for the next open issue, including relevance check:
+- Select the highest-priority open issue (respect env LABEL when set). Priority heuristic: labels P0>P1>P2>P3, then label "bug", then oldest updated.
+- For each candidate, perform an automated relevance check using repository state:
+  - Parse title/body for referenced tests (e.g., test_*), file paths, or identifiers (inline code spans).
+  - If referenced artifacts are missing and no identifiers are present and baseline tests pass, consider obsolete.
+  - Optionally run quick tests (respect TEST_CMD if present; else try fpm/pytest/npm) with a strict timeout to detect relevance.
+  - If obsolete and AUTO_CLOSE=1, close the issue with a concise evidence comment and continue to the next candidate.
+- When a relevant issue is found, create or checkout branch fix/issue-<num>-<slug> (push it). If a PR already exists, reuse; otherwise open a draft PR to main.
 
 Rules:
 - Minimal output. No extra commentary. No markdown reports.
@@ -809,10 +813,11 @@ Rules:
 
 Steps outline:
 1) Determine repo (respect GH_REPO if set). Determine label filter from $LABEL if non-empty.
-2) Pick one open issue number. If none, print {} and exit.
-3) Derive branch name fix/issue-<num>-<slug>. Create or checkout and push.
-4) If a PR exists, reuse it; else create a draft PR. Title: "fix: <issue title truncated to 64> (fixes #<num>)".
-5) Output a single JSON line: {"issue":<num>,"branch":"<branch>","pr":<pr#>,"url":"<pr-url>"}
+2) Build candidate set of open issues; order by priority heuristic.
+3) For each candidate, run the relevance heuristics above; auto-close when obsolete and AUTO_CLOSE=1. Continue until a relevant issue is found.
+4) Derive branch name fix/issue-<num>-<slug>. Create or checkout and push.
+5) If a PR exists, reuse it; else create a draft PR. Title: "fix: <issue title truncated to 64> (fixes #<num>)".
+6) Output a single JSON line: {"issue":<num>,"branch":"<branch>","pr":<pr#>,"url":"<pr-url>"}. If no suitable issue, output {}.
 
 Notes:
 - Use: `gh issue list ... --json number --jq '.[].number'` and `gh pr list --head <branch>`.
@@ -820,7 +825,7 @@ Notes:
 EOF
   )
   # Provide LABEL to session so it can filter issues
-  LABEL="${label}" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT:-20m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+  LABEL="${label}" AUTO_CLOSE=1 TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT:-20m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
 }
