@@ -228,35 +228,34 @@ ensure_clean_main() {
   git pull --rebase origin main
 }
 
-# List open PRs likely created by this automation (branch name pattern)
-list_open_codex_prs() {
-  gh pr list --state open --json number,headRefName --jq '.[] | select(.headRefName|test("^fix/issue-")) | .number' 2>/dev/null || true
+# List open non-draft PRs likely created by this automation (branch name pattern)
+list_open_non_draft_codex_prs() {
+  gh pr list --state open --json number,headRefName,isDraft \
+    --jq '.[] | select(.headRefName|test("^fix/issue-")) | select(.isDraft|not) | .number' \
+    2>/dev/null || true
 }
 
-# If any open PRs exist, process them first and exit to avoid parallelizing issues
-process_any_open_codex_prs_first() {
+# Hard gate: do not open new PRs while non-draft PRs are open. Process them and exit if any remain.
+enforce_no_parallel_prs() {
   local prs
-  prs=$(list_open_codex_prs | tr '\n' ' ')
+  prs=$(list_open_non_draft_codex_prs | tr '\n' ' ')
   if [[ -n "${prs// /}" ]]; then
-    echo "[gate] Found open PR(s) on fix/issue-* branches: $prs" >&2
+    echo "[gate] Found open non-draft PR(s): $prs. Processing before any new work." >&2
     for pr in $prs; do
       local branch inum
       branch=$(checkout_pr_branch "$pr")
-      # Try to infer issue number for context
       inum=$(infer_issue_from_current_branch || echo "0")
       process_existing_pr "$pr" "$inum" "$branch"
       ensure_clean_main
     done
-    # After handling open PRs, continue only if none remain; otherwise exit
-    # Continue to iterate new issues even if PRs remain open.
-    # Rationale: caller requested `--all`; prefer throughput over strict serialization.
+    # Re-check; if any still open, exit to strictly forbid parallel PRs
     local remaining
-    remaining=$(list_open_codex_prs | tr '\n' ' ')
+    remaining=$(list_open_non_draft_codex_prs | tr '\n' ' ')
     if [[ -n "${remaining// /}" ]]; then
-      echo "[gate] PRs still open after processing: $remaining; continuing to new issues." >&2
-    else
-      echo "[gate] All open PRs handled; continuing to new issues." >&2
+      echo "[gate] Non-draft PRs still open after processing: $remaining. Not creating new PRs." >&2
+      exit 0
     fi
+    echo "[gate] No remaining non-draft PRs; continuing." >&2
   fi
 }
 
@@ -419,15 +418,27 @@ progress_current_branch_if_needed() {
   fi
 
   # Check for an existing PR first to avoid duplicating work
-  local pr_number pr_url
-  pr_number=$(gh pr list --head "$cur" --json number --limit 1 --jq '.[0].number' 2>/dev/null || true)
+  local pr_number pr_url is_draft
+  pr_number=$(gh pr list --head "$cur" --json number,isDraft --limit 1 --jq '.[0].number' 2>/dev/null || true)
   if [[ -n "$pr_number" ]]; then
+    is_draft=$(gh pr view "$pr_number" --json isDraft --jq '.isDraft' 2>/dev/null || echo "false")
     pr_url=$(gh pr view "$pr_number" --json url --jq '.url' 2>/dev/null || echo "")
     echo "PR: ${pr_url:-#${pr_number}} (existing)" >&2
+    if [[ "$is_draft" == "true" ]]; then
+      echo "[gate] Existing PR is draft; ignoring per policy." >&2
+      return 0
+    fi
     process_existing_pr "$pr_number" "$inum" "$cur"
   else
-    # No PR yet; let a single Codex session finish implementation and open PR
-    local json pr_url
+    # No PR yet; forbid creating a new one if others are open
+    local others
+    others=$(list_open_non_draft_codex_prs | tr '\n' ' ')
+    if [[ -n "${others// /}" ]]; then
+      echo "[gate] Non-draft PRs exist ($others); not creating a new PR from current branch." >&2
+      return 0
+    fi
+    # Safe to implement and open a non-draft PR
+    local json
     json=$(codex_implement_current_branch "$inum" | tail -n 1)
     pr_url=$(printf "%s" "$json" | jq -r '.url // empty' 2>/dev/null || true)
     if [[ -z "$pr_url" ]]; then
@@ -456,13 +467,13 @@ codex_implement_current_branch() {
   prompt=$(cat << EOF
 You are on branch '$cur' in a Git repository with GitHub CLI.
 
-Goal: Complete implementation for issue #$inum on the current branch, then ensure a draft PR exists.
+Goal: Complete implementation for issue #$inum on the current branch, then open a non-draft PR only at the very end, right before handing off to review.
 
 Process:
 1) Establish baseline: detect and run available tests (make test-ci, pytest, fpm, npm). Keep logs concise.
-2) Implement the fix in small, focused commits. Update/add targeted tests. Keep unrelated changes out.
+2) Implement the minimal fix with targeted tests. Iterate until tests pass locally. Keep unrelated changes out.
 3) Stage specific files only (no `git add .`). Commit using Conventional Commit style including "(fixes #$inum)" when appropriate. Push to origin for this branch.
-4) If a PR to main does not exist for this branch, create a draft PR with title `fix: <issue-title-truncated-to-64> (fixes #$inum)` and a brief body template.
+4) As the final step: if a PR to main does not exist for this branch, create a PR (not draft) with title `fix: <issue-title-truncated-to-64> (fixes #$inum)` and a brief body template. Do not open a PR earlier than this step.
 5) Print exactly one JSON line with keys: {"issue":$inum, "branch":"$cur", "pr":<pr-number>, "url":"<pr-url>"}.
 
 Rules:
@@ -634,7 +645,7 @@ EOF
 
 # Fetch issues
 # Hard gate: do not proceed if any fix/issue-* PR is still open
-process_any_open_codex_prs_first
+enforce_no_parallel_prs
 
 # Show which repo gh targets
 gh_repo_effective=$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null || echo "")
@@ -642,13 +653,13 @@ gh_repo_effective=$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev
 
 codex_implement_issue_single_prompt() {
   # Single Codex session: select highest-priority relevant issue, implement,
-  # push branch, and open a draft PR. No JSON handshake; the orchestrator will
+  # push branch, and open a PR (non-draft). No JSON handshake; the orchestrator will
   # discover the created/updated PR afterwards.
   local prompt
   prompt=$(cat << 'EOF'
 You are operating with GitHub CLI in a Git repository.
 
-Objective: In ONE session, autonomously select the next relevant issue and prepare a draft PR ready for review.
+Objective: In ONE session (single continuous context), autonomously select the next relevant issue, implement the solution end-to-end, and only at the end open a non-draft PR ready for review.
 
 Selection & priority:
 - Discover open issues yourself using gh (do not rely on any provided lists). Use:
@@ -667,9 +678,9 @@ Selection & priority:
 Implementation:
 - Create/checkout branch: fix/issue-<num>-<slug>.
 - Run baseline tests (use TEST_CMD if provided; else try make/pytest/fpm/npm). Enforce TEST_TIMEOUT.
-- Implement the minimal fix with tests. Keep commits focused. No unrelated changes.
+- Implement the minimal fix with tests; iterate until tests pass locally. Keep commits focused. No unrelated changes.
 - Stage files explicitly (no `git add .`). Use Conventional Commit: `fix: <desc> (fixes #<num>)`.
-- Push branch and open a DRAFT PR to main (reuse if exists). Title: "fix: <issue title truncated to 64> (fixes #<num>)".
+- Only as the final step, open a PR (not draft) to main (reuse if exists). Title: "fix: <issue title truncated to 64> (fixes #<num>)". Do not open a PR earlier.
 
 Rules:
 - Minimal output; no markdown reports; use only gh/git/bash.
@@ -677,7 +688,7 @@ Rules:
 - Ensure working tree is clean before exiting.
 
 Deliverable:
-- Leave the branch pushed and a draft PR open and linked to the issue.
+- Leave the branch pushed and a non-draft PR open and linked to the issue.
 - Do not print any special tokens or JSON; just complete the tasks.
 EOF
   )
@@ -713,9 +724,29 @@ run_specific_issue_pass() {
     create_or_checkout_issue_branch "$inum" >/dev/null
   fi
 
-  # Implement on current branch for this issue and open PR
-  local json pr_url pr_number branch
+  # Implement on current branch for this issue and open PR (respect gate)
+  local json pr_url pr_number branch is_draft others
   branch=$(git rev-parse --abbrev-ref HEAD)
+  # If a PR exists for this branch and is draft, ignore per policy
+  pr_number=$(gh pr list --head "$branch" --json number,isDraft --limit 1 --jq '.[0].number' 2>/dev/null || true)
+  if [[ -n "$pr_number" ]]; then
+    is_draft=$(gh pr view "$pr_number" --json isDraft --jq '.isDraft' 2>/dev/null || echo "false")
+    if [[ "$is_draft" == "true" ]]; then
+      echo "[gate] Existing PR for $branch is draft; ignoring per policy." >&2
+      ensure_clean_main
+      return 0
+    fi
+  fi
+  # If no PR yet and other non-draft PRs exist, do not create a new one
+  if [[ -z "$pr_number" ]]; then
+    others=$(list_open_non_draft_codex_prs | tr '\n' ' ')
+    if [[ -n "${others// /}" ]]; then
+      echo "[gate] Non-draft PRs exist ($others); not creating a new PR for issue #$inum." >&2
+      ensure_clean_main
+      return 1
+    fi
+  fi
+
   json=$(codex_implement_current_branch "$inum" | tail -n 1 || true)
   pr_url=$(printf "%s" "$json" | jq -r '.url // empty' 2>/dev/null || true)
   if [[ -z "$pr_url" ]]; then
@@ -744,24 +775,31 @@ run_issue_pass() {
   progress_current_branch_if_needed
 
   ensure_clean_main
+  # Early gate: if any non-draft PRs are open, do not start new work
+  local open_now
+  open_now=$(list_open_non_draft_codex_prs | tr '\n' ' ')
+  if [[ -n "${open_now// /}" ]]; then
+    echo "[gate] Non-draft PRs currently open ($open_now); skipping new issue work." >&2
+    return 1
+  fi
   # Record open PRs before Codex runs
   local before_json after_json pr_number branch pr_url inum
-  before_json=$(gh pr list --state open --json number,headRefName,updatedAt 2>/dev/null || echo '[]')
+  before_json=$(gh pr list --state open --json number,headRefName,updatedAt,isDraft 2>/dev/null || echo '[]')
 
   # Single Codex session to select/implement/open PR
   codex_implement_issue_single_prompt || true
 
   # Identify newly created/updated PR to process
-  after_json=$(gh pr list --state open --json number,headRefName,updatedAt,url 2>/dev/null || echo '[]')
+  after_json=$(gh pr list --state open --json number,headRefName,updatedAt,url,isDraft 2>/dev/null || echo '[]')
   # Prefer any fix/issue-* PRs that are new compared to before
   pr_number=$(jq -r --argjson before "$before_json" '
-    ( .[] | select(.headRefName|test("^fix/issue-")) ) as $after
+    ( .[] | select(.headRefName|test("^fix/issue-")) | select(.isDraft|not) ) as $after
     | if ([ $before[]?.headRefName ] | index($after.headRefName)) then empty else $after.number end
   ' <<<"$after_json" | head -n1)
 
   # Fallback: choose the most recently updated fix/issue-* PR
   if [[ -z "${pr_number:-}" ]]; then
-    pr_number=$(jq -r 'map(select(.headRefName|test("^fix/issue-"))) | sort_by(.updatedAt) | reverse | .[0].number // empty' <<<"$after_json")
+    pr_number=$(jq -r 'map(select(.headRefName|test("^fix/issue-")) | select(.isDraft|not)) | sort_by(.updatedAt) | reverse | .[0].number // empty' <<<"$after_json")
   fi
 
   if [[ -z "${pr_number:-}" ]]; then
