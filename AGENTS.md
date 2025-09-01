@@ -76,6 +76,12 @@
   - `gh issue list --state open --limit 500`
   - `gh issue list --state open --limit 500 --search "keyword"`
 - Keep issues concrete and actionable; track epics in planning docs.
+- Issue filing: assign category and priority when creating issues.
+  - Categories (minimal set): `bug`, `docs`, `tech-debt`, `enhancement`.
+  - Priorities: `P0` (urgent, CI red), `P1` (high impact), `P2` (normal), `P3` (low/nice-to-have).
+  - Apply labels directly if they exist; if not, include a first-line metadata block in the body, e.g., `Category: bug`, `Priority: P1`.
+  - Base priority on evidence (test failures, user impact, frequency). Default to `P2` when uncertain.
+  - Include concise evidence (logs/paths/outputs) justifying category/priority.
 - Commit/PR titles: use Conventional Commits (`type: description`), imperative mood, <72 chars, and reference issues (e.g., `fixes #123`).
 - Open review-ready PRs; avoid draft PRs.
 
