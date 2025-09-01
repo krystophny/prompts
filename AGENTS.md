@@ -118,18 +118,8 @@
 - Build: if “right parentheses” module error occurs, remove stale `*.mod` files.
 - Comments: avoid quotes.
 - Performance: column‑major arrays; inner loop over leftmost index.
-
-### Fixing Fortran declarations
-- Declarations must precede executable statements within a scope. Fortran 90/95/
-  2003 enforce this strictly; Fortran 2008+ relaxes it only in certain
-  constructs. For portability, always place declarations at the start of the
-  program, module procedure, subroutine, function, or BLOCK.
-- Do not declare variables inside `if/then/else` branches. Instead, move such
-  declarations to the top of the enclosing scope. Example: declare `logical ::
-  exists` at the top rather than inside an `else` block.
-- Use `implicit none` in every scope and declare all variables explicitly.
-- Tests must follow the same rule: ensure any test program or procedure places
-  variable declarations before executable statements to avoid compiler errors.
+- Declarations first: place all variable declarations at the start of the
+  scope (no declarations inside branches like if/else).
 
 ## Numerical Computing
 - Rigor: back mathematical claims with numerical validation or reference comparisons.
