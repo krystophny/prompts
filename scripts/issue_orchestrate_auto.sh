@@ -37,9 +37,14 @@ if [[ -z "$repo_root" ]]; then
 fi
 cd "$repo_root"
 
+if [[ $debug -eq 1 ]]; then
+  set -x
+fi
+
 label=""     # default all issues
 limit=999999
 merge_method="--squash"
+debug=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -47,6 +52,7 @@ while [[ $# -gt 0 ]]; do
     --all) label=""; shift 1;;
     --limit) limit="$2"; shift 2;;
     --merge|--squash|--rebase) merge_method="$1"; shift 1;;
+    --debug) debug=1; shift 1;;
     *) echo "Unknown arg: $1" >&2; exit 2;;
   esac
 done
@@ -633,16 +639,20 @@ if [[ -n "$label" ]]; then
 else
   issues=$(gh issue list --state open --json number --limit 500 --jq '.[].number' || true)
 fi
-if [[ -z "${issues:-}" ]]; then
+
+# Snapshot issues into an array to avoid dynamic changes during iteration
+mapfile -t issues_arr <<< "$issues"
+if [[ ${#issues_arr[@]} -eq 0 ]]; then
   echo "No open issues to process." >&2
   exit 0
 fi
+echo "[orchestrate] Issues to process: ${#issues_arr[@]} => ${issues_arr[*]}" >&2
 
 # Pre-loop: if we're starting on a non-main branch, finish its workflow first
 progress_current_branch_if_needed
 
 count=0
-for inum in $issues; do
+for inum in "${issues_arr[@]}"; do
   ensure_clean_main
   append_context "$inum" "Start processing issue #$inum in repo $(git config --get remote.origin.url | sed 's#.*:##; s#.git$##')"
 
