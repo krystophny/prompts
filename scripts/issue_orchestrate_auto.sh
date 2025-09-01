@@ -92,7 +92,7 @@ fi
 # Longer defaults to keep Codex runs alive (fewer restarts)
 : "${CODEX_REBASE_TIMEOUT:=120m}"
 : "${CODEX_PR_TIMEOUT:=30m}"
-: "${CODEX_BOOTSTRAP_TIMEOUT:=3m}"
+: "${CODEX_BOOTSTRAP_TIMEOUT:=30m}"
 : "${CODEX_CI_FIX_TIMEOUT:=180m}"
 : "${CODEX_FIX_TIMEOUT:=90m}"
 # Hard cap for local tests. If tests exceed this, treat as hang/too slow.
@@ -827,9 +827,66 @@ Notes:
 EOF
   )
   # Provide LABEL to session so it can filter issues
-  LABEL="${label}" AUTO_CLOSE=1 TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT:-3m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+  LABEL="${label}" AUTO_CLOSE=1 TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT:-30m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
+}
+
+# Quick preflight to detect if `codex exec` is responsive; avoids long hangs.
+codex_ready() {
+  local out rc
+  if ! command -v codex >/dev/null 2>&1; then return 1; fi
+  if ! command -v timeout >/dev/null 2>&1; then return 0; fi
+  set +e
+  out=$(timeout --foreground 20s codex exec - <<<'Print only: OK' 2>/dev/null | tr -d '\r' | tail -n1)
+  rc=$?
+  set -e
+  [[ $rc -eq 0 && -n "$out" ]]
+}
+
+# Fallback bootstrap in pure gh/bash if Codex is unavailable or unresponsive.
+fallback_bootstrap_start() {
+  local q prio
+  if [[ -n "$label" ]]; then
+    q=$(gh issue list --state open --label "$label" --json number,labels,updatedAt,createdAt --limit 500 2>/dev/null || echo '[]')
+  else
+    q=$(gh issue list --state open --json number,labels,updatedAt,createdAt --limit 500 2>/dev/null || echo '[]')
+  fi
+  local inum
+  inum=$(printf '%s' "$q" | jq -r '
+    def prio(l):
+      if (l|map(.name)|index("P0")) then 0
+      elif (l|map(.name)|index("P1")) then 1
+      elif (l|map(.name)|index("P2")) then 2
+      elif (l|map(.name)|index("P3")) then 3
+      else 9 end;
+    def bug(l): if (l|map(.name)|index("bug")) then 0 else 1 end;
+    sort_by(prio(.labels), bug(.labels), .updatedAt) | .[0].number // empty')
+  if [[ -z "$inum" ]]; then
+    echo '{}'
+    return 0
+  fi
+  # Ensure branch exists and is current
+  local branch pr_url pr_number
+  branch=$(create_issue_branch "$inum" 2>/dev/null || true)
+  if [[ -z "$branch" ]]; then
+    # Maybe already exists
+    branch=$(git branch --all --list "*fix/issue-${inum}-*" | head -n1 | sed 's#remotes/origin/##' | sed 's#^[* ]*##')
+    [[ -n "$branch" ]] && git checkout "$branch" >/dev/null 2>&1 || true
+  fi
+  pr_url=$(open_pr_if_missing "$inum")
+  if [[ -n "$pr_url" ]]; then
+    pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null || echo '')
+  fi
+  if [[ -z "$pr_number" ]]; then
+    echo '{}'
+  else
+    printf '{"issue":%s,"branch":%s,"pr":%s,"url":%s}\n' \
+      "${inum}" \
+      "$(printf '%s' "$branch" | jq -Rs '.')" \
+      "$(printf '%s' "$pr_number" | jq -Rs '.')" \
+      "$(printf '%s' "$pr_url" | jq -Rs '.')"
+  fi
 }
 
 run_issue_pass() {
@@ -839,10 +896,15 @@ run_issue_pass() {
   ensure_clean_main
   # Ask Codex to pick next issue, ensure a branch exists, and open or reuse a PR
   local json pr_number inum branch pr_url
-  json=$(codex_bootstrap_start | tail -n 1)
+  if codex_ready; then
+    json=$(codex_bootstrap_start | tail -n 1)
+  else
+    json=""
+  fi
   # Validate JSON; if invalid, treat as empty
   if ! printf "%s" "$json" | jq -e . >/dev/null 2>&1; then
-    json="{}"
+    # Fallback to gh/bash bootstrap
+    json=$(fallback_bootstrap_start)
   fi
   if [[ -z "$json" || "$json" == "{}" ]]; then
     echo "No open issues selected by Codex (bootstrap)." >&2
