@@ -171,7 +171,8 @@ rebase_and_resolve_conflicts() {
         if [[ -n "${inum:-}" ]]; then
           cf=$(context_file_for_issue "${inum:-}"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
         fi
-        prompt=$(cat << EOF
+        # Build prompt with a literal here-doc to avoid command substitution from backticks
+        prompt=$(cat << 'EOF'
 You are resolving an in-progress Git rebase with merge conflicts.
 
 Goal: Resolve all conflicts cleanly, preserve both intended changes, and complete the rebase. Then run tests locally to ensure correctness, stage specific files, and continue the rebase.
@@ -189,9 +190,10 @@ Tips:
 - When both changes should be kept, integrate them carefully and compile/tests locally.
 
 Context (recent log):
-${history}
 EOF
         )
+        prompt+=$'\n'
+        prompt+="$history"
         CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT:-45m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
@@ -464,17 +466,19 @@ codex_implement_current_branch() {
   history=""
   cf=$(context_file_for_issue "${inum:-}"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
   cur=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
-  prompt=$(cat << EOF
-You are on branch '$cur' in a Git repository with GitHub CLI.
+  # Build prompt safely with placeholders to avoid command substitution
+  local __template
+  read -r -d '' __template << 'EOF' || true
+You are on branch '__CUR__' in a Git repository with GitHub CLI.
 
-Goal: Complete implementation for issue #$inum on the current branch, then open a non-draft PR only at the very end, right before handing off to review.
+Goal: Complete implementation for issue #__INUM__ on the current branch, then open a non-draft PR only at the very end, right before handing off to review.
 
 Process:
 1) Establish baseline: detect and run available tests (make test-ci, pytest, fpm, npm). Keep logs concise.
 2) Implement the minimal fix with targeted tests. Iterate until tests pass locally. Keep unrelated changes out.
-3) Stage specific files only (no `git add .`). Commit using Conventional Commit style including "(fixes #$inum)" when appropriate. Push to origin for this branch.
-4) As the final step: if a PR to main does not exist for this branch, create a PR (not draft) with title `fix: <issue-title-truncated-to-64> (fixes #$inum)` and a brief body template. Do not open a PR earlier than this step.
-5) Print exactly one JSON line with keys: {"issue":$inum, "branch":"$cur", "pr":<pr-number>, "url":"<pr-url>"}.
+3) Stage specific files only (no `git add .`). Commit using Conventional Commit style including "(fixes #__INUM__)" when appropriate. Push to origin for this branch.
+4) As the final step: if a PR to main does not exist for this branch, create a PR (not draft) with title `fix: <issue-title-truncated-to-64> (fixes #__INUM__)` and a brief body template. Do not open a PR earlier than this step.
+5) Print exactly one JSON line with keys: {"issue":__INUM__, "branch":"__CUR__", "pr":<pr-number>, "url":"<pr-url>"}.
 
 Rules:
 - No random markdown reports; keep outputs minimal and actionable.
@@ -482,9 +486,12 @@ Rules:
 - Do not reformat unrelated files. No secrets.
 
 Context (recent log):
-${history}
+__HISTORY__
 EOF
-  )
+  prompt="$__template"
+  prompt="${prompt//__CUR__/$cur}"
+  prompt="${prompt//__INUM__/$inum}"
+  prompt="${prompt//__HISTORY__/$history}"
   ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
@@ -593,7 +600,8 @@ codex_ci_fix_loop() {
     local prompt history cf
     history=""
     cf=$(context_file_for_issue "${inum:-}"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
-    prompt=$(cat << EOF
+    # Build prompt with literal here-doc and append history to avoid command substitution
+    prompt=$(cat << 'EOF'
 You are operating on a PR with failing CI.
 
 Task: Diagnose the CI failures, read GitHub Actions logs, fix issues locally, push commits, and re-trigger CI until green.
@@ -611,9 +619,10 @@ Rules:
 - Do not broaden scope. Keep functions small and style consistent.
 
 Context (recent log):
-${history}
 EOF
     )
+    prompt+=$'\n'
+    prompt+="$history"
     PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
 $prompt
 EOF
