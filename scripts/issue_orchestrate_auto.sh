@@ -101,15 +101,20 @@ else
   TIMEOUT=(timeout)
 fi
 
+# Sanitize text for inclusion in Codex prompts: strip ANSI, CRs, and cap size
+sanitize_for_prompt() {
+  sed -E -e 's/\x1B\[[0-9;]*[A-Za-z]//g' -e 's/\r//g' | head -c 4000
+}
+
 # Standard test timeout enforcement
 : "${TEST_TIMEOUT:=300s}"
 
-# Longer defaults to keep Codex runs alive (fewer restarts)
-: "${CODEX_REBASE_TIMEOUT:=120m}"
+# Codex execution timeouts (uniform 30m by default; override via env if needed)
+: "${CODEX_REBASE_TIMEOUT:=30m}"
 : "${CODEX_PR_TIMEOUT:=30m}"
 : "${CODEX_BOOTSTRAP_TIMEOUT:=30m}"
-: "${CODEX_CI_FIX_TIMEOUT:=180m}"
-: "${CODEX_FIX_TIMEOUT:=90m}"
+: "${CODEX_CI_FIX_TIMEOUT:=30m}"
+: "${CODEX_FIX_TIMEOUT:=30m}"
 # Hard cap for local tests. If tests exceed this, treat as hang/too slow.
 : "${LOCAL_TEST_TIMEOUT:=${TEST_TIMEOUT}}"
 
@@ -170,7 +175,8 @@ rebase_and_resolve_conflicts() {
         inum=$(infer_issue_from_current_branch || true)
         history=""
         if [[ -n "${inum:-}" ]]; then
-          cf=$(context_file_for_issue "${inum:-}"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
+          cf=$(context_file_for_issue "${inum:-}")
+          [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null | sanitize_for_prompt || true)
         fi
         # Build prompt with a literal here-doc to avoid command substitution from backticks
         prompt=$(cat << 'EOF'
@@ -195,7 +201,7 @@ EOF
         )
         prompt+=$'\n'
         prompt+="$history"
-        CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT:-45m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+        CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
         # If still conflicted, let Codex try again next loop; otherwise continue
         if rebase_in_progress; then
           # Ensure any resolved files are staged; try to continue
@@ -530,7 +536,8 @@ codex_implement_current_branch() {
   local inum="${1-}"; shift || true
   local prompt history cf cur
   history=""
-  cf=$(context_file_for_issue "${inum:-}"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
+  cf=$(context_file_for_issue "${inum:-}")
+  [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null | sanitize_for_prompt || true)
   cur=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
   # Build prompt safely with placeholders to avoid command substitution
   local __template
@@ -558,7 +565,7 @@ EOF
   prompt="${prompt//__CUR__/$cur}"
   prompt="${prompt//__INUM__/$inum}"
   prompt="${prompt//__HISTORY__/$history}"
-  ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+  ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
 }
 codex_pr_self_review() {
   local pr_num="${1-}"; shift || true
@@ -586,7 +593,7 @@ Rules:
 - Don’t skip tests; keep everything reproducible.
 EOF
     )
-    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_REVIEW_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
 
     # If nothing changed in this round, we can stop (best-effort heuristic)
     if git diff --quiet && git diff --cached --quiet; then
@@ -661,7 +668,8 @@ codex_ci_fix_loop() {
     rebase_and_resolve_conflicts "$pr_num" "$branch" || true
     local prompt history cf
     history=""
-    cf=$(context_file_for_issue "${inum:-}"); [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null || true)
+    cf=$(context_file_for_issue "${inum:-}")
+    [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null | sanitize_for_prompt || true)
     # Build prompt with literal here-doc and append history to avoid command substitution
     prompt=$(cat << 'EOF'
 You are operating on a PR with failing CI.
@@ -685,7 +693,7 @@ EOF
     )
     prompt+=$'\n'
     prompt+="$history"
-    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
 
     # If Codex produced changes, ensure they are committed and pushed
     if ! git diff --quiet || ! git diff --cached --quiet; then
@@ -761,7 +769,7 @@ Deliverable:
 - Do not print any special tokens or JSON; just complete the tasks.
 EOF
   )
-  LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT:-30m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+  LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
 }
 
 # Create or checkout a feature branch for a specific issue number
