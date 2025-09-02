@@ -36,7 +36,6 @@
 - Copy ideas, not lines: use external code as conceptual/reference material. Re-implement in our own words and style to avoid license issues and fit our architecture.
 - License checks: verify source license before borrowing. Prefer permissive (MIT/BSD/Apache-2.0). Avoid copyleft (GPL/LGPL/AGPL) unless explicitly approved.
 - Explicit ports: if the user requests a line-by-line port, proceed knowing they accept license terms; preserve required notices and attributions exactly as licenses dictate and isolate such code if needed.
-- Attribution: when ideas are adapted (not copied verbatim), add brief links in PR description under Rationale; do not leave license boilerplate in our code unless the license requires it.
 
 Example (reference-reading only)
 - Clone into `/tmp` and inspect a Matplotlib module without copying code verbatim:
