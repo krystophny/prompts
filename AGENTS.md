@@ -136,6 +136,8 @@
 ## Cleanup & Style
 - Formatting: 88-column limit; 4-space indent. End files with a newline (UNIX line endings). Avoid non-ASCII unless required.
 - Remove obsolete/dead code; do not keep backups or commented-out blocks.
+- When removing code, remove it outright; do not leave explanatory comments.
+- If a code file becomes functionally empty, delete the file.
 - Apply the Boy Scout Rule: leave the code cleaner than you found it.
 - Data layout: prefer Structure-of-Arrays (SoA) over Array-of-Structures (AoS) for cache behavior.
 - Folder hygiene: aim ≤20 items per folder (hard ≤50) before reorganizing.
