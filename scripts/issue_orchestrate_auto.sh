@@ -211,11 +211,11 @@ EOF
         prompt+=$'\n'
         prompt+="$history"
         if [[ $use_claude -eq 1 ]]; then
-    # Claude Code version - use text output (streams by default in --print mode)
-    echo "$prompt" | CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" claude --print --dangerously-skip-permissions
-  else
-    CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
-  fi
+          # Claude Code version - pass prompt as properly escaped string argument
+          CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
+        else
+          CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+        fi
         # If still conflicted, let Codex try again next loop; otherwise continue
         if rebase_in_progress; then
           # Ensure any resolved files are staged; try to continue
@@ -591,8 +591,8 @@ EOF
   prompt="${prompt//__INUM__/$inum}"
   prompt="${prompt//__HISTORY__/$history}"
   if [[ $use_claude -eq 1 ]]; then
-    # Claude Code version - use text output (streams by default in --print mode)
-    echo "$prompt" | ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT}" claude --print --dangerously-skip-permissions
+    # Claude Code version - pass prompt as properly escaped string argument
+    ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
   else
     ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
   fi
@@ -624,8 +624,8 @@ Rules:
 EOF
   )
     if [[ $use_claude -eq 1 ]]; then
-      # Claude Code version - use text output (streams by default in --print mode)
-      echo "$prompt" | PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" claude --print --dangerously-skip-permissions
+      # Claude Code version - pass prompt as properly escaped string argument
+      PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
     else
       PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
     fi
@@ -729,8 +729,8 @@ EOF
     prompt+=$'\n'
     prompt+="$history"
     if [[ $use_claude -eq 1 ]]; then
-      # Claude Code version - use text output (streams by default in --print mode)
-      echo "$prompt" | PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT}" claude --print --dangerously-skip-permissions
+      # Claude Code version - pass prompt as properly escaped string argument
+      PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
     else
       PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
     fi
@@ -810,8 +810,8 @@ Deliverable:
 EOF
   )
   if [[ $use_claude -eq 1 ]]; then
-    # Claude Code version - use text output (streams by default in --print mode)
-    echo "$prompt" | LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT}" claude --print --dangerously-skip-permissions
+    # Claude Code version - pass prompt as properly escaped string argument
+    LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
   else
     LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
   fi
