@@ -39,9 +39,9 @@
 - Attribution: when ideas are adapted (not copied verbatim), add brief links in PR description under Rationale; do not leave license boilerplate in our code unless the license requires it.
 
 Example (reference-reading only)
-- Clone and inspect a Matplotlib module without copying code verbatim:
-  - `gh repo clone matplotlib/matplotlib -- --depth=1`
-  - `cd matplotlib`
+- Clone into `/tmp` and inspect a Matplotlib module without copying code verbatim:
+  - `gh repo clone matplotlib/matplotlib /tmp/matplotlib -- --depth=1`
+  - `cd /tmp/matplotlib`
   - `rg -n "ticker\.py|axes\.py|legend\.py" lib/matplotlib`
   - `sed -n '1,60p' lib/matplotlib/ticker.py`  # read to understand API/behavior
   - Implement our own formatter inspired by the concepts; do not paste lines.
