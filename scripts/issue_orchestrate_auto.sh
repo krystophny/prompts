@@ -115,7 +115,8 @@ fi
 
 # Lightweight per-issue context (carried across separate Codex exec calls)
 context_file_for_issue() {
-  local inum="$1"; echo "/tmp/codex_issue_${inum}.context";
+  local inum="${1-}"
+  echo "/tmp/codex_issue_${inum}.context"
 }
 append_context() {
   local inum="${1-}"; shift || true
@@ -194,7 +195,7 @@ EOF
         )
         prompt+=$'\n'
         prompt+="$history"
-        CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT:-45m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+        CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT:-45m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<EOF
 $prompt
 EOF
         # If still conflicted, let Codex try again next loop; otherwise continue
@@ -476,7 +477,7 @@ progress_current_branch_if_needed() {
     echo "[orchestrate] On branch '$cur' but could not infer related issue; skipping special handling." >&2
     return 0
   fi
-  echo "[orchestrate] Continuing current branch '$cur' for issue #$inum before iterating issues." >&2
+  echo "[orchestrate] Continuing current branch '$cur' for issue #${inum:-} before iterating issues." >&2
 
   # Ensure we stay on the current branch
   git fetch origin "$cur":"$cur" || true
@@ -559,7 +560,7 @@ EOF
   prompt="${prompt//__CUR__/$cur}"
   prompt="${prompt//__INUM__/$inum}"
   prompt="${prompt//__HISTORY__/$history}"
-  ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+  ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<EOF
 $prompt
 EOF
 }
@@ -589,7 +590,7 @@ Rules:
 - Don’t skip tests; keep everything reproducible.
 EOF
     )
-    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_REVIEW_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_REVIEW_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<EOF
 $prompt
 EOF
 
@@ -690,7 +691,7 @@ EOF
     )
     prompt+=$'\n'
     prompt+="$history"
-    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<EOF
 $prompt
 EOF
 
@@ -768,7 +769,7 @@ Deliverable:
 - Do not print any special tokens or JSON; just complete the tasks.
 EOF
   )
-  LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT:-30m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" - <<EOF
+  LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT:-30m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<EOF
 $prompt
 EOF
 }
@@ -795,7 +796,7 @@ run_specific_issue_pass() {
   cur=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
   inferred=$(infer_issue_from_current_branch || true)
   if [[ -n "$cur" && "$cur" != "main" && "$inferred" == "$inum" ]]; then
-    echo "[orchestrate] Continuing current branch '$cur' for issue #$inum." >&2
+    echo "[orchestrate] Continuing current branch '$cur' for issue #${inum:-}." >&2
   else
     create_or_checkout_issue_branch "$inum" >/dev/null
   fi
@@ -817,7 +818,7 @@ run_specific_issue_pass() {
   if [[ -z "$pr_number" ]]; then
     others=$(list_open_non_draft_codex_prs | tr '\n' ' ')
     if [[ -n "${others// /}" ]]; then
-      echo "[gate] Non-draft PRs exist ($others); not creating a new PR for issue #$inum." >&2
+      echo "[gate] Non-draft PRs exist ($others); not creating a new PR for issue #${inum:-}." >&2
       ensure_clean_main
       return 1
     fi
@@ -829,7 +830,7 @@ run_specific_issue_pass() {
     pr_url=$(gh pr list --head "$branch" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
   fi
   if [[ -z "$pr_url" ]]; then
-    echo "Could not resolve PR for issue #$inum on branch $branch" >&2
+    echo "Could not resolve PR for issue #${inum:-} on branch $branch" >&2
     ensure_clean_main
     return 1
   fi
@@ -842,7 +843,7 @@ run_specific_issue_pass() {
   echo "PR: $pr_url" >&2
   process_existing_pr "$pr_number" "$inum" "$branch" || true
   ensure_clean_main
-  echo "Issue #$inum pass complete." >&2
+  echo "Issue #${inum:-} pass complete." >&2
   return 0
 }
 
@@ -902,7 +903,7 @@ else
   if [[ "$auto_merge" == true ]]; then
     while true; do
       if ! run_issue_pass; then
-        echo "All targeted issues resolved; exiting (--all)." >&2
+        echo "No actionable PR found this pass; exiting (--all)." >&2
         break
       fi
     done
