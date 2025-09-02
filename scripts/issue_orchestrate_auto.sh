@@ -154,7 +154,7 @@ rebase_and_resolve_conflicts() {
       echo "[rebase] PR #${pr_num:-?} is $merge_state relative to $base. Rebasing $branch onto origin/$base" >&2
       git fetch origin "$base" "$branch" || true
       git checkout "$branch"
-      if git rebase "origin/$base"; then
+      if git rebase --autostash "origin/$base"; then
         git push --force-with-lease
         return 0
       fi
@@ -227,7 +227,7 @@ ensure_clean_main() {
   local cur
   cur=$(git rev-parse --abbrev-ref HEAD || echo "")
   if [[ "$cur" != "main" ]]; then git checkout main; fi
-  git pull --rebase origin main
+  git pull --rebase --autostash origin main
 }
 
 # List open non-draft PRs likely created by this automation (branch name pattern)
@@ -414,7 +414,7 @@ progress_current_branch_if_needed() {
   # Ensure we stay on the current branch
   git fetch origin "$cur":"$cur" || true
   if git show-ref --verify --quiet "refs/heads/$cur"; then
-    git checkout "$cur" && git pull --rebase origin "$cur" || true
+    git checkout "$cur" && git pull --rebase --autostash origin "$cur" || true
   else
     git checkout -b "$cur" --track "origin/$cur" || git checkout "$cur"
   fi
@@ -555,7 +555,7 @@ checkout_pr_branch() {
   git fetch origin "$branch":"$branch" || true
   if git show-ref --verify --quiet "refs/heads/$branch"; then
     git checkout "$branch"
-    git pull --rebase origin "$branch" || true
+    git pull --rebase --autostash origin "$branch" || true
   else
     git checkout -b "$branch" --track "origin/$branch" || git checkout "$branch"
   fi
@@ -714,7 +714,7 @@ create_or_checkout_issue_branch() {
   git fetch origin "$branch":"$branch" || true
   if git show-ref --verify --quiet "refs/heads/$branch"; then
     git checkout "$branch"
-    git pull --rebase origin "$branch" || true
+    git pull --rebase --autostash origin "$branch" || true
   else
     git checkout -b "$branch" --track "origin/$branch" || git checkout "$branch" || git checkout -b "$branch"
   fi
