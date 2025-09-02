@@ -195,9 +195,7 @@ EOF
         )
         prompt+=$'\n'
         prompt+="$history"
-        CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT:-45m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<EOF
-$prompt
-EOF
+        CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT:-45m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<< "$prompt"
         # If still conflicted, let Codex try again next loop; otherwise continue
         if rebase_in_progress; then
           # Ensure any resolved files are staged; try to continue
@@ -507,21 +505,12 @@ progress_current_branch_if_needed() {
       echo "[gate] Non-draft PRs exist ($others); not creating a new PR from current branch." >&2
       return 0
     fi
-    # Safe to open a non-draft PR directly (avoid Codex when work already exists)
-    pr_url=$(gh pr list --head "$cur" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
+    # Implement on current branch and open PR through Codex
+    local json
+    json=$(codex_implement_current_branch "$inum" | tail -n 1)
+    pr_url=$(printf "%s" "$json" | jq -r '.url // empty' 2>/dev/null || true)
     if [[ -z "$pr_url" ]]; then
-      ititle=$(gh issue view "$inum" --json title --jq '.title' 2>/dev/null || echo "issue #$inum")
-      short_title=$(printf "%s" "$ititle" | cut -c1-64)
-      set +e
-      gh pr create --base main --head "$cur" \
-        --title "fix: ${short_title} (fixes #$inum)" \
-        --body "Automated PR for issue #$inum." 1>/dev/null
-      rc=$?
-      set -e
-      if [[ $rc -ne 0 ]]; then
-        echo "[orchestrate] Could not auto-create PR for '$cur'; skipping." >&2
-        return 0
-      fi
+      # Best-effort resolve PR from branch
       pr_url=$(gh pr list --head "$cur" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
     fi
     if [[ -n "$pr_url" ]]; then echo "PR: $pr_url" >&2; fi
@@ -569,9 +558,7 @@ EOF
   prompt="${prompt//__CUR__/$cur}"
   prompt="${prompt//__INUM__/$inum}"
   prompt="${prompt//__HISTORY__/$history}"
-  ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<EOF
-$prompt
-EOF
+  ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<< "$prompt"
 }
 codex_pr_self_review() {
   local pr_num="${1-}"; shift || true
@@ -599,9 +586,7 @@ Rules:
 - Don’t skip tests; keep everything reproducible.
 EOF
     )
-    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_REVIEW_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<EOF
-$prompt
-EOF
+    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_REVIEW_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<< "$prompt"
 
     # If nothing changed in this round, we can stop (best-effort heuristic)
     if git diff --quiet && git diff --cached --quiet; then
@@ -700,9 +685,7 @@ EOF
     )
     prompt+=$'\n'
     prompt+="$history"
-    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<EOF
-$prompt
-EOF
+    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<< "$prompt"
 
     # If Codex produced changes, ensure they are committed and pushed
     if ! git diff --quiet || ! git diff --cached --quiet; then
@@ -778,9 +761,7 @@ Deliverable:
 - Do not print any special tokens or JSON; just complete the tasks.
 EOF
   )
-  LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT:-30m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<EOF
-$prompt
-EOF
+  LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT:-30m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<< "$prompt"
 }
 
 # Create or checkout a feature branch for a specific issue number
@@ -833,22 +814,10 @@ run_specific_issue_pass() {
     fi
   fi
 
-  # Avoid invoking Codex when already on the issue branch; open PR directly if needed
-  pr_url=$(gh pr list --head "$branch" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
+  # Implement and open PR via Codex for this issue on current branch
+  json=$(codex_implement_current_branch "$inum" | tail -n 1 || true)
+  pr_url=$(printf "%s" "$json" | jq -r '.url // empty' 2>/dev/null || true)
   if [[ -z "$pr_url" ]]; then
-    ititle=$(gh issue view "$inum" --json title --jq '.title' 2>/dev/null || echo "issue #$inum")
-    short_title=$(printf "%s" "$ititle" | cut -c1-64)
-    set +e
-    gh pr create --base main --head "$branch" \
-      --title "fix: ${short_title} (fixes #$inum)" \
-      --body "Automated PR for issue #$inum." 1>/dev/null
-    rc=$?
-    set -e
-    if [[ $rc -ne 0 ]]; then
-      echo "Could not resolve PR for issue #${inum:-} on branch $branch" >&2
-      ensure_clean_main
-      return 1
-    fi
     pr_url=$(gh pr list --head "$branch" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
   fi
   if [[ -z "$pr_url" ]]; then
