@@ -195,7 +195,7 @@ EOF
         )
         prompt+=$'\n'
         prompt+="$history"
-        CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT:-45m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<< "$prompt"
+        CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT:-45m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" "$prompt"
         # If still conflicted, let Codex try again next loop; otherwise continue
         if rebase_in_progress; then
           # Ensure any resolved files are staged; try to continue
@@ -558,7 +558,7 @@ EOF
   prompt="${prompt//__CUR__/$cur}"
   prompt="${prompt//__INUM__/$inum}"
   prompt="${prompt//__HISTORY__/$history}"
-  ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<< "$prompt"
+  ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" "$prompt"
 }
 codex_pr_self_review() {
   local pr_num="${1-}"; shift || true
@@ -586,7 +586,7 @@ Rules:
 - Don’t skip tests; keep everything reproducible.
 EOF
     )
-    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_REVIEW_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<< "$prompt"
+    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_REVIEW_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" "$prompt"
 
     # If nothing changed in this round, we can stop (best-effort heuristic)
     if git diff --quiet && git diff --cached --quiet; then
@@ -685,7 +685,7 @@ EOF
     )
     prompt+=$'\n'
     prompt+="$history"
-    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<< "$prompt"
+    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT:-60m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" "$prompt"
 
     # If Codex produced changes, ensure they are committed and pushed
     if ! git diff --quiet || ! git diff --cached --quiet; then
@@ -761,7 +761,7 @@ Deliverable:
 - Do not print any special tokens or JSON; just complete the tasks.
 EOF
   )
-  LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT:-30m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" <<< "$prompt"
+  LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT:-30m}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" "$prompt"
 }
 
 # Create or checkout a feature branch for a specific issue number
