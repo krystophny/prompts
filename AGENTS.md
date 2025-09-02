@@ -87,11 +87,16 @@ Example (reference-reading only)
 - Use structured feedback (see Feedback) and define re-verification steps.
 
 ## GitHub Operations
-- Read full context for issues and PRs (descriptions and all comments).
+- Read full context for issues and PRs thoroughly (entire descriptions and all comments) — do not skim.
 - Mandatory duplicate check before filing any issue.
 - Use accurate GitHub CLI queries to avoid truncation:
   - `gh issue list --state open --limit 500`
   - `gh issue list --state open --limit 500 --search "keyword"`
+- Example commands (read everything):
+  - Issues (text): `gh issue view <n> --comments`
+  - PRs (text): `gh pr view <n> --comments`
+  - Issues (JSON): `gh issue view <n> --json title,body,comments | jq -r '.title, "", .body, "", (.comments[]?.body // empty)'`
+  - PRs (JSON): `gh pr view <n> --json title,body,comments,reviews,reviewThreads | jq -r '.title, "", .body, "", (.comments[]?.body // empty), (.reviews[]?.body // empty), (.reviewThreads[]?.comments[]?.body // empty)'`
 - Keep issues concrete and actionable; track epics in planning docs.
 - Issue filing: assign category and priority when creating issues.
   - Categories (minimal set): `bug`, `docs`, `tech-debt`, `enhancement`.
