@@ -86,6 +86,39 @@ Example (reference-reading only)
 - Zero duplication: remove redundancy; consolidate overlapping content.
 - Keep it tight: clear structure, verified links; file target <500 lines (<1000 hard), sections <50 (<100 hard).
 
+### Markdown Conventions
+- Inline code: wrap code literals in backticks, for example `module`, `advance_state`, `--flag`, `fpm test`.
+- Code blocks: fence with the correct language. Use `fortran` for Fortran snippets, `sh` for shell, `json` for JSON, etc.
+- Issue/PR comments: follow the same rules; prefer minimal, targeted snippets.
+
+Example (Issue comment)
+
+Text
+- The overflow occurs in `advance_state` when `dt` equals `0.0`.
+
+Code
+```fortran
+subroutine advance_state(state, dt)
+    use physics_mod, only: update_flux
+    implicit none
+    type(state_t), intent(inout) :: state
+    real(real64),  intent(in)    :: dt
+
+    if (dt == 0.0_real64) return
+    call update_flux(state, dt)
+end subroutine advance_state
+```
+
+Example (PR comment)
+
+Text
+- Guard against zero `dt` and add test in `test/advance_state_test.f90`.
+
+Shell
+```sh
+fpm test --filter advance_state
+```
+
 ## Review Standards
 - Review available CI results or logs; re-run locally as needed.
 - Run static analysis and report concrete findings with file/line references.

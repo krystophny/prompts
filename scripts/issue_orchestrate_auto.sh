@@ -398,7 +398,7 @@ Resolution
 
 Evidence
 - PR: __PR_URL__
-- Merge commit: __SHA_SHORT__ (__MERGE_COMMIT_URL__)
+- Merge commit: `__SHA_SHORT__` (__MERGE_COMMIT_URL__)
 - Files changed (first N):
 __FILE_LINKS__
 
@@ -435,7 +435,14 @@ MD
   pr_title=$(gh pr view "$pr_num" --json title --jq '.title' 2>/dev/null || echo "")
   pr_body=$(gh pr view "$pr_num" --json body --jq '.body' 2>/dev/null || echo "")
   if ! printf "%s\n%s" "$pr_title" "$pr_body" | grep -qi "fixes #$issue_num"; then
-    gh pr comment "$pr_num" --body "Closed issue #$issue_num (merged). See the issue for evidence links." || true
+    # Use a body file to safely include inline code backticks without shell substitution
+    local tmp_prc
+    tmp_prc=$(mktemp)
+    {
+      printf "Closed issue `#%s` (merged). See the issue for evidence links.\n" "$issue_num"
+    } >"$tmp_prc"
+    gh pr comment "$pr_num" --body-file "$tmp_prc" || true
+    rm -f "$tmp_prc" || true
   fi
   echo "closed #$issue_num via PR #$pr_num"
 }
