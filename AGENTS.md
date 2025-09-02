@@ -143,6 +143,65 @@ Example (reference-reading only)
 - Avoid `--body` with long multiline strings; prefer a file to prevent
   accidental injection of braces, quotes, or angle brackets.
 
+### gh CLI: Close Issues with Evidence Comment
+- Always add a structured evidence comment before closing an issue. Use a body file to avoid formatting glitches.
+  ```sh
+  pr_num=123
+  issue_num=123
+  repo_url=$(gh repo view --json url --jq '.url')
+  pr_url=$(gh pr view "$pr_num" --json url --jq '.url')
+  merge_commit=$(gh pr view "$pr_num" --json mergeCommit --jq '.mergeCommit.oid')
+  sha_short=${merge_commit:0:12}
+  files=$(gh pr view "$pr_num" --json files --jq '[.files[]?.path] // []')
+
+  tmp=$(mktemp)
+  cat >"$tmp" <<'MD'
+  Resolution
+  - Issue closed after merge of the linked PR and verification of changes.
+
+  Evidence
+  - PR: __PR_URL__
+  - Merge commit: __SHA_SHORT__ (__MERGE_COMMIT_URL__)
+  - Files changed (first N):
+  __FILE_LINKS__
+
+  Links
+  - PR overview: __PR_URL__
+  - PR commits: __PR_COMMITS_URL__
+  - PR diffs: __PR_FILES_URL__
+  - CI/Checks: __CHECKS_URL__
+
+  Notes
+  - References use the merge commit to ensure stable, permanent links to the exact content merged.
+  MD
+
+  # Build per-file links (limit to 20 to keep it short)
+  file_links=""
+  echo "$files" | jq -r '.[]' | head -n 20 | while read -r f; do
+    printf -- "- %s\n" "$repo_url/blob/$merge_commit/$f"
+  done | while IFS= read -r line; do file_links+="$line\n"; done
+
+  pr_files_url="$pr_url/files"
+  pr_commits_url="$pr_url/commits"
+  merge_commit_url="$repo_url/commit/$merge_commit"
+  checks_url="$pr_url"
+
+  # Substitute placeholders
+  sed -i \
+    -e "s|__PR_URL__|${pr_url//|/\|}|g" \
+    -e "s|__SHA_SHORT__|${sha_short//|/\|}|g" \
+    -e "s|__MERGE_COMMIT_URL__|${merge_commit_url//|/\|}|g" \
+    -e "s|__PR_COMMITS_URL__|${pr_commits_url//|/\|}|g" \
+    -e "s|__PR_FILES_URL__|${pr_files_url//|/\|}|g" \
+    -e "s|__CHECKS_URL__|${checks_url//|/\|}|g" \
+    -e "s|__FILE_LINKS__|${file_links//$'\n'/'\\n'}|g" "$tmp"
+
+  gh issue comment "$issue_num" --body-file "$tmp"
+  gh issue close "$issue_num" --reason completed
+  rm -f "$tmp"
+  ```
+- Keep the comment concise and evidence-focused; avoid verbose narratives.
+
 ## Feedback (Structured)
 - Format: PROBLEM (specific issue), EVIDENCE (logs/URLs/paths), SOLUTION (clear steps).
 - Be specific, actionable, and include proof; avoid vague directives.

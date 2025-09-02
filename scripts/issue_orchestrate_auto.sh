@@ -352,18 +352,85 @@ codex_post_merge_close_issue() {
     echo "[post-merge] PR #$pr_num not merged; skipping issue close." >&2
     return 0
   fi
-  # Close issue if still open
+  # Compose an evidence-rich comment before closing the issue
+  local repo_url repo_name default_branch pr_url merge_commit sha_short files_json
+  repo_url=$(gh repo view --json url --jq '.url' 2>/dev/null || echo "")
+  repo_name=$(gh repo view --json nameWithOwner --jq '.nameWithOwner' 2>/dev/null || echo "")
+  default_branch=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null || echo "main")
+  pr_url=$(gh pr view "$pr_num" --json url --jq '.url' 2>/dev/null || echo "")
+  merge_commit=$(gh pr view "$pr_num" --json mergeCommit --jq '.mergeCommit.oid // empty' 2>/dev/null || echo "")
+  sha_short=$(printf "%s" "$merge_commit" | cut -c1-12)
+  files_json=$(gh pr view "$pr_num" --json files --jq '[.files[]?.path] // []' 2>/dev/null || echo '[]')
+
+  # Build per-file links to the merged blob for stable references
+  # Limit to first 20 files to keep the comment readable
+  local file_links max_files
+  max_files=20
+  file_links=""
+  if [[ -n "$repo_url" && -n "$merge_commit" ]]; then
+    # Convert files_json (array of strings) to newline list and iterate
+    while IFS= read -r f; do
+      [[ -z "$f" ]] && continue
+      file_links+="- ${repo_url}/blob/${merge_commit}/$f\n"
+      max_files=$((max_files-1))
+      [[ $max_files -le 0 ]] && break
+    done < <(jq -r '.[]' <<<"$files_json")
+  fi
+
+  # Links section
+  local pr_files_url pr_commits_url merge_commit_url checks_url
+  pr_files_url="${pr_url}/files"
+  pr_commits_url="${pr_url}/commits"
+  merge_commit_url="${repo_url}/commit/${merge_commit}"
+  checks_url="$pr_url"  # Checks tab is in PR UI
+
+  # Create a temporary markdown body file to avoid shell quoting issues
+  local tmp
+  tmp=$(mktemp)
+  cat >"$tmp" <<'MD'
+Resolution
+- Issue closed after merge of the linked PR and verification of changes.
+
+Evidence
+- PR: __PR_URL__
+- Merge commit: __SHA_SHORT__ (__MERGE_COMMIT_URL__)
+- Files changed (first N):
+__FILE_LINKS__
+
+Links
+- PR overview: __PR_URL__
+- PR commits: __PR_COMMITS_URL__
+- PR diffs: __PR_FILES_URL__
+- CI/Checks: __CHECKS_URL__
+
+Notes
+- References use the merge commit to ensure stable, permanent links to the exact content merged.
+MD
+  # Substitute placeholders safely
+  sed -i \
+    -e "s|__PR_URL__|${pr_url//|/\|}|g" \
+    -e "s|__SHA_SHORT__|${sha_short//|/\|}|g" \
+    -e "s|__MERGE_COMMIT_URL__|${merge_commit_url//|/\|}|g" \
+    -e "s|__PR_COMMITS_URL__|${pr_commits_url//|/\|}|g" \
+    -e "s|__PR_FILES_URL__|${pr_files_url//|/\|}|g" \
+    -e "s|__CHECKS_URL__|${checks_url//|/\|}|g" \
+    -e "s|__FILE_LINKS__|${file_links//$'\n'/'\\n'}|g" "$tmp"
+
+  # Post the evidence comment, then close the issue
   local issue_state
   issue_state=$(gh issue view "$issue_num" --json state --jq '.state' 2>/dev/null || echo "")
   if [[ "$issue_state" == "OPEN" ]]; then
-    gh issue close "$issue_num" --comment "Resolved by PR #$pr_num" || true
+    gh issue comment "$issue_num" --body-file "$tmp" || true
+    gh issue close "$issue_num" --reason completed || gh issue close "$issue_num" || true
   fi
+  rm -f "$tmp" || true
+
   # Add PR comment noting linkage if body/title lacks fixes reference
   local pr_body pr_title
   pr_title=$(gh pr view "$pr_num" --json title --jq '.title' 2>/dev/null || echo "")
   pr_body=$(gh pr view "$pr_num" --json body --jq '.body' 2>/dev/null || echo "")
   if ! printf "%s\n%s" "$pr_title" "$pr_body" | grep -qi "fixes #$issue_num"; then
-    gh pr comment "$pr_num" --body "Closing issue #$issue_num (merged)." || true
+    gh pr comment "$pr_num" --body "Closed issue #$issue_num (merged). See the issue for evidence links." || true
   fi
   echo "closed #$issue_num via PR #$pr_num"
 }
