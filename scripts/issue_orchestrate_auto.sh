@@ -547,15 +547,19 @@ You are on branch '__CUR__' in a Git repository with GitHub CLI.
 Goal: Complete implementation for issue #__INUM__ on the current branch, then open a non-draft PR only at the very end, right before handing off to review.
 
 Process:
-1) Establish baseline: detect and run available tests (make test-ci, pytest, fpm, npm). Keep logs concise.
+1) Establish baseline: detect and run available tests (make test-ci, pytest, fpm, npm). If the repository defines artifact verification, ALSO run it:
+   - Prefer `make verify-artifacts` when present; otherwise use `VERIFY_CMD` or scripts under `scripts/verify_*`.
+   - If nothing exists, derive minimal reproduction from the issue description and project docs.
+   Record the exact commands and short excerpts as evidence.
 2) Implement the minimal fix with targeted tests. Iterate until tests pass locally. Keep unrelated changes out.
 3) Stage specific files only (no `git add .`). Commit using Conventional Commit style including "(fixes #__INUM__)" when appropriate. Push to origin for this branch.
-4) As the final step: if a PR to main does not exist for this branch, create a PR (not draft) with title `fix: <issue-title-truncated-to-64> (fixes #__INUM__)` and a brief body template. Do not open a PR earlier than this step.
+4) As the final step: if a PR to main does not exist for this branch, create a PR (not draft) with title `fix: <issue-title-truncated-to-64> (fixes #__INUM__)`. Include a concise "Verification" section showing artifact evidence (commands run + key output excerpts and artifact paths). Do not open a PR earlier than this step.
 5) Print exactly one JSON line with keys: {"issue":__INUM__, "branch":"__CUR__", "pr":<pr-number>, "url":"<pr-url>"}.
 
 Rules:
 - No random markdown reports; keep outputs minimal and actionable.
-- Validate with tests before concluding. Do not skip tests.
+- Validate with tests AND artifact checks before concluding. Do not skip tests.
+- Do not claim an output-affecting fix without attaching evidence excerpts (from project verification or minimal reproduction) to the PR/issue.
 - Do not reformat unrelated files. No secrets.
 
 Context (recent log):
@@ -575,14 +579,14 @@ codex_pr_self_review() {
   for round in $(seq 1 $max_rounds); do
     echo "[Codex Review] Round $round on PR #$pr_num" >&2
     local prompt
-    prompt=$(cat << 'EOF'
+  prompt=$(cat << 'EOF'
 You are an autonomous reviewer/developer using Codex CLI.
 
 Task: Self-review the open Pull Request for this branch, make necessary code or test improvements, and push additional commits if needed.
 
 Process:
 1) Inspect PR details and diff: you can use `gh pr view $PR_NUM --json files,headRefName,baseRefName,number,author,body,url` and fetch changed files.
-2) Run local tests and linters; fix failures.
+2) Run local tests and linters; fix failures. For output-affecting changes, run the repository’s artifact verification (e.g., `make verify-artifacts`, custom verify scripts, or documented reproductions) and include concise evidence in the PR body if missing.
 3) Apply targeted improvements (tests, docs, code) to raise quality while staying within the PR scope.
 4) Stage specific files only, commit with clear messages, and push.
 5) If no further changes are needed, end gracefully.
@@ -592,7 +596,7 @@ Rules:
 - Keep functions under 50 lines when practical; follow project style.
 - Don’t skip tests; keep everything reproducible.
 EOF
-    )
+  )
     PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
 
     # If nothing changed in this round, we can stop (best-effort heuristic)
@@ -750,14 +754,14 @@ Selection & priority:
  - Priority: labels P0>P1>P2>P3; if none present, prefer label "bug",
    then issues whose titles suggest failing tests (e.g., contains "test",
    "xfail", error names), then oldest updated.
-- Relevance check: parse title/body for mentioned tests, file paths, or identifiers. If artifacts are missing and baseline tests pass, treat as obsolete; only when AUTO_CLOSE=1, close with concise, evidence-based comment and proceed to next. Otherwise, skip auto-close.
+- Relevance check: parse title/body for mentioned tests, file paths, or identifiers. For output-affecting issues, plan artifact verification (repo target/script or documented reproduction). If artifacts are missing and baseline tests pass, treat as obsolete; only when AUTO_CLOSE=1, close with a concise, evidence-based comment. Otherwise, skip auto-close.
 
 Implementation:
 - Create/checkout branch: fix/issue-<num>-<slug>.
-- Run baseline tests (use TEST_CMD if provided; else try make/pytest/fpm/npm). Enforce TEST_TIMEOUT.
+- Run baseline tests (use TEST_CMD if provided; else try make/pytest/fpm/npm). Enforce TEST_TIMEOUT. For output-affecting issues, also run artifact verification (prefer `make verify-artifacts` or project-provided scripts/commands) and capture concise evidence.
 - Implement the minimal fix with tests; iterate until tests pass locally. Keep commits focused. No unrelated changes.
 - Stage files explicitly (no `git add .`). Use Conventional Commit: `fix: <desc> (fixes #<num>)`.
-- Only as the final step, open a PR (not draft) to main (reuse if exists). Title: "fix: <issue title truncated to 64> (fixes #<num>)". Do not open a PR earlier.
+- Only as the final step, open a PR (not draft) to main (reuse if exists). Title: "fix: <issue title truncated to 64> (fixes #<num>)". Include a short "Verification" section with commands, output excerpts, and artifact paths. Do not open a PR earlier.
 
 Rules:
 - Minimal output; no markdown reports; use only gh/git/bash.

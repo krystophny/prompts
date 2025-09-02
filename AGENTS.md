@@ -64,9 +64,16 @@ Example (reference-reading only)
  - CMake builds: always use Ninja generator. Configure with
    `cmake -S . -B build -G Ninja` and build with `cmake --build build -j`.
 
+### Artifact Evidence (Project-defined)
+- Tests alone may be insufficient. Provide domain-appropriate artifact evidence when fixes affect outputs (graphics, binaries, logs, generated files).
+- If the repository defines a verification target or script (e.g., `make verify-artifacts`, `scripts/verify_*`, `VERIFY_CMD`), run it and include concise outputs.
+- When no target exists, reproduce the issue with documented commands and attach short, verifiable excerpts: exact commands, artifact paths, small tool outputs (e.g., text extractors, validators, renderers).
+- PRs/issues must include the commands used, artifact paths, and minimal output snippets proving correctness.
+
 ## Verification and CI
 - Verify CI system health before any git operation.
 - Back “tests pass” claims with actual test outputs.
+- For rendering changes, CI must also run the artifact checks above. Failing PDF/PNG gates block merge.
 - Summarize test/build results in PRs.
 - Never merge with failing CI checks.
 - Treat local vs CI discrepancies as blocking until resolved.
