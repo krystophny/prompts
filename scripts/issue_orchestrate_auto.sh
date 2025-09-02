@@ -507,12 +507,21 @@ progress_current_branch_if_needed() {
       echo "[gate] Non-draft PRs exist ($others); not creating a new PR from current branch." >&2
       return 0
     fi
-    # Safe to implement and open a non-draft PR
-    local json
-    json=$(codex_implement_current_branch "$inum" | tail -n 1)
-    pr_url=$(printf "%s" "$json" | jq -r '.url // empty' 2>/dev/null || true)
+    # Safe to open a non-draft PR directly (avoid Codex when work already exists)
+    pr_url=$(gh pr list --head "$cur" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
     if [[ -z "$pr_url" ]]; then
-      # Best-effort resolve PR from branch
+      ititle=$(gh issue view "$inum" --json title --jq '.title' 2>/dev/null || echo "issue #$inum")
+      short_title=$(printf "%s" "$ititle" | cut -c1-64)
+      set +e
+      gh pr create --base main --head "$cur" \
+        --title "fix: ${short_title} (fixes #$inum)" \
+        --body "Automated PR for issue #$inum." 1>/dev/null
+      rc=$?
+      set -e
+      if [[ $rc -ne 0 ]]; then
+        echo "[orchestrate] Could not auto-create PR for '$cur'; skipping." >&2
+        return 0
+      fi
       pr_url=$(gh pr list --head "$cur" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
     fi
     if [[ -n "$pr_url" ]]; then echo "PR: $pr_url" >&2; fi
@@ -824,9 +833,22 @@ run_specific_issue_pass() {
     fi
   fi
 
-  json=$(codex_implement_current_branch "$inum" | tail -n 1 || true)
-  pr_url=$(printf "%s" "$json" | jq -r '.url // empty' 2>/dev/null || true)
+  # Avoid invoking Codex when already on the issue branch; open PR directly if needed
+  pr_url=$(gh pr list --head "$branch" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
   if [[ -z "$pr_url" ]]; then
+    ititle=$(gh issue view "$inum" --json title --jq '.title' 2>/dev/null || echo "issue #$inum")
+    short_title=$(printf "%s" "$ititle" | cut -c1-64)
+    set +e
+    gh pr create --base main --head "$branch" \
+      --title "fix: ${short_title} (fixes #$inum)" \
+      --body "Automated PR for issue #$inum." 1>/dev/null
+    rc=$?
+    set -e
+    if [[ $rc -ne 0 ]]; then
+      echo "Could not resolve PR for issue #${inum:-} on branch $branch" >&2
+      ensure_clean_main
+      return 1
+    fi
     pr_url=$(gh pr list --head "$branch" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
   fi
   if [[ -z "$pr_url" ]]; then
