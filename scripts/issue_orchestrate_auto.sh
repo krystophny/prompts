@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
-# Fully autonomous issue loop orchestrator powered by Codex CLI (non-interactive)
+# Fully autonomous issue loop orchestrator powered by Codex CLI or Claude Code (non-interactive)
 # - Cleans to main (no untracked)
 # - Checks relevance and may auto-close
 # - Creates branch
-# - Uses Codex CLI to implement fix (non-interactive)
-# - Opens PR, self-review loop with Codex, decides success
+# - Uses Codex CLI or Claude Code to implement fix (non-interactive)
+# - Opens PR, self-review loop with Codex/Claude, decides success
 # - Merge policy: auto-merge only when --all is set; otherwise require manual check
 # - Returns to clean main at the end of each iteration
 #
 # Usage:
-#   scripts/issue_orchestrate_auto.sh [ISSUE_NUMBER] [--label <name>|--all] [--limit N] [--squash|--rebase|--merge] [--repo owner/name]
+#   scripts/issue_orchestrate_auto.sh [ISSUE_NUMBER] [--label <name>|--all] [--limit N] [--squash|--rebase|--merge] [--repo owner/name] [--claude]
 # Env:
 #   TEST_CMD Optional local test command (e.g., "make test-ci"), used in prompts
+#   CLAUDE_CODE Set to 1 to use Claude Code instead of Codex (alternative to --claude)
 #
 
 # Prevent accidental sourcing (which would cause 'exit' to close the caller shell)
@@ -51,6 +52,7 @@ merge_method="--squash"
 repo_override=""
 auto_merge=false
 single_issue=""
+use_claude=${CLAUDE_CODE:-0}  # Can be set via env or --claude flag
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -60,6 +62,7 @@ while [[ $# -gt 0 ]]; do
     --merge|--squash|--rebase) merge_method="$1"; shift 1;;
     --repo) repo_override="$2"; shift 2;;
     --debug) debug=1; shift 1;;
+    --claude) use_claude=1; shift 1;;
     --issue) single_issue="$2"; shift 2;;
     --) shift; break;;
     -*) echo "Unknown arg: $1" >&2; exit 2;;
@@ -91,7 +94,13 @@ fi
 
 need() { command -v "$1" >/dev/null 2>&1 || { echo "Missing dependency: $1" >&2; exit 1; }; }
 need gh
-need codex
+if [[ $use_claude -eq 1 ]]; then
+  need claude
+  echo "[orchestrate] Using Claude Code for AI operations" >&2
+else
+  need codex
+  echo "[orchestrate] Using Codex for AI operations" >&2
+fi
 
 # Ensure Ctrl+C (SIGINT) reaches child processes run under `timeout`.
 # Use `--foreground` when available so users can abort cleanly.
@@ -201,7 +210,12 @@ EOF
         )
         prompt+=$'\n'
         prompt+="$history"
-        CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+        if [[ $use_claude -eq 1 ]]; then
+    # Claude Code version - use text output (streams by default in --print mode)
+    echo "$prompt" | CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" claude --print --dangerously-skip-permissions
+  else
+    CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+  fi
         # If still conflicted, let Codex try again next loop; otherwise continue
         if rebase_in_progress; then
           # Ensure any resolved files are staged; try to continue
@@ -576,7 +590,12 @@ EOF
   prompt="${prompt//__CUR__/$cur}"
   prompt="${prompt//__INUM__/$inum}"
   prompt="${prompt//__HISTORY__/$history}"
-  ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+  if [[ $use_claude -eq 1 ]]; then
+    # Claude Code version - use text output (streams by default in --print mode)
+    echo "$prompt" | ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT}" claude --print --dangerously-skip-permissions
+  else
+    ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+  fi
 }
 codex_pr_self_review() {
   local pr_num="${1-}"; shift || true
@@ -604,7 +623,12 @@ Rules:
 - Don’t skip tests; keep everything reproducible.
 EOF
   )
-    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+    if [[ $use_claude -eq 1 ]]; then
+      # Claude Code version - use text output (streams by default in --print mode)
+      echo "$prompt" | PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" claude --print --dangerously-skip-permissions
+    else
+      PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+    fi
 
     # If nothing changed in this round, we can stop (best-effort heuristic)
     if git diff --quiet && git diff --cached --quiet; then
@@ -704,7 +728,12 @@ EOF
     )
     prompt+=$'\n'
     prompt+="$history"
-    PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+    if [[ $use_claude -eq 1 ]]; then
+      # Claude Code version - use text output (streams by default in --print mode)
+      echo "$prompt" | PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT}" claude --print --dangerously-skip-permissions
+    else
+      PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+    fi
 
     # If Codex produced changes, ensure they are committed and pushed
     if ! git diff --quiet || ! git diff --cached --quiet; then
@@ -780,7 +809,12 @@ Deliverable:
 - Do not print any special tokens or JSON; just complete the tasks.
 EOF
   )
-  LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+  if [[ $use_claude -eq 1 ]]; then
+    # Claude Code version - use text output (streams by default in --print mode)
+    echo "$prompt" | LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT}" claude --print --dangerously-skip-permissions
+  else
+    LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+  fi
 }
 
 # Create or checkout a feature branch for a specific issue number
