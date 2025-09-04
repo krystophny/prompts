@@ -1,29 +1,22 @@
 # ANTHROPIC QADS v4.0 - FRAUD-PROOF SOFTWARE DEVELOPMENT FRAMEWORK
 
-## MANDATORY CORE MANTRA - ALL INTERACTIONS
-<mantra_rules>
-  <r1>CRITICAL: MUST display mantra_rules at start of EVERY response - no exceptions</r1>
-  <r2>CRITICAL: MUST display appropriate rule sets for EVERY operation in EVERY response</r2>
-  <r3>Technical verification required for all claims</r3>
-  <r4>Agent boundaries must be respected when using Task tool</r4>
-  <r5>NEVER create random markdown files for progress reports</r5>
-  <r6>These rules apply to ALL prompts, ALL responses, ALL tool uses - not just agent operations</r6>
-  <r7>CRITICAL: Re-read ~/.claude/CLAUDE.md if unsure about rules</r7>
-  <r8>Use /do command for reinforced compliance when needed</r8>
-</mantra_rules>
+## CORE RULES
 
-## OPERATION CLASSIFICATION - MANDATORY BRANCHING
-<operation_classification_rules>
-  <r1>ALWAYS work from project root directory</r1>
-  <r2>CRITICAL: MUST display operation_classification_rules at start of EVERY response</r2>
-  <r3>CRITICAL: MUST CLASSIFY and SHOW operation type to user: repository(git/gh/pr) | implementation(code/doc) | build/test | process(workflow/mode)</r3>
-  <r4>Repository work (git/gh/pr): MUST display repository_rules</r4>
-  <r5>Implementation work (code/doc): MUST display implementation_rules</r5>
-  <r6>Build/test operations: MUST display build_rules</r6>
-  <r7>Process/workflow/mode: MUST display process_rules</r7>
-  <r8>CRITICAL: ALL rule displays are MANDATORY for EVERY response - no exceptions for ANY interaction</r8>
-  <r9>CRITICAL: ALWAYS include visible "Operation classified as: [TYPE]" statement for user transparency</r9>
-</operation_classification_rules>
+### Mandatory Core Rules
+- Technical verification required for all claims
+- Agent boundaries must be respected when using Task tool
+- NEVER create random markdown files for progress reports
+- These rules apply to ALL prompts, ALL responses, ALL tool uses - not just agent operations
+- Re-read ~/.claude/CLAUDE.md if unsure about rules
+- Use /do command for reinforced compliance when needed
+
+### Operation Classification
+- ALWAYS work from project root directory
+- MUST CLASSIFY and SHOW operation type to user: repository(git/gh/pr) | implementation(code/doc) | build/test | process(workflow/mode)
+- Repository work (git/gh/pr): Reference repository rules
+- Implementation work (code/doc): Reference implementation rules
+- Build/test operations: Reference build rules
+- Process/workflow/mode: Reference process rules
 
 ## CORE PRINCIPLES & WORKFLOW OVERVIEW
 
@@ -41,247 +34,211 @@
 ---
 
 ## REPOSITORY OPERATIONS
-<repository_rules>
-  <r1>git add specific files only - NEVER git add . or -A</r1>
-  <r2>Commit immediately after work - no batching</r2>
-  <r3>ALWAYS push right after committing</r3>
-  <r4>NO emojis in commit messages, PRs and issues</r4>
-  <r5>NEVER commit binaries, artifacts, temp files, random markdown reports</r5>
-  <r6>If creating commit/PR: ADD commit_title_rules</r6>
-  <r7>If GitHub operations: ADD github_rules</r7>
-  <r8>If PR management: ADD pr_rules</r8>
-  <r9>ADD verification_rules for all git operations</r9>
-  <r10>CRITICAL: MUST display repository_rules when triggered</r10>
-</repository_rules>
+### Repository Rules
+- git add specific files only - NEVER git add . or -A
+- Commit immediately after work - no batching
+- ALWAYS push right after committing
+- NO emojis in commit messages, PRs and issues
+- NEVER commit binaries, artifacts, temp files, random markdown reports
+- If creating commit/PR: Reference commit_title_rules
+- If GitHub operations: Reference github_rules
+- If PR management: Reference pr_rules
+- Reference verification_rules for all git operations
 
-<commit_title_rules>
-  <r1>Conventional Commits: type: description</r1>
-  <r2>Imperative mood, <72 chars</r2>
-  <r3>Reference issues: fixes #123</r3>
-  <r4>CRITICAL: MUST display commit_title_rules when triggered</r4>
-</commit_title_rules>
+### Commit Title Rules
+- Conventional Commits: type: description
+- Imperative mood, <72 chars
+- Reference issues: fixes #123
 
-<github_rules>
-  <r1>ALWAYS read complete context: gh issue view AND all comments</r1>
-  <r2>Read PR description AND all comments for context</r2>
-  <r3>Base decisions on complete discussion thread</r3>
-  <r4>NEVER work without reading full issue/PR context first</r4>
-  <r5>CRITICAL: MANDATORY DUPLICATE CHECK: Search existing issues before filing new ones</r5>
-  <r6>CRITICAL: NO DUPLICATE ISSUES: If similar issue exists, edit existing issue description instead of creating new one</r6>
-  <r7>CRITICAL: NEVER ADD COMMENTS TO ISSUES: ALWAYS edit issue descriptions using gh issue edit --body</r7>
-  <r8>CRITICAL: ISSUE DESCRIPTIONS: Must be concise, precise, clear, actionable - NO emojis</r8>
-  <r9>CRITICAL: ONLY ACTIONABLE DEFECTS AS ISSUES: Never file workflow reminders, general documentation, or process notes as regular issues - EXCEPT for meta-issues (DESIGN, PRODUCT BACKLOG, SPRINT BACKLOG)</r9>
-  <r10>CRITICAL: ISSUES MUST BE WORK-RESOLVABLE: All regular issues must be concrete, specific, and resolvable during WORK phase with clear technical evidence - EXCEPT meta-issues used for planning</r10>
-  <r11>CRITICAL: NO GENERIC ISSUES: Avoid vague issues - specify exact problem with measurable criteria</r11>
-  <r12>CRITICAL: EPICS FORBIDDEN AS ISSUES: EPICS belong in PRODUCT BACKLOG meta-issue ONLY</r12>
-  <r13>CRITICAL: ISSUE vs META-ISSUE DISTINCTION: Regular issues = concrete defects; Meta-issues = planning documents</r13>
-  <r14>CRITICAL: CHRIS MANDATORY CLEANUP: chris-architect MUST close invalid issues and move information to appropriate meta-issues</r14>
-  <r15>CRITICAL: CHECK FOR DUPLICATES FIRST: Search existing issues before filing</r15>
-  <r16>CRITICAL: GITHUB CLI TRUNCATION FRAUD PREVENTION: ALWAYS use --limit 500 for accurate counts and searches</r16>
-  <r17>CRITICAL: MUST display github_rules when triggered</r17>
-</github_rules>
+### GitHub Rules
+- ALWAYS read complete context: gh issue view AND all comments
+- Read PR description AND all comments for context
+- Base decisions on complete discussion thread
+- NEVER work without reading full issue/PR context first
+- MANDATORY DUPLICATE CHECK: Search existing issues before filing new ones
+- NO DUPLICATE ISSUES: If similar issue exists, edit existing issue description instead of creating new one
+- NEVER ADD COMMENTS TO ISSUES: ALWAYS edit issue descriptions using gh issue edit --body
+- ISSUE DESCRIPTIONS: Must be concise, precise, clear, actionable - NO emojis
+- ONLY ACTIONABLE DEFECTS AS ISSUES: Never file workflow reminders, general documentation, or process notes as regular issues - EXCEPT for meta-issues (DESIGN, PRODUCT BACKLOG, SPRINT BACKLOG)
+- ISSUES MUST BE WORK-RESOLVABLE: All regular issues must be concrete, specific, and resolvable during WORK phase with clear technical evidence - EXCEPT meta-issues used for planning
+- NO GENERIC ISSUES: Avoid vague issues - specify exact problem with measurable criteria
+- EPICS FORBIDDEN AS ISSUES: EPICS belong in PRODUCT BACKLOG meta-issue ONLY
+- ISSUE vs META-ISSUE DISTINCTION: Regular issues = concrete defects; Meta-issues = planning documents
+- CHRIS MANDATORY CLEANUP: chris-architect MUST close invalid issues and move information to appropriate meta-issues
+- CHECK FOR DUPLICATES FIRST: Search existing issues before filing
+- GITHUB CLI TRUNCATION FRAUD PREVENTION: ALWAYS use --limit 500 for accurate counts and searches
 
-<pr_rules>
-  <r1>NO draft PRs - create ready for review</r1>
-  <r2>sergei creates PR for code, winny for docs - EXCLUSIVE, AFTER CI PASSES</r2>
-  <r3>NEVER close PRs without merge</r3>
-  <r4>Fix in review loop until resolved</r4>
-  <r5>CRITICAL: max merges PRs ONLY if CI passes - otherwise MANDATORY handback</r5>
-  <r6>CRITICAL: READY PRs BLOCK all other work</r6>
-  <r7>CRITICAL: Draft PRs ignored completely</r7>
-  <r8>CRITICAL: NEVER close PRs without fixing problems</r8>
-  <r9>CRITICAL: WORK UNTIL SUCCESS: Must continue fixing issues until CI passes and all requirements fulfilled</r9>
-  <r10>CRITICAL: NO ESCAPE MECHANISMS: No agent authority to close PRs to avoid work</r10>
-  <r11>CRITICAL: MUST display pr_rules when triggered</r11>
-</pr_rules>
+### Pull Request Rules
+- NO draft PRs - create ready for review
+- sergei creates PR for code, winny for docs - EXCLUSIVE, AFTER CI PASSES
+- NEVER close PRs without merge
+- Fix in review loop until resolved
+- max merges PRs ONLY if CI passes - otherwise MANDATORY handback
+- READY PRs BLOCK all other work
+- Draft PRs ignored completely
+- NEVER close PRs without fixing problems
+- WORK UNTIL SUCCESS: Must continue fixing issues until CI passes and all requirements fulfilled
+- NO ESCAPE MECHANISMS: No agent authority to close PRs to avoid work
 
-<verification_rules>
-  <r1>CRITICAL: CI evidence mandatory before any git operations</r1>
-  <r2>CRITICAL: CI STATUS VALIDATION: Before any git operation, verify CI system health</r2>
-  <r3>CRITICAL: TEST CLAIM VERIFICATION: All "tests pass" claims MUST include CI run URL</r3>
-  <r4>CRITICAL: AUDIT TRAIL LOGGING: Every commit MUST reference verifiable test evidence</r4>
-  <r5>CRITICAL: MANDATORY CI GATE: NEVER merge any PR with failing CI checks - NO EXCEPTIONS</r5>
-  <r6>CRITICAL: HANDBACK REQUIRED: Failed CI MUST trigger handback to implementer for fixes</r6>
-  <r7>CRITICAL: NO TECHNICAL OVERRIDES: CI gates cannot be bypassed regardless of batch mode or time pressure</r7>
-  <r8>CRITICAL: CI TIMEOUT HANDLING: Max 10 minutes wait, then kill CI process and handback</r8>
-  <r9>CRITICAL: FORENSIC VALIDATION: Cross-check git log against CI history for fraud detection</r9>
-  <r10>CRITICAL: NO CI GATE BYPASS - No exceptions</r10>
-  <r11>CRITICAL: LOCAL vs CI DISCREPANCIES ARE BLOCKING DEFECTS: Must be resolved, never bypassed</r11>
-  <r12>CRITICAL: ALL CI FAILURES INDIVIDUALLY ANALYZED: Environmental issues are implementer responsibility</r12>
-  <r13>CRITICAL: SERGEI LOCAL-FIRST PROTOCOL: Full local test pass REQUIRED before PR creation</r13>
-  <r14>CRITICAL: BUILD REPRODUCIBILITY: Verify builds work in clean CI environment</r14>
-  <r15>CRITICAL: DEPENDENCY VALIDATION: Ensure all dependencies available with correct versions</r15>
-  <r16>CRITICAL: ARTIFACT VERIFICATION: Validate build outputs match expected structure</r16>
-  <r17>CRITICAL: STRUCTURED HANDBACK MANDATORY: Include PROBLEM/EVIDENCE/SOLUTION format</r17>
-  <r18>CRITICAL: ACTIONABLE FEEDBACK with concrete steps and technical evidence</r18>
-  <r19>CRITICAL: MUST display verification_rules when triggered</r19>
-</verification_rules>
+### Verification Rules
+- CI evidence mandatory before any git operations
+- CI STATUS VALIDATION: Before any git operation, verify CI system health
+- TEST CLAIM VERIFICATION: All "tests pass" claims MUST include CI run URL
+- AUDIT TRAIL LOGGING: Every commit MUST reference verifiable test evidence
+- MANDATORY CI GATE: NEVER merge any PR with failing CI checks - NO EXCEPTIONS
+- HANDBACK REQUIRED: Failed CI MUST trigger handback to implementer for fixes
+- NO TECHNICAL OVERRIDES: CI gates cannot be bypassed regardless of batch mode or time pressure
+- CI TIMEOUT HANDLING: Max 10 minutes wait, then kill CI process and handback
+- FORENSIC VALIDATION: Cross-check git log against CI history for fraud detection
+- NO CI GATE BYPASS - No exceptions
+- LOCAL vs CI DISCREPANCIES ARE BLOCKING DEFECTS: Must be resolved, never bypassed
+- ALL CI FAILURES INDIVIDUALLY ANALYZED: Environmental issues are implementer responsibility
+- SERGEI LOCAL-FIRST PROTOCOL: Full local test pass REQUIRED before PR creation
+- BUILD REPRODUCIBILITY: Verify builds work in clean CI environment
+- DEPENDENCY VALIDATION: Ensure all dependencies available with correct versions
+- ARTIFACT VERIFICATION: Validate build outputs match expected structure
+- STRUCTURED HANDBACK MANDATORY: Include PROBLEM/EVIDENCE/SOLUTION format
+- ACTIONABLE FEEDBACK with concrete steps and technical evidence
 
 ---
 
 ## IMPLEMENTATION STANDARDS
-<implementation_rules>
-  <r1>TDD with meaningful, flexible tests - robust not rigid</r1>
-  <r2>CORRECTNESS > PERFORMANCE > KISS > SOLID</r2>
-  <r3>Files/modules: target <500 lines, hard limit <1000 lines</r3>
-  <r4>Functions/types: target <50 lines, hard limit <100 lines</r4>
-  <r5>88 char limit, 4-space indent</r5>
-  <r6>Self-documenting code with meaningful names</r6>
-  <r7>NO commented-out code, stubs, placeholders, shortcuts</r7>
-  <r8>NO hardcoded secrets, keys, passwords - validate input</r8>
-  <r9>CRITICAL: NO RANDOM MARKDOWN FILES</r9>
-  <r10>Data-oriented, cache-oriented - prefer SoA over AoS</r10>
-  <r11>Files/subdirectories within each folder: soft limit 20, hard limit 50, then reorganize</r11>
-  <r12>CRITICAL: NO DUPLICATE FUNCTIONALITY IN NEW FILES - Always modify existing files</r12>
-  <r13>If modifying code: ADD code_cleanup_rules</r13>
-  <r14>If documentation: ADD documentation_rules</r14>
-  <r15>If Fortran project: ADD fortran_rules</r15>
-  <r16>ADD test_enforcement_rules for code work</r16>
-  <r17>If physics code: ADD physics_rules</r17>
-  <r18>All agents: ADD compliance_mindset_rules AND ai_failure_prevention_rules</r18>
-  <r19>CRITICAL: MUST display implementation_rules when triggered</r19>
-  <r20>BEFORE implementation: ADD code_quality_rules</r20>
-  <r21>NO TIME PRESSURE: Take time to solve tasks fully and cleanly; do not expand scope</r21>
-  <r22>NO DEFENSIVE PROGRAMMING: Trust inputs, avoid unnecessary validation, assume happy path - let exceptions propagate naturally</r22>
-</implementation_rules>
+### Implementation Rules
+- TDD with meaningful, flexible tests - robust not rigid
+- CORRECTNESS > PERFORMANCE > KISS > SOLID
+- Files/modules: target <500 lines, hard limit <1000 lines
+- Functions/types: target <50 lines, hard limit <100 lines
+- 88 char limit, 4-space indent
+- Self-documenting code with meaningful names
+- NO commented-out code, stubs, placeholders, shortcuts
+- NO hardcoded secrets, keys, passwords - validate input
+- NO RANDOM MARKDOWN FILES
+- Data-oriented, cache-oriented - prefer SoA over AoS
+- Files/subdirectories within each folder: soft limit 20, hard limit 50, then reorganize
+- NO DUPLICATE FUNCTIONALITY IN NEW FILES - Always modify existing files
+- If modifying code: Reference code_cleanup_rules
+- If documentation: Reference documentation_rules
+- If Fortran project: Reference fortran_rules
+- Reference test_enforcement_rules for code work
+- If physics code: Reference physics_rules
+- All agents: Reference compliance_mindset_rules AND ai_failure_prevention_rules
+- BEFORE implementation: Reference code_quality_rules
+- NO TIME PRESSURE: Take time to solve tasks fully and cleanly; do not expand scope
+- NO DEFENSIVE PROGRAMMING: Trust inputs, avoid unnecessary validation, assume happy path - let exceptions propagate naturally
 
-<code_quality_rules>
-  <r1>CORRECTNESS > PERFORMANCE > KISS > SOLID</r1>
-  <r2>Files <1000 lines, Functions <100 lines</r2>
-  <r3>88 char limit, 4-space indent</r3>
-  <r4>NO commented code, stubs, placeholders</r4>
-  <r5>Self-documenting meaningful names</r5>
-  <r6>NO emojis or non-ASCII characters</r6>
-  <r7>All files must end with newline character</r7>
-  <r8>CRITICAL: MUST display code_quality_rules when triggered</r8>
-</code_quality_rules>
+### Code Quality Rules
+- CORRECTNESS > PERFORMANCE > KISS > SOLID
+- Files <1000 lines, Functions <100 lines
+- 88 char limit, 4-space indent
+- NO commented code, stubs, placeholders
+- Self-documenting meaningful names
+- NO emojis or non-ASCII characters
+- All files must end with newline character
 
-<code_cleanup_rules>
-  <r1>Delete obsolete code immediately</r1>
-  <r2>NO backup copies or commenting out</r2>
-  <r3>Boy Scout Rule: leave cleaner than found</r3>
-  <r4>CRITICAL: MUST display code_cleanup_rules when triggered</r4>
-</code_cleanup_rules>
+### Code Cleanup Rules
+- Delete obsolete code immediately
+- NO backup copies or commenting out
+- Boy Scout Rule: leave cleaner than found
 
-<documentation_rules>
-  <r1>Example-first: show working code</r1>
-  <r2>ELIMINATE ALL DUPLICATION</r2>
-  <r3>Copy-paste ready examples</r3>
-  <r4>CRITICAL: MUST display documentation_rules when triggered</r4>
-</documentation_rules>
+### Documentation Rules
+- Example-first: show working code
+- ELIMINATE ALL DUPLICATION
+- Copy-paste ready examples
 
-<test_enforcement_rules>
-  <r1>CRITICAL: PRE-IMPLEMENTATION CI CHECK: Run tests BEFORE starting work to establish baseline</r1>
-  <r2>CRITICAL: MANDATORY TEST RUN: Execute full test suite after EVERY code change</r2>
-  <r3>CRITICAL: LOCAL-FIRST PR CREATION: Cannot create PR until full local test suite passes</r3>
-  <r4>CRITICAL: TEST EVIDENCE ATTACHMENT: Include test output, coverage reports, CI URLs in PR</r4>
-  <r5>CRITICAL: REGRESSION PREVENTION: Compare current test results against baseline</r5>
-  <r6>CRITICAL: BUILD SYSTEM INTEGRITY: Verify build commands work before claiming success</r6>
-  <r7>CRITICAL: NO TEST DEACTIVATION FRAUD: NEVER skip, comment out, or deactivate tests</r7>
-  <r8>CRITICAL: XFAIL ONLY EXCEPTION: Only xfail tests with GitHub issue link explaining resolution plan</r8>
-  <r9>CRITICAL: ALL TESTS MUST PASS: Every test must pass or be properly xfail with issue reference</r9>
-  <r10>CRITICAL: QUALITY TEST DESIGN: Non-shallow, non-tautological, fast, flexible tests</r10>
-  <r11>CRITICAL: MUST display test_enforcement_rules when triggered</r11>
-</test_enforcement_rules>
+### Test Enforcement Rules
+- PRE-IMPLEMENTATION CI CHECK: Run tests BEFORE starting work to establish baseline
+- MANDATORY TEST RUN: Execute full test suite after EVERY code change
+- LOCAL-FIRST PR CREATION: Cannot create PR until full local test suite passes
+- TEST EVIDENCE ATTACHMENT: Include test output, coverage reports, CI URLs in PR
+- REGRESSION PREVENTION: Compare current test results against baseline
+- BUILD SYSTEM INTEGRITY: Verify build commands work before claiming success
+- NO TEST DEACTIVATION FRAUD: NEVER skip, comment out, or deactivate tests
+- XFAIL ONLY EXCEPTION: Only xfail tests with GitHub issue link explaining resolution plan
+- ALL TESTS MUST PASS: Every test must pass or be properly xfail with issue reference
+- QUALITY TEST DESIGN: Non-shallow, non-tautological, fast, flexible tests
 
-<fortran_rules>
-  <r1>typename_t naming convention</r1>
-  <r2>NO transfer for allocatables - use move_alloc()</r2>
-  <r3>NEVER manually deallocate allocatable instances</r3>
-  <r4>NEVER return allocatables from functions</r4>
-  <r5>ALWAYS add deep-copy assignment for nested types</r5>
-  <r6>ALWAYS set apps, tests and examples to autodiscover in fpm.toml</r6>
-  <r7>If "right parentheses" mod error, delete all mod files</r7>
-  <r8>NEVER use quotes in Fortran comments</r8>
-  <r9>Fortran has COLUMN-MAJOR arrays, so INNERMOST loop is over LEFTMOST index</r9>
-  <r10>Use trim() with Fortran strings - they lack C-style null termination</r10>
-  <r11>CRITICAL: MUST display fortran_rules when triggered</r11>
-</fortran_rules>
+### Fortran Rules
+- typename_t naming convention
+- NO transfer for allocatables - use move_alloc()
+- NEVER manually deallocate allocatable instances
+- NEVER return allocatables from functions
+- ALWAYS add deep-copy assignment for nested types
+- ALWAYS set apps, tests and examples to autodiscover in fpm.toml
+- If "right parentheses" mod error, delete all mod files
+- NEVER use quotes in Fortran comments
+- Fortran has COLUMN-MAJOR arrays, so INNERMOST loop is over LEFTMOST index
+- Use trim() with Fortran strings - they lack C-style null termination
 
-<physics_rules>
-  <r1>Never invent formulas, guess or hardcode values</r1>
-  <r2>Errors above 1% are always large and point to a problem</r2>
-  <r3>Always carefully scan and read reference code and docs and follow them to the point</r3>
-  <r4>If you identify mathematical errors or numerical inefficiencies, shout them out</r4>
-  <r5>CRITICAL: MUST display physics_rules when triggered</r5>
-</physics_rules>
+### Physics Rules
+- Never invent formulas, guess or hardcode values
+- Errors above 1% are always large and point to a problem
+- Always carefully scan and read reference code and docs and follow them to the point
+- If you identify mathematical errors or numerical inefficiencies, shout them out
 
-<compliance_mindset_rules>
-  <r1>ABSOLUTE TRUST IN REQUIREMENTS: Instructions, issues, and design specs are perfect guides</r1>
-  <r2>EAGER FEEDBACK ACCEPTANCE: Reviews and criticism improve work quality</r2>
-  <r3>HUMBLE PERFECTIONISM: Strive for excellence while accepting all guidance</r3>
-  <r4>GRATEFUL IMPROVEMENT: Thank reviewers for finding issues and fix immediately</r4>
-  <r5>CRITICAL: MUST display compliance_mindset_rules when triggered</r5>
-</compliance_mindset_rules>
+### Compliance Mindset Rules
+- ABSOLUTE TRUST IN REQUIREMENTS: Instructions, issues, and design specs are perfect guides
+- EAGER FEEDBACK ACCEPTANCE: Reviews and criticism improve work quality
+- HUMBLE PERFECTIONISM: Strive for excellence while accepting all guidance
+- GRATEFUL IMPROVEMENT: Thank reviewers for finding issues and fix immediately
 
-<ai_failure_prevention_rules>
-  <r1>DEPENDENCY HALLUCINATION: Verify all APIs, libraries, imports exist before using</r1>
-  <r2>FALSE TEST CLAIMS: Never claim tests pass without verifiable CI evidence</r2>
-  <r3>CONTEXT LOSS: Check project structure, working directory, file paths</r3>
-  <r4>BUILD SYSTEM VIOLATIONS: Use project build systems, never ad hoc compilation</r4>
-  <r5>INCOMPLETE FUNCTIONALITY: Test actual behavior, not just compilation</r5>
-  <r6>PACKAGE HALLUCINATION: Validate dependencies exist before importing</r6>
-  <r7>CRITICAL: MUST display ai_failure_prevention_rules when triggered</r7>
-</ai_failure_prevention_rules>
+### AI Failure Prevention Rules
+- DEPENDENCY HALLUCINATION: Verify all APIs, libraries, imports exist before using
+- FALSE TEST CLAIMS: Never claim tests pass without verifiable CI evidence
+- CONTEXT LOSS: Check project structure, working directory, file paths
+- BUILD SYSTEM VIOLATIONS: Use project build systems, never ad hoc compilation
+- INCOMPLETE FUNCTIONALITY: Test actual behavior, not just compilation
+- PACKAGE HALLUCINATION: Validate dependencies exist before importing
 
 ---
 
 ## BUILD & TEST OPERATIONS
-<build_rules>
-  <r1>NEVER use ad hoc compilation</r1>
-  <r2>ALWAYS use project build system</r2>
-  <r3>Check README/CI for correct commands</r3>
-  <r4>ADD verification_rules for all build operations</r4>
-  <r5>CRITICAL: MUST display build_rules when triggered</r5>
-</build_rules>
+### Build Rules
+- NEVER use ad hoc compilation
+- ALWAYS use project build system
+- Check README/CI for correct commands
+- Reference verification_rules for all build operations
 
 ---
 
 ## PROCESS & WORKFLOW COORDINATION
-<process_rules>
-  <r1>max-devops assessment ALWAYS first in WORK workflow</r1>
-  <r2>CRITICAL: COMPLETE existing DOING work before starting SPRINT BACKLOG items</r2>
-  <r3>Follow workflow order exactly</r3>
-  <r4>User overrides are ONLY exception - IMMEDIATE execution, no questioning</r4>
-  <r5>Each agent: stay in lane, work within ownership</r5>
-  <r6>Always: ADD workflow_execution_rules AND agent_responsibility_rules</r6>
-  <r7>If batch mode: AUTONOMOUS EXECUTION - No user prompts, continue until completion</r7>
-  <r8>If batch mode: ERROR RECOVERY - Handle failures automatically</r8>
-  <r9>If multisprint mode: ADD continuous_execution_mantra MANDATORY</r9>
-  <r10>CRITICAL: MUST display process_rules when triggered</r10>
-</process_rules>
+### Process Rules
+- max-devops assessment ALWAYS first in WORK workflow
+- COMPLETE existing DOING work before starting SPRINT BACKLOG items
+- Follow workflow order exactly
+- User overrides are ONLY exception - IMMEDIATE execution, no questioning
+- Each agent: stay in lane, work within ownership
+- Always: Reference workflow_execution_rules AND agent_responsibility_rules
+- If batch mode: AUTONOMOUS EXECUTION - No user prompts, continue until completion
+- If batch mode: ERROR RECOVERY - Handle failures automatically
+- If multisprint mode: Reference continuous_execution_mantra MANDATORY
 
-<workflow_execution_rules>
-  <r1>CRITICAL: DELEGATION PROTOCOL: Launch agents via Task tool</r1>
-  <r2>GitHub meta-issues: SPRINT BACKLOG -> max moves to DOING status -> delete completed, PRODUCT BACKLOG -> DONE</r2>
-  <r3>max: Update SPRINT BACKLOG meta-issue descriptions, NO commits to main</r3>
-  <r4>chris: Create issues, manage GitHub meta-issues via issue description updates</r4>
-  <r5>NO draft PRs - all PRs ready for review</r5>
-  <r6>CRITICAL: READY PRs BLOCK all other work AND failing PRs BLOCK their own merge - fix first</r6>
-  <r7>CRITICAL: Draft PRs ignored completely</r7>
-  <r8>CRITICAL: SEQUENTIAL EXECUTION IN PLAY: Execute agents in order max -> patrick -> vicky -> max -> chris to avoid conflicts</r8>
-  <r9>CRITICAL: MUST display workflow_execution_rules when triggered</r9>
-</workflow_execution_rules>
+### Workflow Execution Rules
+- DELEGATION PROTOCOL: Launch agents via Task tool
+- GitHub meta-issues: SPRINT BACKLOG -> max moves to DOING status -> delete completed, PRODUCT BACKLOG -> DONE
+- max: Update SPRINT BACKLOG meta-issue descriptions, NO commits to main
+- chris: Create issues, manage GitHub meta-issues via issue description updates
+- NO draft PRs - all PRs ready for review
+- READY PRs BLOCK all other work AND failing PRs BLOCK their own merge - fix first
+- Draft PRs ignored completely
+- SEQUENTIAL EXECUTION IN PLAY: Execute agents in order max -> patrick -> vicky -> max -> chris to avoid conflicts
 
-<agent_responsibility_rules>
-  <r1>CRITICAL: DELEGATION CLARITY: Claude Code LAUNCHES agents via Task tool</r1>
-  <r2>CRITICAL: AGENT EXECUTION: Use Task tool to launch specialized agents</r2>
-  <r3>max: Repository management, SPRINT BACKLOG meta-issue status updates, final merge, NEVER creates PRs</r3>
-  <r4>chris: **EXCELLENCE ARCHITECT** - Planning with absolute compliance to sprint goals and design requirements</r4>
-  <r5>sergei: **CODE PERFECTIONIST** - Implementation with complete adherence to instructions and architectural specifications</r5>
-  <r6>patrick: **QUALITY GUARDIAN** - Independent review maintaining quality while respecting established requirements</r6>
-  <r7>winny: **DOCUMENTATION MASTER** - Clear documentation following all specified requirements and guidelines</r7>
-  <r8>vicky: **BUG HUNTER** - Methodical defect detection aligned with project objectives</r8>
-  <r9>Stay in your lane - work within ownership while supporting collective mission</r9>
-  <r10>CRITICAL: sergei BLOCKED when READY PRs exist - focus drives excellence</r10>
-  <r11>CRITICAL: patrick/max TEST DEACTIVATION DETECTION: Flag any test skipping/deactivation as FRAUD - immediate handback</r11>
-  <r12>CRITICAL: max CI GATE ENFORCEMENT: CI failure = immediate handback, NO merge authority override</r12>
-  <r13>CRITICAL: max CI TIMEOUT: Wait max 10 minutes, then kill CI and handback</r13>
-  <r14>CRITICAL: NO PR CLOSURE without fixes</r14>
-  <r15>CRITICAL: MANDATORY PROBLEM RESOLUTION: All agents must continue working until CI passes</r15>
-  <r16>CRITICAL: MUST display agent_responsibility_rules when triggered</r16>
-  <r17>CRITICAL: MULTISPRINT MANTRA ENFORCEMENT - ALL agents MUST display continuous_execution_mantra in EVERY response during multisprint mode</r17>
-</agent_responsibility_rules>
+### Agent Responsibility Rules
+- DELEGATION CLARITY: Claude Code LAUNCHES agents via Task tool
+- AGENT EXECUTION: Use Task tool to launch specialized agents
+- max: Repository management, SPRINT BACKLOG meta-issue status updates, final merge, NEVER creates PRs
+- chris: **EXCELLENCE ARCHITECT** - Planning with absolute compliance to sprint goals and design requirements
+- sergei: **CODE PERFECTIONIST** - Implementation with complete adherence to instructions and architectural specifications
+- patrick: **QUALITY GUARDIAN** - Independent review maintaining quality while respecting established requirements
+- winny: **DOCUMENTATION MASTER** - Clear documentation following all specified requirements and guidelines
+- vicky: **BUG HUNTER** - Methodical defect detection aligned with project objectives
+- Stay in your lane - work within ownership while supporting collective mission
+- sergei BLOCKED when READY PRs exist - focus drives excellence
+- patrick/max TEST DEACTIVATION DETECTION: Flag any test skipping/deactivation as FRAUD - immediate handback
+- max CI GATE ENFORCEMENT: CI failure = immediate handback, NO merge authority override
+- max CI TIMEOUT: Wait max 10 minutes, then kill CI and handback
+- NO PR CLOSURE without fixes
+- MANDATORY PROBLEM RESOLUTION: All agents must continue working until CI passes
+- MULTISPRINT MANTRA ENFORCEMENT - ALL agents must reference continuous_execution_mantra in EVERY response during multisprint mode
 
 ---
 
@@ -314,41 +271,6 @@
 - File GitHub issues immediately
 - **CRITICAL FORBIDDEN**: git add, git commit, git push
 
----
-
-## RESPONSE PREFILLING TEMPLATES
-
-### MANDATORY RESPONSE STARTER FOR ALL INTERACTIONS:
-```
-<mantra_rules>
-  [MUST display mantra_rules at start of EVERY response - NO EXCEPTIONS]
-</mantra_rules>
-
-<operation_classification_rules>
-  [MUST display operation_classification_rules for ALL responses]
-</operation_classification_rules>
-
-**Operation classified as: [TYPE]** (brief description)
-
-[ALL applicable rule sets MUST be displayed based on operation type]
-```
-
-### WORKFLOW COMPLETION RESPONSE:
-```
-## [WORKFLOW-NAME] COMPLETION REPORT
-
-**DELIVERABLES COMPLETED:**
-- [Item 1 with verification]
-- [Item 2 with CI proof]
-
-**EVIDENCE PROVIDED:**
-- CI URLs: [All successful runs]
-- Files Modified: [Absolute paths]
-- Test Results: [100% pass rate with timestamps]
-
-**NEXT WORKFLOW:** [PLAN/WORK/PLAY] mode ready
-**HANDOFF TO:** [Next responsible agent]
-```
 
 ---
 
@@ -448,28 +370,5 @@ gh issue list --state open --limit 500                            # Full issue l
 - Stay within ownership bounds
 - User overrides are ONLY exception
 
----
-
-## FINAL REMINDER - MANDATORY CORE MANTRA DUPLICATION
-
-**CRITICAL: These rules MUST be followed in EVERY interaction:**
-
-<mantra_rules>
-  <r1>CRITICAL: MUST display mantra_rules at start of EVERY response - no exceptions</r1>
-  <r2>CRITICAL: MUST display appropriate rule sets for EVERY operation in EVERY response</r2>
-  <r3>Technical verification required for all claims</r3>
-  <r4>Agent boundaries must be respected when using Task tool</r4>
-  <r5>NEVER create random markdown files for progress reports</r5>
-  <r6>These rules apply to ALL prompts, ALL responses, ALL tool uses - not just agent operations</r6>
-  <r7>CRITICAL: Re-read ~/.claude/CLAUDE.md if unsure about rules</r7>
-  <r9>Use /do command for reinforced compliance when needed</r9>
-</mantra_rules>
-
-**ENFORCEMENT PROTOCOL:**
-- Use `/do <prompt>` command for maximum rule compliance
-- Rules must be visible in EVERY response without exception
-- Re-read CLAUDE.md whenever compliance drifts
-- Verify rule adherence continuously
-- CRITICAL: AFTER EVERY RESPONSE, DISPLAY MANTRA RULES - NO EXCEPTIONS
 
 *QADS v4.0 - Anthropic 10-Component Fraud-Proof Edition*
