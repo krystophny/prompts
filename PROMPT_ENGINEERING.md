@@ -60,18 +60,16 @@ tone. Include:
 ### 2. Use Examples (Few-Shot Prompting)
 
 **Structure**:
-```xml
-<examples>
-<example>
-<input>[Example input 1]</input>
-<output>[Desired output 1]</output>
-</example>
+```
+Examples:
 
-<example>
-<input>[Example input 2]</input>
-<output>[Desired output 2]</output>
-</example>
-</examples>
+Example 1:
+Input: [Example input 1]
+Output: [Desired output 1]
+
+Example 2:
+Input: [Example input 2]
+Output: [Desired output 2]
 
 Now process: [Actual input]
 ```
@@ -100,14 +98,12 @@ Before answering, work through this process:
 ```
 
 **Structured**:
-```xml
-<thinking>
+```
+## Thinking Process
 Work through your reasoning here step-by-step.
-</thinking>
 
-<answer>
+## Answer
 Provide your final response here.
-</answer>
 ```
 
 **Benefits**:
@@ -116,49 +112,41 @@ Provide your final response here.
 - Enables debugging of unclear prompts
 - Improves accuracy on analytical tasks
 
-### 4. XML Tag Structure
+### 4. Structured Organization
 
-**Core Organizational Tags**:
-```xml
-<instructions>
+**Core Organizational Sections**:
+```
+## Instructions
 Your main task instructions here
-</instructions>
 
-<context>
+## Context
 Background information and situational context
-</context>
 
-<examples>
+## Examples
 Input/output examples for reference
-</examples>
 
-<formatting>
+## Formatting Requirements
 Specific formatting requirements
-</formatting>
 
-<constraints>
-Limitations and restrictions
-</constraints>
+## Constraints
+- Limitations and restrictions
 ```
 
-**Processing Tags**:
-```xml
-<thinking>
+**Processing Sections**:
+```
+## Thinking Process
 Step-by-step reasoning process
-</thinking>
 
-<analysis>
+## Analysis
 Detailed analysis section
-</analysis>
 
-<answer>
+## Answer
 Final structured response
-</answer>
 ```
 
 **Best Practices**:
-- Use consistent, descriptive tag names
-- Nest tags for hierarchical content
+- Use consistent, descriptive section headers
+- Organize content hierarchically with clear headings
 - Combine with other techniques for maximum effect
 
 ### 5. System Prompts and Role Assignment
@@ -240,26 +228,19 @@ Step 4: Final quality check
 - Can improve response quality by up to 30%
 
 **Document Structure**:
-```xml
-<documents>
-  <document index="1">
-    <source>annual_report_2023.pdf</source>
-    <document_content>
-    {{LONG_DOCUMENT_CONTENT}}
-    </document_content>
-  </document>
-  
-  <document index="2">
-    <source>market_analysis.docx</source>
-    <document_content>
-    {{SECOND_DOCUMENT_CONTENT}}
-    </document_content>
-  </document>
-</documents>
+```
+## Documents
 
-<query>
+### Document 1
+- Source: annual_report_2023.pdf
+- Content: {{LONG_DOCUMENT_CONTENT}}
+
+### Document 2  
+- Source: market_analysis.docx
+- Content: {{SECOND_DOCUMENT_CONTENT}}
+
+## Query
 Your specific question or task here
-</query>
 ```
 
 **Information Extraction Pattern**:
@@ -273,54 +254,44 @@ Then, analyze these quotes to answer: [SPECIFIC_QUESTION]
 
 ### Prompt Organization Template
 
-```xml
-<role>
+```
+## Role
 Define Claude's expertise and perspective
-</role>
 
-<context>
+## Context
 Provide relevant background information
-</context>
 
-<instructions>
+## Instructions
 1. Clear, numbered steps
 2. Specific expectations
 3. Output format requirements
-</instructions>
 
-<examples>
+## Examples
 Show 2-3 input/output pairs
-</examples>
 
-<constraints>
+## Constraints
 - List any limitations
 - Specify what to avoid
 - Define boundaries
-</constraints>
 
-<formatting>
+## Formatting Requirements
 Specify exact output structure
-</formatting>
 ```
 
 ### Response Structure Template
 
-```xml
-<thinking>
+```
+## Thinking Process
 Step-by-step reasoning process
-</thinking>
 
-<analysis>
+## Analysis
 Detailed examination of the problem
-</analysis>
 
-<solution>
+## Solution
 Main response content
-</solution>
 
-<verification>
+## Verification
 Quality check and validation
-</verification>
 ```
 
 ## Optimization Principles
@@ -353,7 +324,7 @@ Quality check and validation
 - Break complex tasks into subtasks
 
 **For Consistency**:
-- Use XML tags for structure
+- Use structured sections with clear headers
 - Provide clear formatting guidelines
 - Use system prompts for role consistency
 - Implement response prefilling
@@ -367,79 +338,67 @@ Quality check and validation
 ## Common Patterns
 
 ### Analysis Pattern
-```xml
-<instructions>
+```
+## Instructions
 1. Summarize the key information
 2. Identify patterns and trends
 3. Analyze implications
 4. Provide actionable recommendations
-</instructions>
 
-<thinking>
+## Thinking Process
 Work through each step systematically
-</thinking>
 
-<summary>
+## Summary
 Key information overview
-</summary>
 
-<patterns>
+## Patterns
 Identified trends and patterns
-</patterns>
 
-<implications>
+## Implications
 What this means for the situation
-</implications>
 
-<recommendations>
+## Recommendations
 Specific, actionable next steps
-</recommendations>
 ```
 
 ### Generation Pattern
-```xml
-<role>
+```
+## Role
 Expert content creator in [DOMAIN]
-</role>
 
-<requirements>
+## Requirements
 - Target audience: [AUDIENCE]
 - Tone: [TONE]
 - Length: [LENGTH]
 - Format: [FORMAT]
-</requirements>
 
-<examples>
+## Examples
 [Show similar successful outputs]
-</examples>
 
-<constraints>
+## Constraints
 - Must include: [REQUIRED_ELEMENTS]
 - Must avoid: [FORBIDDEN_ELEMENTS]
-</constraints>
 
+## Task
 Generate: [SPECIFIC_REQUEST]
 ```
 
 ### Evaluation Pattern
-```xml
-<criteria>
+```
+## Criteria
 1. [CRITERION_1]: [DESCRIPTION]
-2. [CRITERION_2]: [DESCRIPTION]
+2. [CRITERION_2]: [DESCRIPTION]  
 3. [CRITERION_3]: [DESCRIPTION]
-</criteria>
 
-<evaluation_process>
+## Evaluation Process
 For each criterion, provide:
 - Score (1-10)
 - Justification
 - Supporting evidence
 - Improvement suggestions
-</evaluation_process>
 
-<final_assessment>
+## Final Assessment
 Overall score and summary recommendation
-</final_assessment>
 ```
 
 ---
@@ -450,7 +409,7 @@ Overall score and summary recommendation
 - [ ] Clear, specific instructions
 - [ ] Relevant examples provided
 - [ ] Chain of thought reasoning
-- [ ] XML tags for structure
+- [ ] Structured sections with clear headers
 - [ ] Appropriate role assignment
 - [ ] Response format prefilling (if needed)
 
