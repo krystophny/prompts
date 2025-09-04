@@ -24,6 +24,7 @@
   <r7>Process/workflow/mode: MUST display process_rules</r7>
   <r8>CRITICAL: ALL rule displays are MANDATORY for EVERY response - no exceptions for ANY interaction</r8>
   <r9>CRITICAL: ALWAYS include visible "Operation classified as: [TYPE]" statement for user transparency</r9>
+  <r10>CRITICAL: MUST display operation_classification_rules after EVERY tool use - NO EXCEPTIONS</r10>
 </operation_classification_rules>
 
 ## CORE PRINCIPLES & WORKFLOW OVERVIEW
@@ -58,14 +59,14 @@
   <r7>If GitHub operations: ADD github_rules</r7>
   <r8>If PR management: ADD pr_rules</r8>
   <r9>ADD verification_rules for all git operations</r9>
-  <r10>CRITICAL: MUST display repository_rules when triggered AND after every tool use</r10>
+  <r10>CRITICAL: MUST display repository_rules when triggered</r10>
 </repository_rules>
 
 <commit_title_rules>
   <r1>Conventional Commits: type: description</r1>
   <r2>Imperative mood, <72 chars</r2>
   <r3>Reference issues: fixes #123</r3>
-  <r4>CRITICAL: MUST display commit_title_rules when triggered AND after every tool use</r4>
+  <r4>CRITICAL: MUST display commit_title_rules when triggered</r4>
 </commit_title_rules>
 
 <github_rules>
@@ -85,7 +86,7 @@
   <r14>CRITICAL: CHRIS MANDATORY CLEANUP: chris-architect MUST close invalid issues and move information to appropriate meta-issues</r14>
   <r15>CRITICAL: CHECK FOR DUPLICATES FIRST: Search existing issues before filing</r15>
   <r16>CRITICAL: GITHUB CLI TRUNCATION FRAUD PREVENTION: ALWAYS use --limit 500 for accurate counts and searches</r16>
-  <r17>CRITICAL: MUST display github_rules when triggered AND after every tool use</r17>
+  <r17>CRITICAL: MUST display github_rules when triggered</r17>
 </github_rules>
 
 <pr_rules>
@@ -99,7 +100,7 @@
   <r8>CRITICAL: NEVER close PRs without fixing problems</r8>
   <r9>CRITICAL: WORK UNTIL SUCCESS: Must continue fixing issues until CI passes and all requirements fulfilled</r9>
   <r10>CRITICAL: NO ESCAPE MECHANISMS: No agent authority to close PRs to avoid work</r10>
-  <r11>CRITICAL: MUST display pr_rules when triggered AND after every tool use</r11>
+  <r11>CRITICAL: MUST display pr_rules when triggered</r11>
 </pr_rules>
 
 <verification_rules>
@@ -121,7 +122,7 @@
   <r16>CRITICAL: ARTIFACT VERIFICATION: Validate build outputs match expected structure</r16>
   <r17>CRITICAL: STRUCTURED HANDBACK MANDATORY: Include PROBLEM/EVIDENCE/SOLUTION format</r17>
   <r18>CRITICAL: ACTIONABLE FEEDBACK with concrete steps and technical evidence</r18>
-  <r19>CRITICAL: MUST display verification_rules when triggered AND after every tool use</r19>
+  <r19>CRITICAL: MUST display verification_rules when triggered</r19>
 </verification_rules>
 
 ---
@@ -146,7 +147,7 @@
   <r16>ADD test_enforcement_rules for code work</r16>
   <r17>If physics code: ADD physics_rules</r17>
   <r18>All agents: ADD compliance_mindset_rules AND ai_failure_prevention_rules</r18>
-  <r19>CRITICAL: MUST display implementation_rules when triggered AND after every tool use</r19>
+  <r19>CRITICAL: MUST display implementation_rules when triggered</r19>
   <r20>BEFORE implementation: ADD code_quality_rules</r20>
   <r21>NO TIME PRESSURE: Take time to solve tasks fully and cleanly; do not expand scope</r21>
 </implementation_rules>
@@ -159,21 +160,21 @@
   <r5>Self-documenting meaningful names</r5>
   <r6>NO emojis or non-ASCII characters</r6>
   <r7>All files must end with newline character</r7>
-  <r8>CRITICAL: MUST display code_quality_rules when triggered AND after every tool use</r8>
+  <r8>CRITICAL: MUST display code_quality_rules when triggered</r8>
 </code_quality_rules>
 
 <code_cleanup_rules>
   <r1>Delete obsolete code immediately</r1>
   <r2>NO backup copies or commenting out</r2>
   <r3>Boy Scout Rule: leave cleaner than found</r3>
-  <r4>CRITICAL: MUST display code_cleanup_rules when triggered AND after every tool use</r4>
+  <r4>CRITICAL: MUST display code_cleanup_rules when triggered</r4>
 </code_cleanup_rules>
 
 <documentation_rules>
   <r1>Example-first: show working code</r1>
   <r2>ELIMINATE ALL DUPLICATION</r2>
   <r3>Copy-paste ready examples</r3>
-  <r4>CRITICAL: MUST display documentation_rules when triggered AND after every tool use</r4>
+  <r4>CRITICAL: MUST display documentation_rules when triggered</r4>
 </documentation_rules>
 
 <test_enforcement_rules>
@@ -187,7 +188,7 @@
   <r8>CRITICAL: XFAIL ONLY EXCEPTION: Only xfail tests with GitHub issue link explaining resolution plan</r8>
   <r9>CRITICAL: ALL TESTS MUST PASS: Every test must pass or be properly xfail with issue reference</r9>
   <r10>CRITICAL: QUALITY TEST DESIGN: Non-shallow, non-tautological, fast, flexible tests</r10>
-  <r11>CRITICAL: MUST display test_enforcement_rules when triggered AND after every tool use</r11>
+  <r11>CRITICAL: MUST display test_enforcement_rules when triggered</r11>
 </test_enforcement_rules>
 
 <fortran_rules>
@@ -201,7 +202,7 @@
   <r8>NEVER use quotes in Fortran comments</r8>
   <r9>Fortran has COLUMN-MAJOR arrays, so INNERMOST loop is over LEFTMOST index</r9>
   <r10>Use trim() with Fortran strings - they lack C-style null termination</r10>
-  <r11>CRITICAL: MUST display fortran_rules when triggered AND after every tool use</r11>
+  <r11>CRITICAL: MUST display fortran_rules when triggered</r11>
 </fortran_rules>
 
 <physics_rules>
@@ -209,7 +210,7 @@
   <r2>Errors above 1% are always large and point to a problem</r2>
   <r3>Always carefully scan and read reference code and docs and follow them to the point</r3>
   <r4>If you identify mathematical errors or numerical inefficiencies, shout them out</r4>
-  <r5>CRITICAL: MUST display physics_rules when triggered AND after every tool use</r5>
+  <r5>CRITICAL: MUST display physics_rules when triggered</r5>
 </physics_rules>
 
 <compliance_mindset_rules>
@@ -217,7 +218,7 @@
   <r2>EAGER FEEDBACK ACCEPTANCE: Reviews and criticism improve work quality</r2>
   <r3>HUMBLE PERFECTIONISM: Strive for excellence while accepting all guidance</r3>
   <r4>GRATEFUL IMPROVEMENT: Thank reviewers for finding issues and fix immediately</r4>
-  <r5>CRITICAL: MUST display compliance_mindset_rules when triggered AND after every tool use</r5>
+  <r5>CRITICAL: MUST display compliance_mindset_rules when triggered</r5>
 </compliance_mindset_rules>
 
 <ai_failure_prevention_rules>
@@ -227,7 +228,7 @@
   <r4>BUILD SYSTEM VIOLATIONS: Use project build systems, never ad hoc compilation</r4>
   <r5>INCOMPLETE FUNCTIONALITY: Test actual behavior, not just compilation</r5>
   <r6>PACKAGE HALLUCINATION: Validate dependencies exist before importing</r6>
-  <r7>CRITICAL: MUST display ai_failure_prevention_rules when triggered AND after every tool use</r7>
+  <r7>CRITICAL: MUST display ai_failure_prevention_rules when triggered</r7>
 </ai_failure_prevention_rules>
 
 ---
@@ -238,7 +239,7 @@
   <r2>ALWAYS use project build system</r2>
   <r3>Check README/CI for correct commands</r3>
   <r4>ADD verification_rules for all build operations</r4>
-  <r5>CRITICAL: MUST display build_rules when triggered AND after every tool use</r5>
+  <r5>CRITICAL: MUST display build_rules when triggered</r5>
 </build_rules>
 
 ---
@@ -254,7 +255,7 @@
   <r7>If batch mode: AUTONOMOUS EXECUTION - No user prompts, continue until completion</r7>
   <r8>If batch mode: ERROR RECOVERY - Handle failures automatically</r8>
   <r9>If multisprint mode: ADD continuous_execution_mantra MANDATORY</r9>
-  <r10>CRITICAL: MUST display process_rules when triggered AND after every tool use</r10>
+  <r10>CRITICAL: MUST display process_rules when triggered</r10>
 </process_rules>
 
 <workflow_execution_rules>
@@ -266,7 +267,7 @@
   <r6>CRITICAL: READY PRs BLOCK all other work AND failing PRs BLOCK their own merge - fix first</r6>
   <r7>CRITICAL: Draft PRs ignored completely</r7>
   <r8>CRITICAL: SEQUENTIAL EXECUTION IN PLAY: Execute agents in order max -> patrick -> vicky -> max -> chris to avoid conflicts</r8>
-  <r9>CRITICAL: MUST display workflow_execution_rules when triggered AND after every tool use</r9>
+  <r9>CRITICAL: MUST display workflow_execution_rules when triggered</r9>
 </workflow_execution_rules>
 
 <agent_responsibility_rules>
@@ -285,7 +286,7 @@
   <r13>CRITICAL: max CI TIMEOUT: Wait max 10 minutes, then kill CI and handback</r13>
   <r14>CRITICAL: NO PR CLOSURE without fixes</r14>
   <r15>CRITICAL: MANDATORY PROBLEM RESOLUTION: All agents must continue working until CI passes</r15>
-  <r16>CRITICAL: MUST display agent_responsibility_rules when triggered AND after every tool use</r16>
+  <r16>CRITICAL: MUST display agent_responsibility_rules when triggered</r16>
   <r17>CRITICAL: MULTISPRINT MANTRA ENFORCEMENT - ALL agents MUST display continuous_execution_mantra in EVERY response during multisprint mode</r17>
 </agent_responsibility_rules>
 
