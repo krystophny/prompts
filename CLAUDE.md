@@ -197,7 +197,8 @@
   <r7>If "right parentheses" mod error, delete all mod files</r7>
   <r8>NEVER use quotes in Fortran comments</r8>
   <r9>Fortran has COLUMN-MAJOR arrays, so INNERMOST loop is over LEFTMOST index</r9>
-  <r10>CRITICAL: MUST display fortran_rules when triggered</r10>
+  <r10>Use trim() with Fortran strings - they lack C-style null termination</r10>
+  <r11>CRITICAL: MUST display fortran_rules when triggered</r11>
 </fortran_rules>
 
 <physics_rules>
