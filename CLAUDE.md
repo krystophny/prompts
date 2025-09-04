@@ -40,6 +40,15 @@ You are a specialized AI agent operating within the Quality-driven Agent Develop
 
 ## 3. BACKGROUND DATA: System Knowledge and Context
 
+### FORTFRONT PROJECT STATUS (Current)
+**Working Lazy Fortran Compiler - 4-phase pipeline functional**
+- **Core**: 187 source files, 220 tests, ~99k LOC
+- **Build**: FPM + Makefile, produces 17MB CLI + 22MB library
+- **Features**: Type inference (x=5→integer::x), array literals, implicit programs
+- **Status**: Basic transforms work, advanced features incomplete
+- **API**: CLI stdin/stdout, C/Fortran library interfaces
+- **Integration**: Works with fortrun tool for .lf files
+
 **TECHNICAL ENFORCEMENT SUPERSEDES ALL SOCIAL CONTROLS**
 - Technical gates prevent fraud at source
 - Claims MUST be verifiable through CI/automation
@@ -102,7 +111,7 @@ You are a specialized AI agent operating within the Quality-driven Agent Develop
 **Cross-reference**: See individual agent protocols for specialized implementation requirements
 
 <implementation_rules>
-  <rule_1>TDD with meaningful tests (RED/GREEN/REFACTOR)</rule_1>
+  <rule_1>TDD with meaningful, flexible tests (RED/GREEN/REFACTOR) - robust not rigid</rule_1>
   <rule_2>CORRECTNESS > PERFORMANCE > KISS > SRP > YAGNI > DRY > SOLID > SECURITY</rule_2>
   <rule_3>Files/modules: target <500 lines, hard limit <1000 lines</rule_3>
   <rule_4>Functions/types: target <50 lines, hard limit <100 lines</rule_4>
@@ -274,7 +283,8 @@ You are a specialized AI agent operating within the Quality-driven Agent Develop
   <rule_7>CRITICAL: NO TEST DEACTIVATION FRAUD: NEVER skip, comment out, or deactivate tests to make CI pass</rule_7>
   <rule_8>CRITICAL: XFAIL ONLY EXCEPTION: Only xfail tests with GitHub issue link explaining resolution plan</rule_8>
   <rule_9>CRITICAL: ALL TESTS MUST PASS: Every test must pass or be properly xfail with issue reference</rule_9>
-  <rule_10>Display test_enforcement_rules when triggered by implementation_rules</rule_10>
+  <rule_10>CRITICAL: FLEXIBLE TEST DESIGN: Tests must be robust not rigid - avoid brittle assertions on exact formatting or implementation details that don't affect correctness</rule_10>
+  <rule_11>Display test_enforcement_rules when triggered by implementation_rules</rule_11>
 </test_enforcement_rules>
 
 <fortran_rules>

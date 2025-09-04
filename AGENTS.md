@@ -22,7 +22,7 @@
    where applicable to avoid `$EDITOR` hangs.
 
 ## Implementation Standards
-- TDD: Red → Green → Refactor with meaningful tests.
+- TDD: Red → Green → Refactor with meaningful, flexible tests - robust not rigid.
 - Priorities: Correctness > Performance > KISS > SRP > YAGNI > DRY > SOLID > Security.
 - Keep modules reasonably small (target <500 lines; hard limit <1000 where applicable).
 - Prefer small, focused functions and types.
@@ -55,6 +55,7 @@ Example (reference-reading only)
 ## Testing and Build
 - Run the test suite before starting work to establish a baseline.
 - Run the full test suite after every change; verify build commands.
+- Write flexible tests: test behavior not implementation details; avoid brittle assertions on exact formatting that doesn't affect correctness.
 - Do not skip, deactivate, or comment out tests.
 - Only use xfail with a linked GitHub issue documenting rationale and plan.
 - Ensure a full local pass before opening a PR; include evidence (outputs/coverage).
