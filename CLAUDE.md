@@ -27,9 +27,9 @@
 - **ROLE-SPECIALIZED CONTRIBUTOR** - Operate within specific agent ownership boundaries
 
 **WORKFLOW SYSTEM:** `plan` | `work` | `play`
-- **PLAN**: chris-architect → GitHub meta-issues → NO git operations
-- **WORK**: max → implementer → CI-GATE → reviewer → max → merge
-- **PLAY**: max → serial audits → issue filing → NO git commits
+- **PLAN**: Architect → GitHub meta-issues → NO git operations
+- **WORK**: Repository manager → implementer → CI-GATE → reviewer → merge
+- **PLAY**: Serial audits → issue filing → NO git commits
 
 ---
 
@@ -64,16 +64,16 @@
 - NO GENERIC ISSUES: Avoid vague issues - specify exact problem with measurable criteria
 - EPICS FORBIDDEN AS ISSUES: EPICS belong in PRODUCT BACKLOG meta-issue ONLY
 - ISSUE vs META-ISSUE DISTINCTION: Regular issues = concrete defects; Meta-issues = planning documents
-- CHRIS MANDATORY CLEANUP: chris-architect MUST close invalid issues and move information to appropriate meta-issues
+- MANDATORY CLEANUP: Close invalid issues and move information to appropriate meta-issues
 - CHECK FOR DUPLICATES FIRST: Search existing issues before filing
 - GITHUB CLI TRUNCATION FRAUD PREVENTION: ALWAYS use --limit 500 for accurate counts and searches
 
 ### Pull Request Rules
 - NO draft PRs - create ready for review
-- sergei creates PR for code, winny for docs - EXCLUSIVE, AFTER CI PASSES
+- Implementer creates PR - EXCLUSIVE, AFTER CI PASSES
 - NEVER close PRs without merge
 - Fix in review loop until resolved
-- max merges PRs ONLY if CI passes - otherwise MANDATORY handback
+- Repository manager merges PRs ONLY if CI passes - otherwise MANDATORY handback
 - READY PRs BLOCK all other work
 - Draft PRs ignored completely
 - NEVER close PRs without fixing problems
@@ -93,7 +93,7 @@
 - NO CI GATE BYPASS - No exceptions
 - LOCAL vs CI DISCREPANCIES ARE BLOCKING DEFECTS: Must be resolved, never bypassed
 - ALL CI FAILURES INDIVIDUALLY ANALYZED: Environmental issues are implementer responsibility
-- SERGEI LOCAL-FIRST PROTOCOL: Full local test pass REQUIRED before PR creation
+- LOCAL-FIRST PROTOCOL: Full local test pass REQUIRED before PR creation
 - BUILD REPRODUCIBILITY: Verify builds work in clean CI environment
 - DEPENDENCY VALIDATION: Ensure all dependencies available with correct versions
 - ARTIFACT VERIFICATION: Validate build outputs match expected structure
@@ -202,7 +202,7 @@
 
 ## PROCESS & WORKFLOW COORDINATION
 ### Process Rules
-- max-devops assessment ALWAYS first in WORK workflow
+- Repository assessment ALWAYS first in WORK workflow
 - COMPLETE existing DOING work before starting SPRINT BACKLOG items
 - Follow workflow order exactly
 - User overrides are ONLY exception - IMMEDIATE execution, no questioning
@@ -225,27 +225,25 @@
 ### Agent Responsibility Rules
 - DELEGATION CLARITY: Claude Code LAUNCHES agents via Task tool
 - AGENT EXECUTION: Use Task tool to launch specialized agents
-- max: Repository management, SPRINT BACKLOG meta-issue status updates, final merge, NEVER creates PRs
-- chris: **EXCELLENCE ARCHITECT** - Planning with absolute compliance to sprint goals and design requirements
-- sergei: **CODE PERFECTIONIST** - Implementation with complete adherence to instructions and architectural specifications
-- patrick: **QUALITY GUARDIAN** - Independent review maintaining quality while respecting established requirements
-- winny: **DOCUMENTATION MASTER** - Clear documentation following all specified requirements and guidelines
-- vicky: **BUG HUNTER** - Methodical defect detection aligned with project objectives
 - Stay in your lane - work within ownership while supporting collective mission
-- sergei BLOCKED when READY PRs exist - focus drives excellence
-- patrick/max TEST DEACTIVATION DETECTION: Flag any test skipping/deactivation as FRAUD - immediate handback
-- max CI GATE ENFORCEMENT: CI failure = immediate handback, NO merge authority override
-- max CI TIMEOUT: Wait max 10 minutes, then kill CI and handback
 - NO PR CLOSURE without fixes
 - MANDATORY PROBLEM RESOLUTION: All agents must continue working until CI passes
 - MULTISPRINT MANTRA ENFORCEMENT - ALL agents must reference continuous_execution_mantra in EVERY response during multisprint mode
+
+**Agent-specific responsibilities are defined in their respective agent files:**
+- chris-architect: Planning, meta-issue management, architectural decisions
+- sergei-perfectionist-coder: Code implementation, local-first testing, PR creation
+- patrick-auditor: Code quality review, fraud detection, test integrity
+- winny-technical-writer: Documentation, CI-validated examples
+- vicky-acceptance-tester: Bug hunting, edge case testing, issue filing
+- max-devops-engineer: Repository state, CI gates, merge decisions
 
 ---
 
 ## WORKFLOW MODES
 
 ### PLAN WORKFLOW
-**Actor**: chris-architect ONLY  
+**Actor**: Architect ONLY  
 **Deliverable**: Updated GitHub meta-issues with consolidated sprint plan  
 **Protocol**: Update GitHub meta-issues ONLY - **CRITICAL: NO GIT OPERATIONS**
 - Sprint planning after PLAY or user request
@@ -255,18 +253,18 @@
 
 ### WORK WORKFLOW
 **Deliverable**: Production-ready code/docs merged to main with CI verification  
-**Protocol**: max → (sergei OR winny) → CI-GATE → reviewer → max
-1. **max**: Repository management, rebase, branch preparation, CI health check
-2. **Implementation**: sergei or winny, MANDATORY CI pass before PR
+**Protocol**: Repository manager → implementer → CI-GATE → reviewer → merge
+1. **Repository management**: Branch preparation, CI health check
+2. **Implementation**: Code/docs with MANDATORY CI pass before PR
 3. **CI-GATE**: Automated verification blocks PR if tests fail
-4. **Review**: patrick or vicky, handback if critical
-5. **max**: Merge ONLY if CI passes, otherwise handback
+4. **Review**: Quality review with handback if critical
+5. **Merge**: ONLY if CI passes, otherwise handback
 
 ### PLAY WORKFLOW
 **Deliverable**: GitHub issues filed for all discovered defects with technical evidence  
-**Protocol**: max PR assessment → **CRITICAL: MANDATORY SERIAL AUDITS** → **CRITICAL: NO GIT COMMITS**
-- **max**: Check for open PRs, handback to WORK mode if any exist
-- **CRITICAL: SEQUENTIAL EXECUTION**: Launch agents in order max → patrick → vicky → chris to avoid conflicts
+**Protocol**: PR assessment → **CRITICAL: MANDATORY SERIAL AUDITS** → **CRITICAL: NO GIT COMMITS**
+- Check for open PRs, handback to WORK mode if any exist
+- **CRITICAL: SEQUENTIAL EXECUTION**: Launch agents serially to avoid conflicts
 - Find DEFECTS ONLY - no features
 - File GitHub issues immediately
 - **CRITICAL FORBIDDEN**: git add, git commit, git push
@@ -282,12 +280,12 @@
 - **DESIGN**: Architecture decisions and sprint goals
 
 **Properties:**
-- Managed exclusively by chris-architect via GitHub API
+- Managed exclusively by architect via GitHub API
 - Updated through issue description editing (NOT comments)
 - Never closed - continuously updated for project management
 
 ### Workflow Transitions
-**PLAN → WORK**: chris-architect organizes issues in SPRINT BACKLOG → triggers WORK mode  
+**PLAN → WORK**: Architect organizes issues in SPRINT BACKLOG → triggers WORK mode  
 **WORK → PLAY**: All SPRINT BACKLOG items completed → triggers PLAY mode automatically  
 **PLAY → PLAN**: Defect discovery complete → triggers PLAN mode for next sprint  
 **Emergency Override**: User can force any workflow transition
@@ -311,7 +309,7 @@
 
 ### HANDBACK EXAMPLE
 ```markdown
-**HANDBACK TO sergei-perfectionist-coder**
+**HANDBACK TO implementer**
 
 PROBLEM: CI tests failing - 3 test failures in authentication module
 EVIDENCE: CI URL https://github.com/owner/project/actions/runs/987654321 shows test_login_invalid_credentials, test_logout_cleanup, test_session_timeout all failing
@@ -359,7 +357,9 @@ gh issue list --state open --limit 500                            # Full issue l
 - **chris-architect.md**: GitHub meta-issue management, PLAN and PLAY workflow sections
 - **patrick-auditor.md**: Code quality enforcement, fraud detection protocols
 - **winny-technical-writer.md**: CI-validated documentation, example-first approach
-- **All agent files**: XML Mantra Protocol with role-specific behavioral reinforcement
+- **vicky-acceptance-tester.md**: Edge case testing, bug hunting, systematic validation
+- **georg-test-engineer.md**: Test framework architecture, comprehensive test design
+- **All agent files**: Role-specific protocols with behavioral guidelines
 
 ---
 
