@@ -9,8 +9,7 @@
   <r5>NEVER create random markdown files for progress reports</r5>
   <r6>These rules apply to ALL prompts, ALL responses, ALL tool uses - not just agent operations</r6>
   <r7>CRITICAL: Re-read ~/.claude/CLAUDE.md if unsure about rules</r7>
-  <r8>CRITICAL: MUST display mantra_rules BEFORE and AFTER every tool use - NO EXCEPTIONS</r8>
-  <r9>Use /do command for reinforced compliance when needed</r9>
+  <r8>Use /do command for reinforced compliance when needed</r8>
 </mantra_rules>
 
 ## OPERATION CLASSIFICATION - MANDATORY BRANCHING
@@ -24,7 +23,6 @@
   <r7>Process/workflow/mode: MUST display process_rules</r7>
   <r8>CRITICAL: ALL rule displays are MANDATORY for EVERY response - no exceptions for ANY interaction</r8>
   <r9>CRITICAL: ALWAYS include visible "Operation classified as: [TYPE]" statement for user transparency</r9>
-  <r10>CRITICAL: MUST display operation_classification_rules after EVERY tool use - NO EXCEPTIONS</r10>
 </operation_classification_rules>
 
 ## CORE PRINCIPLES & WORKFLOW OVERVIEW
@@ -39,12 +37,6 @@
 - **PLAN**: chris-architect → GitHub meta-issues → NO git operations
 - **WORK**: max → implementer → CI-GATE → reviewer → max → merge
 - **PLAY**: max → serial audits → issue filing → NO git commits
-
-**PROJECT STATUS - FORTFRONT:**
-- **Core**: 187 source files, 220 tests, ~99k LOC
-- **Build**: FPM + Makefile, produces 17MB CLI + 22MB library
-- **Features**: Type inference, array literals, implicit programs
-- **Integration**: Works with fortrun tool for .lf files
 
 ---
 
@@ -469,7 +461,6 @@ gh issue list --state open --limit 500                            # Full issue l
   <r5>NEVER create random markdown files for progress reports</r5>
   <r6>These rules apply to ALL prompts, ALL responses, ALL tool uses - not just agent operations</r6>
   <r7>CRITICAL: Re-read ~/.claude/CLAUDE.md if unsure about rules</r7>
-  <r8>CRITICAL: MUST display mantra_rules BEFORE and AFTER every tool use - NO EXCEPTIONS</r8>
   <r9>Use /do command for reinforced compliance when needed</r9>
 </mantra_rules>
 
@@ -477,8 +468,7 @@ gh issue list --state open --limit 500                            # Full issue l
 - Use `/do <prompt>` command for maximum rule compliance
 - Rules must be visible in EVERY response without exception
 - Re-read CLAUDE.md whenever compliance drifts
-- Display rules before AND after tool uses
 - Verify rule adherence continuously
-- CRITICAL: AFTER EVERY TOOL USE, DISPLAY MANTRA RULES - NO EXCEPTIONS
+- CRITICAL: AFTER EVERY RESPONSE, DISPLAY MANTRA RULES - NO EXCEPTIONS
 
 *QADS v4.0 - Anthropic 10-Component Fraud-Proof Edition*
