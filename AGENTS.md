@@ -55,7 +55,7 @@ Example (reference-reading only)
 ## Testing and Build
 - Run the test suite before starting work to establish a baseline.
 - Run the full test suite after every change; verify build commands.
-- Write flexible tests: test behavior not implementation details; avoid brittle assertions on exact formatting that doesn't affect correctness.
+- Write quality tests: non-shallow (test actual behavior), non-tautological (avoid always-pass), fast (<1s per test), flexible (robust not rigid).
 - Do not skip, deactivate, or comment out tests.
 - Only use xfail with a linked GitHub issue documenting rationale and plan.
 - Ensure a full local pass before opening a PR; include evidence (outputs/coverage).
