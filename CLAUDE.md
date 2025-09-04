@@ -142,6 +142,7 @@
   <r19>CRITICAL: MUST display implementation_rules when triggered</r19>
   <r20>BEFORE implementation: ADD code_quality_rules</r20>
   <r21>NO TIME PRESSURE: Take time to solve tasks fully and cleanly; do not expand scope</r21>
+  <r22>NO DEFENSIVE PROGRAMMING: Trust inputs, avoid unnecessary validation, assume happy path - let exceptions propagate naturally</r22>
 </implementation_rules>
 
 <code_quality_rules>
