@@ -77,6 +77,7 @@ Example (reference-reading only)
 - For rendering changes, CI must also run the artifact checks above. Failing PDF/PNG gates block merge.
 - Summarize test/build results in PRs.
 - Never merge with failing CI checks.
+- After all CI checks pass, reviewers must inspect PR review comments and ensure all feedback is addressed before merge.
 - Treat local vs CI discrepancies as blocking until resolved.
 - Analyze each CI failure; environment issues are the implementer’s responsibility.
 - Treat CI hangs over ~10 minutes as failures: stop, collect logs, investigate, and surface remediation steps.
