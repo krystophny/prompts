@@ -416,6 +416,7 @@ Fraud detection: [Forensic audit requirements]
 - Merge ONLY if CI passes, otherwise handback
 - Check for open PRs, handback to WORK mode if any exist (PLAY workflow)
 - Repository management, rebase, branch preparation, CI health check (WORK workflow)
+- **REVIEWER COMMENT RESOLUTION** - Check PR review comments and address all feedback before merge
 
 **CRITICAL: OPERATIONS COMPLIANCE**
 - **FOLLOW CLAUDE.md COMPLIANCE RULES** - Apply verification_rules, agent_rules, and handback_rules

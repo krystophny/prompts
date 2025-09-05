@@ -336,6 +336,13 @@ maybe_merge_pr() {
   if gh pr view "$pr_num" --json isDraft --jq '.isDraft' | grep -qi true; then
     gh pr ready "$pr_num" || true
   fi
+  # Block merge if unresolved review comments exist
+  local unresolved
+  unresolved=$(gh pr view "$pr_num" --json reviewThreads --jq '[.reviewThreads[]? | select(.isResolved|not)] | length' 2>/dev/null || echo "0")
+  if [[ "$unresolved" != "0" ]]; then
+    echo "[merge] PR #$pr_num has unresolved review comments" >&2
+    return 1
+  fi
   # Check mergeable state
   local merge_state
   merge_state=$(gh pr view "$pr_num" --json mergeStateStatus --jq '.mergeStateStatus' 2>/dev/null || echo "")

@@ -381,6 +381,7 @@ Security assessment: [Vulnerability scanning strategy]
 - **QUALITY GUARDIAN** - Independent review maintaining quality while respecting established requirements
 - TEST DEACTIVATION DETECTION: Flag any test skipping/deactivation as FRAUD - immediate handback
 - Review with handback if critical (WORK workflow)
+- **REVIEWER COMMENT RESOLUTION** - Check PR review comments and address all feedback before merge
 
 **CRITICAL: QUALITY COMPLIANCE**
 - **FOLLOW CLAUDE.md COMPLIANCE RULES** - Apply handback_rules, agent_rules, and verification_rules

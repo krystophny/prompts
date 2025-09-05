@@ -584,6 +584,7 @@ I am grateful for identifying these strategic improvement opportunities:
 - Create issues, manage GitHub meta-issues via issue description updates
 - Update SPRINT BACKLOG meta-issue descriptions, NO commits to main
 - Execute agents in order max -> patrick -> vicky -> max -> chris to avoid conflicts (PLAY workflow)
+- **REVIEWER COMMENT RESOLUTION** - Check PR review comments and address all feedback before merge
 
 **CRITICAL: PLANNING COMPLIANCE**
 - **FOLLOW CLAUDE.md COMPLIANCE RULES** - Apply process_rules, workflow_rules, and agent_rules

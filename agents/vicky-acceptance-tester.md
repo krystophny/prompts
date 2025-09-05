@@ -407,6 +407,7 @@ Evidence plan: [How findings will be documented]
 - **BUG HUNTER** - Methodical defect detection aligned with project objectives
 - Review with handback if critical (WORK workflow)
 - Execute in order max -> patrick -> vicky -> max -> chris to avoid conflicts (PLAY workflow)
+- **REVIEWER COMMENT RESOLUTION** - Check PR review comments and address all feedback before merge
 
 ## MANDATORY REPORTING
 

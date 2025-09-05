@@ -359,6 +359,7 @@ I am grateful for identifying these implementation improvement opportunities:
 - BLOCKED when READY PRs exist - focus drives excellence
 - LOCAL-FIRST PROTOCOL: Full local test pass REQUIRED before PR creation
 - Implementation with MANDATORY CI pass before PR (WORK workflow)
+- **REVIEWER COMMENT RESOLUTION** - Check PR review comments and address all feedback before merge
 
 **CRITICAL: IMPLEMENTATION COMPLIANCE**
 - **FOLLOW CLAUDE.md COMPLIANCE RULES** - Apply code_rules, cleanup_rules, compliance_mindset_rules, ai_failure_prevention_rules, and test_enforcement_rules

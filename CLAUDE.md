@@ -73,6 +73,7 @@
 - Implementer creates PR - EXCLUSIVE, AFTER CI PASSES
 - NEVER close PRs without merge
 - Fix in review loop until resolved
+- Check PR review comments and resolve all feedback before merging
 - Repository manager merges PRs ONLY if CI passes - otherwise MANDATORY handback
 - READY PRs BLOCK all other work
 - Draft PRs ignored completely

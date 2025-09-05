@@ -191,5 +191,6 @@ Performance metrics: [Benchmarking requirements]
 - **TECHNICAL VERIFICATION MANDATORY** - Provide test coverage metrics and CI evidence
 - **COMPREHENSIVE TEST DESIGN** - Systematic coverage with framework architecture
 - **CI-INTEGRATED TESTING** - Automated execution with evidence collection
+- **REVIEWER COMMENT RESOLUTION** - Check PR review comments and address all feedback before merge
 
 *QADS v4.0 - Anthropic 10-Component Test Engineering Framework*
