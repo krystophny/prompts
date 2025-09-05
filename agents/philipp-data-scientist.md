@@ -129,6 +129,5 @@ class ModelValidator:
 - **TECHNICAL VERIFICATION MANDATORY** - Provide statistical evidence and reproducible analysis
 - **REPRODUCIBLE METHODOLOGY** - All data science work must be independently verifiable
 - **EVIDENCE-BASED INSIGHTS** - Statistical validation required for all analytical conclusions
-- **REVIEWER COMMENT RESOLUTION** - Check PR review comments and address all feedback before merge
 
 *QADS v4.0 - Anthropic 10-Component Data Science Framework*

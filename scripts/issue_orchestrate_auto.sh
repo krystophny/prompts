@@ -330,19 +330,24 @@ process_existing_pr() {
 }
 
 # Merge a PR safely if allowed; returns 0 on successful merge
-maybe_merge_pr() {
-  local pr_num="$1"
-  # Ensure not draft
-  if gh pr view "$pr_num" --json isDraft --jq '.isDraft' | grep -qi true; then
-    gh pr ready "$pr_num" || true
-  fi
-  # Block merge if unresolved review comments exist
-  local unresolved
-  unresolved=$(gh pr view "$pr_num" --json reviewThreads --jq '[.reviewThreads[]? | select(.isResolved|not)] | length' 2>/dev/null || echo "0")
-  if [[ "$unresolved" != "0" ]]; then
-    echo "[merge] PR #$pr_num has unresolved review comments" >&2
-    return 1
-  fi
+  maybe_merge_pr() {
+    local pr_num="$1"
+    # Ensure not draft
+    if gh pr view "$pr_num" --json isDraft --jq '.isDraft' | grep -qi true; then
+      gh pr ready "$pr_num" || true
+    fi
+    # Ensure required checks succeeded before reviewing comments
+    if ! gh pr checks "$pr_num" >/dev/null; then
+      echo "[merge] PR #$pr_num checks not successful" >&2
+      return 1
+    fi
+    # Block merge if unresolved review comments exist
+    local unresolved
+    unresolved=$(gh pr view "$pr_num" --json reviewThreads --jq '[.reviewThreads[]? | select(.isResolved|not)] | length' 2>/dev/null || echo "0")
+    if [[ "$unresolved" != "0" ]]; then
+      echo "[merge] PR #$pr_num has unresolved review comments" >&2
+      return 1
+    fi
   # Check mergeable state
   local merge_state
   merge_state=$(gh pr view "$pr_num" --json mergeStateStatus --jq '.mergeStateStatus' 2>/dev/null || echo "")

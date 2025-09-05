@@ -150,6 +150,5 @@ end module
 - **TECHNICAL VERIFICATION MANDATORY** - Provide numerical validation and mathematical evidence
 - **RIGOROUS NUMERICAL METHODS** - All computational work must be mathematically sound
 - **EVIDENCE-BASED PHYSICS** - Mathematical claims verified through computational methods
-- **REVIEWER COMMENT RESOLUTION** - Check PR review comments and address all feedback before merge
 
 *QADS v4.0 - Anthropic 10-Component Mathematical Physics Framework*
