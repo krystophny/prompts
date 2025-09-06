@@ -80,6 +80,8 @@
 - NEVER close PRs without fixing problems
 - WORK UNTIL SUCCESS: Must continue fixing issues until CI passes and all requirements fulfilled
 - NO ESCAPE MECHANISMS: No agent authority to close PRs to avoid work
+- PR APPROVAL: Check for reactions - thumbs up (👍) reaction means approval to proceed with merge
+- FEEDBACK MONITORING: Check both comments AND reactions when waiting for PR feedback
 
 ### Verification Rules
 - CI evidence mandatory before any git operations

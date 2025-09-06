@@ -294,12 +294,19 @@ process_existing_pr() {
     gh pr ready "$pr_number" || true
   fi
 
+  # Check for thumbs up reaction as approval signal
+  local has_thumbs_up
+  has_thumbs_up=$(gh api "repos/{owner}/{repo}/pulls/$pr_number" --jq '.reactions | if . then map(select(.content == "+1")) | length > 0 else false end' 2>/dev/null || echo "false")
+  if [[ "$has_thumbs_up" == "true" ]]; then
+    echo "[orchestrate] PR #$pr_number has thumbs up reaction - proceeding with merge" >&2
+  fi
+
   # Ensure branch is up to date and conflict-free relative to base before watching checks
   rebase_and_resolve_conflicts "$pr_number" "$branch" || true
-  # Watch checks; auto-merge if --all was provided, otherwise handoff for manual review
+  # Watch checks; auto-merge if --all was provided or thumbs up received, otherwise handoff for manual review
   echo "Waiting for CI on PR #$pr_number" >&2
   if gh pr checks "$pr_number" --watch; then
-    if [[ "$auto_merge" == true ]]; then
+    if [[ "$auto_merge" == true || "$has_thumbs_up" == "true" ]]; then
       if maybe_merge_pr "$pr_number"; then
         echo "Merged PR #$pr_number via $merge_method." >&2
         codex_post_merge_close_issue "$pr_number" "$inum"
@@ -307,12 +314,14 @@ process_existing_pr() {
         echo "Auto-merge failed or not allowed for PR #$pr_number; leaving open for manual follow-up." >&2
       fi
     else
-      echo "CI green for PR #$pr_number. Manual check required before merge (no --all)." >&2
+      echo "CI green for PR #$pr_number. Manual check required before merge (no --all or thumbs up)." >&2
     fi
   else
     echo "CI not successful for PR #$pr_number; handing back to Codex for remediation." >&2
     if codex_ci_fix_loop "$pr_number" "$inum" "$branch"; then
-      if [[ "$auto_merge" == true ]]; then
+      # Re-check for thumbs up after CI fixes
+      has_thumbs_up=$(gh api "repos/{owner}/{repo}/pulls/$pr_number" --jq '.reactions | if . then map(select(.content == "+1")) | length > 0 else false end' 2>/dev/null || echo "false")
+      if [[ "$auto_merge" == true || "$has_thumbs_up" == "true" ]]; then
         if maybe_merge_pr "$pr_number"; then
           echo "Merged PR #$pr_number via $merge_method after remediation." >&2
           codex_post_merge_close_issue "$pr_number" "$inum"
@@ -320,7 +329,7 @@ process_existing_pr() {
           echo "Auto-merge failed or not allowed for PR #$pr_number after remediation; leaving open." >&2
         fi
       else
-        echo "CI turned green after remediation for PR #$pr_number. Manual check required before merge (no --all)." >&2
+        echo "CI turned green after remediation for PR #$pr_number. Manual check required before merge (no --all or thumbs up)." >&2
       fi
     else
       echo "CI still failing after remediation attempts; cleaning up PR #$pr_number." >&2

@@ -149,6 +149,8 @@ fpm test --filter advance_state
  - Selection/prioritization: prefer issues with the highest positive impact at the lowest implementation effort (optimize impact/effort).
 - Commit/PR titles: use Conventional Commits (`type: description`), imperative mood, <72 chars, and reference issues (e.g., `fixes #123`).
 - Open review-ready PRs; avoid draft PRs.
+- PR feedback: Check both comments AND reactions - thumbs up (👍) reaction means approval to proceed
+- When waiting for PR feedback: monitor `gh pr view <n> --json comments,reactions` for approval signals
 
 ### PR Description Formatting (Simple Rule)
 - Use plain Markdown only; no JSON/XML-like wrappers, angle brackets, or stray

@@ -116,7 +116,8 @@ YOU DO NOT OWN:
 1. **FRAUD-PROOF MONITORING & MERGE**:
    - Await implementation and PR creation
    - **CRITICAL: CI VERIFICATION** - Validate CI claims against actual CI logs
-   - Await review completion
+   - Await review completion or check for thumbs up reaction approval
+   - **CRITICAL: CHECK PR REACTIONS** - Monitor `gh api repos/{owner}/{repo}/pulls/{number} --jq '.reactions'` for thumbs up (👍) as approval signal
    - **CRITICAL: REBASE ON MAIN, RESOLVE ALL CONFLICTS FIRST, THEN WATCH PR CHECKS** - Rebase on main, resolve any conflicts completely, push, ONLY THEN monitor with `gh pr checks --watch` (conflicts can block CI from triggering)
    - **CRITICAL: DOUBLE CI VERIFICATION** - Re-run tests after rebase, verify CI green
    - **CRITICAL: AUDIT TRAIL VALIDATION** - Cross-check test claims with CI evidence
