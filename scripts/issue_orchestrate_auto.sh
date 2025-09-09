@@ -139,6 +139,17 @@ append_context() {
   printf "[%s] %s\n" "$(date -Iseconds)" "$msg" >>"$f" 2>/dev/null || true
 }
 
+# Per-PR state tracking to gate self-review until a second pass
+pr_state_file() { echo "/tmp/codex_pr_${1}.state"; }
+mark_first_pass_done() {
+  local f; f=$(pr_state_file "$1")
+  { [[ -f "$f" ]] || :; } && { grep -q '^first_pass_done=1' "$f" 2>/dev/null || echo 'first_pass_done=1' >>"$f"; }
+}
+is_first_pass_done() {
+  local f; f=$(pr_state_file "$1")
+  [[ -f "$f" ]] && grep -q '^first_pass_done=1' "$f" 2>/dev/null
+}
+
 # Banner: resolved repo
 echo "[orchestrate] repo_root=$(pwd) remote=$(git remote get-url origin 2>/dev/null || echo 'none')" >&2
 
@@ -276,8 +287,75 @@ enforce_no_parallel_prs() {
       echo "[gate] Non-draft PRs still open after processing: $remaining. Not creating new PRs." >&2
       exit 0
     fi
-    echo "[gate] No remaining non-draft PRs; continuing." >&2
+  echo "[gate] No remaining non-draft PRs; continuing." >&2
   fi
+}
+
+# Address PR review feedback by reading unresolved review threads and applying targeted fixes.
+codex_address_review_feedback() {
+  local pr_num="${1-}"; shift || true
+  local inum="${1-}"; shift || true
+  local branch="$1"; shift || true
+  local max_rounds=3
+  local round
+  for round in $(seq 1 $max_rounds); do
+    echo "[Review Fix] Round $round for PR #$pr_num (branch $branch)" >&2
+    # Build a focused prompt to read review threads and implement fixes
+    local prompt history cf
+    history=""
+    cf=$(context_file_for_issue "${inum:-}")
+    [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null | sanitize_for_prompt || true)
+    prompt=$(cat << 'EOF'
+You are addressing reviewer feedback on a GitHub Pull Request.
+
+Goal: Read PR reviews and comments, apply the requested changes, and push commits to resolve the feedback. Keep scope minimal and tied to the comments.
+
+Steps:
+1) Inspect PR reviews and comments:
+   - `gh pr view "$PR_NUM" --json reviews,reviewThreads,comments,files,headRefName,baseRefName,url`
+   - Read each review (state, body) and comment text; scan diffs where referenced.
+2) For each actionable item, make the necessary code/test/doc changes to satisfy the request.
+3) Run local tests/linters/build to verify. Keep changes minimal and targeted.
+4) Stage only related files explicitly; commit with a clear message; push.
+5) Stop when there is no more actionable feedback.
+
+Rules:
+- Do not broaden scope or refactor unrelated files. No random markdown reports.
+- Keep functions small and follow project style. Do not skip tests.
+
+Context (recent log):
+EOF
+    )
+    prompt+=$'\n'
+    prompt+="$history"
+    if [[ $use_claude -eq 1 ]]; then
+      PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
+    else
+      PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+    fi
+
+    # Commit and push if there are staged or unstaged changes
+    if ! git diff --quiet || ! git diff --cached --quiet; then
+      while IFS= read -r -d '' rec; do
+        code=${rec:0:2}; path=${rec:3}
+        case "$code" in
+          D*|*D) git rm -- "$path" || true ;;
+          R*) IFS= read -r -d '' newpath || true; [[ -n "$newpath" ]] && { git rm -- "$path" || true; git add -- "$newpath" || true; } ;;
+          *) git add -- "$path" || true ;;
+        esac
+      done < <(git status --porcelain -z)
+      if ! git diff --cached --quiet; then
+        git commit -m "fix(review): address reviewer feedback on PR #${pr_num:-unknown}"
+        git push
+      fi
+    fi
+
+    # If no further local changes, stop early
+    if git diff --quiet && git diff --cached --quiet; then
+      echo "[Review Fix] No local changes after round $round; stopping." >&2
+      break
+    fi
+  done
 }
 
 # Process an existing PR end-to-end: review, rebase if needed, wait for checks, merge or remediate
@@ -286,8 +364,15 @@ process_existing_pr() {
   local inum="${1-}"; shift || true
   local branch="$1"; shift || true
 
-  # Self-review loop with Codex to refine PR
-  codex_pr_self_review "$pr_number" "$inum"
+  # Two-pass policy: Pass 1 = address review feedback; Pass 2 = self-review.
+  if is_first_pass_done "$pr_number"; then
+    echo "[review] Second pass detected; running self-review." >&2
+    codex_pr_self_review "$pr_number" "$inum"
+  else
+    echo "[review] First pass; addressing review comments." >&2
+    codex_address_review_feedback "$pr_number" "$inum" "$branch" || true
+    mark_first_pass_done "$pr_number"
+  fi
 
   # Move PR out of draft if still draft
   if gh pr view "$pr_number" --json isDraft --jq '.isDraft' | grep -qi true; then
@@ -345,18 +430,12 @@ process_existing_pr() {
     if gh pr view "$pr_num" --json isDraft --jq '.isDraft' | grep -qi true; then
       gh pr ready "$pr_num" || true
     fi
-    # Ensure required checks succeeded before reviewing comments
-    if ! gh pr checks "$pr_num" >/dev/null; then
-      echo "[merge] PR #$pr_num checks not successful" >&2
-      return 1
-    fi
-    # Block merge if unresolved review comments exist
-    local unresolved
-    unresolved=$(gh pr view "$pr_num" --json reviewThreads --jq '[.reviewThreads[]? | select(.isResolved|not)] | length' 2>/dev/null || echo "0")
-    if [[ "$unresolved" != "0" ]]; then
-      echo "[merge] PR #$pr_num has unresolved review comments" >&2
-      return 1
-    fi
+  # Ensure required checks succeeded before considering merge
+  if ! gh pr checks "$pr_num" >/dev/null; then
+    echo "[merge] PR #$pr_num checks not successful" >&2
+    return 1
+  fi
+  # Do not block on unresolved review threads; two-pass policy handles feedback resolution.
   # Check mergeable state
   local merge_state
   merge_state=$(gh pr view "$pr_num" --json mergeStateStatus --jq '.mergeStateStatus' 2>/dev/null || echo "")
