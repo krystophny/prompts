@@ -6,7 +6,8 @@
 - Protocol-compliant: Follow systematic workflows and technical gates.
 - No time pressure: Take the time to solve tasks fully and cleanly; do not
   expand scope or add features (no feature/scope creep).
-- No random progress docs: Do not create ad-hoc markdown status reports.
+- No random progress docs: Markdown only in PRs/issues per policy; no ad-hoc
+  status reports.
 
 ## Repository Practices
 - Work from the project root directory.
@@ -17,9 +18,6 @@
 - Push immediately after committing.
 - Never commit binaries, build artifacts, temp files, secrets, or random markdown reports.
 - No emojis in commit messages, PRs, or issues.
- - Non-interactive git: disable editors. Prefix commands with
-   `git -c core.editor=true -c sequence.editor=true …` and use `-m`/`--no-edit`
-   where applicable to avoid `$EDITOR` hangs.
 
 ## Implementation Standards
 - TDD: Red → Green → Refactor with meaningful, flexible tests - robust not rigid.
@@ -46,10 +44,16 @@ Example (reference-reading only)
   - Implement our own formatter inspired by the concepts; do not paste lines.
 
 ### YAGNI & Dedup Vigilance (New and Existing Code)
-- YAGNI-first: implement only what the issue/PR requires now. If code is overengineered for the purpose, simplify it to the minimal correct solution.
+- YAGNI-first: implement what the issue/PR requires now; small local cleanups
+  in touched code are OK. If code is overengineered for the purpose, simplify
+  to the minimal correct solution.
 - Mandatory dedup: before adding code, search for existing similar utilities/components. If duplication exists, consolidate by enhancing the existing implementation rather than creating parallel versions.
 - Touching existing code: when nearby duplication is discovered during changes, refactor to unify and remove overlap as part of the same focused unit of work.
-- Minimal surface area: avoid adding new public APIs unless strictly necessary; prefer extending internal helpers. If an API change is needed, keep it small and provide a clear migration in the same PR.
+- Minimal surface area: prefer minimal exposure; internal helpers to dedupe in
+  touched code are OK. Public API changes only when required for the fix; keep
+  them small and include a clear migration in the same PR.
+- Refactors: no repo-wide refactors; behavior-preserving cleanups in touched
+  files are OK.
 - Evidence: in PR descriptions, briefly note the simplifications/deduplications performed and reference affected paths.
 
 ## Testing and Build
@@ -88,38 +92,23 @@ Example (reference-reading only)
 - Zero duplication: remove redundancy; consolidate overlapping content.
 - Keep it tight: clear structure, verified links; file target <500 lines (<1000 hard), sections <50 (<100 hard).
 
+### Markdown Usage Policy
+- Allowed: only in PR descriptions and issue comments.
+- Structure: PRs use Summary / Scope / Verification / Rationale. Issues use
+  concise Problem / Evidence / Solution.
+- Evidence: include exact commands and minimal excerpts (≤30 lines/snippet,
+  ≤50 lines total per update). Link to full logs/artifacts instead of inlining.
+- Not allowed: new/updated ad-hoc `.md` status notes unless the task is `docs`;
+  long logs, journals, or screenshots unrelated to verification; drive‑by docs
+  edits unrelated to the fix.
+- Notes: prefer links to CI runs, artifacts, and file paths. When outputs
+  change, include one small validator excerpt (diff summary, counts, checksum)
+  and link to the artifact.
+
 ### Markdown Conventions
 - Inline code: wrap code literals in backticks, for example `module`, `advance_state`, `--flag`, `fpm test`.
 - Code blocks: fence with the correct language. Use `fortran` for Fortran snippets, `sh` for shell, `json` for JSON, etc.
 - Issue/PR comments: follow the same rules; prefer minimal, targeted snippets.
-
-Example (Issue comment)
-
-Text
-- The overflow occurs in `advance_state` when `dt` equals `0.0`.
-
-Code
-```fortran
-subroutine advance_state(state, dt)
-    use physics_mod, only: update_flux
-    implicit none
-    type(state_t), intent(inout) :: state
-    real(real64),  intent(in)    :: dt
-
-    if (dt == 0.0_real64) return
-    call update_flux(state, dt)
-end subroutine advance_state
-```
-
-Example (PR comment)
-
-Text
-- Guard against zero `dt` and add test in `test/advance_state_test.f90`.
-
-Shell
-```sh
-fpm test --filter advance_state
-```
 
 ## Review Standards
 - Review available CI results or logs; re-run locally as needed.
@@ -131,14 +120,7 @@ fpm test --filter advance_state
 ## GitHub Operations
 - Read full context for issues and PRs thoroughly (entire descriptions and all comments) — do not skim.
 - Mandatory duplicate check before filing any issue.
-- Use accurate GitHub CLI queries to avoid truncation:
-  - `gh issue list --state open --limit 500`
-  - `gh issue list --state open --limit 500 --search "keyword"`
-- Example commands (read everything):
-  - Issues (text): `gh issue view <n> --comments`
-  - PRs (text): `gh pr view <n> --comments`
-  - Issues (JSON): `gh issue view <n> --json title,body,comments | jq -r '.title, "", .body, "", (.comments[]?.body // empty)'`
-  - PRs (JSON): `gh pr view <n> --json title,body,comments,reviews,reviewThreads | jq -r '.title, "", .body, "", (.comments[]?.body // empty), (.reviews[]?.body // empty), (.reviewThreads[]?.comments[]?.body // empty)'`
+- Use gh responsibly; avoid truncated views; fetch details only when needed.
 - Keep issues concrete and actionable; track epics in planning docs.
 - Issue filing: assign category and priority when creating issues.
   - Categories (minimal set): `bug`, `docs`, `tech-debt`, `enhancement`.
@@ -153,103 +135,8 @@ fpm test --filter advance_state
 - When waiting for PR feedback: monitor `gh pr view <n> --json comments,reactions` for approval signals
 
 ### PR Description Formatting (Simple Rule)
-- Use plain Markdown only; no JSON/XML-like wrappers, angle brackets, or stray
-  braces/quotes. Structure with these headings and bullets exactly:
-  - Summary
-  - Scope
-  - Verification
-  - Rationale
-  Review generated text before submitting and remove any malformed artifacts
-  (e.g., trailing `]}`, unmatched quotes, or template placeholders).
-
-### gh CLI: Create PRs Safely
-- Always pass the body via `--body-file` (not inline) to avoid shell quoting
-  and formatting issues. Example:
-  ```sh
-  tmp=$(mktemp)
-  cat >"$tmp" <<'MD'
-  Summary
-  - What changed in one or two lines.
-
-  Scope
-  - Files or areas touched; no code behavior changes.
-
-  Verification
-  - Why build/tests are unaffected or how verified locally.
-
-  Rationale
-  - Why this is needed now.
-  MD
-  gh pr create \
-    --title "docs: tighten PR formatting guidance" \
-    --body-file "$tmp" \
-    --base main \
-    --head "$(git rev-parse --abbrev-ref HEAD)"
-  rm -f "$tmp"
-  ```
-- Do not pipe JSON to `gh api` for PR creation; use `gh pr create` with
-  `--title` and `--body-file`.
-- Avoid `--body` with long multiline strings; prefer a file to prevent
-  accidental injection of braces, quotes, or angle brackets.
-
-### gh CLI: Close Issues with Evidence Comment
-- Always add a structured evidence comment before closing an issue. Use a body file to avoid formatting glitches.
-  ```sh
-  pr_num=123
-  issue_num=123
-  repo_url=$(gh repo view --json url --jq '.url')
-  pr_url=$(gh pr view "$pr_num" --json url --jq '.url')
-  merge_commit=$(gh pr view "$pr_num" --json mergeCommit --jq '.mergeCommit.oid')
-  sha_short=${merge_commit:0:12}
-  files=$(gh pr view "$pr_num" --json files --jq '[.files[]?.path] // []')
-
-  tmp=$(mktemp)
-  cat >"$tmp" <<'MD'
-  Resolution
-  - Issue closed after merge of the linked PR and verification of changes.
-
-  Evidence
-  - PR: __PR_URL__
-  - Merge commit: __SHA_SHORT__ (__MERGE_COMMIT_URL__)
-  - Files changed (first N):
-  __FILE_LINKS__
-
-  Links
-  - PR overview: __PR_URL__
-  - PR commits: __PR_COMMITS_URL__
-  - PR diffs: __PR_FILES_URL__
-  - CI/Checks: __CHECKS_URL__
-
-  Notes
-  - References use the merge commit to ensure stable, permanent links to the exact content merged.
-  MD
-
-  # Build per-file links (limit to 20 to keep it short)
-  file_links=""
-  echo "$files" | jq -r '.[]' | head -n 20 | while read -r f; do
-    printf -- "- %s\n" "$repo_url/blob/$merge_commit/$f"
-  done | while IFS= read -r line; do file_links+="$line\n"; done
-
-  pr_files_url="$pr_url/files"
-  pr_commits_url="$pr_url/commits"
-  merge_commit_url="$repo_url/commit/$merge_commit"
-  checks_url="$pr_url"
-
-  # Substitute placeholders
-  sed -i \
-    -e "s|__PR_URL__|${pr_url//|/\|}|g" \
-    -e "s|__SHA_SHORT__|${sha_short//|/\|}|g" \
-    -e "s|__MERGE_COMMIT_URL__|${merge_commit_url//|/\|}|g" \
-    -e "s|__PR_COMMITS_URL__|${pr_commits_url//|/\|}|g" \
-    -e "s|__PR_FILES_URL__|${pr_files_url//|/\|}|g" \
-    -e "s|__CHECKS_URL__|${checks_url//|/\|}|g" \
-    -e "s|__FILE_LINKS__|${file_links//$'\n'/'\\n'}|g" "$tmp"
-
-  gh issue comment "$issue_num" --body-file "$tmp"
-  gh issue close "$issue_num" --reason completed
-  rm -f "$tmp"
-  ```
-- Keep the comment concise and evidence-focused; avoid verbose narratives.
+- Use plain Markdown; structure with: Summary, Scope, Verification, Rationale.
+  Keep it concise and remove malformed artifacts.
 
 ## Feedback (Structured)
 - Format: PROBLEM (specific issue), EVIDENCE (logs/URLs/paths), SOLUTION (clear steps).
