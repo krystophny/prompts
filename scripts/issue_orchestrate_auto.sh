@@ -206,7 +206,8 @@ Goal: Resolve all conflicts cleanly, preserve both intended changes, and complet
 
 Rules:
 - Do NOT abort the rebase. Fix conflicts file-by-file.
-- Keep changes minimal; do not reformat unrelated code. No random markdown reports.
+- Keep changes focused; minor local cleanups OK. No unrelated edits. Markdown
+  only in PR/issue per policy.
 - Stage only resolved files explicitly (no `git add .`).
 - After resolving all conflicts, run `git rebase --continue`.
 - If tests fail post-continue, create follow-up fix commits on the branch and push.
@@ -308,7 +309,7 @@ codex_address_review_feedback() {
     prompt=$(cat << 'EOF'
 You are addressing reviewer feedback on a GitHub Pull Request.
 
-Goal: Read PR reviews and comments, apply the requested changes, and push commits to resolve the feedback. Keep scope minimal and tied to the comments.
+Goal: Read PR reviews and comments, apply the requested changes, and push commits to resolve the feedback. Address feedback and nearby code only; small local cleanups OK.
 
 Steps:
 1) Inspect PR reviews and comments:
@@ -320,7 +321,7 @@ Steps:
 5) Stop when there is no more actionable feedback.
 
 Rules:
-- Do not broaden scope or refactor unrelated files. No random markdown reports.
+- No unrelated edits or broad refactors. Markdown only in PR/issue per policy.
 - Keep functions small and follow project style. Do not skip tests.
 
 Context (recent log):
@@ -672,13 +673,13 @@ Process:
    - Prefer `make verify-artifacts` when present; otherwise use `VERIFY_CMD` or scripts under `scripts/verify_*`.
    - If nothing exists, derive minimal reproduction from the issue description and project docs.
    Record the exact commands and short excerpts as evidence.
-2) Implement the minimal fix with targeted tests. Iterate until tests pass locally. Keep unrelated changes out.
+2) Implement the fix with targeted tests; allow small local cleanups. Iterate until tests pass locally. Keep unrelated changes out.
 3) Stage specific files only (no `git add .`). Commit using Conventional Commit style including "(fixes #__INUM__)" when appropriate. Push to origin for this branch.
 4) As the final step: if a PR to main does not exist for this branch, create a PR (not draft) with title `fix: <issue-title-truncated-to-64> (fixes #__INUM__)`. Include a concise "Verification" section showing artifact evidence (commands run + key output excerpts and artifact paths). Do not open a PR earlier than this step.
 5) Print exactly one JSON line with keys: {"issue":__INUM__, "branch":"__CUR__", "pr":<pr-number>, "url":"<pr-url>"}.
 
 Rules:
-- No random markdown reports; keep outputs minimal and actionable.
+- Markdown only in PR/issue per policy; keep outputs minimal and actionable.
 - Validate with tests AND artifact checks before concluding. Do not skip tests.
 - Do not claim an output-affecting fix without attaching evidence excerpts (from project verification or minimal reproduction) to the PR/issue.
 - Do not reformat unrelated files. No secrets.
@@ -718,7 +719,7 @@ Process:
 5) If no further changes are needed, end gracefully.
 
 Rules:
-- No broad refactors; minimal, focused changes. No random markdown reports.
+- No unrelated edits or broad refactors. Markdown only in PR/issue per policy.
 - Keep functions under 50 lines when practical; follow project style.
 - Don’t skip tests; keep everything reproducible.
 EOF
@@ -813,15 +814,15 @@ Task: Diagnose the CI failures, read GitHub Actions logs, fix issues locally, pu
 
 Steps:
 1) Inspect latest CI runs for the branch: `gh run list --branch "$BRANCH" --event pull_request --json databaseId,workflowName,status,conclusion,url --limit 5` and view logs for failed jobs using `gh run view <run-id> --json jobs --log`.
-2) Reproduce locally (run tests/linters/build) and fix the root cause. Keep changes minimal and scoped to this PR.
+2) Reproduce locally (run tests/linters/build) and fix the root cause. Stay within PR scope; local cleanups OK.
 3) Add/adjust tests as needed to prevent regression; run locally to green.
 4) Stage specific files only; commit with clear message; push.
 5) If there is nothing actionable (external flake), document minimal retry (e.g., rebase to retrigger) and proceed.
 6) Monitor PR checks until completion with: `gh pr checks <PR#> --watch` (prefer this over generic "wait for CI on GitHub").
 
 Rules:
-- No random markdown reports. Put evidence in commit messages or PR body if appropriate.
-- Do not broaden scope. Keep functions small and style consistent.
+- Markdown only in PR/issue per policy. Put evidence in commit messages or PR body when appropriate.
+- Stay within scope; keep functions small and style consistent.
 
 Context (recent log):
 EOF
@@ -895,18 +896,15 @@ Selection & priority:
 Implementation:
 - Create/checkout branch: fix/issue-<num>-<slug>.
 - Run baseline tests (use TEST_CMD if provided; else try make/pytest/fpm/npm). Enforce TEST_TIMEOUT. For output-affecting issues, also run artifact verification (prefer `make verify-artifacts` or project-provided scripts/commands) and capture concise evidence.
-- Implement the minimal fix with tests; iterate until tests pass locally. Keep commits focused. No unrelated changes.
+- Implement the fix with tests; allow small local cleanups; iterate until tests pass locally. Keep commits focused. No unrelated changes.
 - Stage files explicitly (no `git add .`). Use Conventional Commit: `fix: <desc> (fixes #<num>)`.
 - Only as the final step, open a PR (not draft) to main (reuse if exists). Title: "fix: <issue title truncated to 64> (fixes #<num>)". Include a short "Verification" section with commands, output excerpts, and artifact paths. Do not open a PR earlier.
 
 Rules:
-- Minimal output; no markdown reports; use only gh/git/bash.
-- No destructive ops. Do not rewrite history of main.
-- Ensure working tree is clean before exiting.
+- Minimal output; markdown only in PR/issue per policy.
 
 Deliverable:
 - Leave the branch pushed and a non-draft PR open and linked to the issue.
-- Do not print any special tokens or JSON; just complete the tasks.
 EOF
   )
   if [[ $use_claude -eq 1 ]]; then
