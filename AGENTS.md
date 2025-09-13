@@ -1,8 +1,5 @@
 # AGENTS.md (Lean, Fortran-First)
 
-Scope
-- Applies repo-wide. Nested AGENTS.md files override parent within their subtree.
-
 Language & Stack
 - Primary: modern Fortran (2018+). Prefer Fortran even for scripting/CLI/web when feasible.
 - Existing projects: stick to the project’s established stack unless explicitly directed otherwise.
