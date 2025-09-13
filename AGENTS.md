@@ -37,12 +37,11 @@ Build & Tests
 - CMake builds: always use Ninja.
   - `cmake -S . -B build -G Ninja`
   - `cmake --build build -j`
-- Keep tests behavioral and fast; avoid adding slow/hanging tests.
+- Keep tests behavioral and fast; 120s timeout per test.
 - Prefer TDD: Red → Green → Refactor.
 
 Git Hygiene
-- Single-topic commits. Stage explicit paths only (no `git add .` or `git add -A`).
-- Do not commit binaries, build artifacts, temp files, or secrets.
+- No emojis in commit messages, PRs, or issues.
 
 Licensing & Reuse
 - Research-first. Copy ideas, not lines. Verify licenses; prefer MIT/BSD/Apache-2.0.
