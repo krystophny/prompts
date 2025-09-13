@@ -54,4 +54,5 @@
 
 ## AI Failure Prevention
 - Never claim tests pass without CI evidence
+- Use project build systems, not ad hoc compilation
 - Complete existing DOING work before starting SPRINT BACKLOG items
