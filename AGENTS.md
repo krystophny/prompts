@@ -8,6 +8,9 @@ Language & Stack
 - Build/deps: use fpm; prefer latest git packages, pin SHAs only when reproducibility is required.
 - Plotting: use lazy-fortran/fortplot.
 
+Project Root & Paths
+- ALWAYS operate from the project root (repo top-level). Run all commands from the root and use root-relative paths to avoid path confusion.
+
 Implementation Standards
 - Keep modules reasonably small (<500 lines; hard <1000).
 - Functions small and focused (<50 lines; hard <100).

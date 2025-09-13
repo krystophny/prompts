@@ -1,6 +1,7 @@
 # CLAUDE.md (QADS Fortran-First Framework)
 
 ## Non-Default Git/GitHub Behaviors
+- ALWAYS operate from the project root (repo top-level). Run all commands from the root and use root-relative paths to avoid path confusion.
 - git add specific files only - NEVER git add . or -A
 - NO emojis ANYWHERE - not in commit messages, PRs, issues, code, or any output
 - NO draft PRs - create ready for review
