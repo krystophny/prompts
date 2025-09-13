@@ -13,6 +13,7 @@ QADS v4.0 implements the Anthropic 10-Component prompt engineering framework wit
 
 **Core Architecture:**
 - **CLAUDE.md**: Master configuration with all shared rules and protocols  
+- **AGENTS.md**: Lean Fortran-first standards applied across repositories
 - **agents/**: 10 specialized agents with role-specific expertise
 - **commands/**: Workflow orchestration following 10-component framework
 
@@ -28,6 +29,9 @@ QADS v4.0 implements the Anthropic 10-Component prompt engineering framework wit
 plan    # Sprint planning with chris-architect
 work    # Implementation with fraud-proof CI protocols
 play    # Defect discovery and evidence collection
+do      # Run a single focused task using the framework
+sprint  # Execute WORK→PLAY→PLAN cycle end-to-end
+multisprint # Run repeated sprint cycles
 ```
 
 **Agent-Specific Usage:**
@@ -44,6 +48,13 @@ Choose your workflow:
 - **work**: Implementation with fraud-proof CI protocols
 - **play**: Defect discovery and evidence collection  
 - **sprint**: Complete WORK→PLAY→PLAN cycle
+
+## 7.1 Runtime & Automation
+- Tools: Codex CLI and Claude Code are both supported.
+- Autonomous orchestrator: `scripts/issue_orchestrate_auto.sh`
+  - Toggle Claude Code via env: `CLAUDE_CODE=1`
+  - Uses the same framework prompts and agents defined in this repo
+  - Non-interactive batch execution with CI gate awareness
 
 ## 8. THINKING STEP-BY-STEP
 Before any operation:
@@ -77,6 +88,7 @@ play
 
 **Key Files:**
 - **CLAUDE.md**: Complete rule system and 10-component framework
+- **AGENTS.md**: System-wide lean Fortran-first engineering standards
 - **agents/**: Role-specific protocols for each specialist
 - **commands/**: Workflow orchestration patterns
 
