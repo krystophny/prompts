@@ -1,4 +1,4 @@
-# CLAUDE.md (Lean Fortran-First Framework)
+# CLAUDE.md (QADS Fortran-First Framework)
 
 ## Non-Default Git/GitHub Behaviors
 - git add specific files only - NEVER git add . or -A
@@ -7,6 +7,8 @@
 - NEVER close PRs without merge - fix until success
 - NEVER ADD COMMENTS TO ISSUES: edit descriptions via `gh issue edit --body`
 - GitHub CLI: ALWAYS use `--limit 500` to avoid truncation (default is 30)
+- LOCAL-FIRST: Full test pass REQUIRED before PR creation
+- Thumbs up (👍) reaction = approval to merge
 
 ## Fortran-Specific
 - Primary: modern Fortran (2018+), prefer even for scripting/CLI/web
@@ -33,12 +35,25 @@
 - TDD: Red → Green → Refactor; 120s timeout per test
 - Research-first: copy ideas not lines; prefer MIT/BSD/Apache-2.0
 
-## Workflow Restrictions
-- PLAN mode: NO git operations (only GitHub issue edits)
-- PLAY mode: NO git operations, find defects only
+## QADS Workflow System (plan | work | play)
+- MUST CLASSIFY operations: repository(git/gh/pr) | implementation(code/doc) | build/test | process(workflow/mode)
+- DELEGATION: Launch specialized agents via Task tool - respect agent boundaries
+- PLAN mode: Architect only, NO git operations, only GitHub issue edits
+- WORK mode: Repository → Implementation → CI-GATE → Review → Merge (CI must pass)
+- PLAY mode: Serial agent execution, find defects only, NO git operations
 - Meta-issues (SPRINT/PRODUCT BACKLOG, DESIGN): edit descriptions, never close
+- CI GATE: NEVER merge failing PRs; handback to implementer if CI fails
+- READY PRs BLOCK all other work; fix until success
+
+## Agent Protocols (see agent-specific .md files)
+- sergei-perfectionist-coder: LOCAL-FIRST, exhaustive search before implementing
+- max-devops-engineer: Repository management, CI gate enforcement
+- chris-architect: Meta-issue management, PLAN/PLAY coordination
+- patrick-auditor: Code quality, fraud detection
+- Others: winny, vicky, georg (see respective files)
 
 ## AI Failure Prevention
 - Verify all imports/APIs exist before using
 - Never claim tests pass without CI evidence
 - Use project build systems, not ad hoc compilation
+- Complete existing DOING work before starting SPRINT BACKLOG items
