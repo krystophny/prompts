@@ -27,12 +27,13 @@
 - Strings: use trim() - no C-style null termination; avoid quotes in comments
 
 ## Non-Default Code Rules
-- NO commented-out code, stubs, placeholders
+- Files <1000 lines, functions <100 lines; ≤20 items per folder (hard ≤50)
+- NO commented-out code, stubs, placeholders; validate inputs
 - NO RANDOM MARKDOWN FILES
 - NO DUPLICATE FUNCTIONALITY - modify existing files
 - NO DEFENSIVE PROGRAMMING - trust inputs, assume happy path
 - TDD: Red → Green → Refactor; 120s timeout per test
-- ≤20 items per folder (hard ≤50)
+- Research-first: copy ideas not lines; prefer MIT/BSD/Apache-2.0
 
 ## QADS Workflow System (plan | work | play)
 - MUST CLASSIFY operations: repository(git/gh/pr) | implementation(code/doc) | build/test | process(workflow/mode)
