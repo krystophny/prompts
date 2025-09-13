@@ -51,3 +51,31 @@ Cleanup & Organization
 - Remove obsolete/dead code outright.
 - Aim for ≤20 items per folder (hard ≤50) before reorganizing.
 - Write self-documenting code; use comments sparingly for non-obvious intent/invariants/edges.
+
+GitHub CLI Examples
+- Issues
+  - List open: `gh issue list --state open --limit 500`
+  - Create: `gh issue create --title "<title>" --body-file <file.md> \
+    --label <label1> --assignee <user> --milestone "<milestone>"`
+  - View: `gh issue view <number>`
+  - Edit body: `gh issue edit <number> --body-file <file.md>`
+  - Update labels: `gh issue edit <number> --add-label <l1> --remove-label <l2>`
+  - Close/Reopen: `gh issue close <number>` / `gh issue reopen <number>`
+- Pull Requests
+  - List open: `gh pr list --state open --limit 500`
+  - Create (ready, not draft): `gh pr create --title "<title>" --body-file <file.md> \
+    --base main --head <branch>`
+  - View: `gh pr view <number>`
+  - Checkout branch: `gh pr checkout <number>`
+  - Edit: `gh pr edit <number> --title "<new title>" --body-file <file.md>`
+  - Request reviewers: `gh pr edit <number> --add-reviewer <user1> --add-reviewer <user2>`
+  - Check CI: `gh pr checks <number> --watch`
+  - Approve: `gh pr review <number> --approve`
+  - Merge after CI passes: `gh pr merge <number> --squash --delete-branch`
+- Actions Workflows
+  - List workflows: `gh workflow list`
+  - List runs: `gh run list --limit 500`
+  - View run details: `gh run view <run-id> --log`
+  - Watch latest run: `gh run watch`
+  - Rerun failed jobs: `gh run rerun <run-id> --failed`
+  - Dispatch a workflow: `gh workflow run "<workflow name>" --ref <branch>`

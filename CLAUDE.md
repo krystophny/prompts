@@ -56,3 +56,31 @@
 - Never claim tests pass without CI evidence
 - Use project build systems, not ad hoc compilation
 - Complete existing DOING work before starting SPRINT BACKLOG items
+
+## GitHub CLI Examples
+- Issues (edit descriptions, avoid comments)
+  - List open: `gh issue list --state open --limit 500`
+  - Create: `gh issue create --title "<title>" --body-file <file.md> \
+    --label <label1> --assignee <user> --milestone "<milestone>"`
+  - View: `gh issue view <number>`
+  - Edit body: `gh issue edit <number> --body-file <file.md>`
+  - Labels: `gh issue edit <number> --add-label <l1> --remove-label <l2>`
+  - State: `gh issue close <number>` / `gh issue reopen <number>`
+- Pull Requests (no draft; CI must pass before merge)
+  - List open: `gh pr list --state open --limit 500`
+  - Create (ready for review): `gh pr create --title "<title>" --body-file <file.md> \
+    --base main --head <branch>`
+  - View: `gh pr view <number>`
+  - Checkout: `gh pr checkout <number>`
+  - Edit: `gh pr edit <number> --title "<new title>" --body-file <file.md>`
+  - Request reviewers: `gh pr edit <number> --add-reviewer <user1> --add-reviewer <user2>`
+  - Check CI: `gh pr checks <number> --watch`
+  - Approve: `gh pr review <number> --approve`
+  - Merge (after green CI): `gh pr merge <number> --squash --delete-branch`
+- Actions Workflows
+  - Workflows: `gh workflow list`
+  - Runs: `gh run list --limit 500`
+  - View run: `gh run view <run-id> --log`
+  - Watch latest: `gh run watch`
+  - Rerun failed: `gh run rerun <run-id> --failed`
+  - Dispatch: `gh workflow run "<workflow name>" --ref <branch>`
