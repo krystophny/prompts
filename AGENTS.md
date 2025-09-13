@@ -19,6 +19,7 @@ Implementation Standards
 Fortran Guidelines
 - Formatting: 88-column limit (up to 90 with ` &`), 4-space indent, end files with a newline.
 - Imports: `use <modulename>, only:`; place above `implicit none`.
+- Kinds: `use iso_fortran_env, only: real64`; `integer, parameter :: dp = real64`; declare reals as `real(dp)`. Prefer `1.0d0`/`d`-exponent literals.
 - Declarations at start of scope; none inside branches/loops.
 - Allocatables: use `move_alloc()`; avoid `transfer`; do not manually deallocate.
 - APIs: avoid returning allocatables from functions; implement deep-copy assignment for nested components.
@@ -26,6 +27,10 @@ Fortran Guidelines
 - fpm: enable autodiscovery for `app`, `test`, and `example` in `fpm.toml`.
 - Build hiccup: if “right parentheses” module error occurs, remove stale `*.mod` files.
 - Comments: avoid quotes.
+- Purity: prefer side-effect–free procedures; mark `pure`/`elemental` when applicable.
+- Dummies: every dummy argument must have `intent(in|out|inout)`; use `associate` to create local aliases instead of modifying inputs.
+- Contiguity/perf: add `contiguous` where required; avoid noncontiguous slices in hot loops; avoid temporaries; pre-allocate scratch arrays when needed.
+- Pointers: prefer `allocatable`; do not use pointers unless explicitly requested.
 
 Build & Tests
 - Use repo’s documented build/test scripts and the same commands CI uses.
