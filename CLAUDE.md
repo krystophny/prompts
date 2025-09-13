@@ -50,7 +50,14 @@ gh issue list --state open --limit 500 --search "keyword"
 - NO DEFENSIVE PROGRAMMING: Trust inputs, assume happy path
 
 ### Fortran-Specific
-- typename_t naming convention
+- Primary: modern Fortran (2018+), prefer Fortran even for scripting/CLI/web when feasible
+- Build/deps: use fpm; prefer latest git packages, pin SHAs only when reproducibility is required
+- Plotting: use lazy-fortran/fortplot
+- Formatting: 88-column limit (up to 90 with ` &`), 4-space indent
+- Imports: `use <modulename>, only:`; place above `implicit none`
+- Kinds: `use, intrinsic :: iso_fortran_env, only: dp => real64`; declare reals as `real(dp)`; prefer `1.0d0`/`d`-exponent literals
+- Declarations at start of scope; none inside branches/loops
+- typename_t naming convention for derived types
 - NO transfer for allocatables - use move_alloc()
 - NEVER manually deallocate allocatable instances
 - NEVER return allocatables from functions
@@ -60,6 +67,10 @@ gh issue list --state open --limit 500 --search "keyword"
 - NEVER use quotes in Fortran comments
 - Fortran has COLUMN-MAJOR arrays, so INNERMOST loop is over LEFTMOST index
 - Use trim() with Fortran strings - they lack C-style null termination
+- Purity: prefer side-effect-free procedures; mark `pure`/`elemental` when applicable
+- Dummies: every dummy argument must have `intent(in|out|inout)`; use `associate` to create local aliases
+- Contiguity/perf: add `contiguous` where required; avoid noncontiguous slices in hot loops; pre-allocate scratch arrays
+- Pointers: prefer `allocatable`; do not use pointers unless explicitly requested
 
 ### Test Rules
 - PRE-IMPLEMENTATION CI CHECK: Run tests BEFORE starting work
