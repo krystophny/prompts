@@ -2,7 +2,7 @@
 
 ## Non-Default Git/GitHub Behaviors
 - git add specific files only - NEVER git add . or -A
-- NO emojis in commit messages, PRs, issues
+- NO emojis ANYWHERE - not in commit messages, PRs, issues, code, or any output
 - NO draft PRs - create ready for review
 - NEVER close PRs without merge - fix until success
 - NEVER ADD COMMENTS TO ISSUES: edit descriptions via `gh issue edit --body`
