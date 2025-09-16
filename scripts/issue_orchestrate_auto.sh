@@ -58,7 +58,14 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --label) label="$2"; shift 2;;
     --all) label=""; auto_merge=true; shift 1;;
-    --limit) limit="$2"; shift 2;;
+    --limit)
+      if [[ ! "$2" =~ ^[0-9]+$ ]]; then
+        echo "Invalid --limit value: $2" >&2
+        exit 2
+      fi
+      limit="$2"
+      shift 2
+      ;;
     --merge|--squash|--rebase) merge_method="$1"; shift 1;;
     --repo) repo_override="$2"; shift 2;;
     --debug) debug=1; shift 1;;
@@ -148,6 +155,14 @@ mark_first_pass_done() {
 is_first_pass_done() {
   local f; f=$(pr_state_file "$1")
   [[ -f "$f" ]] && grep -q '^first_pass_done=1' "$f" 2>/dev/null
+}
+mark_local_review_submitted() {
+  local f; f=$(pr_state_file "$1")
+  { [[ -f "$f" ]] || :; } && { grep -q '^local_review_submitted=1' "$f" 2>/dev/null || echo 'local_review_submitted=1' >>"$f"; }
+}
+is_local_review_submitted() {
+  local f; f=$(pr_state_file "$1")
+  [[ -f "$f" ]] && grep -q '^local_review_submitted=1' "$f" 2>/dev/null
 }
 
 # Banner: resolved repo
@@ -369,6 +384,7 @@ process_existing_pr() {
   if is_first_pass_done "$pr_number"; then
     echo "[review] Second pass detected; running self-review." >&2
     codex_pr_self_review "$pr_number" "$inum"
+    codex_submit_local_pr_review "$pr_number" "$inum" || true
   else
     echo "[review] First pass; addressing review comments." >&2
     codex_address_review_feedback "$pr_number" "$inum" "$branch" || true
@@ -473,10 +489,8 @@ codex_post_merge_close_issue() {
     return 0
   fi
   # Compose an evidence-rich comment before closing the issue
-  local repo_url repo_name default_branch pr_url merge_commit sha_short files_json
+  local repo_url pr_url merge_commit sha_short files_json
   repo_url=$(gh repo view --json url --jq '.url' 2>/dev/null || echo "")
-  repo_name=$(gh repo view --json nameWithOwner --jq '.nameWithOwner' 2>/dev/null || echo "")
-  default_branch=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null || echo "main")
   pr_url=$(gh pr view "$pr_num" --json url --jq '.url' 2>/dev/null || echo "")
   merge_commit=$(gh pr view "$pr_num" --json mergeCommit --jq '.mergeCommit.oid // empty' 2>/dev/null || echo "")
   sha_short=$(printf "%s" "$merge_commit" | cut -c1-12)
@@ -554,7 +568,7 @@ MD
     local tmp_prc
     tmp_prc=$(mktemp)
     {
-      printf "Closed issue `#%s` (merged). See the issue for evidence links.\n" "$issue_num"
+      printf "Closed issue \`%s\` (merged). See the issue for evidence links.\n" "#$issue_num"
     } >"$tmp_prc"
     gh pr comment "$pr_num" --body-file "$tmp_prc" || true
     rm -f "$tmp_prc" || true
@@ -750,6 +764,114 @@ EOF
       git push
     fi
   done
+}
+
+codex_submit_local_pr_review() {
+  local pr_num="${1-}"; shift || true
+  local inum="${1-}"; shift || true
+  if [[ -z "${pr_num:-}" ]]; then
+    echo "[review] Missing PR number for local review." >&2
+    return 1
+  fi
+  if is_local_review_submitted "$pr_num"; then
+    echo "[review] Local review already submitted for PR #$pr_num; skipping." >&2
+    return 0
+  fi
+
+  local agents_guidelines=""
+  if [[ -f "$repo_root/AGENTS.md" ]]; then
+    agents_guidelines=$(sanitize_for_prompt < "$repo_root/AGENTS.md" 2>/dev/null || true)
+  fi
+  if [[ -z "${agents_guidelines//[[:space:]]/}" ]]; then
+    agents_guidelines="(AGENTS.md unavailable)"
+  fi
+
+  local template
+  read -r -d '' template <<'EOF' || true
+You are an autonomous senior reviewer evaluating Pull Request #__PR__.
+Repository root: __ROOT__.
+
+Engineering standards (apply rigorously):
+__AGENTS__
+
+Task: Perform a full review of this PR so your findings can be submitted via `gh pr review`. Use GitHub CLI and local tools available in this repository.
+
+Checklist:
+1) Inspect PR metadata and diff with `gh pr view $PR_NUM --json files,commits,body,number,baseRefName,headRefName,url` and fetch changed files if needed.
+2) Evaluate code, tests, docs, performance, and style against the engineering standards above. Pay special attention to Fortran-specific conventions (kinds, formatting, modules) and build/test workflow expectations.
+3) Confirm that verification exists (tests, artifacts, docs). Recommend additional coverage when missing and cite exact commands.
+4) Identify blocking issues, potential regressions, or polish opportunities. Reference concrete files/lines and required follow-up.
+5) Decide whether to approve, request changes, or leave a comment. Approve only when the PR is production-ready and fully verified.
+
+Output format (exact):
+FINAL_REVIEW_STATUS: <approve|request_changes|comment>
+FINAL_REVIEW_COMMENT:
+<markdown feedback suitable for gh pr review>
+END_REVIEW_COMMENT
+
+The comment must be concise yet thorough, citing evidence and specific guidance. Do not repeat the AGENTS text itself.
+EOF
+
+  local prompt="$template"
+  prompt="${prompt//__PR__/$pr_num}"
+  prompt="${prompt//__ROOT__/$repo_root}"
+  prompt="${prompt//__AGENTS__/$agents_guidelines}"
+
+  local output status
+  if [[ $use_claude -eq 1 ]]; then
+    set +e
+    output=$(PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt")
+    status=$?
+    set -e
+  else
+    set +e
+    output=$(PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null)
+    status=$?
+    set -e
+  fi
+  if (( status != 0 )); then
+    echo "[review] Local model review execution failed with status $status." >&2
+    return 1
+  fi
+
+  local review_status
+  review_status=$(sed -n 's/^FINAL_REVIEW_STATUS:[[:space:]]*//p' <<<"$output" | tail -n 1 | tr '[:upper:]' '[:lower:]' | tr -d '\r')
+  review_status=${review_status%% *}
+  if [[ -z "${review_status:-}" ]]; then
+    review_status="comment"
+  fi
+
+  local review_body
+  review_body=$(sed -n '/^FINAL_REVIEW_COMMENT:$/,/^END_REVIEW_COMMENT$/p' <<<"$output" | sed '1d;$d')
+  review_body=$(printf '%s' "$review_body" | sed -e 's/[[:space:]]*$//')
+  if [[ -z "${review_body//[[:space:]]/}" ]]; then
+    echo "[review] Local model did not produce review body; skipping submission." >&2
+    return 1
+  fi
+
+  local flag
+  case "$review_status" in
+    approve)
+      flag="--approve"
+      ;;
+    request_changes|request-changes|requestchanges)
+      flag="--request-changes"
+      review_status="request_changes"
+      ;;
+    *)
+      flag="--comment"
+      review_status="comment"
+      ;;
+  esac
+
+  if ! gh pr review "$pr_num" "$flag" --body "$review_body"; then
+    echo "[review] Failed to submit local review for PR #$pr_num." >&2
+    return 1
+  fi
+
+  mark_local_review_submitted "$pr_num"
+  echo "[review] Submitted local model review ($review_status) for PR #$pr_num." >&2
+  return 0
 }
 
 
@@ -1043,9 +1165,15 @@ if [[ -n "$single_issue" ]]; then
   echo "Done processing requested issue #$single_issue." >&2
 else
   if [[ "$auto_merge" == true ]]; then
-    while true; do
+    passes_done=0
+    while (( passes_done < limit )); do
       if ! run_issue_pass; then
         echo "No actionable PR found this pass; exiting (--all)." >&2
+        break
+      fi
+      ((passes_done++))
+      if (( passes_done >= limit )); then
+        echo "Reached --limit $limit; exiting (--all)." >&2
         break
       fi
     done
