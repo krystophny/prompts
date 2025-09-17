@@ -1160,22 +1160,52 @@ run_issue_pass() {
   return 0
 }
 
+# Determine if any open issues remain according to current label filter
+issues_remaining() {
+  local args json count
+  args=(issue list --state open --json number --limit 200)
+  if [[ -n "$label" ]]; then
+    args+=(--label "$label")
+  fi
+  if ! json=$(gh "${args[@]}" 2>/dev/null); then
+    echo "[orchestrate] Warning: unable to fetch open issues; assuming issues remain." >&2
+    return 0
+  fi
+  if ! count=$(jq -r 'length' <<<"$json" 2>/dev/null); then
+    count=0
+  fi
+  if (( count > 0 )); then
+    return 0
+  fi
+  return 1
+}
+
 if [[ -n "$single_issue" ]]; then
   run_specific_issue_pass "$single_issue" || true
   echo "Done processing requested issue #$single_issue." >&2
 else
   if [[ "$auto_merge" == true ]]; then
     passes_done=0
+    idle_attempts=0
     while (( passes_done < limit )); do
-      if ! run_issue_pass; then
-        echo "No actionable PR found this pass; exiting (--all)." >&2
+      if run_issue_pass; then
+        ((passes_done++))
+        idle_attempts=0
+        if (( passes_done >= limit )); then
+          echo "Reached --limit $limit; exiting (--all)." >&2
+          break
+        fi
+        continue
+      fi
+
+      if ! issues_remaining; then
+        echo "No open issues remain that match criteria; exiting (--all)." >&2
         break
       fi
-      ((passes_done++))
-      if (( passes_done >= limit )); then
-        echo "Reached --limit $limit; exiting (--all)." >&2
-        break
-      fi
+
+      ((idle_attempts++))
+      echo "No actionable PR found this pass; retrying (--all)." >&2
+      sleep 5
     done
   else
     run_issue_pass || true
