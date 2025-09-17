@@ -248,7 +248,7 @@ EOF
           # Ensure any resolved files are staged; try to continue
           if git rebase --continue; then :; fi
         fi
-        ((attempt++))
+        ((attempt+=1))
       done
       if ! rebase_in_progress; then
         git push --force-with-lease
@@ -978,7 +978,7 @@ EOF
     if gh pr checks "${pr_num:-}" --watch; then
       return 0
     fi
-    ((attempt++))
+    ((attempt+=1))
   done
   return 1
 }
@@ -1189,7 +1189,7 @@ else
     idle_attempts=0
     while (( passes_done < limit )); do
       if run_issue_pass; then
-        ((passes_done++))
+        ((passes_done+=1))
         idle_attempts=0
         if (( passes_done >= limit )); then
           echo "Reached --limit $limit; exiting (--all)." >&2
@@ -1203,7 +1203,7 @@ else
         break
       fi
 
-      ((idle_attempts++))
+      ((idle_attempts+=1))
       echo "No actionable PR found this pass; retrying (--all)." >&2
       sleep 5
     done
