@@ -190,31 +190,53 @@ rebase_and_resolve_conflicts() {
   fi
   base=$(echo "$pr_json" | jq -r '.baseRefName')
   merge_state=$(echo "$pr_json" | jq -r '.mergeStateStatus')
+  git fetch origin "$base" "$branch" || true
+  if git show-ref --verify --quiet "refs/heads/$branch"; then
+    git checkout "$branch"
+  else
+    git checkout -b "$branch" --track "origin/$branch" || git checkout "$branch"
+  fi
+
+  local need_rebase=false
   case "$merge_state" in
-    BEHIND|DIRTY)
-      echo "[rebase] PR #${pr_num:-?} is $merge_state relative to $base. Rebasing $branch onto origin/$base" >&2
-      git fetch origin "$base" "$branch" || true
-      git checkout "$branch"
-      if git rebase --autostash "origin/$base"; then
-        git push --force-with-lease
-        return 0
+    BEHIND|DIRTY|UNKNOWN|UNSTABLE|'')
+      need_rebase=true
+      ;;
+  esac
+
+  if [[ $need_rebase == false ]]; then
+    if git rev-parse --verify --quiet "origin/$base" >/dev/null 2>&1; then
+      if ! git merge-base --is-ancestor "origin/$base" "$branch" 2>/dev/null; then
+        need_rebase=true
       fi
-      # Conflicts: hand off to Codex to resolve and continue rebase
-      local attempt=1 max_attempts=10
-      while rebase_in_progress && (( attempt <= max_attempts )); do
-        echo "[rebase] Conflicts during rebase (attempt $attempt/$max_attempts). Handing to Codex." >&2
-        local conflicted
-        conflicted=$(git diff --name-only --diff-filter=U || true)
-        local prompt history cf inum
-        # Best-effort: include recent context lines if available
-        inum=$(infer_issue_from_current_branch || true)
-        history=""
-        if [[ -n "${inum:-}" ]]; then
-          cf=$(context_file_for_issue "${inum:-}")
-          [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null | sanitize_for_prompt || true)
-        fi
-        # Build prompt with a literal here-doc to avoid command substitution from backticks
-        prompt=$(cat << 'EOF'
+    fi
+  fi
+
+  if [[ $need_rebase == false ]]; then
+    return 0
+  fi
+
+  echo "[rebase] PR #${pr_num:-?} mergeStateStatus=$merge_state; ensuring $branch is rebased onto origin/$base" >&2
+  if git rebase --autostash "origin/$base"; then
+    git push --force-with-lease
+    return 0
+  fi
+  # Conflicts: hand off to Codex to resolve and continue rebase
+  local attempt=1 max_attempts=10
+  while rebase_in_progress && (( attempt <= max_attempts )); do
+    echo "[rebase] Conflicts during rebase (attempt $attempt/$max_attempts). Handing to Codex." >&2
+    local conflicted
+    conflicted=$(git diff --name-only --diff-filter=U || true)
+    local prompt history cf inum
+    # Best-effort: include recent context lines if available
+    inum=$(infer_issue_from_current_branch || true)
+    history=""
+    if [[ -n "${inum:-}" ]]; then
+      cf=$(context_file_for_issue "${inum:-}")
+      [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null | sanitize_for_prompt || true)
+    fi
+    # Build prompt with a literal here-doc to avoid command substitution from backticks
+    prompt=$(cat << 'EOF'
 You are resolving an in-progress Git rebase with merge conflicts.
 
 Goal: Resolve all conflicts cleanly, preserve both intended changes, and complete the rebase. Then run tests locally to ensure correctness, stage specific files, and continue the rebase.
@@ -234,33 +256,28 @@ Tips:
 
 Context (recent log):
 EOF
-        )
-        prompt+=$'\n'
-        prompt+="$history"
-        if [[ $use_claude -eq 1 ]]; then
-          # Claude Code version - pass prompt as properly escaped string argument
-          CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
-        else
-          CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
-        fi
-        # If still conflicted, let Codex try again next loop; otherwise continue
-        if rebase_in_progress; then
-          # Ensure any resolved files are staged; try to continue
-          if git rebase --continue; then :; fi
-        fi
-        ((attempt+=1))
-      done
-      if ! rebase_in_progress; then
-        git push --force-with-lease
-        return 0
-      fi
-      echo "[rebase] Unable to complete rebase automatically after $max_attempts attempts." >&2
-      return 1
-      ;;
-    *)
-      return 0
-      ;;
-  esac
+    )
+    prompt+=$'\n'
+    prompt+="$history"
+    if [[ $use_claude -eq 1 ]]; then
+      # Claude Code version - pass prompt as properly escaped string argument
+      CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
+    else
+      CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+    fi
+    # If still conflicted, let Codex try again next loop; otherwise continue
+    if rebase_in_progress; then
+      # Ensure any resolved files are staged; try to continue
+      if git rebase --continue; then :; fi
+    fi
+    ((attempt+=1))
+  done
+  if ! rebase_in_progress; then
+    git push --force-with-lease
+    return 0
+  fi
+  echo "[rebase] Unable to complete rebase automatically after $max_attempts attempts." >&2
+  return 1
 }
 
 ensure_clean_main() {
@@ -380,15 +397,22 @@ process_existing_pr() {
   local inum="${1-}"; shift || true
   local branch="$1"; shift || true
 
-  # Two-pass policy: Pass 1 = address review feedback; Pass 2 = self-review.
-  if is_first_pass_done "$pr_number"; then
-    echo "[review] Second pass detected; running self-review." >&2
-    codex_pr_self_review "$pr_number" "$inum"
-    codex_submit_local_pr_review "$pr_number" "$inum" || true
-  else
+  # First pass: address outstanding review feedback if it hasn't been handled yet.
+  if ! is_first_pass_done "$pr_number"; then
     echo "[review] First pass; addressing review comments." >&2
     codex_address_review_feedback "$pr_number" "$inum" "$branch" || true
     mark_first_pass_done "$pr_number"
+  else
+    echo "[review] Review feedback already handled earlier; skipping first-pass loop." >&2
+  fi
+
+  # Second pass: always run self-review + submit local review exactly once per PR.
+  if is_local_review_submitted "$pr_number"; then
+    echo "[review] Local review already submitted for PR #$pr_number; skipping self-review." >&2
+  else
+    echo "[review] Running self-review." >&2
+    codex_pr_self_review "$pr_number" "$inum"
+    codex_submit_local_pr_review "$pr_number" "$inum" || true
   fi
 
   # Move PR out of draft if still draft
