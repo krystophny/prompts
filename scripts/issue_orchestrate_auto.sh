@@ -243,8 +243,7 @@ Goal: Resolve all conflicts cleanly, preserve both intended changes, and complet
 
 Rules:
 - Do NOT abort the rebase. Fix conflicts file-by-file.
-- Keep changes focused; minor local cleanups OK. No unrelated edits. Markdown
-  only in PR/issue per policy.
+- Resolve conflicts comprehensively to preserve intent. Markdown only in PR/issue per policy.
 - Stage only resolved files explicitly (no `git add .`).
 - After resolving all conflicts, run `git rebase --continue`.
 - If tests fail post-continue, create follow-up fix commits on the branch and push.
@@ -324,7 +323,7 @@ enforce_no_parallel_prs() {
   fi
 }
 
-# Address PR review feedback by reading unresolved review threads and applying targeted fixes.
+# Address PR review feedback by reading unresolved review threads and applying requested fixes comprehensively.
 codex_address_review_feedback() {
   local pr_num="${1-}"; shift || true
   local inum="${1-}"; shift || true
@@ -341,19 +340,19 @@ codex_address_review_feedback() {
     prompt=$(cat << 'EOF'
 You are addressing reviewer feedback on a GitHub Pull Request.
 
-Goal: Read PR reviews and comments, apply the requested changes, and push commits to resolve the feedback. Address feedback and nearby code only; small local cleanups OK.
+Goal: Read PR reviews and comments, apply the requested changes comprehensively (including tests/docs as needed), and push commits to fully resolve the feedback.
 
 Steps:
 1) Inspect PR reviews and comments:
    - `gh pr view "$PR_NUM" --json reviews,reviewThreads,comments,files,headRefName,baseRefName,url`
    - Read each review (state, body) and comment text; scan diffs where referenced.
 2) For each actionable item, make the necessary code/test/doc changes to satisfy the request.
-3) Run local tests/linters/build to verify. Keep changes minimal and targeted.
+3) Run local tests/linters/build to verify. Ensure changes are correct, well-tested, and clean.
 4) Stage only related files explicitly; commit with a clear message; push.
 5) Stop when there is no more actionable feedback.
 
 Rules:
-- No unrelated edits or broad refactors. Markdown only in PR/issue per policy.
+- Aim for production-ready quality; update what’s required to resolve the feedback thoroughly. Markdown only in PR/issue per policy.
 - Keep functions small and follow project style. Do not skip tests.
 
 Context (recent log):
@@ -711,7 +710,7 @@ Process:
    - Prefer `make verify-artifacts` when present; otherwise use `VERIFY_CMD` or scripts under `scripts/verify_*`.
    - If nothing exists, derive minimal reproduction from the issue description and project docs.
    Record the exact commands and short excerpts as evidence.
-2) Implement the fix with targeted tests; allow small local cleanups. Iterate until tests pass locally. Keep unrelated changes out.
+2) Implement the solution with comprehensive tests as needed. Iterate until all tests pass locally.
 3) Stage specific files only (no `git add .`). Commit using Conventional Commit style including "(fixes #__INUM__)" when appropriate. Push to origin for this branch.
 4) As the final step: if a PR to main does not exist for this branch, create a PR (not draft) with title `fix: <issue-title-truncated-to-64> (fixes #__INUM__)`. Include a concise "Verification" section showing artifact evidence (commands run + key output excerpts and artifact paths). Do not open a PR earlier than this step.
 5) Print exactly one JSON line with keys: {"issue":__INUM__, "branch":"__CUR__", "pr":<pr-number>, "url":"<pr-url>"}.
@@ -720,7 +719,7 @@ Rules:
 - Markdown only in PR/issue per policy; keep outputs minimal and actionable.
 - Validate with tests AND artifact checks before concluding. Do not skip tests.
 - Do not claim an output-affecting fix without attaching evidence excerpts (from project verification or minimal reproduction) to the PR/issue.
-- Do not reformat unrelated files. No secrets.
+- No secrets.
 
 Context (recent log):
 __HISTORY__
@@ -752,12 +751,12 @@ Task: Self-review the open Pull Request for this branch, make necessary code or 
 Process:
 1) Inspect PR details and diff: you can use `gh pr view $PR_NUM --json files,headRefName,baseRefName,number,author,body,url` and fetch changed files.
 2) Run local tests and linters; fix failures. For output-affecting changes, run the repository’s artifact verification (e.g., `make verify-artifacts`, custom verify scripts, or documented reproductions) and include concise evidence in the PR body if missing.
-3) Apply targeted improvements (tests, docs, code) to raise quality while staying within the PR scope.
+3) Apply necessary improvements (tests, docs, code) to ensure the PR is production-ready.
 4) Stage specific files only, commit with clear messages, and push.
 5) If no further changes are needed, end gracefully.
 
 Rules:
-- No unrelated edits or broad refactors. Markdown only in PR/issue per policy.
+- Markdown only in PR/issue per policy.
 - Keep functions under 50 lines when practical; follow project style.
 - Don’t skip tests; keep everything reproducible.
 EOF
@@ -960,7 +959,7 @@ Task: Diagnose the CI failures, read GitHub Actions logs, fix issues locally, pu
 
 Steps:
 1) Inspect latest CI runs for the branch: `gh run list --branch "$BRANCH" --event pull_request --json databaseId,workflowName,status,conclusion,url --limit 5` and view logs for failed jobs using `gh run view <run-id> --json jobs --log`.
-2) Reproduce locally (run tests/linters/build) and fix the root cause. Stay within PR scope; local cleanups OK.
+2) Reproduce locally (run tests/linters/build) and fix the root cause thoroughly.
 3) Add/adjust tests as needed to prevent regression; run locally to green.
 4) Stage specific files only; commit with clear message; push.
 5) If there is nothing actionable (external flake), document minimal retry (e.g., rebase to retrigger) and proceed.
@@ -968,7 +967,7 @@ Steps:
 
 Rules:
 - Markdown only in PR/issue per policy. Put evidence in commit messages or PR body when appropriate.
-- Stay within scope; keep functions small and style consistent.
+- Keep functions small and style consistent.
 
 Context (recent log):
 EOF
@@ -1042,7 +1041,7 @@ Selection & priority:
 Implementation:
 - Create/checkout branch: fix/issue-<num>-<slug>.
 - Run baseline tests (use TEST_CMD if provided; else try make/pytest/fpm/npm). Enforce TEST_TIMEOUT. For output-affecting issues, also run artifact verification (prefer `make verify-artifacts` or project-provided scripts/commands) and capture concise evidence.
-- Implement the fix with tests; allow small local cleanups; iterate until tests pass locally. Keep commits focused. No unrelated changes.
+- Implement the solution with thorough tests; make any necessary changes; iterate until tests pass locally. Keep commits well-structured.
 - Stage files explicitly (no `git add .`). Use Conventional Commit: `fix: <desc> (fixes #<num>)`.
 - Only as the final step, open a PR (not draft) to main (reuse if exists). Title: "fix: <issue title truncated to 64> (fixes #<num>)". Include a short "Verification" section with commands, output excerpts, and artifact paths. Do not open a PR earlier.
 
