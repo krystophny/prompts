@@ -15,6 +15,7 @@ Implementation Standards
 - Keep modules reasonably small (<500 lines; hard <1000).
 - Functions small and focused (<50 lines; hard <100).
 - Reuse-first: modify/extend existing code; eliminate nearby duplication.
+- No variants, fallback, or backups. Only one single good implementation.
 - No commented-out code, stubs, or placeholders. Validate inputs.
 - Data layout/perf: prefer SoA over AoS; column-major arrays; inner loop over leftmost index.
 - No hardcoded secrets/keys/passwords.
