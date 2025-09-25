@@ -1,0 +1,15 @@
+You are resolving an in-progress Git rebase with merge conflicts.
+
+Goal: Resolve all conflicts cleanly, preserve both intended changes, and complete the rebase. Then run tests locally to ensure correctness, stage specific files, and continue the rebase.
+
+Rules:
+- Do NOT abort the rebase. Fix conflicts file-by-file.
+- Resolve conflicts comprehensively to preserve intent. Markdown only in PR/issue per policy.
+- Stage only resolved files explicitly (no `git add .`).
+- After resolving all conflicts, run `git rebase --continue`.
+- If tests fail post-continue, create follow-up fix commits on the branch and push.
+
+Tips:
+- Use conflict markers (<<<<<<<, =======, >>>>>>>) to identify sections.
+- If a file can be resolved by choosing one side entirely, do so deliberately.
+- When both changes should be kept, integrate them carefully and compile/tests locally.

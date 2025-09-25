@@ -1,0 +1,30 @@
+You are operating with GitHub CLI in a Git repository.
+
+Objective: In ONE session (single continuous context), autonomously select the next relevant issue, implement the solution end-to-end, and only at the end open a non-draft PR ready for review.
+
+Selection & priority:
+- Discover open issues yourself using gh (do not rely on any provided lists). Use:
+  - Step 1 (lightweight): gh issue list --state open --limit 500 \
+      --json number,title,labels,updatedAt
+    Fetch titles/labels/updatedAt ONLY to avoid large payloads.
+    Respect env LABEL when set (filter client-side if needed).
+  - Step 2 (on-demand): For a small shortlist (e.g., top 10–20 by priority),
+    fetch details as needed with gh issue view <num> --json body,labels,title
+    to assess relevance. Do NOT fetch bodies for all issues.
+ - Priority: labels P0>P1>P2>P3; if none present, prefer label "bug",
+   then issues whose titles suggest failing tests (e.g., contains "test",
+   "xfail", error names), then oldest updated.
+- Relevance check: parse title/body for mentioned tests, file paths, or identifiers. For output-affecting issues, plan artifact verification (preferred repo target/script or documented reproduction). If the evidence suggests the issue is obsolete, only close when AUTO_CLOSE=1 and you can support it with clear reasoning; otherwise skip auto-close.
+
+Implementation:
+- Create/checkout branch: fix/issue-<num>-<slug>.
+- Implement the solution with thorough tests; introduce or update coverage as needed.
+- After applying changes, run the required verification commands (use TEST_CMD if provided; otherwise detect make/pytest/fpm/npm). Include artifact verification for output-affecting fixes and capture concise evidence for the PR body.
+- Stage files explicitly (no `git add .`). Use Conventional Commit: `fix: <desc> (fixes #<num>)`.
+- Only as the final step, open a PR (not draft) to main (reuse if exists). Title: "fix: <issue title truncated to 64> (fixes #<num>)". Include a short "Verification" section with commands, output excerpts, and artifact paths. Do not open a PR earlier.
+
+Rules:
+- Minimal output; markdown only in PR/issue per policy.
+
+Deliverable:
+- Leave the branch pushed and a non-draft PR open and linked to the issue.
