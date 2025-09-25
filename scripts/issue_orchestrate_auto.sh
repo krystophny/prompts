@@ -27,6 +27,7 @@ trap 'echo "[orchestrate] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 # Helpful error trap to diagnose unexpected exits under set -e
 trap 'rc=$?; echo "[orchestrate][ERR] exit=$rc at line ${LINENO}; last cmd: \"${BASH_COMMAND}\"" >&2' ERR
 self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+scripts_dir="$self_dir"
 # Resolve repository root preference order:
 # 1) REPO_DIR if provided; 2) current working directory's repo; 3) scripts' repo; 4) scripts/..
 repo_root="${REPO_DIR:-}"
@@ -141,7 +142,7 @@ sanitize_for_prompt() {
   sed -E -e 's/\x1B\[[0-9;]*[A-Za-z]//g' -e 's/\r//g' | head -c 4000
 }
 
-prompts_dir="$repo_root/scripts/prompts"
+prompts_dir="$scripts_dir/prompts"
 # shellcheck disable=SC2329
 require_prompt() {
   local name="$1"
@@ -173,7 +174,7 @@ load_prompt() {
 
 echo "[orchestrate] repo_root=$(pwd) remote=$(git remote get-url origin 2>/dev/null || echo 'none')" >&2
 
-lib_path="$repo_root/scripts/lib/issue_orchestrate_core.sh"
+lib_path="$scripts_dir/lib/issue_orchestrate_core.sh"
 if [[ ! -f "$lib_path" ]]; then
   echo "[orchestrate] Missing library: $lib_path" >&2
   exit 1

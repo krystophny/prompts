@@ -1,6 +1,10 @@
 # shellcheck shell=bash
 # shellcheck disable=SC2154
 
+lib_self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+: "${repo_root:=$(git -C "$lib_self_dir/.." rev-parse --show-toplevel 2>/dev/null || cd "$lib_self_dir/.." && pwd)}"
+: "${prompts_dir:=${lib_self_dir%/lib}/prompts}"
+
 pr_state_file() { echo "/tmp/codex_pr_${1}.state"; }
 
 mark_first_pass_done() {
