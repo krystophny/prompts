@@ -134,18 +134,6 @@ sanitize_for_prompt() {
 # Hard cap for local tests. If tests exceed this, treat as hang/too slow.
 : "${LOCAL_TEST_TIMEOUT:=${TEST_TIMEOUT}}"
 
-# Lightweight per-issue context (carried across separate Codex exec calls)
-context_file_for_issue() {
-  local inum="${1-}"
-  echo "/tmp/codex_issue_${inum}.context"
-}
-append_context() {
-  local inum="${1-}"; shift || true
-  local msg="$*"
-  local f; f=$(context_file_for_issue "${inum:-}")
-  printf "[%s] %s\n" "$(date -Iseconds)" "$msg" >>"$f" 2>/dev/null || true
-}
-
 # Per-PR state tracking to gate self-review until a second pass
 pr_state_file() { echo "/tmp/codex_pr_${1}.state"; }
 mark_first_pass_done() {
@@ -270,14 +258,7 @@ rebase_and_resolve_conflicts() {
     echo "[rebase] Conflicts during rebase (attempt $attempt/$max_attempts). Handing to Codex." >&2
     local conflicted
     conflicted=$(git diff --name-only --diff-filter=U || true)
-    local prompt history cf inum
-    # Best-effort: include recent context lines if available
-    inum=$(infer_issue_from_current_branch || true)
-    history=""
-    if [[ -n "${inum:-}" ]]; then
-      cf=$(context_file_for_issue "${inum:-}")
-      [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null | sanitize_for_prompt || true)
-    fi
+    local prompt
     # Build prompt with a literal here-doc to avoid command substitution from backticks
     prompt=$(cat << 'EOF'
 You are resolving an in-progress Git rebase with merge conflicts.
@@ -296,11 +277,8 @@ Tips:
 - If a file can be resolved by choosing one side entirely, do so deliberately.
 - When both changes should be kept, integrate them carefully and compile/tests locally.
 
-Context (recent log):
 EOF
     )
-    prompt+=$'\n'
-    prompt+="$history"
     if [[ $use_claude -eq 1 ]]; then
       # Claude Code version - pass prompt as properly escaped string argument
       CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
@@ -376,10 +354,7 @@ codex_address_review_feedback() {
   for round in $(seq 1 $max_rounds); do
     echo "[Review Fix] Round $round for PR #$pr_num (branch $branch)" >&2
     # Build a focused prompt to read review threads and implement fixes
-    local prompt history cf
-    history=""
-    cf=$(context_file_for_issue "${inum:-}")
-    [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null | sanitize_for_prompt || true)
+    local prompt
     prompt=$(cat << 'EOF'
 You are addressing reviewer feedback on a GitHub Pull Request.
 
@@ -397,12 +372,8 @@ Steps:
 Rules:
 - Aim for production-ready quality; update what’s required to resolve the feedback thoroughly. Markdown only in PR/issue per policy.
 - Keep functions small and follow project style. Do not skip tests.
-
-Context (recent log):
 EOF
     )
-    prompt+=$'\n'
-    prompt+="$history"
     if [[ $use_claude -eq 1 ]]; then
       PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
     else
@@ -756,10 +727,7 @@ progress_current_branch_if_needed() {
 # --- Codex autonomous loops ---
 codex_implement_current_branch() {
   local inum="${1-}"; shift || true
-  local prompt history cf cur
-  history=""
-  cf=$(context_file_for_issue "${inum:-}")
-  [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null | sanitize_for_prompt || true)
+  local prompt cur
   cur=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
   # Build prompt safely with placeholders to avoid command substitution
   local __template
@@ -780,14 +748,10 @@ Rules:
 - Always run the relevant verification after your changes; skip redundant baseline runs.
 - Provide evidence excerpts for any output-affecting fix, leveraging project verification commands when available.
 - No secrets.
-
-Context (recent log):
-__HISTORY__
 EOF
   prompt="$__template"
   prompt="${prompt//__CUR__/$cur}"
   prompt="${prompt//__INUM__/$inum}"
-  prompt="${prompt//__HISTORY__/$history}"
   if [[ $use_claude -eq 1 ]]; then
     # Claude Code version - pass prompt as properly escaped string argument
     ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
@@ -1020,11 +984,8 @@ codex_ci_fix_loop() {
     echo "[CI Fix] Attempt $attempt on PR #$pr_num (branch $branch)" >&2
     # Ensure branch is rebased on base and conflicts are resolved before CI
     rebase_and_resolve_conflicts "$pr_num" "$branch" || true
-    local prompt history cf
-    history=""
-    cf=$(context_file_for_issue "${inum:-}")
-    [[ -f "$cf" ]] && history=$(tail -n 200 "$cf" 2>/dev/null | sanitize_for_prompt || true)
-    # Build prompt with literal here-doc and append history to avoid command substitution
+    local prompt
+    # Build prompt with a literal here-doc to avoid command substitution from backticks
     prompt=$(cat << 'EOF'
 You are operating on a PR with failing CI.
 
@@ -1041,12 +1002,8 @@ Steps:
 Rules:
 - Markdown only in PR/issue per policy. Put evidence in commit messages or PR body when appropriate.
 - Keep functions small and style consistent.
-
-Context (recent log):
 EOF
     )
-    prompt+=$'\n'
-    prompt+="$history"
     if [[ $use_claude -eq 1 ]]; then
       # Claude Code version - pass prompt as properly escaped string argument
       PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
