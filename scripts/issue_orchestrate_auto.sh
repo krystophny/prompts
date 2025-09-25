@@ -157,11 +157,7 @@ is_first_pass_done() {
   [[ -f "$f" ]] && grep -q '^first_pass_done=1' "$f" 2>/dev/null
 }
 mark_local_review_submitted() {
-  local f; f=$(pr_state_file "$1")
   increment_local_review_round "$1"
-}
-is_local_review_submitted() {
-  (( $(get_local_review_round "$1") > 0 ))
 }
 
 pr_has_open_feedback() {
@@ -773,19 +769,16 @@ You are on branch '__CUR__' in a Git repository with GitHub CLI.
 Goal: Complete implementation for issue #__INUM__ on the current branch, then open a non-draft PR only at the very end, right before handing off to review.
 
 Process:
-1) Establish baseline: detect and run available tests (make test-ci, pytest, fpm, npm). If the repository defines artifact verification, ALSO run it:
-   - Prefer `make verify-artifacts` when present; otherwise use `VERIFY_CMD` or scripts under `scripts/verify_*`.
-   - If nothing exists, derive minimal reproduction from the issue description and project docs.
-   Record the exact commands and short excerpts as evidence.
-2) Implement the solution with comprehensive tests as needed. Iterate until all tests pass locally.
+1) Collect the necessary context: inspect the issue, relevant files, and existing tests. Identify which verifications (unit tests, integration tests, artifact checks) must run once the fix is in place. Keep output snippets for the PR body.
+2) Implement the solution with comprehensive tests or docs updates as required. Run the appropriate verification commands after applying changes (use TEST_CMD when set; otherwise detect project tooling such as make, pytest, fpm, npm). Include artifact verification when the issue affects outputs.
 3) Stage specific files only (no `git add .`). Commit using Conventional Commit style including "(fixes #__INUM__)" when appropriate. Push to origin for this branch.
-4) As the final step: if a PR to main does not exist for this branch, create a PR (not draft) with title `fix: <issue-title-truncated-to-64> (fixes #__INUM__)`. Include a concise "Verification" section showing artifact evidence (commands run + key output excerpts and artifact paths). Do not open a PR earlier than this step.
+4) As the final step: if a PR to main does not exist for this branch, create a PR (not draft) with title `fix: <issue-title-truncated-to-64> (fixes #__INUM__)`. Include a concise "Verification" section showing the commands you ran and key output excerpts or artifact paths. Do not open a PR earlier than this step.
 5) Print exactly one JSON line with keys: {"issue":__INUM__, "branch":"__CUR__", "pr":<pr-number>, "url":"<pr-url>"}.
 
 Rules:
 - Markdown only in PR/issue per policy; keep outputs minimal and actionable.
-- Validate with tests AND artifact checks before concluding. Do not skip tests.
-- Do not claim an output-affecting fix without attaching evidence excerpts (from project verification or minimal reproduction) to the PR/issue.
+- Always run the relevant verification after your changes; skip redundant baseline runs.
+- Provide evidence excerpts for any output-affecting fix, leveraging project verification commands when available.
 - No secrets.
 
 Context (recent log):
@@ -1116,12 +1109,12 @@ Selection & priority:
  - Priority: labels P0>P1>P2>P3; if none present, prefer label "bug",
    then issues whose titles suggest failing tests (e.g., contains "test",
    "xfail", error names), then oldest updated.
-- Relevance check: parse title/body for mentioned tests, file paths, or identifiers. For output-affecting issues, plan artifact verification (repo target/script or documented reproduction). If artifacts are missing and baseline tests pass, treat as obsolete; only when AUTO_CLOSE=1, close with a concise, evidence-based comment. Otherwise, skip auto-close.
+- Relevance check: parse title/body for mentioned tests, file paths, or identifiers. For output-affecting issues, plan artifact verification (preferred repo target/script or documented reproduction). If the evidence suggests the issue is obsolete, only close when AUTO_CLOSE=1 and you can support it with clear reasoning; otherwise skip auto-close.
 
 Implementation:
 - Create/checkout branch: fix/issue-<num>-<slug>.
-- Run baseline tests (use TEST_CMD if provided; else try make/pytest/fpm/npm). Enforce TEST_TIMEOUT. For output-affecting issues, also run artifact verification (prefer `make verify-artifacts` or project-provided scripts/commands) and capture concise evidence.
-- Implement the solution with thorough tests; make any necessary changes; iterate until tests pass locally. Keep commits well-structured.
+- Implement the solution with thorough tests; introduce or update coverage as needed.
+- After applying changes, run the required verification commands (use TEST_CMD if provided; otherwise detect make/pytest/fpm/npm). Include artifact verification for output-affecting fixes and capture concise evidence for the PR body.
 - Stage files explicitly (no `git add .`). Use Conventional Commit: `fix: <desc> (fixes #<num>)`.
 - Only as the final step, open a PR (not draft) to main (reuse if exists). Title: "fix: <issue title truncated to 64> (fixes #<num>)". Include a short "Verification" section with commands, output excerpts, and artifact paths. Do not open a PR earlier.
 
