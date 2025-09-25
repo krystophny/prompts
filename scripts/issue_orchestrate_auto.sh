@@ -701,43 +701,59 @@ progress_current_branch_if_needed() {
     git checkout -b "$cur" --track "origin/$cur" || git checkout "$cur"
   fi
 
-  # Check for an existing PR first to avoid duplicating work
-  local pr_number pr_url is_draft
-  pr_number=$(gh pr list --head "$cur" --json number,isDraft --limit 1 --jq '.[0].number' 2>/dev/null || true)
+  local pr_json pr_number pr_url pr_is_draft
+  pr_json=$(gh pr list --head "$cur" --json number,isDraft,url --limit 1 2>/dev/null || echo '[]')
+  pr_number=$(jq -r '.[0].number // ""' <<<"$pr_json" 2>/dev/null || echo "")
+  pr_url=$(jq -r '.[0].url // ""' <<<"$pr_json" 2>/dev/null || echo "")
+  pr_is_draft=$(jq -r '.[0].isDraft // false' <<<"$pr_json" 2>/dev/null || echo "false")
+
   if [[ -n "$pr_number" ]]; then
-    is_draft=$(gh pr view "$pr_number" --json isDraft --jq '.isDraft' 2>/dev/null || echo "false")
-    pr_url=$(gh pr view "$pr_number" --json url --jq '.url' 2>/dev/null || echo "")
-    echo "PR: ${pr_url:-#${pr_number}} (existing)" >&2
-    if [[ "$is_draft" == "true" ]]; then
-      echo "[gate] Existing PR is draft; ignoring per policy." >&2
-      return 0
-    fi
-    process_existing_pr "$pr_number" "$inum" "$cur"
-  else
-    # No PR yet; forbid creating a new one if others are open
-    local others
-    others=$(list_open_non_draft_codex_prs | tr '\n' ' ')
-    if [[ -n "${others// /}" ]]; then
-      echo "[gate] Non-draft PRs exist ($others); not creating a new PR from current branch." >&2
-      return 0
-    fi
-    # Implement on current branch and open PR through Codex
-    local json
-    json=$(codex_implement_current_branch "$inum" | tail -n 1)
-    pr_url=$(printf "%s" "$json" | jq -r '.url // empty' 2>/dev/null || true)
-    if [[ -z "$pr_url" ]]; then
-      # Best-effort resolve PR from branch
-      pr_url=$(gh pr list --head "$cur" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
-    fi
-    if [[ -n "$pr_url" ]]; then echo "PR: $pr_url" >&2; fi
-    if pr_number=$(gh pr view "$pr_url" --json number --jq '.number' 2>/dev/null); then
-      process_existing_pr "$pr_number" "$inum" "$cur"
+    local feedback_state draft_state
+    if pr_has_open_feedback "$pr_number"; then
+      feedback_state="open-feedback"
     else
-      echo "Could not resolve PR number for URL: $pr_url" >&2
+      feedback_state="no-feedback"
     fi
+    if [[ "$pr_is_draft" == "true" ]]; then
+      draft_state="draft"
+    else
+      draft_state="ready"
+    fi
+    printf '[orchestrate] Branch %s review stage: PR %s (%s, %s).\n' \
+      "$cur" "${pr_url:-#${pr_number}}" "$draft_state" "$feedback_state" >&2
+    process_existing_pr "$pr_number" "$inum" "$cur"
+    ensure_clean_main
+    return 0
   fi
 
-  # Return to a clean main to continue with normal iteration
+  local others
+  others=$(list_open_non_draft_codex_prs | tr '\n' ' ')
+  if [[ -n "${others// /}" ]]; then
+    echo "[gate] Non-draft PRs exist ($others); not creating a new PR from current branch." >&2
+    return 0
+  fi
+
+  printf '[orchestrate] Branch %s implementation stage: no PR found; creating update.\n' \
+    "$cur" >&2
+
+  local json new_url new_number
+  json=$(codex_implement_current_branch "$inum" | tail -n 1 || true)
+  new_url=$(printf "%s" "$json" | jq -r '.url // empty' 2>/dev/null || true)
+  if [[ -z "$new_url" ]]; then
+    new_url=$(gh pr list --head "$cur" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
+  fi
+  if [[ -n "$new_url" ]]; then
+    echo "PR: $new_url" >&2
+    new_number=$(gh pr view "$new_url" --json number --jq '.number' 2>/dev/null || echo "")
+    if [[ -n "$new_number" ]]; then
+      process_existing_pr "$new_number" "$inum" "$cur"
+    else
+      echo "Could not resolve PR number for URL: $new_url" >&2
+    fi
+  else
+    echo "[orchestrate] No PR generated for branch '$cur' after implementation pass." >&2
+  fi
+
   ensure_clean_main
 }
 
