@@ -1206,6 +1206,10 @@ issues_remaining() {
 if [[ -n "$single_issue" ]]; then
   run_specific_issue_pass "$single_issue" || true
   echo "Done processing requested issue #$single_issue." >&2
+  if ! issues_remaining; then
+    echo "No open issues remain that match criteria; exiting (single issue)." >&2
+  fi
+  exit 0
 else
   if [[ "$auto_merge" == true ]]; then
     passes_done=0
@@ -1216,6 +1220,10 @@ else
         idle_attempts=0
         if (( passes_done >= limit )); then
           echo "Reached --limit $limit; exiting (--all)." >&2
+          break
+        fi
+        if ! issues_remaining; then
+          echo "No open issues remain that match criteria; exiting (--all)." >&2
           break
         fi
         continue
@@ -1230,8 +1238,13 @@ else
       echo "No actionable PR found this pass; retrying (--all)." >&2
       sleep 5
     done
+    exit 0
   else
     run_issue_pass || true
     echo "Autonomous issue processing complete (single pass)." >&2
+    if ! issues_remaining; then
+      echo "No open issues remain that match criteria; exiting (single pass)." >&2
+    fi
+    exit 0
   fi
 fi
