@@ -814,11 +814,26 @@ run_specific_issue_pass() {
 run_issue_pass() {
   progress_current_branch_if_needed
   ensure_clean_main
-  local open_now
+  local open_now processed_any=false
   open_now=$(list_open_non_draft_codex_prs | tr '\n' ' ')
   if [[ -n "${open_now// /}" ]]; then
-    echo "[gate] Non-draft PRs currently open ($open_now); skipping new issue work." >&2
-    return 1
+    echo "[gate] Non-draft PRs currently open ($open_now); processing before new issue work." >&2
+    local pr branch inum
+    for pr in $open_now; do
+      branch=$(checkout_pr_branch "$pr")
+      inum=$(infer_issue_from_current_branch || echo "0")
+      process_existing_pr "$pr" "$inum" "$branch" || true
+      ensure_clean_main
+      processed_any=true
+    done
+    open_now=$(list_open_non_draft_codex_prs | tr '\n' ' ')
+    if [[ -n "${open_now// /}" ]]; then
+      echo "[gate] Non-draft PRs still open after processing ($open_now); skipping new issue work." >&2
+      return 1
+    fi
+    if [[ $processed_any == true ]]; then
+      echo "[gate] Cleared non-draft PR backlog; continuing with new issues." >&2
+    fi
   fi
   local before_json after_json pr_number branch pr_url inum
   before_json=$(gh pr list --state open --json number,headRefName,updatedAt,isDraft 2>/dev/null || echo '[]')
