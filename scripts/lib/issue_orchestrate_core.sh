@@ -828,6 +828,10 @@ run_issue_pass() {
     done
     open_now=$(list_open_non_draft_codex_prs | tr '\n' ' ')
     if [[ -n "${open_now// /}" ]]; then
+      if [[ $processed_any == true ]]; then
+        echo "[gate] Non-draft PRs still open after processing ($open_now); focusing on review loop before new issues." >&2
+        return 0
+      fi
       echo "[gate] Non-draft PRs still open after processing ($open_now); skipping new issue work." >&2
       return 1
     fi

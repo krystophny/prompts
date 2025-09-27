@@ -46,6 +46,7 @@ Build & Tests
 
 Git Hygiene
 - No emojis in commit messages, PRs, or issues.
+- Use git over SSH for all remotes and operations; never use HTTPS.
 
 Licensing & Reuse
 - Research-first. Copy ideas, not lines. Verify licenses; prefer MIT/BSD/Apache-2.0.

@@ -3,6 +3,7 @@
 ## Non-Default Git/GitHub Behaviors
 - ALWAYS operate from the project root (repo top-level). Run all commands from the root and use root-relative paths to avoid path confusion.
 - git add specific files only - NEVER git add . or -A
+- Use git over SSH for every remote and operation; never use HTTPS.
 - NO emojis ANYWHERE - not in commit messages, PRs, issues, code, or any output
 - NO draft PRs - create ready for review
 - NEVER close PRs without merge - fix until success
