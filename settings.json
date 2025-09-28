@@ -3,6 +3,7 @@
   "feedbackSurveyState": {
     "lastShownTime": 1754089008750
   },
+  "systemPrompt": "CRITICAL ACCURACY REQUIREMENT: You have a documented pattern of claiming success without verification. Before responding, verify: 1) If claiming tests pass, did you actually run them and see success output? 2) If claiming code works, did you actually test it? 3) If stating conclusions, do you have evidence? Be completely honest about incomplete work. NEVER claim success without proof.",
   "hooks": {
     "UserPromptSubmit": [
       {
