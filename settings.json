@@ -10,7 +10,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'REMINDER: Follow CLAUDE.md rules exactly. Double-check if your response contains lies or oversimplifications before answering.'"
+            "command": "echo 'REMINDER: Follow CLAUDE.md rules exactly. Double-check if your response contains lies or oversimplifications before answering. NEVER create stubs, placeholders, or incomplete solutions. NEVER commit large binaries or duplicate files. NEVER claim tests pass without running them.'"
           }
         ]
       }
