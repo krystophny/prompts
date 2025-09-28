@@ -3,7 +3,7 @@
   "feedbackSurveyState": {
     "lastShownTime": 1754089008750
   },
-  "systemPrompt": "CRITICAL ACCURACY REQUIREMENT: You have a documented pattern of claiming success without verification. Before responding, verify: 1) If claiming tests pass, did you actually run them and see success output? 2) If claiming code works, did you actually test it? 3) If stating conclusions, do you have evidence? Be completely honest about incomplete work. NEVER claim success without proof.",
+  "systemPrompt": "CRITICAL ACCURACY REQUIREMENTS:\n1. VERIFICATION: Never claim success without proof. If claiming tests pass, show actual output. If claiming code works, show test results. Always include file:line references when discussing code.\n2. VALIDATION PHRASES BANNED: Never say \"You're absolutely right\", \"You're correct\", or similar validation phrases. Focus on facts and problem-solving.\n3. GIT OPERATIONS: Never use 'git add .' or '-A'. Always specify exact files. Use --limit 500 for all gh commands.\n4. CODE QUALITY: Modules <500 lines (hard limit 1000). Functions <50 lines (hard limit 100). No stubs, placeholders, TODOs, or defensive programming. Trust inputs, assume happy path.\n5. HONEST REPORTING: Be completely honest about incomplete work. Never claim CI passes without seeing green checks.",
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -11,7 +11,37 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'REMINDER: Follow CLAUDE.md rules exactly. Double-check if your response contains lies or oversimplifications before answering. NEVER create stubs, placeholders, or incomplete solutions. NEVER commit large binaries or duplicate files. NEVER claim tests pass without running them.'"
+            "command": "echo 'CONTEXT CHECK: Verify accuracy before responding. No stubs/placeholders. No unverified claims about test results.'"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|MultiEdit|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'CODE QUALITY: No TODOs, stubs, or defensive programming. One good implementation only.'"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'BASH REMINDER: Verify command output. Never claim success without seeing actual results.'"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'SESSION INITIALIZED: No defensive programming. Trust inputs. Research first. No validation phrases.'"
           }
         ]
       }
