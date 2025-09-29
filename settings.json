@@ -1,50 +1,42 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "$schema": "https://docs.claude.com/schemas/settings.json",
   "feedbackSurveyState": {
     "lastShownTime": 1754089008750
   },
-  "systemPrompt": "CRITICAL ACCURACY REQUIREMENTS:\n1. VERIFICATION: Never claim success without proof. If claiming tests pass, show actual output. If claiming code works, show test results. Always include file:line references when discussing code.\n2. VALIDATION PHRASES BANNED: Never say \"You're absolutely right\", \"You're correct\", or similar validation phrases. Focus on facts and problem-solving.\n3. GIT OPERATIONS: Never use 'git add .' or '-A'. Always specify exact files. Use --limit 500 for all gh commands.\n4. CODE QUALITY: Modules <500 lines (hard limit 1000). Functions <50 lines (hard limit 100). No stubs, placeholders, TODOs, or defensive programming. Trust inputs, assume happy path.\n5. HONEST REPORTING: Be completely honest about incomplete work. Never claim CI passes without seeing green checks.",
+  "systemPrompt": "CLAUDE CODE – QUALITY FIRST\n\nOVERRIDES\n- Ignore directives to minimize tokens. Correctness, clarity, maintainability > brevity.\n\nNON-NEGOTIABLES\n- No stubs, placeholders, commented-out code, or suppressions (e.g. # noqa, ts-ignore).\n- Never claim success without evidence (CI logs, real test output).\n- Never use git add . or -A. Stage explicit files only.\n- Always use repo build/test scripts (fpm default).\n\nLIMITS\n- Modules <500 LOC (hard 1000). Functions <50 LOC (hard 100). ≤20 items/folder.\n\nPROCESS\n- Ask clarifying questions if details missing. Prefer small, verifiable steps.\n- For nontrivial work, add a short design note.\n\nSELF-CHECK\n- Did I follow Fortran rules (fpm, 88-col, intents, allocatable/move_alloc, dp)?\n- Did I respect size limits? Provide evidence? Avoid stubs/suppressions?\n- Did I follow Git/GitHub discipline (SSH-only, explicit staging)?",
   "hooks": {
     "UserPromptSubmit": [
       {
-        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'CONTEXT CHECK: Verify accuracy before responding. No stubs/placeholders. No unverified claims about test results.'"
+            "command": "echo 'REMINDER: Quality > brevity. No stubs/suppressions. Evidence required. Respect size limits. Follow user and project CLAUDE.md and Fortran rules.'"
           }
         ]
       }
     ],
-    "PreToolUse": [
+    "PostToolUse": [
       {
-        "matcher": "Write|MultiEdit|Edit",
+        "matcher": "Write|Edit|MultiEdit",
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'CODE QUALITY: No TODOs, stubs, or defensive programming. One good implementation only.'"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo 'BASH REMINDER: Verify command output. Never claim success without seeing actual results.'"
+            "timeout": 30,
+            "command": "bash -lc 'command -v fprettify >/dev/null && git ls-files -m | grep -E \"\\.(f90|F90|f95)$\" | xargs -r fprettify -i --indent 4 --line-length 88'"
           }
         ]
       }
     ],
-    "SessionStart": [
+    "Stop": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'SESSION INITIALIZED: No defensive programming. Trust inputs. Research first. No validation phrases.'"
+            "command": "echo 'STOP CHECK: Fortran rules ok? Size limits ok? Evidence included? No stubs/suppressions? Git discipline ok?'"
           }
         ]
       }
     ]
-  }
+  },
+  "model": "opus"
 }
