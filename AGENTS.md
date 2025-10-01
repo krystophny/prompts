@@ -1,6 +1,12 @@
-# AGENTS.md (Lean, Fortran-First)
+# AGENTS.md (Lean, Fortran-First Framework)
 
-Language & Stack
+## Non-Negotiables
+- No stubs, placeholders, commented-out code, random markdowns, variants, backups, or suppressions.
+- Never claim success without evidence (CI logs, real test output).
+- Never use `git add .` or `git add -A`; stage explicit files only.
+- Always use repo build/test scripts — fpm is the default toolchain.
+
+## Language & Stack
 - Primary: modern Fortran (2018+). Prefer Fortran even for scripting/CLI/web when feasible.
 - Existing projects: stick to the project’s established stack unless explicitly directed otherwise.
 - Explicit requests: if asked, follow the specified stack even if non-Fortran.
@@ -8,56 +14,72 @@ Language & Stack
 - Build/deps: use fpm; prefer latest git packages, pin SHAs only when reproducibility is required.
 - Plotting: use lazy-fortran/fortplot.
 
-Project Root & Paths
-- ALWAYS operate from the project root (repo top-level). Run all commands from the root and use root-relative paths to avoid path confusion.
+## Project Root & Paths
+- ALWAYS operate from the project root (repo top-level). Run all commands from the root and use root-relative paths to avoid confusion.
 
-Implementation Standards
-- Keep modules reasonably small (<500 lines; hard <1000).
-- Functions small and focused (<50 lines; hard <100).
+## Git / GitHub
+- SSH-only for git/gh operations; never use HTTPS. No emojis in commits, PRs, or issues.
+- Stage files explicitly; never rely on blanket staging commands.
+- No draft PRs — iterate until the branch is ready to merge, with local tests passing first.
+- Always run repo build/test scripts locally before creating or updating PRs; CI must pass before merge.
+- Edit issue descriptions with `gh issue edit --body`; avoid comment edits for canonical info.
+- Use `--limit 500` on all gh list commands.
+- 👍 reaction on PR = approval to merge.
+
+## Implementation & Design
+- Keep modules <500 lines (hard limit 1000); functions <50 lines (hard limit 100).
 - Reuse-first: modify/extend existing code; eliminate nearby duplication.
-- No variants, fallback, or backups. Only one single good implementation.
-- No commented-out code, stubs, or placeholders. Validate inputs.
-- Data layout/perf: prefer SoA over AoS; column-major arrays; inner loop over leftmost index.
+- Validate inputs; trust upstream contracts instead of adding defensive indirection.
+- Avoid shallow interfaces or wrappers; let callers handle small control sections rather than over-abstracting.
 - No hardcoded secrets/keys/passwords.
+- Prefer structure-of-arrays over array-of-structures.
+- Keep inner loops over the leftmost (fastest varying) index; avoid temporaries and preallocate scratch arrays when needed.
+- Remove obsolete/dead code outright; write self-documenting code with comments reserved for non-obvious intent.
 
-Fortran Guidelines
-- Formatting: 88-column limit (up to 90 with ` &`), 4-space indent, end files with a newline.
-- Imports: `use <modulename>, only:`; place above `implicit none`.
-- Kinds: `use, intrinsic :: iso_fortran_env, only: dp => real64`; declare reals as `real(dp)`; prefer `1.0d0`/`d`-exponent literals.
-- Declarations at start of scope; none inside branches/loops.
-- Allocatables: use `move_alloc()`; avoid `transfer`; do not manually deallocate.
-- APIs: avoid returning allocatables from functions; implement deep-copy assignment for nested components.
-- Types: name derived types `typename_t`.
-- fpm: enable autodiscovery for `app`, `test`, and `example` in `fpm.toml`.
-- Build hiccup: if “right parentheses” module error occurs, remove stale `*.mod` files.
-- Comments: avoid quotes.
-- Purity: prefer side-effect–free procedures; mark `pure`/`elemental` when applicable.
-- Dummies: every dummy argument must have `intent(in|out|inout)`; use `associate` to create local aliases instead of modifying inputs.
-- Contiguity/perf: add `contiguous` where required; avoid noncontiguous slices in hot loops; avoid temporaries; pre-allocate scratch arrays when needed.
-- Pointers: prefer `allocatable`; do not use pointers unless explicitly requested.
+## Fortran Rules (2018+, fpm, 88-col)
+- Use fpm; mirror CI commands locally. Apply `fprettify` to enforce 88-column, 4-space indent formatting; end files with a newline.
+- Add `use <module>, only:` statements above `implicit none`.
+- `use, intrinsic :: iso_fortran_env, only: dp => real64`; declare reals as `real(dp)` and prefer `1.0d0` literals.
+- Declarations belong at the start of each scope; none inside branches or loops.
+- Prefer `allocatable`; avoid pointers unless explicitly required. Do not manually deallocate; rely on scope exit and `move_alloc()` for transfers.
+- Avoid returning allocatables from functions; provide deep-copy assignment for nested components.
+- Name derived types `<name>_t`.
+- Mark procedures `pure`/`elemental` when appropriate; ensure every dummy argument has `intent(in|out|inout)`.
+- Use `associate` to create local aliases rather than modifying inputs directly.
+- Add `contiguous` where required; avoid noncontiguous slices in hot loops.
+- Column-major arrays and loops over the leftmost index; delete stale `*.mod` files if “right parentheses” errors occur.
 
-Build & Tests
-- Use repo’s documented build/test scripts and the same commands CI uses.
-- CMake builds: always use Ninja.
-  - `cmake -S . -B build -G Ninja`
-  - `cmake --build build -j`
-- Keep tests behavioral and fast; 120s timeout per test.
+## Build & Test
+- Use repo-documented build and test scripts; fpm is standard. Keep tests behavioral and fast (≤120 s each).
 - Prefer TDD: Red → Green → Refactor.
+- For CMake builds: `cmake -S . -B build -G Ninja` followed by `cmake --build build -j`.
+- Tests must pass locally before PRs; use latest git packages and pin SHAs only when reproducibility is necessary.
 
-Git Hygiene
-- No emojis in commit messages, PRs, or issues.
-- Use git over SSH for all remotes and operations; never use HTTPS.
-
-Licensing & Reuse
+## Licensing & Reuse
 - Research-first. Copy ideas, not lines. Verify licenses; prefer MIT/BSD/Apache-2.0.
-- Explicit line-by-line ports allowed only when requested; preserve notices and isolate if needed.
+- Explicit line-by-line ports only when requested; preserve notices and isolate as needed.
 
-Cleanup & Organization
-- Remove obsolete/dead code outright.
-- Aim for ≤20 items per folder (hard ≤50) before reorganizing.
-- Write self-documenting code; use comments sparingly for non-obvious intent/invariants/edges.
+## Cleanup & Organization
+- Keep ≤20 items per folder (hard limit 50); reorganize earlier when possible.
+- Remove obsolete assets and dead code. Document non-obvious invariants sparingly without quotes in comments.
 
-GitHub CLI Examples
+## Workflow
+- CI must pass before merge; treat ready PRs as blocking work.
+- Edit GitHub issue descriptions rather than closing meta-issues prematurely.
+
+## AI Guards
+- Never claim success without tangible evidence.
+- Complete work-in-progress tasks before pulling new backlog items.
+- No shallow validation; do not bypass guardrails.
+
+## Self-Check
+1. Followed Fortran rules (fpm, 88-col, intents, allocatable/move_alloc, dp)?
+2. Respected size limits?
+3. Provided evidence?
+4. Avoided stubs/placeholders/suppressions?
+5. Followed Git/GitHub discipline?
+
+## GitHub CLI Examples
 - Issues
   - List open: `gh issue list --state open --limit 500`
   - Create: `gh issue create --title "<title>" --body-file <file.md> \
