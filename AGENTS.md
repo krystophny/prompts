@@ -48,6 +48,7 @@
 - Use `associate` to create local aliases rather than modifying inputs directly.
 - Add `contiguous` where required; avoid noncontiguous slices in hot loops.
 - Column-major arrays and loops over the leftmost index; delete stale `*.mod` files if “right parentheses” errors occur.
+- In if conditionals, do not rely on short-circuiting, Fortran does not support it.
 
 ## Build & Test
 - Use repo-documented build and test scripts; fpm is standard. Keep tests behavioral and fast (≤120 s each).
