@@ -185,11 +185,6 @@ claude --print --output-format stream-json --dangerously-skip-permissions "{{pro
 claude --print --permission-mode bypassPermissions "{{prompt}}"
 ```
 
-### With specific model:
-```bash
-claude --print --dangerously-skip-permissions --model sonnet "{{prompt}}"
-```
-
 ### Continue previous conversation:
 ```bash
 claude --print --dangerously-skip-permissions --continue "{{prompt}}"
