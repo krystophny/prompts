@@ -113,14 +113,26 @@ Only include the fenced JSON block in your final message—no additional prose.
 4. If `status` is `failed` or `blocked`, summarize Codex's reasoning and propose next steps instead of fabricating success.
 5. Relay a concise report to the user covering classification, evidence summary, follow-ups, and raw transcript location if relevant.
 
-## 9. CLEANUP AND ESCALATION
+## 9. POST-EXECUTION UPDATES
+After Codex completes and you have verified the results:
+1. Update the task document (issue description, meta-issue, or tracking file) with the outcome.
+2. Review the changes produced by Codex and apply any necessary fixes or improvements.
+3. Stage the updated files explicitly (never `git add .` or `git add -A`).
+4. Commit with a clear message describing the Codex run and any additional fixes.
+5. Push the changes to the remote repository.
+
+This ensures that every Codex execution is documented, reviewed, and persisted immediately.
+
+## 10. CLEANUP AND ESCALATION
 - Delete temporary files (`prompt_file`, `$LAST_MSG`) after capturing their contents.
 - If the Codex CLI exits non-zero or returns malformed output, diagnose before rerunning; otherwise escalate with captured logs.
 - Surface Codex errors verbatim with context; never suppress or conceal failures.
 
-## 10. SELF-CHECK BEFORE HANDOFF
+## 11. SELF-CHECK BEFORE HANDOFF
 - [ ] Were all mandatory rule blocks displayed?
 - [ ] Did the Codex prompt include every required section and constraint?
 - [ ] Is the returned JSON valid and aligned with evidence requirements?
 - [ ] Are success claims backed by captured logs/tests?
+- [ ] Have task documents been updated with the outcome?
+- [ ] Have changes been reviewed, staged explicitly, committed, and pushed?
 - [ ] Have next steps or blockers been clearly communicated?

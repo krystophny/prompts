@@ -15,10 +15,14 @@
   <rule_4>Report progress back to the user with a concise status summary after each step</rule_4>
   <rule_5>Do not stop looping until every task in the document is fully satisfied</rule_5>
   <rule_6>Escalate only if a blocker cannot be resolved autonomously</rule_6>
+  <rule_7>MUST NOT STOP FOR USER PROMPTS OR APPROVAL until all tasks are completed</rule_7>
+  <rule_8>Execute continuously and autonomously through all steps without interruption</rule_8>
 </step_loop_rules>
 
 ## PURPOSE
 Drive the `codex` agent through a deterministic step-by-step execution loop: the command must invoke the agent for every step, and the agent must in turn run the Codex CLI one-shot workflow cleanly. The loop consumes a task markdown file or GitHub issue, completes each listed action sequentially, performs reviews and follow-up fixes after every step, and keeps the task document and user continuously updated until all work is finished.
+
+**CRITICAL**: This command operates in fully autonomous mode. Once started, it MUST NOT pause, stop, or wait for user input until either all tasks are complete or an unresolvable blocker is encountered. The agent must execute all steps continuously without seeking approval or confirmation.
 
 ## REQUIRED INPUTS
 - `TASK_SOURCE`: absolute or repo-relative path to the markdown task file **or** GitHub issue number/URL.
@@ -32,8 +36,10 @@ Drive the `codex` agent through a deterministic step-by-step execution loop: the
    - Review the resulting changes, execute verification commands, and apply any fixes needed.
    - Update `TASK_SOURCE` to reflect progress (checkboxes, status text, code pointers, etc.).
    - Record a brief status update for the user summarizing what changed, evidence collected, and remaining work.
+   - **Immediately proceed to the next step without waiting for user input.**
 3. Repeat until every task item is marked complete with supporting evidence; the command must continue invoking the agent until no steps remain.
-4. Provide a final comprehensive report covering the entire document completion.
+4. **Do not pause between steps. Do not ask for confirmation. Do not stop for approval.**
+5. Provide a final comprehensive report covering the entire document completion.
 
 ## PROMPT TEMPLATE
 Use one prompt per step, always populating the placeholders with the current step context and cumulative status. The `codex` agent owns the prompt construction and invocation of `codex exec`; the command only coordinates step sequencing and state updates.
