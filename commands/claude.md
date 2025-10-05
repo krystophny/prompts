@@ -65,10 +65,12 @@ Automatically detect input type:
 
 2. **Execute Claude CLI**
    ```bash
-   claude -m "{{prompt}}" --dangerously-skip-user-approval
+   claude --print --dangerously-skip-permissions "{{prompt}}"
    ```
 
    Capture stdout, stderr, and exit code
+
+   Note: `--print` enables non-interactive mode, `--dangerously-skip-permissions` bypasses all permission checks
 
 3. **Parse Results**
    - Extract file changes from output
@@ -114,13 +116,13 @@ Automatically detect input type:
 
    b. **Execute via Claude CLI**
       ```bash
-      claude -m "{{item_text}}
+      claude --print --dangerously-skip-permissions "{{item_text}}
 
       Context:
       - Completed: {{completed_items}}
       - Remaining: {{remaining_items}}
       - Constraints: All CLAUDE.md standards apply
-      " --dangerously-skip-user-approval
+      "
       ```
 
    c. **Capture and Validate**
@@ -165,25 +167,32 @@ Automatically detect input type:
 
 ### Basic execution:
 ```bash
-claude -m "{{prompt}}" --dangerously-skip-user-approval
+claude --print --dangerously-skip-permissions "{{prompt}}"
 ```
 
-### With file context:
+### With output format (JSON):
 ```bash
-claude -m "{{prompt}}" --dangerously-skip-user-approval -f file1.f90 -f file2.f90
+claude --print --output-format json --dangerously-skip-permissions "{{prompt}}"
 ```
 
-### With image input:
+### With streaming JSON output:
 ```bash
-claude -m "Implement UI from mockup" --dangerously-skip-user-approval -i mockup.png
+claude --print --output-format stream-json --dangerously-skip-permissions "{{prompt}}"
 ```
 
-### Capturing last message:
+### With permission mode (alternative to --dangerously-skip-permissions):
 ```bash
-LAST_MSG=$(mktemp /tmp/claude_last.XXXXXX)
-claude -m "{{prompt}}" --dangerously-skip-user-approval --output-last-message "$LAST_MSG"
-cat "$LAST_MSG"
-rm "$LAST_MSG"
+claude --print --permission-mode bypassPermissions "{{prompt}}"
+```
+
+### With specific model:
+```bash
+claude --print --dangerously-skip-permissions --model sonnet "{{prompt}}"
+```
+
+### Continue previous conversation:
+```bash
+claude --print --dangerously-skip-permissions --continue "{{prompt}}"
 ```
 
 ## CLAUDE.MD REVIEW CRITERIA
@@ -338,7 +347,7 @@ User: /claude "Add comprehensive error handling to parser.f90"
 
 Execution:
 1. Detects string input → Mode 1
-2. Executes: claude -m "Add comprehensive error handling to parser.f90" --dangerously-skip-user-approval
+2. Executes: claude --print --dangerously-skip-permissions "Add comprehensive error handling to parser.f90"
 3. Claude modifies parser.f90, runs tests
 4. Review: module 287 lines ✓, intents present ✓, tests pass ✓
 5. No fixes needed
@@ -358,7 +367,7 @@ Execution:
 3. Parses 3 TODO items
 
 Step 1/3:
-- Executes: claude -m "Profile code to identify bottlenecks" --dangerously-skip-user-approval
+- Executes: claude --print --dangerously-skip-permissions "Profile code to identify bottlenecks"
 - Claude creates profiler script, runs it, generates report
 - Review: script 245 lines ✓, but missing intent on 2 args ✗
 - Fix: adds intent(in) to 2 arguments
@@ -369,7 +378,7 @@ Step 1/3:
 - Reports: "Step 1/3 complete: Profiled code. Bottlenecks in solver loop. Evidence: profile.txt. Fixed missing intents. Proceeding to step 2."
 
 Step 2/3:
-- Executes: claude -m "Preallocate arrays in hot loops identified in profile.txt" --dangerously-skip-user-approval
+- Executes: claude --print --dangerously-skip-permissions "Preallocate arrays in hot loops identified in profile.txt"
 - Claude modifies solver, preallocates arrays
 - Review: all checks pass ✓
 - No fixes needed
@@ -379,7 +388,7 @@ Step 2/3:
 - Reports: "Step 2/3 complete: Preallocated scratch arrays. 1.5x speedup. Tests pass. Proceeding to step 3."
 
 Step 3/3:
-- Executes: claude -m "Apply structure-of-arrays pattern to particle data" --dangerously-skip-user-approval
+- Executes: claude --print --dangerously-skip-permissions "Apply structure-of-arrays pattern to particle data"
 - Claude refactors data structures
 - Review: module 892 lines ✗ (exceeds 500 soft limit, under 1000 hard limit, acceptable)
 - Review: function copy_particles 127 lines ✗ (exceeds 100 hard limit!)
