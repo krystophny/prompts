@@ -16,10 +16,8 @@ Example: `/codex "Implement error handling in parser module"`
 The command will:
 1. Create temporary task document with single item
 2. Invoke `codex` agent with prompt as objective
-3. Agent executes via Codex CLI
-4. Agent reviews changes against CLAUDE.md criteria
-5. Agent commits and pushes changes
-6. Returns structured result
+3. Agent creates draft, calls Codex CLI, reviews, fixes, commits, pushes
+4. Command receives result and reports to user
 
 ### Mode 2: Multi-Step Task Document
 User provides path to markdown file or GitHub issue with TODO items.
@@ -95,28 +93,23 @@ The command automatically detects the input type:
 #### b. Invoke Codex Agent
 - Call `codex` agent with current step as mission
 - Provide full context (completed/remaining steps, repo state, constraints)
-- Wait for agent to complete Codex CLI execution and return JSON result
+- Agent creates draft, calls Codex CLI, reviews output, fixes issues, commits, and pushes
+- Wait for agent to return JSON result
 
 #### c. Process Results
 - Parse JSON response from agent
 - Verify evidence exists for claimed success
+- Agent has already reviewed, fixed issues, and committed/pushed
 - If blocked/failed, assess if autonomous resolution possible
 - If blocker is resolvable, create fix step and continue
 - If blocker is unresolvable, escalate to user with full context
 
-#### d. Review and Fix
-- Apply CLAUDE.md review criteria to changes
-- Implement necessary fixes or improvements
-- Re-run verification if fixes were applied
-
-#### e. Update and Report
+#### d. Update and Report
 - Update `TASK_SOURCE` with progress (checkboxes, status, evidence links)
-- Stage modified files explicitly
-- Commit changes describing step completion and fixes
-- Push to remote
+- Commit task source update if modified
 - Report brief status to user (2-3 sentences with evidence)
 
-#### f. Continue Immediately
+#### e. Continue Immediately
 - **Proceed to next step without waiting for user input**
 - Repeat loop until no steps remain
 
@@ -158,10 +151,15 @@ JSON report with: status, summary, changes, tests, artifacts, follow_up, notes
 ```
 
 The agent is responsible for:
+- Creating detailed draft with gaps marked
+- Gathering complete context for Codex CLI
 - Rendering the Codex CLI prompt template
 - Executing `codex exec` once
 - Capturing and parsing results
-- Performing self-review
+- Reviewing Codex output for correctness, completeness, cruft
+- Autonomously fixing any issues found
+- Updating task file/issue if it exists
+- Staging, committing, and pushing changes
 - Returning structured JSON to this command
 
 ## USER REPORTING
@@ -212,12 +210,13 @@ Command:
 1. Detects string input → Mode 1
 2. Creates temp task doc with single item
 3. Invokes codex agent
-   - Agent runs Codex CLI
-   - Returns success + test evidence
-   - Command reviews changes
-   - Command commits and pushes
-   - Reports: "Added error handling to parser.f90. All tests pass.
-              Module size: 287 lines. Intents verified. Committed and pushed."
+   - Agent creates draft
+   - Agent calls Codex CLI
+   - Agent reviews and fixes issues
+   - Agent commits and pushes
+   - Agent returns success + test evidence
+4. Reports: "Added error handling to parser.f90. All tests pass.
+            Module size: 287 lines. Intents verified. Committed and pushed."
 ```
 
 ### Example 2: Multi-Step Task Document
@@ -229,18 +228,17 @@ Command:
 2. Loads tasks/add-feature-x.md
 3. Parses 5 task items
 4. Invokes codex agent for step 1
-   - Agent runs Codex CLI
+   - Agent creates draft, calls Codex, reviews, fixes, commits, pushes
    - Returns success + test evidence
-   - Command reviews changes
-   - Command updates task doc, commits, pushes
-   - Reports: "Step 1/5 complete: Added module foo. Tests pass (fpm test output). Proceeding to step 2."
-5. Invokes codex agent for step 2 (no pause)
-   - Agent runs Codex CLI
+   - Command updates task doc metadata
+5. Reports: "Step 1/5 complete: Added module foo. Tests pass (fpm test output). Proceeding to step 2."
+6. Invokes codex agent for step 2 (no pause)
+   - Agent creates draft, calls Codex, reviews, fixes, commits, pushes
    - Returns success + build evidence
-   - Command reviews, updates, commits, pushes
-   - Reports: "Step 2/5 complete: Integrated foo into main. Build succeeds. Proceeding to step 3."
-6. Continues through steps 3, 4, 5 without stopping
-7. Final report: "All 5 tasks complete. 5 commits pushed. Feature X ready for testing."
+   - Command updates task doc metadata
+7. Reports: "Step 2/5 complete: Integrated foo into main. Build succeeds. Proceeding to step 3."
+8. Continues through steps 3, 4, 5 without stopping
+9. Final report: "All 5 tasks complete. 5 commits pushed. Feature X ready for testing."
 ```
 
 ### Example 3: GitHub Issue
@@ -268,14 +266,14 @@ The `codex` agent (agents/codex.md) handles:
 
 This command handles:
 - Multi-step orchestration
-- Task document parsing and updates
+- Task document parsing and metadata updates
 - Step sequencing and context management
 - Autonomous loop control
 - User progress reporting
 - Blocker escalation decisions
 
 The division ensures:
-- Agent focuses on single-shot execution quality
-- Command manages workflow and state persistence
+- Agent does ALL the work for one step (draft → codex → review → fix → commit)
+- Command orchestrates multiple steps and updates task metadata
 - No duplication of responsibilities
 - Clear handoff protocol (command → agent → command)
