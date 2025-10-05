@@ -2,9 +2,35 @@
 
 ## COMMAND PURPOSE
 
-Execute a multi-step task by invoking the `codex` agent repeatedly in a deterministic loop. The command consumes a task document (markdown file or GitHub issue), processes each action sequentially, and continues autonomously until all work is complete or an unresolvable blocker is encountered.
+Execute tasks by invoking the `codex` agent. Handles both single prompts and multi-step task documents (markdown files or GitHub issues). Processes actions sequentially and continues autonomously until all work is complete or an unresolvable blocker is encountered.
 
 **This command operates in fully autonomous mode. Once started, it MUST NOT pause, stop, or wait for user input until completion or blocking error.**
+
+## OPERATING MODES
+
+### Mode 1: Single Prompt Execution
+User provides an explicit task as a string argument.
+
+Example: `/codex "Implement error handling in parser module"`
+
+The command will:
+1. Create temporary task document with single item
+2. Invoke `codex` agent with prompt as objective
+3. Agent executes via Codex CLI
+4. Agent reviews changes against CLAUDE.md criteria
+5. Agent commits and pushes changes
+6. Returns structured result
+
+### Mode 2: Multi-Step Task Document
+User provides path to markdown file or GitHub issue with TODO items.
+
+Example: `/codex tasks/refactor.md` or `/codex 42`
+
+The command will:
+1. Parse all TODO items from source
+2. Execute each item in sequence (see full procedure below)
+3. Autonomous loop until all items complete
+4. Final comprehensive report
 
 ## CORE OPERATING RULES
 
@@ -30,15 +56,33 @@ Execute a multi-step task by invoking the `codex` agent repeatedly in a determin
 
 When user invokes `/codex`:
 
-- **TASK_SOURCE**: Path to markdown task file OR GitHub issue number/URL
+- **TASK_INPUT** (required): One of:
+  - Explicit prompt string (quoted): `/codex "Add tests for module X"`
+  - Path to markdown task file: `/codex tasks/refactor.md`
+  - GitHub issue number/URL: `/codex 42` or `/codex https://github.com/user/repo/issues/42`
 - **MISSION_CLASS** (optional): implementation, review, triage, etc.
+
+## INPUT DETECTION
+
+The command automatically detects the input type:
+1. Check if input is a file path (exists on disk) → Mode 2: Multi-Step
+2. Check if input is numeric or GitHub issue URL → Mode 2: Multi-Step
+3. Otherwise treat as explicit prompt string → Mode 1: Single Prompt
 
 ## STEP-BY-STEP PROCEDURE
 
 ### 1. Initialize
-- Load `TASK_SOURCE` and parse all actionable steps
-- Enumerate steps in explicit execution order
-- Verify task document is well-formed and unambiguous
+
+**For Mode 1 (Single Prompt):**
+- Create temporary task document with single TODO item
+- Set item text to user's prompt
+- Proceed to step 2 with single-item list
+
+**For Mode 2 (Multi-Step):**
+- Load `TASK_INPUT` (file or GitHub issue)
+- Parse all actionable TODO items
+- Enumerate items in explicit execution order
+- Verify document is well-formed and unambiguous
 
 ### 2. For Each Step (Loop Until Complete)
 
@@ -158,27 +202,58 @@ If a step cannot be completed autonomously:
      - Attempted resolutions
      - Required user action
 
-## EXAMPLE EXECUTION FLOW
+## EXAMPLE EXECUTION FLOWS
 
+### Example 1: Single Prompt
+```
+User: /codex "Add comprehensive error handling to parser.f90"
+
+Command:
+1. Detects string input → Mode 1
+2. Creates temp task doc with single item
+3. Invokes codex agent
+   - Agent runs Codex CLI
+   - Returns success + test evidence
+   - Command reviews changes
+   - Command commits and pushes
+   - Reports: "Added error handling to parser.f90. All tests pass.
+              Module size: 287 lines. Intents verified. Committed and pushed."
+```
+
+### Example 2: Multi-Step Task Document
 ```
 User: /codex tasks/add-feature-x.md implementation
 
 Command:
-1. Loads tasks/add-feature-x.md
-2. Parses 5 task items
-3. Invokes codex agent for step 1
+1. Detects file path → Mode 2
+2. Loads tasks/add-feature-x.md
+3. Parses 5 task items
+4. Invokes codex agent for step 1
    - Agent runs Codex CLI
    - Returns success + test evidence
    - Command reviews changes
    - Command updates task doc, commits, pushes
-   - Reports: "Step 1 complete: Added module foo. Tests pass (fpm test output). Proceeding to step 2."
-4. Invokes codex agent for step 2 (no pause)
+   - Reports: "Step 1/5 complete: Added module foo. Tests pass (fpm test output). Proceeding to step 2."
+5. Invokes codex agent for step 2 (no pause)
    - Agent runs Codex CLI
    - Returns success + build evidence
    - Command reviews, updates, commits, pushes
-   - Reports: "Step 2 complete: Integrated foo into main. Build succeeds. Proceeding to step 3."
-5. Continues through steps 3, 4, 5 without stopping
-6. Final report: "All 5 tasks complete. 5 commits pushed. Feature X ready for testing."
+   - Reports: "Step 2/5 complete: Integrated foo into main. Build succeeds. Proceeding to step 3."
+6. Continues through steps 3, 4, 5 without stopping
+7. Final report: "All 5 tasks complete. 5 commits pushed. Feature X ready for testing."
+```
+
+### Example 3: GitHub Issue
+```
+User: /codex 42
+
+Command:
+1. Detects numeric input → Mode 2
+2. Fetches issue #42 via gh CLI
+3. Parses TODO checklist from issue body
+4. Executes each item autonomously
+5. Updates issue description with evidence
+6. Final report with all commits listed
 ```
 
 ## ALIGNMENT WITH CODEX AGENT
