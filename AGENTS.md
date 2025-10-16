@@ -19,6 +19,7 @@
 
 ## Git / GitHub
 - SSH-only for git/gh operations; never use HTTPS. No emojis in commits, PRs, or issues.
+- Git and gh CLI commands are explicitly permitted for all repo workflows; use them whenever they streamline the task.
 - Stage files explicitly; never rely on blanket staging commands.
 - No draft PRs — iterate until the branch is ready to merge, with local tests passing first.
 - Always run repo build/test scripts locally before creating or updating PRs; CI must pass before merge.
