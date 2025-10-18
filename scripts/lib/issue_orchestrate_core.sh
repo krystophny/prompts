@@ -5,24 +5,6 @@ lib_self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 : "${repo_root:=$(git -C "$lib_self_dir/.." rev-parse --show-toplevel 2>/dev/null || cd "$lib_self_dir/.." && pwd)}"
 : "${prompts_dir:=${lib_self_dir%/lib}/prompts}"
 
-pr_state_file() { echo "/tmp/codex_pr_${1}.state"; }
-
-mark_first_pass_done() {
-  local f
-  f=$(pr_state_file "$1")
-  { [[ -f "$f" ]] || :; } && { grep -q '^first_pass_done=1' "$f" 2>/dev/null || echo 'first_pass_done=1' >>"$f"; }
-}
-
-is_first_pass_done() {
-  local f
-  f=$(pr_state_file "$1")
-  [[ -f "$f" ]] && grep -q '^first_pass_done=1' "$f" 2>/dev/null
-}
-
-mark_local_review_submitted() {
-  increment_local_review_round "$1"
-}
-
 pr_has_open_feedback() {
   local pr_num="$1" json unresolved_threads pending_reviews
   json=$(gh pr view "$pr_num" --json reviewThreads,reviews 2>/dev/null || echo '{}')
@@ -32,43 +14,6 @@ pr_has_open_feedback() {
     return 0
   fi
   return 1
-}
-
-get_local_review_round() {
-  local pr="$1" f line value
-  f=$(pr_state_file "$pr")
-  line=""
-  value=0
-  if [[ -f "$f" ]]; then
-    line=$(grep -E '^local_review_round=' "$f" 2>/dev/null | tail -n 1 || true)
-    if [[ -n "$line" ]]; then
-      value=${line#local_review_round=}
-    elif grep -q '^local_review_submitted=1' "$f" 2>/dev/null; then
-      value=1
-    fi
-  fi
-  printf '%s\n' "${value:-0}"
-}
-
-set_local_review_round() {
-  local pr="$1" round="$2" f tmp
-  f=$(pr_state_file "$pr")
-  tmp=$(mktemp)
-  if [[ -f "$f" ]]; then
-    grep -v -E '^local_review_round=' "$f" >"$tmp" 2>/dev/null || true
-  fi
-  printf '%s\n' "local_review_round=${round}" >>"$tmp"
-  mv "$tmp" "$f"
-}
-
-increment_local_review_round() {
-  local pr="$1" round
-  round=$(get_local_review_round "$pr")
-  if [[ -z "$round" ]]; then
-    round=0
-  fi
-  round=$((round + 1))
-  set_local_review_round "$pr" "$round"
 }
 
 has_untracked() { [[ -n "$(git ls-files --others --exclude-standard)" ]]; }
@@ -194,115 +139,85 @@ enforce_no_parallel_prs() {
 
 codex_address_review_feedback() {
   local pr_num="$1" inum="$2" branch="$3"
-  local max_rounds=3 round
-  for round in $(seq 1 $max_rounds); do
-    echo "[Review Fix] Round $round for PR #$pr_num (branch $branch)" >&2
-    local prompt
-    prompt=$(load_prompt review_feedback.prompt)
-    if [[ $use_claude -eq 1 ]]; then
-      PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
-    else
-      PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
-    fi
+  echo "[Review Fix] Addressing feedback for PR #$pr_num (branch $branch)" >&2
+  local prompt
+  prompt=$(load_prompt review_feedback.prompt)
+  if [[ $use_claude -eq 1 ]]; then
+    PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
+  else
+    PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+  fi
 
-    if ! git diff --quiet || ! git diff --cached --quiet; then
-      while IFS= read -r -d '' rec; do
-        local code path
-        code=${rec:0:2}
-        path=${rec:3}
-        case "$code" in
-          D*|*D) git rm -- "$path" || true ;;
-          R*) IFS= read -r -d '' newpath || true
-              [[ -n "$newpath" ]] && { git rm -- "$path" || true; git add -- "$newpath" || true; }
-              ;;
-          *) git add -- "$path" || true ;;
-        esac
-      done < <(git status --porcelain -z)
-      if ! git diff --cached --quiet; then
-        git commit -m "fix(review): address reviewer feedback on PR #${pr_num:-unknown}"
-        git push
-      fi
+  if ! git diff --quiet || ! git diff --cached --quiet; then
+    while IFS= read -r -d '' rec; do
+      local code path
+      code=${rec:0:2}
+      path=${rec:3}
+      case "$code" in
+        D*|*D) git rm -- "$path" || true ;;
+        R*) IFS= read -r -d '' newpath || true
+            [[ -n "$newpath" ]] && { git rm -- "$path" || true; git add -- "$newpath" || true; }
+            ;;
+        *) git add -- "$path" || true ;;
+      esac
+    done < <(git status --porcelain -z)
+    if ! git diff --cached --quiet; then
+      git commit -m "fix(review): address reviewer feedback on PR #${pr_num:-unknown}"
+      git push
     fi
-
-    if git diff --quiet && git diff --cached --quiet; then
-      echo "[Review Fix] No local changes after round $round; stopping." >&2
-      break
-    fi
-  done
+  fi
 }
 
 process_existing_pr() {
   local pr_number="$1" inum="$2" branch="$3"
 
-  if ! is_first_pass_done "$pr_number"; then
-    echo "[review] First pass; addressing review comments." >&2
+  if pr_has_open_feedback "$pr_number"; then
+    echo "[review] Addressing outstanding feedback." >&2
     codex_address_review_feedback "$pr_number" "$inum" "$branch" || true
-    mark_first_pass_done "$pr_number"
   fi
 
-  local iteration=1
-  while true; do
-    echo "[review] Autonomous loop iteration $iteration for PR #$pr_number." >&2
+  echo "[review] Running unified review for PR #$pr_number." >&2
+  codex_unified_review "$pr_number" "$inum" "$branch" || true
 
-    if pr_has_open_feedback "$pr_number"; then
-      echo "[review] Outstanding feedback detected before self-review; invoking fix session." >&2
-      codex_address_review_feedback "$pr_number" "$inum" "$branch" || true
-      if pr_has_open_feedback "$pr_number"; then
-        ((iteration+=1))
-        continue
-      fi
-    fi
+  if gh pr view "$pr_number" --json isDraft --jq '.isDraft' | grep -qi true; then
+    gh pr ready "$pr_number" || true
+  fi
 
-    codex_pr_self_review "$pr_number" "$inum" || true
-    codex_submit_local_pr_review "$pr_number" "$inum" "$iteration" || true
+  rebase_and_resolve_conflicts "$pr_number" "$branch" || true
 
-    if gh pr view "$pr_number" --json isDraft --jq '.isDraft' | grep -qi true; then
-      gh pr ready "$pr_number" || true
-    fi
-
-    rebase_and_resolve_conflicts "$pr_number" "$branch" || true
-
-    echo "Waiting for CI on PR #$pr_number (iteration $iteration)." >&2
-    if ! gh pr checks "$pr_number" --watch; then
-      echo "CI not successful for PR #$pr_number; handing back to Codex for remediation." >&2
-      if codex_ci_fix_loop "$pr_number" "$inum" "$branch"; then
-        echo "[review] CI remediation complete; restarting loop for fresh review." >&2
-        codex_address_review_feedback "$pr_number" "$inum" "$branch" || true
-        ((iteration+=1))
-        continue
-      else
-        echo "CI still failing after remediation attempts; cleaning up PR #$pr_number." >&2
-        cleanup_pr "$pr_number"
-        return
-      fi
-    fi
-
-    echo "[review] Post-CI feedback sweep for PR #$pr_number (iteration $iteration)." >&2
-    codex_address_review_feedback "$pr_number" "$inum" "$branch" || true
-    if pr_has_open_feedback "$pr_number"; then
-      echo "[review] Outstanding feedback remains after post-CI sweep; restarting loop." >&2
-      ((iteration+=1))
-      continue
-    fi
-
-    local has_thumbs_up
-    has_thumbs_up=$(gh api "repos/{owner}/{repo}/pulls/$pr_number" --jq '.reactions | if . then map(select(.content == "+1")) | length > 0 else false end' 2>/dev/null || echo "false")
-    if [[ "$has_thumbs_up" == "true" ]]; then
-      echo "[orchestrate] PR #$pr_number has thumbs up reaction - eligible for auto-merge." >&2
-    fi
-
-    if [[ "$auto_merge" == true || "$has_thumbs_up" == "true" ]]; then
-      if maybe_merge_pr "$pr_number"; then
-        echo "Merged PR #$pr_number via $merge_method." >&2
-        codex_post_merge_close_issue "$pr_number" "$inum"
-      else
-        echo "Auto-merge failed or not allowed for PR #$pr_number; leaving open for manual follow-up." >&2
-      fi
+  echo "Waiting for CI on PR #$pr_number." >&2
+  if ! gh pr checks "$pr_number" --watch; then
+    echo "CI not successful for PR #$pr_number; handing to remediation." >&2
+    if codex_ci_fix_loop "$pr_number" "$inum" "$branch"; then
+      echo "[review] CI remediation complete." >&2
     else
-      echo "CI green for PR #$pr_number. Manual check required before merge (no --all or thumbs up)." >&2
+      echo "CI still failing after remediation attempts; cleaning up PR #$pr_number." >&2
+      cleanup_pr "$pr_number"
+      return
     fi
-    break
-  done
+  fi
+
+  if pr_has_open_feedback "$pr_number"; then
+    echo "[review] Addressing post-CI feedback." >&2
+    codex_address_review_feedback "$pr_number" "$inum" "$branch" || true
+  fi
+
+  local has_thumbs_up
+  has_thumbs_up=$(gh api "repos/{owner}/{repo}/pulls/$pr_number" --jq '.reactions | if . then map(select(.content == "+1")) | length > 0 else false end' 2>/dev/null || echo "false")
+  if [[ "$has_thumbs_up" == "true" ]]; then
+    echo "[orchestrate] PR #$pr_number has thumbs up - eligible for auto-merge." >&2
+  fi
+
+  if [[ "$auto_merge" == true || "$has_thumbs_up" == "true" ]]; then
+    if maybe_merge_pr "$pr_number"; then
+      echo "Merged PR #$pr_number via $merge_method." >&2
+      codex_post_merge_close_issue "$pr_number" "$inum"
+    else
+      echo "Auto-merge failed for PR #$pr_number; leaving open for manual follow-up." >&2
+    fi
+  else
+    echo "CI green for PR #$pr_number. Manual check required before merge (no --all or thumbs up)." >&2
+  fi
 }
 
 maybe_merge_pr() {
@@ -544,87 +459,59 @@ codex_implement_issue_single_prompt() {
   fi
 }
 
-codex_pr_self_review() {
-  local pr_num="$1" inum="$2" max_rounds=3 round
-  for round in $(seq 1 $max_rounds); do
-    echo "[Codex Review] Round $round on PR #$pr_num" >&2
-    local prompt
-    prompt=$(load_prompt pr_self_review.prompt)
-    if [[ $use_claude -eq 1 ]]; then
-      PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
-    else
-      PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
-    fi
+codex_unified_review() {
+  local pr_num="$1" inum="$2" branch="$3"
 
-    if git diff --quiet && git diff --cached --quiet; then
-      echo "[Codex Review] No local changes detected after round $round." >&2
-      break
-    fi
-    if ! git diff --cached --quiet; then
-      while IFS= read -r -d '' rec; do
-        local code path
-        code=${rec:0:2}
-        path=${rec:3}
-        case "$code" in
-          D*|*D) git rm -- "$path" || true ;;
-          R*) IFS= read -r -d '' newpath || true
-              [[ -n "$newpath" ]] && { git rm -- "$path" || true; git add -- "$newpath" || true; }
-              ;;
-          *) git add -- "$path" || true ;;
-        esac
-      done < <(git status --porcelain -z)
-      git commit -m "chore: self-review improvements (#${pr_num:-unknown})"
-      git push
-    fi
-  done
-}
-
-codex_submit_local_pr_review() {
-  local pr_num="$1" inum="$2" iteration_hint="$3"
-  if [[ -z "${pr_num:-}" ]]; then
-    echo "[review] Missing PR number for local review." >&2
-    return 1
-  fi
-
-  local agents_guidelines=""
-  if [[ -f "$repo_root/AGENTS.md" ]]; then
-    agents_guidelines=$(sanitize_for_prompt < "$repo_root/AGENTS.md" 2>/dev/null || true)
-  fi
-  if [[ -z "${agents_guidelines//[[:space:]]/}" ]]; then
-    agents_guidelines="(AGENTS.md unavailable)"
-  fi
-
-  local template prompt
-  template=$(load_prompt local_review.prompt)
-  prompt="$template"
-  prompt="${prompt//__PR__/$pr_num}"
-  prompt="${prompt//__ROOT__/$repo_root}"
-  prompt="${prompt//__AGENTS__/$agents_guidelines}"
-
-  local previous_round next_round
-  previous_round=$(get_local_review_round "$pr_num")
-  [[ -z "${previous_round:-}" ]] && previous_round=0
-  if [[ -n "${iteration_hint:-}" ]]; then
-    next_round="$iteration_hint"
+  local reviewer_tool impl_tool
+  if [[ $use_claude -eq 1 ]]; then
+    impl_tool="claude"
+    reviewer_tool="codex"
   else
-    next_round=$((previous_round + 1))
+    impl_tool="codex"
+    reviewer_tool="claude"
   fi
+
+  echo "[Unified Review] Reviewing PR #$pr_num with $reviewer_tool (impl by $impl_tool)" >&2
+
+  local template prompt tmpfile
+  template=$(load_prompt unified_review.prompt)
+  tmpfile=$(mktemp)
+  printf '%s' "${template//__PR__/$pr_num}" > "$tmpfile"
 
   local output status
-  if [[ $use_claude -eq 1 ]]; then
-    set +e
-    output=$(LOCAL_REVIEW_ROUND="${next_round}" PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt")
+  set +e
+  if [[ "$reviewer_tool" == "claude" ]]; then
+    output=$(claude --print --dangerously-skip-permissions "$(cat "$tmpfile")" < /dev/null)
     status=$?
-    set -e
   else
-    set +e
-    output=$(LOCAL_REVIEW_ROUND="${next_round}" PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null)
+    output=$(codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$(cat "$tmpfile")" < /dev/null)
     status=$?
-    set -e
   fi
+  set -e
+  rm -f "$tmpfile"
+
   if (( status != 0 )); then
-    echo "[review] Local model review execution failed with status $status." >&2
+    echo "[review] Review execution failed with status $status." >&2
     return 1
+  fi
+
+  if ! git diff --quiet || ! git diff --cached --quiet; then
+    while IFS= read -r -d '' rec; do
+      local code path
+      code=${rec:0:2}
+      path=${rec:3}
+      case "$code" in
+        D*|*D) git rm -- "$path" || true ;;
+        R*) IFS= read -r -d '' newpath || true
+            [[ -n "$newpath" ]] && { git rm -- "$path" || true; git add -- "$newpath" || true; }
+            ;;
+        *) git add -- "$path" || true ;;
+      esac
+    done < <(git status --porcelain -z)
+    if ! git diff --cached --quiet; then
+      git commit -m "fix: address review findings (#${pr_num:-unknown})"
+      git push
+    fi
   fi
 
   local review_status
@@ -637,38 +524,20 @@ codex_submit_local_pr_review() {
   local review_body
   review_body=$(sed -n '/^FINAL_REVIEW_COMMENT:$/,/^END_REVIEW_COMMENT$/p' <<<"$output" | sed '1d;$d')
   review_body=$(printf '%s' "$review_body" | sed -e 's/[[:space:]]*$//')
-  if [[ -z "${review_body//[[:space:]]/}" ]]; then
-    echo "[review] Local model did not produce review body; skipping submission." >&2
-    return 1
+
+  if [[ -n "${review_body//[[:space:]]/}" ]]; then
+    local flag
+    case "$review_status" in
+      approve) flag="--approve" ;;
+      request_changes|request-changes|requestchanges) flag="--request-changes" ;;
+      *) flag="--comment" ;;
+    esac
+
+    if gh pr review "$pr_num" "$flag" --body "$review_body"; then
+      echo "[review] Submitted review ($review_status) for PR #$pr_num." >&2
+    fi
   fi
 
-  local flag
-  case "$review_status" in
-    approve)
-      flag="--approve"
-      ;;
-    request_changes|request-changes|requestchanges)
-      flag="--request-changes"
-      review_status="request_changes"
-      ;;
-    *)
-      flag="--comment"
-      review_status="comment"
-      ;;
-  esac
-
-  if (( previous_round > 0 )) && [[ "$flag" == "--approve" ]]; then
-    flag="--comment"
-    review_status="comment"
-  fi
-
-  if ! gh pr review "$pr_num" "$flag" --body "$review_body"; then
-    echo "[review] Failed to submit local review for PR #$pr_num." >&2
-    return 1
-  fi
-
-  mark_local_review_submitted "$pr_num"
-  echo "[review] Submitted local model review round $next_round ($review_status) for PR #$pr_num." >&2
   return 0
 }
 

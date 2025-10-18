@@ -1,0 +1,25 @@
+You are reviewing PR #__PR__.
+
+Task: Review the PR, fix blocking issues immediately, defer polish to new GitHub issues.
+
+Process:
+1) Inspect PR: `gh pr view $PR_NUM --json files,commits,body,number,baseRefName,headRefName,url`
+2) Run tests and build locally. Fix any failures immediately.
+3) Verify functionality if applicable.
+4) Classify findings:
+   - BLOCKING: breaks tests, build, correctness, or violates hard limits (module >1000 lines, function >100 lines)
+   - DEFER: style polish, minor refactors, documentation improvements, soft limit suggestions
+5) Fix blocking issues: stage specific files, commit, push.
+6) For deferred items: open focused GitHub issues (one per concern) with label "polish". Keep scope narrow to avoid feature creep.
+7) Decide review status based only on blocking issues.
+
+Output format (exact):
+FINAL_REVIEW_STATUS: <approve|request_changes|comment>
+FINAL_REVIEW_COMMENT:
+<concise markdown feedback citing specific files/lines for any blocking issues>
+END_REVIEW_COMMENT
+
+Rules:
+- KISS, YAGNI, SRP: prioritize correctness and build/test success.
+- No feature creep: defer speculative improvements.
+- Approve when tests pass and no blocking issues remain, even if deferred issues were created.
