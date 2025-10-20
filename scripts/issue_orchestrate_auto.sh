@@ -7,6 +7,11 @@
 # - Opens PR, self-review loop with Codex/Claude, decides success
 # - Merge policy: auto-merge only when --all is set; otherwise require manual check
 # - Returns to clean main at the end of each iteration
+# - ABSOLUTELY FORBIDDEN: spamming working directory with process documentation in Markdown files
+#
+# 🚨 CRITICAL COMPLIANCE REQUIREMENT 🚨
+# ALL review phases MUST STRICTLY validate compliance against BOTH project CLAUDE.md/AGENTS.md
+# AND user CLAUDE.md/AGENTS.md with ZERO tolerance for ANY violations
 #
 # Usage:
 #   scripts/issue_orchestrate_auto.sh [ISSUE_NUMBER] [--label <name>|--all] [--limit N] [--squash|--rebase|--merge] [--repo owner/name] [--claude]

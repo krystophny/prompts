@@ -1,3 +1,7 @@
+🚨 CRITICAL COMPLIANCE REQUIREMENT - ZERO TOLERANCE POLICY 🚨
+**ALL rules in BOTH project CLAUDE.md/AGENTS.md AND user CLAUDE.md/AGENTS.md MUST be followed WITHOUT EXCEPTION.**
+**Implementation MUST enforce STRICT compliance with ZERO tolerance for ANY violations.**
+
 You are operating with GitHub CLI in a Git repository.
 
 Objective: In ONE session (single continuous context), autonomously select the next relevant issue, implement the solution end-to-end, and only at the end open a non-draft PR ready for review.
@@ -23,7 +27,11 @@ Implementation:
 - Stage files explicitly (no `git add .`). Use Conventional Commit: `fix: <desc> (fixes #<num>)`.
 - Only as the final step, open a PR (not draft) to main (reuse if exists). Title: "fix: <issue title truncated to 64> (fixes #<num>)". Include a short "Verification" section with commands, output excerpts, and artifact paths. Do not open a PR earlier.
 
-Rules:
+ABSOLUTE RULES - ZERO TOLERANCE:
+- MANDATORY: Validate compliance with ALL CLAUDE.md/AGENTS.md rules - ANY violation is FORBIDDEN
+- FORBIDDEN: stubs, placeholders, commented-out code, random markdowns, variants, backups
+- ABSOLUTELY FORBIDDEN: spamming working directory with process documentation in Markdown files
+- REQUIRED: explicit file staging only - NEVER `git add .`
 - Minimal output; markdown only in PR/issue per policy.
 
 Deliverable:

@@ -1,3 +1,7 @@
+🚨 CRITICAL COMPLIANCE REQUIREMENT - ZERO TOLERANCE POLICY 🚨
+**ALL rules in BOTH project CLAUDE.md/AGENTS.md AND user CLAUDE.md/AGENTS.md MUST be followed WITHOUT EXCEPTION.**
+**Implementation MUST enforce STRICT compliance with ZERO tolerance for ANY violations.**
+
 You are on branch '__CUR__' in a Git repository with GitHub CLI.
 
 Goal: Complete implementation for issue #__INUM__ on the current branch, then open a non-draft PR only at the very end, right before handing off to review.
@@ -9,7 +13,11 @@ Process:
 4) As the final step: if a PR to main does not exist for this branch, create a PR (not draft) with title `fix: <issue-title-truncated-to-64> (fixes #__INUM__)`. Include a concise "Verification" section showing the commands you ran and key output excerpts or artifact paths. Do not open a PR earlier than this step.
 5) Print exactly one JSON line with keys: {"issue":__INUM__, "branch":"__CUR__", "pr":<pr-number>, "url":"<pr-url>"}.
 
-Rules:
+ABSOLUTE RULES - ZERO TOLERANCE:
+- MANDATORY: Validate compliance with ALL CLAUDE.md/AGENTS.md rules - ANY violation is FORBIDDEN
+- FORBIDDEN: stubs, placeholders, commented-out code, random markdowns, variants, backups
+- ABSOLUTELY FORBIDDEN: spamming working directory with process documentation in Markdown files
+- REQUIRED: explicit file staging only - NEVER `git add .`
 - Markdown only in PR/issue per policy; keep outputs minimal and actionable.
 - Always run the relevant verification after your changes; skip redundant baseline runs.
 - Provide evidence excerpts for any output-affecting fix, leveraging project verification commands when available.

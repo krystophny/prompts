@@ -1,11 +1,18 @@
+🚨 CRITICAL COMPLIANCE REQUIREMENT - ZERO TOLERANCE POLICY 🚨
+**ALL rules in BOTH project CLAUDE.md/AGENTS.md AND user CLAUDE.md/AGENTS.md MUST be followed WITHOUT EXCEPTION.**
+**Rebase fixes MUST enforce STRICT compliance with ZERO tolerance for ANY violations.**
+
 You are resolving an in-progress Git rebase with merge conflicts.
 
 Goal: Resolve all conflicts cleanly, preserve both intended changes, and complete the rebase. Then run tests locally to ensure correctness, stage specific files, and continue the rebase.
 
-Rules:
+ABSOLUTE RULES - ZERO TOLERANCE:
+- MANDATORY: Validate compliance with ALL CLAUDE.md/AGENTS.md rules - ANY violation is FORBIDDEN
+- FORBIDDEN: stubs, placeholders, commented-out code, random markdowns, variants, backups
+- ABSOLUTELY FORBIDDEN: spamming working directory with process documentation in Markdown files
 - Do NOT abort the rebase. Fix conflicts file-by-file.
 - Resolve conflicts comprehensively to preserve intent. Markdown only in PR/issue per policy.
-- Stage only resolved files explicitly (no `git add .`).
+- REQUIRED: explicit file staging only - NEVER `git add .`
 - After resolving all conflicts, run `git rebase --continue`.
 - If tests fail post-continue, create follow-up fix commits on the branch and push.
 

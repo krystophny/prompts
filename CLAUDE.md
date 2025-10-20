@@ -1,10 +1,18 @@
-# AGENTS.md (Lean, Fortran-First Framework)
+# CLAUDE.md (Lean, Fortran-First Framework)
 
-## Non-Negotiables
-- No stubs, placeholders, commented-out code, random markdowns, variants, backups, or suppressions.
-- Never claim success without evidence (CI logs, real test output).
-- Never use `git add .` or `git add -A`; stage explicit files only.
-- Always use repo build/test scripts — fpm is the default toolchain.
+## 🚨 ABSOLUTE HARD RULES - ZERO TOLERANCE POLICY 🚨
+**EVERY point below is a MANDATORY requirement that MUST be followed WITHOUT EXCEPTION under ALL circumstances.**
+- These are NOT suggestions, guidelines, or best practices - they are ABSOLUTE REQUIREMENTS
+- ANY violation of ANY rule below is UNACCEPTABLE and MUST be corrected immediately
+- There is NO situation, context, or justification for breaking these rules
+- Review phases MUST enforce compliance with ALL rules STRICTLY and WITHOUT compromise
+
+## MANDATORY REQUIREMENTS - ABSOLUTELY NO EXCEPTIONS
+- **PROHIBITED**: stubs, placeholders, commented-out code, random markdowns, variants, backups, or suppressions - NEVER create these under ANY circumstances
+- **FORBIDDEN**: claiming success without tangible evidence (CI logs, real test output) - ALWAYS provide proof
+- **REQUIRED**: explicit file staging only - NEVER use `git add .` or `git add -A` - ALWAYS stage individual files explicitly
+- **MANDATORY**: use repo build/test scripts - fpm is the default toolchain - NO exceptions
+- **ABSOLUTELY FORBIDDEN**: spamming working directory with process documentation in Markdown files - NEVER create these
 
 ## Language & Stack
 - Primary: modern Fortran (2018+). Prefer Fortran even for scripting/CLI/web when feasible.
@@ -70,17 +78,23 @@
 - CI must pass before merge; treat ready PRs as blocking work.
 - Edit GitHub issue descriptions rather than closing meta-issues prematurely.
 
-## AI Guards
-- Never claim success without tangible evidence.
-- Complete work-in-progress tasks before pulling new backlog items.
-- No shallow validation; do not bypass guardrails.
+## AI COMPLIANCE ENFORCEMENT - MANDATORY FOR ALL OPERATIONS
+- **ABSOLUTELY FORBIDDEN**: claiming success without tangible evidence - ALWAYS provide concrete proof
+- **REQUIRED**: complete ALL work-in-progress tasks before pulling new backlog items - NO exceptions
+- **MANDATORY**: thorough validation - NEVER bypass guardrails or perform shallow checks
+- **CRITICAL**: Review phases MUST validate compliance against BOTH project CLAUDE.md AND user CLAUDE.md/AGENTS.md STRICTLY
+- **REQUIRED**: ZERO tolerance for ANY rule violations - ALL violations MUST be corrected immediately
 
-## Self-Check
-1. Followed Fortran rules (fpm, 88-col, intents, allocatable/move_alloc, dp)?
-2. Respected size limits?
-3. Provided evidence?
-4. Avoided stubs/placeholders/suppressions?
-5. Followed Git/GitHub discipline?
+## MANDATORY COMPLIANCE VALIDATION - MUST PASS BEFORE COMPLETION
+**EVERY item below MUST be validated and PASS before ANY task completion:**
+1. **MANDATORY**: Followed ALL Fortran rules (fpm, 88-col, intents, allocatable/move_alloc, dp) WITHOUT exception?
+2. **REQUIRED**: Respected ALL size limits WITHOUT compromise?
+3. **CRITICAL**: Provided concrete evidence for ALL claims?
+4. **ABSOLUTELY REQUIRED**: Avoided ALL stubs/placeholders/suppressions COMPLETELY?
+5. **MANDATORY**: Followed Git/GitHub discipline STRICTLY?
+6. **CRITICAL**: Validated against project CLAUDE.md/AGENTS.md STRICTLY?
+7. **REQUIRED**: Validated against user CLAUDE.md/AGENTS.md STRICTLY?
+8. **MANDATORY**: ZERO tolerance policy enforced - ALL violations corrected?
 
 ## GitHub CLI Examples
 - Issues

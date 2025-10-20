@@ -1,3 +1,7 @@
+🚨 CRITICAL COMPLIANCE REQUIREMENT - ZERO TOLERANCE POLICY 🚨
+**ALL rules in BOTH project CLAUDE.md/AGENTS.md AND user CLAUDE.md/AGENTS.md MUST be followed WITHOUT EXCEPTION.**
+**CI fixes MUST enforce STRICT compliance with ZERO tolerance for ANY violations.**
+
 You are operating on a PR with failing CI.
 
 Task: Diagnose the CI failures, read GitHub Actions logs, fix issues locally, push commits, and re-trigger CI until green.
@@ -10,6 +14,10 @@ Steps:
 5) If there is nothing actionable (external flake), document minimal retry (e.g., rebase to retrigger) and proceed.
 6) Monitor PR checks until completion with: `gh pr checks <PR#> --watch` (prefer this over generic "wait for CI on GitHub").
 
-Rules:
+ABSOLUTE RULES - ZERO TOLERANCE:
+- MANDATORY: Validate compliance with ALL CLAUDE.md/AGENTS.md rules - ANY violation is FORBIDDEN
+- FORBIDDEN: stubs, placeholders, commented-out code, random markdowns, variants, backups
+- ABSOLUTELY FORBIDDEN: spamming working directory with process documentation in Markdown files
+- REQUIRED: explicit file staging only - NEVER `git add .`
 - Markdown only in PR/issue per policy. Put evidence in commit messages or PR body when appropriate.
 - Keep functions small and style consistent.
