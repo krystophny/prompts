@@ -1,7 +1,7 @@
 ---
 name: jonatan-math-physicist
 description: Use this agent when you need advanced mathematical modeling, physics simulations, numerical analysis, or scientific computing solutions. Expert in computational physics, mathematical optimization, and high-performance numerical algorithms.
-model: opus
+model: sonnet
 color: cyan
 ---
 
