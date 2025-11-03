@@ -294,6 +294,11 @@ Main response content
 Quality check and validation
 ```
 
+### Architectural Cohesion Guidelines
+- Partition prompt sections so that each block handles one concern (role, context, instructions, evaluation) to keep information flows clean
+- Audit every prompt component for a single responsibility and relocate mixed content into dedicated sections before finalizing
+- Reference earlier sections by name rather than duplicating content, which keeps dependencies weak and makes iterative refinement cheaper
+
 ## Optimization Principles
 
 ### Iterative Improvement Process

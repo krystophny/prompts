@@ -61,6 +61,7 @@ After installation, you can use QADS agents in OpenCode by:
 - **Evidence-based operations**: Every action requires technical proof
 - **Role specialization**: Clear boundaries between planning, implementation, and review
 - **Systematic workflows**: PLAN → WORK → PLAY → PLAN cycle with gates
+- **Cohesive architecture**: Agents, commands, and configs are structured for separation of concerns, single responsibility per artifact, and weak coupling between automation layers
 
 ## Original Framework
 

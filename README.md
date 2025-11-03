@@ -16,9 +16,11 @@ QADS v4.0 implements the Anthropic 10-Component prompt engineering framework wit
 - **AGENTS.md**: Lean Fortran-first standards applied across repositories
 - **agents/**: 10 specialized agents with role-specific expertise
 - **commands/**: Workflow orchestration following 10-component framework
+- **Modular Workflows**: PLAN, WORK, and PLAY phases keep responsibilities isolated to maintain separation of concerns, uphold the single responsibility principle, and keep inter-agent coupling intentionally weak
 
 ## 4. DETAILED RULES
 - All agents follow CLAUDE.md protocols (see CLAUDE.md for complete rule system)
+- Architectural changes must respect separation of concerns: each artifact owns one behavior, cross-phase data contracts stay lean, and integrations remain weakly coupled
 - LOCAL-FIRST CI protocol: local tests pass → file PR → watch PR checks (`gh pr checks --watch`) → report evidence
 - Task tool delegation: Claude Code launches agents, never role-plays as agents
 - No duplicate functionality in new files (implementation_rules rule_11)

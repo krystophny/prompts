@@ -97,6 +97,7 @@ Task tool → chris-architect → Planning Implementation
 - PRODUCT BACKLOG: <1000 lines maximum, feature prioritization systems
 - DESIGN: <1000 lines maximum, architectural documentation standards
 - Issue hygiene protocols: NO emojis, precise technical language requirements
+- Planning artifacts must preserve strict separation of concerns: DESIGN captures architecture only, PRODUCT BACKLOG curates future work, SPRINT BACKLOG owns current execution; cross-link instead of duplicating to keep coupling weak and responsibilities singular
 
 **CI INTEGRATION REQUIREMENTS**:
 - Planning validation through CI-integrated analysis tools

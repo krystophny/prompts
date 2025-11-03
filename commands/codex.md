@@ -50,6 +50,11 @@ The command will:
 - Continue looping until every task item is fully satisfied
 - Escalate only if blocker cannot be resolved autonomously
 
+### Architectural Discipline
+- Keep orchestration responsibilities separate: this command coordinates, the codex agent drafts, and downstream tools execute so that each layer stays singly focused
+- When preparing context, pass only minimal contracts needed by the agent to maintain weak coupling and allow independent evolution of command and agent logic
+- If a task spans unrelated domains, split it into discrete invocations so every execution path respects the single responsibility principle
+
 ## REQUIRED INPUTS
 
 When user invokes `/codex`:

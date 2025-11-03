@@ -54,6 +54,12 @@ Automatically detect input type:
 2. Check if input is numeric or GitHub issue URL → Mode 2
 3. Otherwise treat as explicit prompt string → Mode 1
 
+## ARCHITECTURAL PRINCIPLES
+
+- Maintain strict separation of concerns: this command orchestrates workflows, Claude Code performs generation, and post-run reviews enforce standards
+- Keep each execution focused on a single responsibility; split mixed-scope TODO items into discrete runs before invoking the command
+- Share only the minimal context (task text, evidence, constraints) between command and agent layers to preserve weak coupling and make independent upgrades safe
+
 ## EXECUTION PROCEDURE
 
 ### Mode 1: Single Prompt Flow

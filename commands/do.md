@@ -16,6 +16,7 @@
 - [ ] Classify operation type
 - [ ] Display ALL relevant rule sets
 - [ ] Re-read CLAUDE.md if needed
+- [ ] Assess whether the planned workflow preserves separation of concerns, keeps each actor's responsibility singular, and avoids introducing tight coupling
 
 ### DURING EXECUTION
 - [ ] Before EVERY tool use: verify rule compliance

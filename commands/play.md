@@ -14,3 +14,4 @@ Defect discovery via sequential Task tool delegation: max → patrick → vicky 
 
 **Protocol**: NO file modifications - GitHub API operations only
 **Output**: File GitHub issues for all discovered defects
+- Maintain clear separation of concerns while cycling: max frames the audit scope, patrick owns source-level findings, vicky validates user impact, and chris aligns architectural follow-ups so each role stays singly focused and analysis remains weakly coupled

@@ -42,6 +42,7 @@ Execute WORK → PLAY → PLAN sequence:
 - **WORK**: Process SPRINT_BACKLOG via agents per workflow_rules
 - **PLAY**: Launch defect discovery via Task tool (workflow_rules rule_7)
 - **PLAN**: Execute chris-architect planning via Task tool
+- Keep handoffs crisp: each phase owns a single responsibility and consumes only the artifacts published by the prior phase to preserve separation of concerns and weak coupling across the sprint loop
 
 ## 8. THINKING STEP-BY-STEP
 Apply CLAUDE.md Section 8 reasoning activation before each workflow phase.

@@ -29,6 +29,7 @@ Infinite WORK → PLAY → PLAN cycles until user interruption.
 1. **WORK**: Complete SPRINT_BACKLOG items via max → implementer → reviewer → max
 2. **PLAY**: Serial audits (max → patrick → vicky → chris) - file issues only
 3. **PLAN**: chris-architect consolidates issues, updates meta-issues
+- Each phase is intentionally isolated; preserve single responsibility per agent chain and keep cross-phase contracts minimal so iterations remain weakly coupled even as cycles repeat
 
 **Continue on**: Empty backlogs, no issues found, errors - always proceed to next phase
 **Stop on**: User interrupt only
