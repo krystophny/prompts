@@ -1,4 +1,4 @@
-# /do - Enforce QADS Framework Compliance
+# /do - Enforce Framework Compliance
 
 ## CRITICAL ENFORCEMENT PROTOCOL
 
@@ -58,4 +58,4 @@ Before completing response:
 4. Did I display all relevant rule sets? ✓
 5. Did I follow the rules throughout? ✓
 
-*QADS v4.0 - Compliance Enforcement Command*
+*Framework Compliance Command*

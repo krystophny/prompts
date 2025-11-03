@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-QADS to OpenCode Converter
+Framework to OpenCode Converter
 
-This script converts the QADS v4.0 framework (CLAUDE.md and agents/) into
+This script converts the v4.0 framework (CLAUDE.md and agents/) into
 OpenCode-compatible configuration files that can be symlinked to ~/.config/opencode/
 
 Usage:
@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Dict, Any, List
 import re
 
-class QADSConverter:
+class FrameworkConverter:
     def __init__(self, source_dir: str = "/home/ert/code/prompts"):
         self.source_dir = Path(source_dir)
         self.output_dir = self.source_dir / "opencode"
@@ -71,7 +71,7 @@ class QADSConverter:
                 },
                 "work": {
                     "template": "Execute WORK workflow: max → implementer → CI-GATE → reviewer → max → merge",
-                    "description": "Implementation with fraud-proof CI protocols",
+                    "description": "Implementation with CI verification protocols",
                     "agent": "general"
                 },
                 "play": {
@@ -80,7 +80,7 @@ class QADSConverter:
                     "agent": "general"
                 },
                 "sprint": {
-                    "template": "Complete WORK→PLAY→PLAN cycle with full fraud-proof verification",
+                    "template": "Complete WORK→PLAY→PLAN cycle with full verification",
                     "description": "Complete sprint cycle",
                     "agent": "general"
                 }
@@ -112,15 +112,15 @@ class QADSConverter:
 
         # Make minimal replacements for OpenCode compatibility
         replacements = {
-            # Model references - keep original Anthropic models
+            # Model references
             "model: sonnet": "model: anthropic/claude-sonnet-4-20250514",
             "model: haiku": "model: anthropic/claude-3-5-haiku-20241022",
             "grok/grok-1": "anthropic/claude-sonnet-4-20250514",
             "grok/grok-2": "anthropic/claude-sonnet-4-20250514",
 
             # Framework references
-            "CLAUDE.md": "QADS v4.0 framework",
-            "Anthropic": "OpenCode with Claude Sonnet",
+            "CLAUDE.md": "framework reference",
+            "Anthropic": "Claude Sonnet",
 
             # Command references
             "/init": "/plan",
@@ -134,6 +134,9 @@ class QADSConverter:
         # Apply replacements
         for old, new in replacements.items():
             content = content.replace(old, new)
+
+        # Normalize header without referencing legacy naming directly
+        content = re.sub(r"#.*10-COMPONENT.*FRAMEWORK", "# OpenCode Configuration", content, count=1)
 
         # Update frontmatter to match OpenCode format
         lines = content.split('\n')
@@ -193,7 +196,7 @@ model: anthropic/claude-sonnet-4-20250514
 
     def _get_agent_mode(self, agent_name: str) -> str:
         """Determine the agent mode - subagents can be invoked by general agent"""
-        # All QADS agents should be subagents so they can be called by workflows
+        # All agents should be subagents so they can be called by workflows
         return "subagent"
 
     def _extract_description(self, content: str) -> str:
@@ -272,8 +275,8 @@ model: anthropic/claude-sonnet-4-20250514
         # Make minimal replacements for OpenCode compatibility
         replacements = {
             # Framework references
-            "CLAUDE.md": "QADS v4.0 framework",
-            "Anthropic": "OpenCode with Claude Sonnet",
+            "CLAUDE.md": "framework reference",
+            "Anthropic": "Claude Sonnet",
 
             # Agent references and Task tool invocations
             "chris-architect EXCLUSIVELY via Task tool": "chris-architect via @chris-architect or task tool with subagent_type='chris-architect'",
@@ -347,7 +350,7 @@ model: anthropic/claude-sonnet-4-20250514
         if command_name == "multisprint":
             return """## OPENCODE AGENT INVOCATION EXAMPLES
 
-This workflow uses the task tool to invoke QADS agents. Examples:
+This workflow uses the task tool to invoke agents. Examples:
 
 ```markdown
 # Max DevOps Engineer (repository management, CI/CD)
@@ -563,13 +566,13 @@ MULTISPRINT WORKFLOW CONTINUES INFINITELY...
         """Extract command template"""
         # Create appropriate template based on command type
         templates = {
-            'plan': "Execute PLAN workflow: chris-architect organizes issues in SPRINT BACKLOG, NO git operations. Follow QADS v4.0 protocols.",
-            'work': "Execute WORK workflow: max → implementer → CI-GATE → reviewer → max → merge. Use fraud-proof CI protocols.",
+            'plan': "Execute PLAN workflow: chris-architect organizes issues in SPRINT BACKLOG, NO git operations. Follow core framework protocols.",
+            'work': "Execute WORK workflow: max → implementer → CI-GATE → reviewer → max → merge. Use CI verification protocols.",
             'play': "Execute PLAY workflow: max PR assessment → serial audits (patrick, vicky, chris) → NO git commits. Find defects only.",
-            'sprint': "Complete WORK→PLAY→PLAN cycle with full fraud-proof verification and evidence collection."
+            'sprint': "Complete WORK→PLAY→PLAN cycle with full verification and evidence collection."
         }
 
-        return templates.get(command_name, f"Execute {command_name} workflow following QADS v4.0 protocols.")
+        return templates.get(command_name, f"Execute {command_name} workflow following core framework protocols.")
 
     # Rules directory creation removed - AGENTS.md contains all framework rules
 
@@ -595,21 +598,19 @@ MULTISPRINT WORKFLOW CONTINUES INFINITELY...
 
         # Make minimal replacements for OpenCode compatibility
         replacements = {
-            # Replace header
-            "# ANTHROPIC 10-COMPONENT QADS v4.0 FRAMEWORK": "# QADS v4.0 OpenCode Configuration",
 
-            # Keep original Anthropic model references
+            # Keep original model references
             "grok/grok-1": "anthropic/claude-sonnet-4-20250514",
             "grok/grok-2": "anthropic/claude-sonnet-4-20250514",
 
             # Replace specialized commands
             "/init": "/plan",
-            "opencode auth login": "opencode auth login (Anthropic recommended)",
+            "opencode auth login": "opencode auth login (Claude recommended)",
             "opencode agent create": "Use @agent-name to invoke specialized agents",
 
             # Update workflow references
-            "CLAUDE.md": "QADS v4.0 framework",
-            "Anthropic": "OpenCode with Claude Sonnet",
+            "CLAUDE.md": "framework reference",
+            "Anthropic": "Claude Sonnet",
         }
 
         # Apply replacements
@@ -621,7 +622,7 @@ MULTISPRINT WORKFLOW CONTINUES INFINITELY...
 
 ## OpenCode Integration
 
-This QADS v4.0 framework has been adapted for OpenCode compatibility:
+This framework has been adapted for OpenCode compatibility:
 
 ### Available Agents
 - **@chris-architect**: Sprint planning and architecture
@@ -637,13 +638,13 @@ This QADS v4.0 framework has been adapted for OpenCode compatibility:
 
 ### Workflow Commands
 - **/plan**: Sprint planning with issue consolidation
-- **/work**: Implementation with fraud-proof CI protocols
+- **/work**: Implementation with CI verification protocols
 - **/play**: Defect discovery and evidence collection
 - **/sprint**: Complete sprint cycle
 - **/multisprint**: Continuous sprint cycles
 
 ### Configuration
-All agents and commands are configured in the main `opencode.json` file with appropriate permissions and tool access levels optimized for the QADS fraud-proof workflow.
+All agents and commands are configured in the main `opencode.json` file with appropriate permissions and tool access levels optimized for the framework workflow.
 """
 
         content += opencode_section
@@ -659,14 +660,14 @@ All agents and commands are configured in the main `opencode.json` file with app
         """Create installation script for symlinking"""
         install_script = f"""#!/bin/bash
 # OpenCode Configuration Installer
-# This script symlinks the converted QADS configuration to ~/.config/opencode/
+# This script symlinks the converted configuration to ~/.config/opencode/
 
 set -e
 
 OPENCODE_CONFIG_DIR="$HOME/.config/opencode"
 SOURCE_DIR="$(cd "$(dirname "${{BASH_SOURCE[0]}}")" && pwd)/opencode"
 
-echo "Installing QADS v4.0 OpenCode configuration..."
+echo "Installing OpenCode configuration..."
 echo "Source: $SOURCE_DIR"
 echo "Target: $OPENCODE_CONFIG_DIR"
 
@@ -711,7 +712,7 @@ fi
 echo ""
 echo "Installation complete!"
 echo ""
-echo "To use the QADS framework in OpenCode:"
+echo "To use this framework in OpenCode:"
 echo "1. Restart OpenCode or run 'opencode auth login' if needed"
 echo "2. Use @mention to invoke agents: @chris-architect, @sergei-perfectionist-coder, etc."
 echo "3. Use workflow commands: /plan, /work, /play, /sprint"
@@ -725,7 +726,7 @@ echo "  - And 6 more specialized agents..."
 echo ""
 echo "Workflow commands:"
 echo "  - /plan: Sprint planning with issue consolidation"
-echo "  - /work: Implementation with fraud-proof CI protocols"
+echo "  - /work: Implementation with CI verification protocols"
 echo "  - /play: Defect discovery and evidence collection"
 echo "  - /sprint: Complete sprint cycle"
 """
@@ -741,9 +742,9 @@ echo "  - /sprint: Complete sprint cycle"
 
     def create_readme(self):
         """Create README for the converted configuration"""
-        readme_content = """# QADS v4.0 OpenCode Configuration
+        readme_content = """# OpenCode Configuration
 
-This directory contains the QADS v4.0 (Quality-driven Agent Development System) framework converted for compatibility with OpenCode.
+This directory contains the v4.0 framework converted for compatibility with OpenCode.
 
 ## Installation
 
@@ -758,14 +759,14 @@ This will create symlinks in `~/.config/opencode/` pointing to this directory.
 ## What's Included
 
 ### Main Configuration (`opencode.json`)
-- Core OpenCode configuration with QADS framework integration
-- Agent definitions for all 10 QADS agents
+- Core OpenCode configuration with framework integration
+- Agent definitions for all 10 agents
 - Workflow commands (plan, work, play, sprint)
-- Permission settings optimized for fraud-proof development
+- Permission settings optimized for evidence-based development
 - CI/CD integration settings
 
 ### Agents (`agent/`)
-Converted versions of all QADS agents:
+Converted versions of all agents:
 - **chris-architect**: Sprint planning and architecture
 - **sergei-perfectionist-coder**: Code implementation with CI verification
 - **patrick-auditor**: Code review and quality assurance
@@ -786,28 +787,29 @@ Workflow command definitions:
 
 ### Rules (`rules/`)
 Framework rules and protocols:
-- `qads-framework.md`: Core QADS v4.0 principles and standards
+- `qads-framework.md`: Core v4.0 principles and standards
 
 ## Usage
 
-After installation, you can use QADS agents in OpenCode by:
+After installation, you can use these agents in OpenCode by:
 
 1. **Mentioning agents**: `@chris-architect plan this sprint`
 2. **Using workflow commands**: `/work` or `/plan`
 3. **Switching agents**: Tab key to cycle through primary agents
-4. **Following protocols**: All agents follow QADS fraud-proof protocols
+4. **Following protocols**: All agents follow strict verification protocols
 
 ## Key Features
 
-- **Fraud-proof development**: Technical verification supersedes all social controls
+- **Evidence-backed development**: Technical verification supersedes all social controls
 - **CI-first workflow**: All claims must be verifiable through CI/automation
 - **Evidence-based operations**: Every action requires technical proof
 - **Role specialization**: Clear boundaries between planning, implementation, and review
 - **Systematic workflows**: PLAN → WORK → PLAY → PLAN cycle with gates
+- **Cohesive architecture**: Agents, commands, and configs are structured for separation of concerns, single responsibility per artifact, and weak coupling between automation layers
 
 ## Original Framework
 
-This configuration is converted from the QADS v4.0 framework defined in:
+This configuration is converted from the base v4.0 framework defined in:
 - `CLAUDE.md`: Master framework documentation
 - `agents/*.md`: Individual agent specifications
 - `commands/*.md`: Workflow command definitions
@@ -815,12 +817,12 @@ This configuration is converted from the QADS v4.0 framework defined in:
 ## Requirements
 
 - OpenCode CLI installed
-- Anthropic API key configured (recommended for best results)
+- Claude API key configured (recommended for best results)
 - Git repository for full workflow functionality
 
 ## Support
 
-The QADS framework emphasizes:
+This framework emphasizes:
 - **CORRECTNESS > PERFORMANCE > KISS > SRP > YAGNI > DRY > SOLID > SECURITY**
 - Files <1000 lines (target <500), Functions <100 lines (target <50)
 - 88 char limit, 4-space indent
@@ -836,7 +838,7 @@ The QADS framework emphasizes:
 
     def run_conversion(self):
         """Run the complete conversion process"""
-        print("Starting QADS to OpenCode conversion...")
+        print("Starting framework to OpenCode conversion...")
         print(f"Source directory: {self.source_dir}")
         print(f"Output directory: {self.output_dir}")
         print()
@@ -869,8 +871,8 @@ The QADS framework emphasizes:
         print("1. Review the generated configuration files")
         print("2. Run ./opencode/install.sh to install")
         print("3. Restart OpenCode to load the new configuration")
-        print("4. Use @agent-name to invoke QADS agents")
+        print("4. Use @agent-name to invoke agents")
 
 if __name__ == "__main__":
-    converter = QADSConverter()
+    converter = FrameworkConverter()
     converter.run_conversion()

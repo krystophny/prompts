@@ -22,7 +22,7 @@ Execute full PLAN → WORK → PLAY cycle per CLAUDE.md workflow system.
 </batch_execution_mantra>
 
 ## 2. TONE CONTEXT: Command Style  
-Follow CLAUDE.md Section 2 fraud-proof standards with evidence-based execution.
+Follow CLAUDE.md Section 2 verification standards with evidence-based execution.
 
 ## 3. BACKGROUND DATA: Sprint Context
 Apply CLAUDE.md Section 3 workflow transitions and agent protocols systematically.

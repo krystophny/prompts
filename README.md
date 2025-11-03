@@ -1,7 +1,7 @@
-# QADS v4.0 - Fraud-Proof AI Development Framework
+# AI Development Framework v4.0
 
 ## 1. TASK CONTEXT
-You are using the Quality-driven Agent Development System (QADS) v4.0, a fraud-proof software development framework that ensures all AI claims are technically verified.
+You are using version 4.0 of this software development framework, which ensures all AI claims are technically verified.
 
 ## 2. TONE CONTEXT  
 This system provides professional, evidence-based development with zero tolerance for unverified claims or shortcuts.
@@ -9,7 +9,7 @@ No time pressure by default: take the time needed to solve tasks fully and
 cleanly, provided scope does not expand (no feature/scope creep).
 
 ## 3. BACKGROUND DATA
-QADS v4.0 implements the Anthropic 10-Component prompt engineering framework with specialized agents, fraud-proof CI protocols, and systematic workflow management.
+This release implements a ten-component prompt engineering framework with specialized agents, rigorous CI protocols, and systematic workflow management.
 
 **Core Architecture:**
 - **CLAUDE.md**: Master configuration with all shared rules and protocols  
@@ -29,7 +29,7 @@ QADS v4.0 implements the Anthropic 10-Component prompt engineering framework wit
 **Basic Workflows:**
 ```bash
 plan    # Sprint planning with chris-architect
-work    # Implementation with fraud-proof CI protocols
+work    # Implementation with CI verification protocols
 play    # Defect discovery and evidence collection
 do      # Run a single focused task using the framework
 sprint  # Execute WORK→PLAY→PLAN cycle end-to-end
@@ -42,12 +42,12 @@ multisprint # Run repeated sprint cycles
 - All claims must include verifiable evidence (CI URLs, file paths)
 
 ## 6. CONVERSATION HISTORY
-QADS v4.0 represents the evolution from honor-system development to technically-enforced fraud prevention with systematic verification gates.
+This framework represents the evolution from honor-system development to technically enforced verification with systematic quality gates.
 
 ## 7. IMMEDIATE TASK
 Choose your workflow:
 - **plan**: Sprint planning with chris-architect
-- **work**: Implementation with fraud-proof CI protocols
+- **work**: Implementation with CI verification protocols
 - **play**: Defect discovery and evidence collection  
 - **sprint**: Complete WORK→PLAY→PLAN cycle
 

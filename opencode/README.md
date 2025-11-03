@@ -1,6 +1,6 @@
-# QADS v4.0 OpenCode Configuration
+# OpenCode Configuration
 
-This directory contains the QADS v4.0 (Quality-driven Agent Development System) framework converted for compatibility with OpenCode.
+This directory contains the v4.0 framework converted for compatibility with OpenCode.
 
 ## Installation
 
@@ -15,14 +15,14 @@ This will create symlinks in `~/.config/opencode/` pointing to this directory.
 ## What's Included
 
 ### Main Configuration (`opencode.json`)
-- Core OpenCode configuration with QADS framework integration
-- Agent definitions for all 10 QADS agents
+- Core OpenCode configuration with framework integration
+- Agent definitions for all 10 agents
 - Workflow commands (plan, work, play, sprint)
-- Permission settings optimized for fraud-proof development
+- Permission settings optimized for evidence-based development
 - CI/CD integration settings
 
 ### Agents (`agent/`)
-Converted versions of all QADS agents:
+Converted versions of all agents:
 - **chris-architect**: Sprint planning and architecture
 - **sergei-perfectionist-coder**: Code implementation with CI verification
 - **patrick-auditor**: Code review and quality assurance
@@ -43,20 +43,20 @@ Workflow command definitions:
 
 ### Rules (`rules/`)
 Framework rules and protocols:
-- `qads-framework.md`: Core QADS v4.0 principles and standards
+- `qads-framework.md`: Core v4.0 principles and standards
 
 ## Usage
 
-After installation, you can use QADS agents in OpenCode by:
+After installation, you can use these agents in OpenCode by:
 
 1. **Mentioning agents**: `@chris-architect plan this sprint`
 2. **Using workflow commands**: `/work` or `/plan`
 3. **Switching agents**: Tab key to cycle through primary agents
-4. **Following protocols**: All agents follow QADS fraud-proof protocols
+4. **Following protocols**: All agents follow strict verification protocols
 
 ## Key Features
 
-- **Fraud-proof development**: Technical verification supersedes all social controls
+- **Evidence-backed development**: Technical verification supersedes all social controls
 - **CI-first workflow**: All claims must be verifiable through CI/automation
 - **Evidence-based operations**: Every action requires technical proof
 - **Role specialization**: Clear boundaries between planning, implementation, and review
@@ -65,7 +65,7 @@ After installation, you can use QADS agents in OpenCode by:
 
 ## Original Framework
 
-This configuration is converted from the QADS v4.0 framework defined in:
+This configuration is converted from the base v4.0 framework defined in:
 - `CLAUDE.md`: Master framework documentation
 - `agents/*.md`: Individual agent specifications
 - `commands/*.md`: Workflow command definitions
@@ -73,12 +73,12 @@ This configuration is converted from the QADS v4.0 framework defined in:
 ## Requirements
 
 - OpenCode CLI installed
-- Anthropic API key configured (recommended for best results)
+- Claude API key configured (recommended for best results)
 - Git repository for full workflow functionality
 
 ## Support
 
-The QADS framework emphasizes:
+This framework emphasizes:
 - **CORRECTNESS > PERFORMANCE > KISS > SRP > YAGNI > DRY > SOLID > SECURITY**
 - Files <1000 lines (target <500), Functions <100 lines (target <50)
 - 88 char limit, 4-space indent
