@@ -11,6 +11,7 @@ Execute full PLAN → WORK → PLAY cycle per CLAUDE.md workflow system.
   <rule_4>NEVER create random markdown files for progress reports</rule_4>
   <rule_5>Display sprint_command_rules when executing SPRINT workflow</rule_5>
   <rule_6>CRITICAL: Display batch_rules for autonomous execution</rule_6>
+  <rule_7>Boy Scout Principle - each sprint cycle must leave every phase cleaner by fixing nearby issues immediately</rule_7>
 </sprint_command_rules>
 
 ### BATCH EXECUTION MANTRA

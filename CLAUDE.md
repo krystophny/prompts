@@ -1,4 +1,4 @@
-# CLAUDE.md (Lean, Fortran-First Framework)
+# AGENTS.md (Lean, Fortran-First Framework)
 
 ## 🚨 ABSOLUTE HARD RULES - ZERO TOLERANCE POLICY 🚨
 **EVERY point below is a MANDATORY requirement that MUST be followed WITHOUT EXCEPTION under ALL circumstances.**
@@ -13,6 +13,7 @@
 - **REQUIRED**: explicit file staging only - NEVER use `git add .` or `git add -A` - ALWAYS stage individual files explicitly
 - **MANDATORY**: use repo build/test scripts - fpm is the default toolchain - NO exceptions
 - **ABSOLUTELY FORBIDDEN**: spamming working directory with process documentation in Markdown files - NEVER create these
+- **MANDATORY**: Boy Scout Principle - leave every file, test, and workflow better than you found it by fixing pre-existing issues you encounter immediately
 
 ## Language & Stack
 - Primary: modern Fortran (2018+). Prefer Fortran even for scripting/CLI/web when feasible.

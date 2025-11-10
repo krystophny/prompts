@@ -23,6 +23,7 @@ This release implements a ten-component prompt engineering framework with specia
 - Architectural changes must respect separation of concerns: each artifact owns one behavior, cross-phase data contracts stay lean, and integrations remain weakly coupled
 - LOCAL-FIRST CI protocol: local tests pass → file PR → watch PR checks (`gh pr checks --watch`) → report evidence
 - Task tool delegation: Claude Code launches agents, never role-plays as agents
+- Boy Scout Principle: every touchpoint must leave the repository cleaner by fixing or improving nearby issues rather than stepping over them
 - No duplicate functionality in new files (implementation_rules rule_11)
 
 ## 5. EXAMPLES

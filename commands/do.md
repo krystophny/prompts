@@ -8,6 +8,11 @@
 3. Process the user's request with FULL compliance
 4. Verify rule adherence after completion
 
+## Boy Scout Principle
+- Compliance checks must always leave the workspace cleaner: fix misfiled rules, stale configs, or missing evidence as soon as you notice them while running `/do`
+- If you uncover sloppy prior responses or unchecked boxes, correct them before moving forward so future runs inherit a healthy baseline
+- Document each cleanup in the final verification block so the improvement is provable, not implied
+
 ## MANDATORY COMPLIANCE CHECKLIST
 
 ### PRE-EXECUTION

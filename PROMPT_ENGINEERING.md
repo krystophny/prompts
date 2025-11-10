@@ -31,6 +31,11 @@ Before starting any prompt engineering project:
 3. **Create baseline prompt drafts**
 4. **Establish measurable improvement goals**
 
+### Boy Scout Principle for Prompts
+- Every prompt iteration must leave your libraries and examples cleaner: remove failed attempts, annotate learnings, and update playbooks immediately
+- When you notice ambiguous wording, missing evaluation cells, or stale context blocks, fix them on the spot instead of letting cruft accumulate
+- Share the cleanup evidence (diffs, benchmark deltas) with the team so subsequent engineers inherit a sharper prompt toolkit
+
 ## Core Techniques
 
 ### 1. Be Clear and Direct

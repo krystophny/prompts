@@ -6,6 +6,11 @@ Execute tasks using Claude Code CLI in autonomous mode. Handles both single prom
 
 **This command is invoked FROM Codex CLI. All execution logic is self-contained here.**
 
+## Boy Scout Principle
+- Each Claude run must leave the repository cleaner: remove AI cruft uncovered during execution, resolve lint/test warnings encountered, and tighten docs touched by the automation
+- When a TODO file or issue reveals unrelated debt, clean it before continuing so the next invocation starts from a healthier baseline
+- Record every cleanup in the reported evidence (tests, diffs, CI logs) to prove incremental improvement alongside task completion
+
 ## OPERATING MODES
 
 ### Mode 1: Single Prompt Execution

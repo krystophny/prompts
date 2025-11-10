@@ -7,6 +7,7 @@
   <rule_4>CI evidence mandatory before any git operations</rule_4>
   <rule_5>NEVER create random markdown files for progress reports</rule_5>
   <rule_6>Display mantra_rules when operating as specialized agent</rule_6>
+  <rule_7>Boy Scout Principle - every implementation pass must leave touched files, tests, and workflows better than before</rule_7>
 </mantra_rules>
 
 <batch_rules>

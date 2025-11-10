@@ -6,6 +6,11 @@ Execute tasks by invoking the `codex` agent. Handles both single prompts and mul
 
 **This command operates in fully autonomous mode. Once started, it MUST NOT pause, stop, or wait for user input until completion or blocking error.**
 
+## Boy Scout Principle
+- Each orchestration loop must leave the repo and task source in a better state: close out stale TODOs, fix adjacent lint/test issues, and tidy drafts discovered while processing
+- When parsing multi-step docs uncovers duplicated items or outdated instructions, clean them immediately so downstream runs inherit precise guidance
+- Include cleanup proof (updated task docs, commit hashes, CI logs) in the per-step evidence you report back to the user
+
 ## OPERATING MODES
 
 ### Mode 1: Single Prompt Execution
