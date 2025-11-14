@@ -21,6 +21,7 @@
 ### MAIN BRANCH - SACRED GROUND
 - **ASSUME 100% PASS RATE**: Main branch ALWAYS has 100% passing tests - this is GIVEN/ASSUMED
 - **NEVER claim tests were failing on main**: ALL failures you see are regressions YOU introduced
+- **ABSOLUTELY FORBIDDEN: NEVER rerun tests on main branch**: We have a system that GUARANTEES 100% pass rate on main - NEVER waste time checking baseline by running tests on main - the baseline is ALWAYS 100%
 
 ### FEATURE BRANCHES - ZERO REGRESSION TOLERANCE
 - **MAINTAIN 100% OF EXISTING TESTS**: MUST NOT introduce ANY regressions - existing tests stay green
