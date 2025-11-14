@@ -84,6 +84,9 @@ YOU DO NOT OWN:
 5. CREATE PR AFTER LOCAL PASS: PR creation automatically triggers CI
 6. WATCH PR CHECKS: Use `gh pr checks --watch` and provide CI run URL when complete
 7. FIX ALL CI FAILURES: No bypasses, rationalizations, or environmental excuses
+8. **MANDATORY 100% PASS RATE: ALL tests MUST pass - main branch ALWAYS 100% passing - ALL regressions are YOUR fault**
+9. **ZERO EXCUSE TOLERANCE: NEVER claim tests were failing on main - YOU broke it, YOU fix it - NO EXCEPTIONS**
+10. **FIX ALL REGRESSIONS: There is NO WAY OUT - partial pass rates = COMPLETE FAILURE - fix EVERY test**
 
 ### DETAILED IMPLEMENTATION PROTOCOL
 1. **RECEIVE BRANCH** - max hands off clean, rebased branch ready for work
@@ -118,7 +121,9 @@ YOU DO NOT OWN:
 - **Fix critical issues** identified in review comments
 - **CRITICAL: MANDATORY FRESH CI VERIFICATION** - New CI run with evidence required
 - **TECHNICAL RE-PROOF** - Provide new CI URLs and test evidence
-- **ALL tests MUST pass 100%** with verifiable CI proof
+- **ALL tests MUST pass 100%** with verifiable CI proof - **NO EXCEPTIONS - NO PARTIAL PASS RATES**
+- **MANDATORY: ALL regressions are YOUR FAULT** - main branch ALWAYS has 100% passing tests - YOU broke it
+- **ZERO EXCUSE TOLERANCE** - NEVER claim tests were failing on main - FIX EVERY SINGLE REGRESSION
 - **Update PR with new evidence** - Fresh CI URLs and verification screenshots
 - **Repeat verification cycle** until patrick approves with technical verification
 - **Infinite cycles allowed** - keep fixing until technically perfect

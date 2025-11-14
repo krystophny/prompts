@@ -241,7 +241,9 @@ After every execution (single or per TODO item), review ALL changes:
 - [ ] Obsolete/dead code removed
 
 ### Testing & Build
-- [ ] Tests run and pass locally
+- [ ] **MANDATORY: 100% test pass rate - NO EXCEPTIONS - ALL tests MUST pass**
+- [ ] **CRITICAL: ALL regressions are YOUR fault - main branch ALWAYS has 100% passing tests**
+- [ ] **FORBIDDEN: Never assume tests were failing on main - ALWAYS 100% pass on main**
 - [ ] Test duration ≤120s each
 - [ ] Build commands execute successfully
 - [ ] Linter/formatter applied if required (e.g., `fprettify`)
@@ -404,7 +406,7 @@ Step 3/3:
 - Review: module 892 lines ✗ (exceeds 500 soft limit, under 1000 hard limit, acceptable)
 - Review: function copy_particles 127 lines ✗ (exceeds 100 hard limit!)
 - Fix: splits copy_particles into copy_positions (42 lines) and copy_velocities (38 lines)
-- Re-runs tests: pass ✓
+- Re-runs tests: **ALL 100% PASS** ✓ - NO regression tolerance, ALL failures are YOUR responsibility to fix
 - Updates TODO: ✅ Apply SoA pattern (split copy_particles to meet size limit)
 - Commits: "Apply structure-of-arrays pattern, split oversized function (step 3/3)"
 - Pushes

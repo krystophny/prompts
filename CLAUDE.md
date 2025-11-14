@@ -15,6 +15,15 @@
 - **ABSOLUTELY FORBIDDEN**: spamming working directory with process documentation in Markdown files - NEVER create these
 - **MANDATORY**: Boy Scout Principle - leave every file, test, and workflow better than you found it by fixing pre-existing issues you encounter immediately
 
+## 🚨 TEST PASS RATE - ABSOLUTE ZERO TOLERANCE 🚨
+**EVERY test MUST pass - NO EXCEPTIONS - NO EXCUSES - NO WAY OUT**
+- **100% TEST PASS RATE MANDATORY**: ALL tests MUST pass on main branch - ALWAYS - NO EXCEPTIONS
+- **ALL REGRESSIONS ARE YOUR FAULT**: Main branch ALWAYS has 100% passing tests - YOU broke it, YOU fix it
+- **ZERO EXCUSE TOLERANCE**: NEVER claim tests were failing on main - ALL failures are regressions YOU introduced
+- **ABSOLUTELY FORBIDDEN**: Partial pass rates (80%, 90%, 99%) are COMPLETE FAILURE - ONLY 100% is acceptable
+- **NO WAY OUT**: You MUST fix EVERY single test failure - there is NO sugarcoating, NO rationalization, NO bypass
+- **FIX ALL REGRESSIONS ALWAYS**: Continue working until 100% pass rate achieved - NO stopping until ALL tests green
+
 ## Language & Stack
 - Primary: modern Fortran (2018+). Prefer Fortran even for scripting/CLI/web when feasible.
 - Existing projects: stick to the project’s established stack unless explicitly directed otherwise.
@@ -63,6 +72,10 @@
 
 ## Build & Test
 - Use repo-documented build and test scripts; fpm is standard. Keep tests behavioral and fast (≤120 s each).
+- **MANDATORY: 100% TEST PASS RATE - NO EXCEPTIONS - ALL tests MUST pass on main branch ALWAYS**
+- **CRITICAL: ALL test regressions are YOUR FAULT - main branch ALWAYS has 100% passing tests - YOU broke it, YOU fix it**
+- **ZERO EXCUSE TOLERANCE: NEVER claim tests were failing on main - ALL failures are regressions YOU introduced - FIX EVERY SINGLE ONE**
+- **ABSOLUTELY FORBIDDEN: Partial pass rates (80%, 90%, 99%) are COMPLETE FAILURE - ONLY 100% is acceptable - NO WAY OUT**
 - Prefer TDD: Red → Green → Refactor.
 - For CMake builds: `cmake -S . -B build -G Ninja` followed by `cmake --build build -j`.
 - Tests must pass locally before PRs; use latest git packages and pin SHAs only when reproducibility is necessary.
@@ -96,6 +109,8 @@
 6. **CRITICAL**: Validated against project CLAUDE.md/AGENTS.md STRICTLY?
 7. **REQUIRED**: Validated against user CLAUDE.md/AGENTS.md STRICTLY?
 8. **MANDATORY**: ZERO tolerance policy enforced - ALL violations corrected?
+9. **CRITICAL: 100% TEST PASS RATE ACHIEVED** - ALL tests passing - NO exceptions - NO partial pass rates - ALL regressions fixed?
+10. **ZERO EXCUSE ENFORCEMENT** - NEVER claimed tests were failing on main - ALL failures treated as YOUR regressions - EVERY test fixed?
 
 ## GitHub CLI Examples
 - Issues
