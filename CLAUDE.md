@@ -17,12 +17,21 @@
 
 ## 🚨 TEST PASS RATE - ABSOLUTE ZERO TOLERANCE 🚨
 **EVERY test MUST pass - NO EXCEPTIONS - NO EXCUSES - NO WAY OUT**
-- **100% TEST PASS RATE MANDATORY**: ALL tests MUST pass on main branch - ALWAYS - NO EXCEPTIONS
-- **ALL REGRESSIONS ARE YOUR FAULT**: Main branch ALWAYS has 100% passing tests - YOU broke it, YOU fix it
-- **ZERO EXCUSE TOLERANCE**: NEVER claim tests were failing on main - ALL failures are regressions YOU introduced
-- **ABSOLUTELY FORBIDDEN**: Partial pass rates (80%, 90%, 99%) are COMPLETE FAILURE - ONLY 100% is acceptable
-- **NO WAY OUT**: You MUST fix EVERY single test failure - there is NO sugarcoating, NO rationalization, NO bypass
+
+### MAIN BRANCH - SACRED GROUND
+- **ASSUME 100% PASS RATE**: Main branch ALWAYS has 100% passing tests - this is GIVEN/ASSUMED
+- **NEVER claim tests were failing on main**: ALL failures you see are regressions YOU introduced
+
+### FEATURE BRANCHES - ZERO REGRESSION TOLERANCE
+- **MAINTAIN 100% OF EXISTING TESTS**: MUST NOT introduce ANY regressions - existing tests stay green
+- **WORK UNTIL NEW TESTS PASS 100%**: Keep iterating until ALL new tests pass - NO EXCEPTIONS
+- **ABSOLUTELY FORBIDDEN**: Partial pass rates (80%, 90%, 99%) are COMPLETE FAILURE - ONLY 100% acceptable
+- **NO WAY OUT**: You MUST fix EVERY single test failure - NO sugarcoating, NO rationalization, NO bypass
 - **FIX ALL REGRESSIONS ALWAYS**: Continue working until 100% pass rate achieved - NO stopping until ALL tests green
+
+### ENFORCEMENT
+- **ALL REGRESSIONS ARE YOUR FAULT**: YOU broke it, YOU fix it - NO EXCUSES
+- **ZERO EXCUSE TOLERANCE**: Feature branches MUST maintain 100% pass rate of existing tests throughout development
 
 ## Language & Stack
 - Primary: modern Fortran (2018+). Prefer Fortran even for scripting/CLI/web when feasible.
@@ -72,13 +81,15 @@
 
 ## Build & Test
 - Use repo-documented build and test scripts; fpm is standard. Keep tests behavioral and fast (≤120 s each).
-- **MANDATORY: 100% TEST PASS RATE - NO EXCEPTIONS - ALL tests MUST pass on main branch ALWAYS**
-- **CRITICAL: ALL test regressions are YOUR FAULT - main branch ALWAYS has 100% passing tests - YOU broke it, YOU fix it**
-- **ZERO EXCUSE TOLERANCE: NEVER claim tests were failing on main - ALL failures are regressions YOU introduced - FIX EVERY SINGLE ONE**
-- **ABSOLUTELY FORBIDDEN: Partial pass rates (80%, 90%, 99%) are COMPLETE FAILURE - ONLY 100% is acceptable - NO WAY OUT**
+- **MANDATORY: 100% TEST PASS RATE ON MAIN** - main branch ALWAYS has 100% passing tests - ASSUMED AS GIVEN
+- **FEATURE BRANCHES: ZERO REGRESSION TOLERANCE** - MUST maintain 100% pass rate of existing tests throughout development
+- **WORK UNTIL NEW TESTS PASS 100%** - keep iterating in feature branch until ALL new tests pass - NO EXCEPTIONS
+- **CRITICAL: ALL test regressions are YOUR FAULT** - YOU broke existing tests, YOU fix them - NO EXCUSES
+- **ZERO EXCUSE TOLERANCE: NEVER claim tests were failing before** - ALL failures are regressions YOU introduced
+- **ABSOLUTELY FORBIDDEN: Partial pass rates (80%, 90%, 99%)** - COMPLETE FAILURE - ONLY 100% acceptable - NO WAY OUT
 - Prefer TDD: Red → Green → Refactor.
 - For CMake builds: `cmake -S . -B build -G Ninja` followed by `cmake --build build -j`.
-- Tests must pass locally before PRs; use latest git packages and pin SHAs only when reproducibility is necessary.
+- Tests must pass 100% locally before PRs; use latest git packages and pin SHAs only when reproducibility is necessary.
 
 ## Licensing & Reuse
 - Research-first. Copy ideas, not lines. Verify licenses; prefer MIT/BSD/Apache-2.0.
@@ -109,8 +120,9 @@
 6. **CRITICAL**: Validated against project CLAUDE.md/AGENTS.md STRICTLY?
 7. **REQUIRED**: Validated against user CLAUDE.md/AGENTS.md STRICTLY?
 8. **MANDATORY**: ZERO tolerance policy enforced - ALL violations corrected?
-9. **CRITICAL: 100% TEST PASS RATE ACHIEVED** - ALL tests passing - NO exceptions - NO partial pass rates - ALL regressions fixed?
-10. **ZERO EXCUSE ENFORCEMENT** - NEVER claimed tests were failing on main - ALL failures treated as YOUR regressions - EVERY test fixed?
+9. **CRITICAL: 100% TEST PASS RATE ACHIEVED** - ALL tests passing (existing AND new) - NO exceptions - NO partial pass rates - ALL regressions fixed?
+10. **ZERO EXCUSE ENFORCEMENT** - NEVER claimed tests were failing before - maintained 100% of existing tests - worked until new tests pass 100%?
+11. **ZERO REGRESSION TOLERANCE** - MUST NOT introduce ANY regressions in feature branches - existing tests MUST stay green throughout?
 
 ## GitHub CLI Examples
 - Issues
