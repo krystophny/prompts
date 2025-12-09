@@ -360,7 +360,7 @@ Links
 Notes
 - References use the merge commit to ensure stable, permanent links to the exact content merged.
 MD
-  sed -i \
+  sed -i '' \
     -e "s|__PR_URL__|${pr_url//|/\|}|g" \
     -e "s|__SHA_SHORT__|${sha_short//|/\|}|g" \
     -e "s|__MERGE_COMMIT_URL__|${merge_commit_url//|/\|}|g" \
