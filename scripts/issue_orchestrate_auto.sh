@@ -62,7 +62,8 @@ merge_method="--squash"
 repo_override=""
 auto_merge=false
 single_issue=""
-use_claude=${CLAUDE_CODE:-0}  # Can be set via env or --claude flag
+worker_tool="${WORKER_TOOL:-codex}"
+reviewer_tool="${REVIEWER_TOOL:-claude}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -92,7 +93,22 @@ while [[ $# -gt 0 ]]; do
       ;;
     --repo) repo_override="$2"; shift 2;;
     --debug) debug=1; shift 1;;
-    --claude) use_claude=1; shift 1;;
+    --worker)
+      if [[ ! "$2" =~ ^(claude|codex|gemini)$ ]]; then
+        echo "Invalid --worker value: $2 (must be claude, codex, or gemini)" >&2
+        exit 2
+      fi
+      worker_tool="$2"
+      shift 2
+      ;;
+    --reviewer)
+      if [[ ! "$2" =~ ^(claude|codex|gemini)$ ]]; then
+        echo "Invalid --reviewer value: $2 (must be claude, codex, or gemini)" >&2
+        exit 2
+      fi
+      reviewer_tool="$2"
+      shift 2
+      ;;
     --issue) single_issue="$2"; shift 2;;
     --) shift; break;;
     -*) echo "Unknown arg: $1" >&2; exit 2;;
@@ -124,13 +140,20 @@ fi
 
 need() { command -v "$1" >/dev/null 2>&1 || { echo "Missing dependency: $1" >&2; exit 1; }; }
 need gh
-if [[ $use_claude -eq 1 ]]; then
-  need claude
-  echo "[orchestrate] Using Claude Code for AI operations" >&2
-else
-  need codex
-  echo "[orchestrate] Using Codex for AI operations" >&2
-fi
+
+# Check tools are available
+for tool in "$worker_tool" "$reviewer_tool"; do
+  case "$tool" in
+    claude) need claude ;;
+    codex) need codex ;;
+    gemini) need gemini ;;
+  esac
+done
+
+export WORKER_TOOL="$worker_tool"
+export REVIEWER_TOOL="$reviewer_tool"
+
+echo "[orchestrate] Using $worker_tool for work, $reviewer_tool for review" >&2
 
 # Ensure Ctrl+C (SIGINT) reaches child processes run under `timeout`.
 # Use `--foreground` when available so users can abort cleanly.
