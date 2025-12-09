@@ -49,6 +49,7 @@ cd "$repo_root"
 
 # Debug flag (can be toggled via --debug or DEBUG=1)
 debug=${DEBUG:-0}
+export debug
 if [[ $debug -eq 1 ]]; then
   set -x
 fi
