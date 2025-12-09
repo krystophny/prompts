@@ -25,8 +25,7 @@ run_tool_with_timeout() {
     claude)
       if [[ "${debug:-0}" -eq 1 ]]; then
         "${TIMEOUT[@]}" "$dur" claude --print --verbose --output-format stream-json --dangerously-skip-permissions ${model:+--model "$model"} "$prompt" \
-          | jq -r --unbuffered "$_JQ_STREAM" \
-          | tee /dev/stderr
+          | jq -r --unbuffered "$_JQ_STREAM" >&2
       else
         "${TIMEOUT[@]}" "$dur" claude --print --dangerously-skip-permissions ${model:+--model "$model"} "$prompt"
       fi
