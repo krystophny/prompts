@@ -15,13 +15,10 @@ if [[ -z "${TIMEOUT[*]:-}" ]]; then
 fi
 
 # Build command array for a tool invocation (does not execute)
-# Args: tool, model, prompt
-# Returns: prints the command that should be executed
+# Args: tool, model, debug_mode
+# Returns: prints null-separated command arguments
 _build_tool_cmd() {
-  local tool="$1"
-  local model="$2"
-  local debug_mode="${debug:-0}"
-  local rroot="${repo_root:-.}"
+  local tool="$1" model="$2" debug_mode="$3" rroot="${repo_root:-.}"
 
   case "$tool" in
     claude)
@@ -77,7 +74,7 @@ run_tool_with_timeout() {
 
   while IFS= read -r -d '' arg; do
     cmd+=("$arg")
-  done < <(_build_tool_cmd "$tool" "$model")
+  done < <(_build_tool_cmd "$tool" "$model" "$debug_mode")
 
   if [[ "$tool" == "codex" ]]; then
     "${TIMEOUT[@]}" "$timeout_duration" "${cmd[@]}" "$prompt" < /dev/null
@@ -97,7 +94,7 @@ run_tool_capture() {
 
   while IFS= read -r -d '' arg; do
     cmd+=("$arg")
-  done < <(_build_tool_cmd "$tool" "$model")
+  done < <(_build_tool_cmd "$tool" "$model" "$debug_mode")
 
   if [[ "$tool" == "codex" ]]; then
     "${cmd[@]}" "$prompt" < /dev/null
