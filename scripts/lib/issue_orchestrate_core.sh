@@ -15,7 +15,7 @@ if [[ -z "${TIMEOUT[*]:-}" ]]; then
 fi
 
 # jq filter for Claude stream-json: extracts text, thinking, tool use, results
-_JQ_STREAM='if .type == "assistant" then .message.content[]? | if .type == "thinking" then "[thinking] " + .thinking elif .type == "text" then .text elif .type == "tool_use" then "[tool:" + .name + "]" else empty end elif .type == "user" then .message.content[]? | if .type == "tool_result" then (if .is_error then "[error] " else "[ok] " end) + ((.content // "")[:200]) else empty end else empty end'
+_JQ_STREAM='if .type == "assistant" then .message.content[]? | if .type == "thinking" then "[thinking] " + .thinking elif .type == "text" then .text elif .type == "tool_use" then "[tool:" + .name + "] " + (.input | tostring)[:300] else empty end elif .type == "user" then .message.content[]? | if .type == "tool_result" then (if .is_error then "[error] " else "[ok] " end) + ((.content // "")[:200]) else empty end else empty end'
 
 # Run tool with timeout
 # Args: timeout_duration, tool, model, prompt
