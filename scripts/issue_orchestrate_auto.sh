@@ -64,6 +64,8 @@ auto_merge=false
 single_issue=""
 worker_tool="${WORKER_TOOL:-codex}"
 reviewer_tool="${REVIEWER_TOOL:-claude}"
+worker_model="${WORKER_MODEL:-}"
+reviewer_model="${REVIEWER_MODEL:-}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -109,6 +111,14 @@ while [[ $# -gt 0 ]]; do
       reviewer_tool="$2"
       shift 2
       ;;
+    --worker-model)
+      worker_model="$2"
+      shift 2
+      ;;
+    --reviewer-model)
+      reviewer_model="$2"
+      shift 2
+      ;;
     --issue) single_issue="$2"; shift 2;;
     --) shift; break;;
     -*) echo "Unknown arg: $1" >&2; exit 2;;
@@ -152,8 +162,10 @@ done
 
 export WORKER_TOOL="$worker_tool"
 export REVIEWER_TOOL="$reviewer_tool"
+export WORKER_MODEL="$worker_model"
+export REVIEWER_MODEL="$reviewer_model"
 
-echo "[orchestrate] Using $worker_tool for work, $reviewer_tool for review" >&2
+echo "[orchestrate] Using $worker_tool${worker_model:+ ($worker_model)} for work, $reviewer_tool${reviewer_model:+ ($reviewer_model)} for review" >&2
 
 # Ensure Ctrl+C (SIGINT) reaches child processes run under `timeout`.
 # Use `--foreground` when available so users can abort cleanly.

@@ -6,28 +6,31 @@ lib_self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 : "${prompts_dir:=${lib_self_dir%/lib}/prompts}"
 
 # Universal tool executor with debug support
+# Args: tool, model, prompt
+# Models: claude=(haiku|sonnet|opus) codex=(gpt5|gpt5-codex|gpt5-codex-max|gpt5-codex-mini) gemini=(gemini-2.5-flash|gemini-2.5-pro)
 run_tool() {
   local tool="$1"
-  local prompt="$2"
+  local model="$2"
+  local prompt="$3"
   local debug_mode="${debug:-0}"
 
   case "$tool" in
     claude)
-      if [[ $debug_mode -eq 1 ]]; then
-        claude --verbose --debug --dangerously-skip-permissions "$prompt"
-      else
-        claude --print --dangerously-skip-permissions "$prompt"
-      fi
+      local cmd="claude --print --dangerously-skip-permissions"
+      [[ -n "$model" ]] && cmd="$cmd --model $model"
+      [[ $debug_mode -eq 1 ]] && cmd="claude --verbose --debug --dangerously-skip-permissions" && [[ -n "$model" ]] && cmd="$cmd --model $model"
+      eval "$cmd" '"$prompt"'
       ;;
     codex)
-      codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+      local cmd="codex exec --dangerously-bypass-approvals-and-sandbox --cd \"$repo_root\""
+      [[ -n "$model" ]] && cmd="$cmd --model $model"
+      eval "$cmd -- \"\$prompt\"" < /dev/null
       ;;
     gemini)
-      if [[ $debug_mode -eq 1 ]]; then
-        gemini --debug --yolo "$prompt"
-      else
-        gemini --yolo "$prompt"
-      fi
+      local cmd="gemini --yolo"
+      [[ -n "$model" ]] && cmd="$cmd --model $model"
+      [[ $debug_mode -eq 1 ]] && cmd="$cmd --debug"
+      eval "$cmd" '"$prompt"'
       ;;
     *)
       echo "[run_tool] Unknown tool: $tool" >&2
@@ -37,27 +40,38 @@ run_tool() {
 }
 
 # Universal tool executor with output capture (for parsing)
+# Args: tool, model, prompt
 run_tool_capture() {
   local tool="$1"
-  local prompt="$2"
+  local model="$2"
+  local prompt="$3"
   local debug_mode="${debug:-0}"
 
   case "$tool" in
     claude)
+      local cmd="claude --print --dangerously-skip-permissions"
+      [[ -n "$model" ]] && cmd="$cmd --model $model"
       if [[ $debug_mode -eq 1 ]]; then
-        claude --verbose --debug --dangerously-skip-permissions "$prompt" 2>&1
+        cmd="claude --verbose --debug --dangerously-skip-permissions"
+        [[ -n "$model" ]] && cmd="$cmd --model $model"
+        eval "$cmd" '"$prompt"' 2>&1
       else
-        claude --print --dangerously-skip-permissions "$prompt"
+        eval "$cmd" '"$prompt"'
       fi
       ;;
     codex)
-      codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
+      local cmd="codex exec --dangerously-bypass-approvals-and-sandbox --cd \"$repo_root\""
+      [[ -n "$model" ]] && cmd="$cmd --model $model"
+      eval "$cmd -- \"\$prompt\"" < /dev/null
       ;;
     gemini)
+      local cmd="gemini --yolo"
+      [[ -n "$model" ]] && cmd="$cmd --model $model"
       if [[ $debug_mode -eq 1 ]]; then
-        gemini --debug --yolo "$prompt" 2>&1
+        cmd="$cmd --debug"
+        eval "$cmd" '"$prompt"' 2>&1
       else
-        gemini --yolo "$prompt"
+        eval "$cmd" '"$prompt"'
       fi
       ;;
     *)
@@ -140,7 +154,7 @@ rebase_and_resolve_conflicts() {
     prompt=$(load_prompt rebase_conflicts.prompt)
     CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" \
       "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" \
-      run_tool "$WORKER_TOOL" "$prompt"
+      run_tool "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
     if rebase_in_progress; then
       if git rebase --continue; then :; fi
     fi
@@ -204,7 +218,7 @@ codex_address_review_feedback() {
   prompt=$(load_prompt review_feedback.prompt)
   PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" BRANCH="$branch" \
     "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" \
-    run_tool "$WORKER_TOOL" "$prompt"
+    run_tool "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
 
   if ! git diff --quiet || ! git diff --cached --quiet; then
     while IFS= read -r -d '' rec; do
@@ -502,7 +516,7 @@ codex_implement_current_branch() {
   prompt="${prompt//__INUM__/$inum}"
   ISSUE_NUM="${inum:-}" BRANCH="$cur" \
     "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT}" \
-    run_tool "$WORKER_TOOL" "$prompt"
+    run_tool "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
 }
 
 codex_implement_issue_single_prompt() {
@@ -510,7 +524,7 @@ codex_implement_issue_single_prompt() {
   prompt=$(load_prompt implement_issue_single.prompt)
   LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" \
     "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT}" \
-    run_tool "$WORKER_TOOL" "$prompt"
+    run_tool "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
 }
 
 codex_unified_review() {
@@ -525,7 +539,7 @@ codex_unified_review() {
 
   local output status
   set +e
-  output=$(run_tool_capture "$REVIEWER_TOOL" "$(cat "$tmpfile")" < /dev/null)
+  output=$(run_tool_capture "$REVIEWER_TOOL" "$REVIEWER_MODEL" "$(cat "$tmpfile")" < /dev/null)
   status=$?
   set -e
   rm -f "$tmpfile"
@@ -622,7 +636,7 @@ codex_ci_fix_loop() {
     prompt=$(load_prompt ci_fix.prompt)
     PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" \
       "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT}" \
-      run_tool "$WORKER_TOOL" "$prompt"
+      run_tool "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
 
     if ! git diff --quiet || ! git diff --cached --quiet; then
       while IFS= read -r -d '' rec; do
