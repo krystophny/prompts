@@ -14,98 +14,54 @@ if [[ -z "${TIMEOUT[*]:-}" ]]; then
   fi
 fi
 
-# Build command array for a tool invocation (does not execute)
-# Args: tool, model, debug_mode
-# Returns: prints null-separated command arguments
-_build_tool_cmd() {
-  local tool="$1" model="$2" debug_mode="$3" rroot="${repo_root:-.}"
+# jq filter for Claude stream-json: extracts text, thinking, tool use, results
+_JQ_STREAM='if .type == "assistant" then .message.content[]? | if .type == "thinking" then "[thinking] " + .thinking elif .type == "text" then .text elif .type == "tool_use" then "[tool:" + .name + "]" else empty end elif .type == "user" then .message.content[]? | if .type == "tool_result" then (if .is_error then "[error] " else "[ok] " end) + ((.content // "")[:200]) else empty end else empty end'
 
+# Run tool with timeout
+# Args: timeout_duration, tool, model, prompt
+run_tool_with_timeout() {
+  local dur="$1" tool="$2" model="$3" prompt="$4"
   case "$tool" in
     claude)
-      printf '%s\0' claude --print --dangerously-skip-permissions
-      if [[ $debug_mode -eq 1 ]]; then
-        printf '%s\0' --verbose --output-format stream-json
+      if [[ "${debug:-0}" -eq 1 ]]; then
+        "${TIMEOUT[@]}" "$dur" claude --print --verbose --output-format stream-json --dangerously-skip-permissions ${model:+--model "$model"} "$prompt" \
+          | jq -r --unbuffered "$_JQ_STREAM"
+      else
+        "${TIMEOUT[@]}" "$dur" claude --print --dangerously-skip-permissions ${model:+--model "$model"} "$prompt"
       fi
-      [[ -n "$model" ]] && printf '%s\0' --model "$model"
       ;;
     codex)
-      printf '%s\0' codex exec --dangerously-bypass-approvals-and-sandbox --cd "$rroot"
-      [[ -n "$model" ]] && printf '%s\0' --model "$model"
-      printf '%s\0' --
+      "${TIMEOUT[@]}" "$dur" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" ${model:+--model "$model"} -- "$prompt" < /dev/null
       ;;
     gemini)
-      printf '%s\0' gemini --yolo
-      [[ -n "$model" ]] && printf '%s\0' --model "$model"
-      [[ $debug_mode -eq 1 ]] && printf '%s\0' --debug
+      "${TIMEOUT[@]}" "$dur" gemini --yolo ${model:+--model "$model"} ${debug:+--debug} "$prompt"
       ;;
-    *)
-      echo "[_build_tool_cmd] Unknown tool: $tool" >&2
-      return 1
-      ;;
+    *) echo "[run_tool] Unknown: $tool" >&2; return 1 ;;
   esac
 }
 
-# jq filter to extract useful content from Claude stream-json
-# Shows: text, thinking, tool_use (with agent info), tool_result
-_claude_stream_filter='
-  if .type == "assistant" then
-    .message.content[]? |
-    if .type == "thinking" then "[thinking] " + .thinking
-    elif .type == "text" then .text
-    elif .type == "tool_use" then
-      if .name == "Task" then "[agent:" + (.input.subagent_type // "unknown") + "] " + (.input.description // .input.prompt[:80] // "")
-      else "[tool:" + .name + "] " + ((.input | tostring) | .[0:200]) end
-    else empty end
-  elif .type == "user" then
-    .message.content[]? |
-    if .type == "tool_result" then
-      if .is_error then "[tool_error] " + ((.content // "") | tostring | .[0:300])
-      else "[tool_ok] " + ((.content // "") | tostring | .[0:300]) end
-    else empty end
-  else empty end
-'
-
-# Universal tool executor with timeout
-# Args: timeout_duration, tool, model, prompt
-# Models: claude=(haiku|sonnet|opus) codex=(gpt5|gpt5-codex|gpt5-codex-max|gpt5-codex-mini) gemini=(gemini-2.5-flash|gemini-2.5-pro)
-run_tool_with_timeout() {
-  local timeout_duration="$1" tool="$2" model="$3" prompt="$4" cmd=()
-  local debug_mode="${debug:-0}"
-
-  while IFS= read -r -d '' arg; do
-    cmd+=("$arg")
-  done < <(_build_tool_cmd "$tool" "$model" "$debug_mode")
-
-  if [[ "$tool" == "codex" ]]; then
-    "${TIMEOUT[@]}" "$timeout_duration" "${cmd[@]}" "$prompt" < /dev/null
-  elif [[ "$tool" == "claude" && $debug_mode -eq 1 ]]; then
-    # Stream JSON and parse with jq for live output (text, thinking, tools)
-    "${TIMEOUT[@]}" "$timeout_duration" "${cmd[@]}" "$prompt" \
-      | jq -r --unbuffered "$_claude_stream_filter" 2>/dev/null
-  else
-    "${TIMEOUT[@]}" "$timeout_duration" "${cmd[@]}" "$prompt"
-  fi
-}
-
-# Universal tool executor with output capture (for parsing)
+# Run tool and capture output (for parsing)
 # Args: tool, model, prompt
 run_tool_capture() {
-  local tool="$1" model="$2" prompt="$3" debug_mode="${debug:-0}" cmd=()
-
-  while IFS= read -r -d '' arg; do
-    cmd+=("$arg")
-  done < <(_build_tool_cmd "$tool" "$model" "$debug_mode")
-
-  if [[ "$tool" == "codex" ]]; then
-    "${cmd[@]}" "$prompt" < /dev/null
-  elif [[ "$tool" == "claude" && $debug_mode -eq 1 ]]; then
-    # Stream JSON, show live output via tee, and capture text for return
-    "${cmd[@]}" "$prompt" \
-      | tee >(jq -r --unbuffered "$_claude_stream_filter" 2>/dev/null >&2) \
-      | jq -r 'select(.type == "assistant") | .message.content[]? | select(.type == "text") | .text // empty' 2>/dev/null
-  else
-    "${cmd[@]}" "$prompt"
-  fi
+  local tool="$1" model="$2" prompt="$3"
+  case "$tool" in
+    claude)
+      if [[ "${debug:-0}" -eq 1 ]]; then
+        claude --print --verbose --output-format stream-json --dangerously-skip-permissions ${model:+--model "$model"} "$prompt" \
+          | tee >(jq -r --unbuffered "$_JQ_STREAM" >&2) \
+          | jq -r 'select(.type == "assistant") | .message.content[]? | select(.type == "text") | .text // empty'
+      else
+        claude --print --dangerously-skip-permissions ${model:+--model "$model"} "$prompt"
+      fi
+      ;;
+    codex)
+      codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" ${model:+--model "$model"} -- "$prompt" < /dev/null
+      ;;
+    gemini)
+      gemini --yolo ${model:+--model "$model"} ${debug:+--debug} "$prompt"
+      ;;
+    *) echo "[run_tool_capture] Unknown: $tool" >&2; return 1 ;;
+  esac
 }
 
 pr_has_open_feedback() {
