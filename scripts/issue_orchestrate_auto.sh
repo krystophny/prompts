@@ -49,7 +49,6 @@ cd "$repo_root"
 
 # Debug flag (can be toggled via --debug or DEBUG=1)
 debug=${DEBUG:-0}
-export debug
 if [[ $debug -eq 1 ]]; then
   set -x
 fi
@@ -139,6 +138,7 @@ if [[ -n "$single_issue" && "$auto_merge" == true ]]; then
 fi
 
 # Re-evaluate debug after parsing flags
+export debug
 if [[ $debug -eq 1 ]]; then
   set -x
 fi
