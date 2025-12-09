@@ -5,80 +5,110 @@ lib_self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 : "${repo_root:=$(git -C "$lib_self_dir/.." rev-parse --show-toplevel 2>/dev/null || cd "$lib_self_dir/.." && pwd)}"
 : "${prompts_dir:=${lib_self_dir%/lib}/prompts}"
 
-# Universal tool executor with debug support
+# Default TIMEOUT if not set by parent script
+if [[ -z "${TIMEOUT[*]:-}" ]]; then
+  if timeout --help 2>&1 | grep -q -- '--foreground'; then
+    TIMEOUT=(timeout --foreground)
+  else
+    TIMEOUT=(timeout)
+  fi
+fi
+
+# Build command array for a tool invocation (does not execute)
 # Args: tool, model, prompt
-# Models: claude=(haiku|sonnet|opus) codex=(gpt5|gpt5-codex|gpt5-codex-max|gpt5-codex-mini) gemini=(gemini-2.5-flash|gemini-2.5-pro)
-run_tool() {
+# Returns: prints the command that should be executed
+_build_tool_cmd() {
   local tool="$1"
   local model="$2"
-  local prompt="$3"
   local debug_mode="${debug:-0}"
+  local rroot="${repo_root:-.}"
 
   case "$tool" in
     claude)
-      local cmd="claude --print --dangerously-skip-permissions"
-      [[ -n "$model" ]] && cmd="$cmd --model $model"
-      [[ $debug_mode -eq 1 ]] && cmd="claude --verbose --debug --dangerously-skip-permissions" && [[ -n "$model" ]] && cmd="$cmd --model $model"
-      eval "$cmd" '"$prompt"'
+      printf '%s\0' claude --print --dangerously-skip-permissions
+      if [[ $debug_mode -eq 1 ]]; then
+        printf '%s\0' --verbose --output-format stream-json
+      fi
+      [[ -n "$model" ]] && printf '%s\0' --model "$model"
       ;;
     codex)
-      local cmd="codex exec --dangerously-bypass-approvals-and-sandbox --cd \"$repo_root\""
-      [[ -n "$model" ]] && cmd="$cmd --model $model"
-      eval "$cmd -- \"\$prompt\"" < /dev/null
+      printf '%s\0' codex exec --dangerously-bypass-approvals-and-sandbox --cd "$rroot"
+      [[ -n "$model" ]] && printf '%s\0' --model "$model"
+      printf '%s\0' --
       ;;
     gemini)
-      local cmd="gemini --yolo"
-      [[ -n "$model" ]] && cmd="$cmd --model $model"
-      [[ $debug_mode -eq 1 ]] && cmd="$cmd --debug"
-      eval "$cmd" '"$prompt"'
+      printf '%s\0' gemini --yolo
+      [[ -n "$model" ]] && printf '%s\0' --model "$model"
+      [[ $debug_mode -eq 1 ]] && printf '%s\0' --debug
       ;;
     *)
-      echo "[run_tool] Unknown tool: $tool" >&2
+      echo "[_build_tool_cmd] Unknown tool: $tool" >&2
       return 1
       ;;
   esac
 }
 
+# jq filter to extract useful content from Claude stream-json
+# Shows: text, thinking, tool_use (with agent info), tool_result
+_claude_stream_filter='
+  if .type == "assistant" then
+    .message.content[]? |
+    if .type == "thinking" then "[thinking] " + .thinking
+    elif .type == "text" then .text
+    elif .type == "tool_use" then
+      if .name == "Task" then "[agent:" + (.input.subagent_type // "unknown") + "] " + (.input.description // .input.prompt[:80] // "")
+      else "[tool:" + .name + "] " + ((.input | tostring) | .[0:200]) end
+    else empty end
+  elif .type == "user" then
+    .message.content[]? |
+    if .type == "tool_result" then
+      if .is_error then "[tool_error] " + ((.content // "") | tostring | .[0:300])
+      else "[tool_ok] " + ((.content // "") | tostring | .[0:300]) end
+    else empty end
+  else empty end
+'
+
+# Universal tool executor with timeout
+# Args: timeout_duration, tool, model, prompt
+# Models: claude=(haiku|sonnet|opus) codex=(gpt5|gpt5-codex|gpt5-codex-max|gpt5-codex-mini) gemini=(gemini-2.5-flash|gemini-2.5-pro)
+run_tool_with_timeout() {
+  local timeout_duration="$1" tool="$2" model="$3" prompt="$4" cmd=()
+  local debug_mode="${debug:-0}"
+
+  while IFS= read -r -d '' arg; do
+    cmd+=("$arg")
+  done < <(_build_tool_cmd "$tool" "$model")
+
+  if [[ "$tool" == "codex" ]]; then
+    "${TIMEOUT[@]}" "$timeout_duration" "${cmd[@]}" "$prompt" < /dev/null
+  elif [[ "$tool" == "claude" && $debug_mode -eq 1 ]]; then
+    # Stream JSON and parse with jq for live output (text, thinking, tools)
+    "${TIMEOUT[@]}" "$timeout_duration" "${cmd[@]}" "$prompt" \
+      | jq -r --unbuffered "$_claude_stream_filter" 2>/dev/null
+  else
+    "${TIMEOUT[@]}" "$timeout_duration" "${cmd[@]}" "$prompt"
+  fi
+}
+
 # Universal tool executor with output capture (for parsing)
 # Args: tool, model, prompt
 run_tool_capture() {
-  local tool="$1"
-  local model="$2"
-  local prompt="$3"
-  local debug_mode="${debug:-0}"
+  local tool="$1" model="$2" prompt="$3" debug_mode="${debug:-0}" cmd=()
 
-  case "$tool" in
-    claude)
-      local cmd="claude --print --dangerously-skip-permissions"
-      [[ -n "$model" ]] && cmd="$cmd --model $model"
-      if [[ $debug_mode -eq 1 ]]; then
-        cmd="claude --verbose --debug --dangerously-skip-permissions"
-        [[ -n "$model" ]] && cmd="$cmd --model $model"
-        eval "$cmd" '"$prompt"' 2>&1
-      else
-        eval "$cmd" '"$prompt"'
-      fi
-      ;;
-    codex)
-      local cmd="codex exec --dangerously-bypass-approvals-and-sandbox --cd \"$repo_root\""
-      [[ -n "$model" ]] && cmd="$cmd --model $model"
-      eval "$cmd -- \"\$prompt\"" < /dev/null
-      ;;
-    gemini)
-      local cmd="gemini --yolo"
-      [[ -n "$model" ]] && cmd="$cmd --model $model"
-      if [[ $debug_mode -eq 1 ]]; then
-        cmd="$cmd --debug"
-        eval "$cmd" '"$prompt"' 2>&1
-      else
-        eval "$cmd" '"$prompt"'
-      fi
-      ;;
-    *)
-      echo "[run_tool_capture] Unknown tool: $tool" >&2
-      return 1
-      ;;
-  esac
+  while IFS= read -r -d '' arg; do
+    cmd+=("$arg")
+  done < <(_build_tool_cmd "$tool" "$model")
+
+  if [[ "$tool" == "codex" ]]; then
+    "${cmd[@]}" "$prompt" < /dev/null
+  elif [[ "$tool" == "claude" && $debug_mode -eq 1 ]]; then
+    # Stream JSON, show live output via tee, and capture text for return
+    "${cmd[@]}" "$prompt" \
+      | tee >(jq -r --unbuffered "$_claude_stream_filter" 2>/dev/null >&2) \
+      | jq -r 'select(.type == "assistant") | .message.content[]? | select(.type == "text") | .text // empty' 2>/dev/null
+  else
+    "${cmd[@]}" "$prompt"
+  fi
 }
 
 pr_has_open_feedback() {
@@ -153,8 +183,7 @@ rebase_and_resolve_conflicts() {
     conflicted=$(git diff --name-only --diff-filter=U || true)
     prompt=$(load_prompt rebase_conflicts.prompt)
     CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" \
-      "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" \
-      run_tool "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
+      run_tool_with_timeout "${CODEX_REBASE_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
     if rebase_in_progress; then
       if git rebase --continue; then :; fi
     fi
@@ -217,8 +246,7 @@ codex_address_review_feedback() {
   local prompt
   prompt=$(load_prompt review_feedback.prompt)
   PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" BRANCH="$branch" \
-    "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" \
-    run_tool "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
+    run_tool_with_timeout "${CODEX_PR_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
 
   if ! git diff --quiet || ! git diff --cached --quiet; then
     while IFS= read -r -d '' rec; do
@@ -515,16 +543,14 @@ codex_implement_current_branch() {
   prompt="${template//__CUR__/$cur}"
   prompt="${prompt//__INUM__/$inum}"
   ISSUE_NUM="${inum:-}" BRANCH="$cur" \
-    "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT}" \
-    run_tool "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
+    run_tool_with_timeout "${CODEX_FIX_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
 }
 
 codex_implement_issue_single_prompt() {
   local prompt
   prompt=$(load_prompt implement_issue_single.prompt)
   LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" \
-    "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT}" \
-    run_tool "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
+    run_tool_with_timeout "${CODEX_BOOTSTRAP_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
 }
 
 codex_unified_review() {
@@ -635,8 +661,7 @@ codex_ci_fix_loop() {
     local prompt
     prompt=$(load_prompt ci_fix.prompt)
     PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" \
-      "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT}" \
-      run_tool "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
+      run_tool_with_timeout "${CODEX_CI_FIX_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
 
     if ! git diff --quiet || ! git diff --cached --quiet; then
       while IFS= read -r -d '' rec; do
