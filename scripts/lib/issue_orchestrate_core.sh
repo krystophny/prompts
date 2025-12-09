@@ -5,6 +5,34 @@ lib_self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 : "${repo_root:=$(git -C "$lib_self_dir/.." rev-parse --show-toplevel 2>/dev/null || cd "$lib_self_dir/.." && pwd)}"
 : "${prompts_dir:=${lib_self_dir%/lib}/prompts}"
 
+# Helper function to run Claude with optional debug output
+run_claude() {
+  local prompt="$1"
+  local debug_mode="${debug:-0}"
+
+  if [[ $debug_mode -eq 1 ]]; then
+    # Debug mode: show human-readable streaming output
+    claude --verbose --debug --dangerously-skip-permissions "$prompt"
+  else
+    # Production mode: quiet execution
+    claude --print --dangerously-skip-permissions "$prompt"
+  fi
+}
+
+# Helper function to run Claude and capture output (for parsing)
+run_claude_capture() {
+  local prompt="$1"
+  local debug_mode="${debug:-0}"
+
+  if [[ $debug_mode -eq 1 ]]; then
+    # Debug mode: show streaming but still capture
+    claude --verbose --debug --dangerously-skip-permissions "$prompt" 2>&1
+  else
+    # Production mode: silent capture
+    claude --print --dangerously-skip-permissions "$prompt"
+  fi
+}
+
 pr_has_open_feedback() {
   local pr_num="$1" json unresolved_threads pending_reviews
   json=$(gh pr view "$pr_num" --json reviewThreads,reviews 2>/dev/null || echo '{}')
@@ -77,7 +105,7 @@ rebase_and_resolve_conflicts() {
     conflicted=$(git diff --name-only --diff-filter=U || true)
     prompt=$(load_prompt rebase_conflicts.prompt)
     if [[ $use_claude -eq 1 ]]; then
-      CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
+      CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" run_claude "$prompt"
     else
       CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" "${TIMEOUT[@]}" "${CODEX_REBASE_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
     fi
@@ -143,7 +171,7 @@ codex_address_review_feedback() {
   local prompt
   prompt=$(load_prompt review_feedback.prompt)
   if [[ $use_claude -eq 1 ]]; then
-    PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
+    PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" run_claude "$prompt"
   else
     PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_PR_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
   fi
@@ -443,7 +471,7 @@ codex_implement_current_branch() {
   prompt="${template//__CUR__/$cur}"
   prompt="${prompt//__INUM__/$inum}"
   if [[ $use_claude -eq 1 ]]; then
-    ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
+    ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT}" run_claude "$prompt"
   else
     ISSUE_NUM="${inum:-}" BRANCH="$cur" "${TIMEOUT[@]}" "${CODEX_FIX_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
   fi
@@ -453,7 +481,7 @@ codex_implement_issue_single_prompt() {
   local prompt
   prompt=$(load_prompt implement_issue_single.prompt)
   if [[ $use_claude -eq 1 ]]; then
-    LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
+    LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT}" run_claude "$prompt"
   else
     LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" "${TIMEOUT[@]}" "${CODEX_BOOTSTRAP_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
   fi
@@ -481,7 +509,7 @@ codex_unified_review() {
   local output status
   set +e
   if [[ "$reviewer_tool" == "claude" ]]; then
-    output=$(claude --print --dangerously-skip-permissions "$(cat "$tmpfile")" < /dev/null)
+    output=$(run_claude_capture "$(cat "$tmpfile")" < /dev/null)
     status=$?
   else
     output=$(codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$(cat "$tmpfile")" < /dev/null)
@@ -581,7 +609,7 @@ codex_ci_fix_loop() {
     local prompt
     prompt=$(load_prompt ci_fix.prompt)
     if [[ $use_claude -eq 1 ]]; then
-      PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT}" claude --print --dangerously-skip-permissions "$prompt"
+      PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT}" run_claude "$prompt"
     else
       PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" "${TIMEOUT[@]}" "${CODEX_CI_FIX_TIMEOUT}" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" -- "$prompt" < /dev/null
     fi
