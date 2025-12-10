@@ -224,20 +224,31 @@ codex_address_review_feedback() {
 process_existing_pr() {
   local pr_number="$1" inum="$2" branch="$3"
 
-  if pr_has_open_feedback "$pr_number"; then
-    echo "[review] Addressing outstanding feedback." >&2
-    codex_address_review_feedback "$pr_number" "$inum" "$branch" || true
-  fi
+  # Fetch PR metadata once upfront
+  local pr_meta
+  pr_meta=$(gh pr view "$pr_number" --json isDraft,mergeStateStatus,baseRefName 2>/dev/null || echo '{}')
+  local is_draft merge_state base_ref
+  is_draft=$(jq -r '.isDraft // false' <<<"$pr_meta")
+  merge_state=$(jq -r '.mergeStateStatus // ""' <<<"$pr_meta")
+  base_ref=$(jq -r '.baseRefName // "main"' <<<"$pr_meta")
 
-  echo "[review] Running unified review for PR #$pr_number." >&2
-  codex_unified_review "$pr_number" "$inum" "$branch" || true
-
-  if gh pr view "$pr_number" --json isDraft --jq '.isDraft' | grep -qi true; then
+  # Mark ready if draft
+  if [[ "$is_draft" == "true" ]]; then
     gh pr ready "$pr_number" || true
   fi
 
-  rebase_and_resolve_conflicts "$pr_number" "$branch" || true
+  # Rebase if needed before review (uses cached merge_state)
+  case "$merge_state" in
+    BEHIND|DIRTY|UNKNOWN|UNSTABLE|'')
+      rebase_and_resolve_conflicts "$pr_number" "$branch" || true
+      ;;
+  esac
 
+  # Review (will see and address any feedback)
+  echo "[review] Running unified review for PR #$pr_number." >&2
+  codex_unified_review "$pr_number" "$inum" "$branch" || true
+
+  # Wait for CI
   echo "Waiting for CI on PR #$pr_number." >&2
   if ! gh pr checks "$pr_number" --watch; then
     echo "CI not successful for PR #$pr_number; handing to remediation." >&2
@@ -250,16 +261,9 @@ process_existing_pr() {
     fi
   fi
 
-  if pr_has_open_feedback "$pr_number"; then
-    echo "[review] Addressing post-CI feedback." >&2
-    codex_address_review_feedback "$pr_number" "$inum" "$branch" || true
-  fi
-
+  # Check for thumbs-up approval
   local has_thumbs_up
   has_thumbs_up=$(gh api "repos/{owner}/{repo}/pulls/$pr_number" --jq '.reactions | if . then map(select(.content == "+1")) | length > 0 else false end' 2>/dev/null || echo "false")
-  if [[ "$has_thumbs_up" == "true" ]]; then
-    echo "[orchestrate] PR #$pr_number has thumbs up - eligible for auto-merge." >&2
-  fi
 
   if [[ "$auto_merge" == true || "$has_thumbs_up" == "true" ]]; then
     if maybe_merge_pr "$pr_number"; then
@@ -275,15 +279,17 @@ process_existing_pr() {
 
 maybe_merge_pr() {
   local pr_num="$1"
-  if gh pr view "$pr_num" --json isDraft --jq '.isDraft' | grep -qi true; then
-    gh pr ready "$pr_num" || true
-  fi
-  if ! gh pr checks "$pr_num" >/dev/null; then
+  # Fetch checks and merge state in one call
+  local pr_info
+  pr_info=$(gh pr view "$pr_num" --json mergeStateStatus,statusCheckRollup 2>/dev/null || echo '{}')
+  local merge_state check_state
+  merge_state=$(jq -r '.mergeStateStatus // ""' <<<"$pr_info")
+  check_state=$(jq -r '.statusCheckRollup[]? | select(.conclusion != "SUCCESS" and .conclusion != "NEUTRAL" and .conclusion != "SKIPPED") | .conclusion' <<<"$pr_info" | head -n1)
+
+  if [[ -n "$check_state" ]]; then
     echo "[merge] PR #$pr_num checks not successful" >&2
     return 1
   fi
-  local merge_state
-  merge_state=$(gh pr view "$pr_num" --json mergeStateStatus --jq '.mergeStateStatus' 2>/dev/null || echo "")
   case "$merge_state" in
     CLEAN|HAS_HOOKS|UNKNOWN|'') : ;;
     *)
@@ -495,6 +501,7 @@ codex_implement_current_branch() {
   template=$(load_prompt implement_current_branch.prompt)
   prompt="${template//__CUR__/$cur}"
   prompt="${prompt//__INUM__/$inum}"
+  prompt="${prompt//__TEST_CMD__/${TEST_CMD:-}}"
   ISSUE_NUM="${inum:-}" BRANCH="$cur" \
     run_tool_with_timeout "${CODEX_FIX_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
 }
@@ -502,8 +509,8 @@ codex_implement_current_branch() {
 codex_implement_issue_single_prompt() {
   local prompt
   prompt=$(load_prompt implement_issue_single.prompt)
-  LABEL="${label}" AUTO_CLOSE="${AUTO_CLOSE:-}" TEST_TIMEOUT="${TEST_TIMEOUT}" TEST_CMD="${TEST_CMD:-}" \
-    run_tool_with_timeout "${CODEX_BOOTSTRAP_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
+  prompt="${prompt//__TEST_CMD__/${TEST_CMD:-}}"
+  run_tool_with_timeout "${CODEX_BOOTSTRAP_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
 }
 
 codex_unified_review() {
@@ -608,11 +615,10 @@ cleanup_pr() {
 
 codex_ci_fix_loop() {
   local pr_num="$1" inum="$2" branch="$3" max_attempts=10 attempt=1
+  local prompt
+  prompt=$(load_prompt ci_fix.prompt)
   while (( attempt <= max_attempts )); do
     echo "[CI Fix] Attempt $attempt on PR #$pr_num (branch $branch)" >&2
-    rebase_and_resolve_conflicts "$pr_num" "$branch" || true
-    local prompt
-    prompt=$(load_prompt ci_fix.prompt)
     PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" \
       run_tool_with_timeout "${CODEX_CI_FIX_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
 

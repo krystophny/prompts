@@ -8,15 +8,14 @@ Task: Review the PR, fix blocking issues immediately, defer polish to new GitHub
 
 Process:
 1) Inspect PR: `gh pr view $PR_NUM --json files,commits,body,number,baseRefName,headRefName,url`
-2) Run tests and build locally. Fix any failures immediately.
-3) Verify functionality if applicable.
-4) MANDATORY COMPLIANCE CHECK: Validate against project CLAUDE.md/AGENTS.md AND user CLAUDE.md/AGENTS.md STRICTLY
-5) Classify findings:
+2) Review code for correctness, compliance, and quality. Do NOT run tests or build - CI handles that; baseline is always green per repo policy.
+3) MANDATORY COMPLIANCE CHECK: Validate against project CLAUDE.md/AGENTS.md AND user CLAUDE.md/AGENTS.md STRICTLY
+4) Classify findings:
    - BLOCKING: breaks tests, build, correctness, violates hard limits (module >1000 lines, function >100 lines), OR violates ANY CLAUDE.md/AGENTS.md rule
    - DEFER: style polish, minor refactors, documentation improvements, soft limit suggestions
-6) Fix blocking issues: stage specific files, commit, push.
-7) For deferred items: open focused GitHub issues (one per concern) with label "polish". Keep scope narrow to avoid feature creep.
-8) Decide review status based only on blocking issues.
+5) Fix blocking issues: stage specific files, commit, push. Only if you made changes, run tests and build locally to verify.
+6) For deferred items: open focused GitHub issues (one per concern) with label "polish". Keep scope narrow to avoid feature creep.
+7) Decide review status based only on blocking issues.
 
 Output format (exact):
 FINAL_REVIEW_STATUS: <approve|request_changes|comment>

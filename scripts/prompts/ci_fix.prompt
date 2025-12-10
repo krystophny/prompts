@@ -21,3 +21,4 @@ ABSOLUTE RULES - ZERO TOLERANCE:
 - REQUIRED: explicit file staging only - NEVER `git add .`
 - Markdown only in PR/issue per policy. Put evidence in commit messages or PR body when appropriate.
 - Keep functions small and style consistent.
+- NEVER run full test suite twice. Capture output once: `cmd 2>&1 | tee /tmp/test.log` then grep errors from log. Selective single-test reruns for debugging are fine.

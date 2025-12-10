@@ -14,10 +14,15 @@
 # AND user CLAUDE.md/AGENTS.md with ZERO tolerance for ANY violations
 #
 # Usage:
-#   scripts/issue_orchestrate_auto.sh [ISSUE_NUMBER] [--label <name>|--all] [--limit N] [--squash|--rebase|--merge] [--repo owner/name] [--claude]
+#   scripts/issue_orchestrate_auto.sh [ISSUE_NUMBER] [--label <name>|--all] [--limit N] [--squash|--rebase|--merge] [--repo owner/name]
+#     [--worker claude|codex|gemini] [--reviewer claude|codex|gemini]
+#     [--worker-model MODEL] [--reviewer-model MODEL]
 # Env:
-#   TEST_CMD Optional local test command (e.g., "make test-ci"), used in prompts
-#   CLAUDE_CODE Set to 1 to use Claude Code instead of Codex (alternative to --claude)
+#   TEST_CMD         Optional local test command (e.g., "make test-ci"), used in prompts
+#   WORKER_TOOL      Tool for implementation work (claude, codex, gemini); default: codex
+#   REVIEWER_TOOL    Tool for reviews (claude, codex, gemini); default: claude
+#   WORKER_MODEL     Model override for worker tool (e.g., o3, claude-sonnet-4-20250514)
+#   REVIEWER_MODEL   Model override for reviewer tool
 #
 
 # Prevent accidental sourcing (which would cause 'exit' to close the caller shell)

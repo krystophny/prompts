@@ -8,7 +8,7 @@ Goal: Complete implementation for issue #__INUM__ on the current branch, then op
 
 Process:
 1) Collect the necessary context: inspect the issue, relevant files, and existing tests. Identify which verifications (unit tests, integration tests, artifact checks) must run once the fix is in place. Keep output snippets for the PR body.
-2) Implement the solution with comprehensive tests or docs updates as required. Run the appropriate verification commands after applying changes (use TEST_CMD when set; otherwise detect project tooling such as make, pytest, fpm, npm). Include artifact verification when the issue affects outputs.
+2) Implement the solution with comprehensive tests or docs updates as required. Run the appropriate verification commands after applying changes (use `__TEST_CMD__` when set; otherwise detect project tooling such as make, pytest, fpm, npm). Include artifact verification when the issue affects outputs.
 3) Stage specific files only (no `git add .`). Commit using Conventional Commit style including "(fixes #__INUM__)" when appropriate. Push to origin for this branch.
 4) As the final step: if a PR to main does not exist for this branch, create a PR (not draft) with title `fix: <issue-title-truncated-to-64> (fixes #__INUM__)`. Include a concise "Verification" section showing the commands you ran and key output excerpts or artifact paths. Do not open a PR earlier than this step.
 5) Print exactly one JSON line with keys: {"issue":__INUM__, "branch":"__CUR__", "pr":<pr-number>, "url":"<pr-url>"}.
@@ -19,6 +19,7 @@ ABSOLUTE RULES - ZERO TOLERANCE:
 - ABSOLUTELY FORBIDDEN: spamming working directory with process documentation in Markdown files
 - REQUIRED: explicit file staging only - NEVER `git add .`
 - Markdown only in PR/issue per policy; keep outputs minimal and actionable.
-- Always run the relevant verification after your changes; skip redundant baseline runs.
+- Run tests ONLY AFTER making changes (never before as baseline - main is always green per repo CI policy).
+- NEVER run full test suite twice. Capture output once: `cmd 2>&1 | tee /tmp/test.log` then grep errors from log. Selective single-test reruns for debugging are fine.
 - Provide evidence excerpts for any output-affecting fix, leveraging project verification commands when available.
 - No secrets.

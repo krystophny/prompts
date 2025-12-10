@@ -23,3 +23,4 @@ ABSOLUTE RULES - ZERO TOLERANCE:
 - REQUIRED: explicit file staging only - NEVER `git add .`
 - Aim for production-ready quality; update what's required to resolve the feedback thoroughly. Markdown only in PR/issue per policy.
 - Keep functions small and follow project style. Do not skip tests.
+- NEVER run full test suite twice. Capture output once: `cmd 2>&1 | tee /tmp/test.log` then grep errors from log. Selective single-test reruns for debugging are fine.
