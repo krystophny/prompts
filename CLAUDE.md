@@ -1,7 +1,7 @@
 # AGENTS.md (Lean, Fortran-First Framework)
 
 ## ABSOLUTE HARD RULES - ZERO TOLERANCE POLICY
-EVERY point below is a MANDATORY requirement that MUST be followed WITHOUT EXCEPTION under ALL circumstances.
+EVERY point below is a MANDATORY requirement that MUST be followed WITHOUT EXCEPTION under ALL circumstances EXCEPT the USER asks you to do it DIFFERENTLY.
 - These are NOT suggestions, guidelines, or best practices - they are ABSOLUTE REQUIREMENTS
 - ANY violation of ANY rule below is UNACCEPTABLE and MUST be corrected immediately
 - There is NO situation, context, or justification for breaking these rules
@@ -53,33 +53,8 @@ Feature branches (MANDATORY):
 - Partial pass rates are COMPLETE FAILURE - only 100% acceptable
 - ALL regressions are YOUR FAULT - YOU fix CODE
 
-## FORTRAN ISO STANDARD COMPLIANCE - ZERO TOLERANCE
-ISO STANDARD COMPLIANCE IS NON-NEGOTIABLE.
-
-Policy:
-- ALL Fortran code MUST comply with ISO/IEC 1539-1:2018 (Fortran 2018) or later
-- Non-compliance with ISO standard is a BUG that MUST be fixed
-- Partial implementations or "known limitations" are NOT ACCEPTABLE
-- There is NO justification for violating ISO standard requirements
-- Mark ALL non-compliant behavior as NON-COMPLIANT with ISO section references
-
-Compliance validation (MANDATORY for all Fortran work):
-1. Cite ISO Standard Section: reference exact section (e.g., ISO/IEC 1539-1:2018 Section 7.5.6.3)
-2. Document Expected Behavior: what ISO standard REQUIRES (not what current implementation does)
-3. Document Actual Behavior: what implementation currently does
-4. Mark Compliance Status:
-   - STANDARD-COMPLIANT: matches ISO standard exactly
-   - NON-COMPLIANT: violates ISO standard - MUST BE FIXED
-5. NO Partial Compliance: "mostly compliant" or "good enough" is FAILURE
-
-Enforcement:
-- ISO standard supersedes current compiler behavior
-- ALL deviations from standard MUST be documented with NON-COMPLIANT marker
-- Follow ISO standard EXACTLY or mark as bug
-
 ## Language & Stack
 - Primary: modern Fortran (2018+). Prefer Fortran even for scripting/CLI/web when feasible.
-- ALL Fortran implementations MUST comply with ISO/IEC 1539-1:2018 or later
 - Existing projects: stick to the project's established stack unless explicitly directed otherwise.
 - Explicit requests: if asked, follow the specified stack even if non-Fortran.
 - Interop: keep non-Fortran glue minimal; core logic remains Fortran.
@@ -93,7 +68,6 @@ Enforcement:
 - SSH-only for git/gh operations; never use HTTPS. No emojis in commits, PRs, or issues.
 - Git and gh CLI commands are explicitly permitted for all repo workflows.
 - Stage files explicitly; never rely on blanket staging commands.
-- No draft PRs - iterate until the branch is ready to merge, with local tests passing first.
 - Always run repo build/test scripts locally before creating or updating PRs; CI must pass before merge.
 - Edit issue descriptions with `gh issue edit --body`; avoid comment edits for canonical info.
 - Use `--limit 500` on all gh list commands.
@@ -159,8 +133,7 @@ Enforcement:
 - Review phases MUST validate compliance against BOTH project CLAUDE.md AND user CLAUDE.md STRICTLY
 - ZERO tolerance for ANY rule violations - ALL violations MUST be corrected immediately
 
-## MANDATORY COMPLIANCE VALIDATION - MUST PASS BEFORE COMPLETION
-EVERY item below MUST be validated and PASS before ANY task completion:
+## CHECKLIST BEFORE COMPLETION
 1. Followed ALL Fortran rules (fpm, 88-col, intents, allocatable/move_alloc, dp)?
 2. Respected ALL size limits?
 3. Provided concrete evidence for ALL claims?
@@ -172,12 +145,6 @@ EVERY item below MUST be validated and PASS before ANY task completion:
 9. 100% test pass rate achieved by fixing CODE (not tests)?
 10. NEVER claimed tests were pre-existing failures (including from agent/tool reports)?
 11. NEVER weakened/changed/removed tests to achieve pass rate?
-12. FORTRAN ISO STANDARD COMPLIANCE - For ALL Fortran work:
-    - Cited exact ISO standard section references?
-    - Documented what ISO standard REQUIRES vs actual behavior?
-    - Marked ALL non-compliant behavior as NON-COMPLIANT?
-    - NO "acceptable for now" - partial compliance is FAILURE?
-    - ISO standard defines truth, NOT current compiler behavior?
 
 ## GitHub CLI Examples
 - Issues
