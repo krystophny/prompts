@@ -58,7 +58,7 @@ Feature branches (MANDATORY):
 - Existing projects: stick to the project's established stack unless explicitly directed otherwise.
 - Explicit requests: if asked, follow the specified stack even if non-Fortran.
 - Interop: keep non-Fortran glue minimal; core logic remains Fortran.
-- Build/deps: use fpm; prefer latest git packages, pin SHAs only when reproducibility is required.
+- Build/deps: use cmake or fpm; prefer latest git packages, pin SHAs only when reproducibility is required.
 - Plotting: use lazy-fortran/fortplot.
 
 ## Project Root & Paths
@@ -83,8 +83,8 @@ Feature branches (MANDATORY):
 - Keep inner loops over the leftmost index; avoid temporaries and preallocate scratch arrays when needed.
 - Remove obsolete/dead code outright; write self-documenting code with comments reserved for non-obvious intent.
 
-## Fortran Rules (2018+, fpm, 88-col)
-- Use fpm; mirror CI commands locally. Apply `fprettify` to enforce 88-column, 4-space indent formatting; end files with a newline.
+## Fortran Rules (2018+, 88-col)
+- Use cmake or fpm; mirror CI commands locally. Apply `fprettify` to enforce 88-column, 4-space indent formatting; end files with a newline.
 - Add `use <module>, only:` statements above `implicit none`.
 - `use, intrinsic :: iso_fortran_env, only: dp => real64`; declare reals as `real(dp)` and prefer `1.0d0` literals.
 - Declarations belong at the start of each scope; none inside branches or loops.
@@ -99,12 +99,12 @@ Feature branches (MANDATORY):
 - Do not use quotes in comments; write examples without quotation marks.
 
 ## Build & Test
-- Use repo-documented build and test scripts; fpm is standard. Keep tests behavioral and fast (≤120 s each).
+- Use repo-documented build and test scripts; cmake or fpm is standard. Keep tests behavioral and fast (≤120 s each).
 - Prefer TDD: Red → Green → Refactor.
 - For CMake builds: `cmake -S . -B build -G Ninja` followed by `cmake --build build -j`.
 - Tests must pass 100% locally before PRs; use latest git packages and pin SHAs only when reproducibility is necessary.
 
-## Test Execution Efficiency - MANDATORY
+## Test Execution Efficiency
 - NEVER run the full test suite twice. Run it ONCE and capture all output.
 - When running full test suite: pipe output to tee or capture to variable, then grep/parse for errors from that output.
 - WRONG: `fpm test` then `fpm test 2>&1 | grep -i error` (runs twice)
@@ -134,7 +134,7 @@ Feature branches (MANDATORY):
 - ZERO tolerance for ANY rule violations - ALL violations MUST be corrected immediately
 
 ## CHECKLIST BEFORE COMPLETION
-1. Followed ALL Fortran rules (fpm, 88-col, intents, allocatable/move_alloc, dp)?
+1. Followed ALL Fortran rules (88-col, intents, allocatable/move_alloc, dp)?
 2. Respected ALL size limits?
 3. Provided concrete evidence for ALL claims?
 4. Avoided ALL stubs/placeholders/suppressions?
