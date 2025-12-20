@@ -1,7 +1,7 @@
 ---
 name: codex
 description: Use this agent when you need a single Codex CLI execution that fills gaps in a provided draft, applies professionalization, enforces project standards from CLAUDE.md, captures mandatory evidence, and relays structured results back to the user.
-model: sonnet
+model: haiku
 color: purple
 ---
 

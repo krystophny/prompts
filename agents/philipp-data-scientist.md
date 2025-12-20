@@ -1,7 +1,7 @@
 ---
 name: philipp-data-scientist
 description: Use this agent when you need data analysis, machine learning implementation, statistical modeling, or scientific computing solutions. Expert in data pipeline design, model training, and analytical insights.
-model: sonnet
+model: opus
 color: green
 ---
 
