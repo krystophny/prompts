@@ -88,7 +88,7 @@ Feature branches (MANDATORY):
 - Add `use <module>, only:` statements above `implicit none`.
 - `use, intrinsic :: iso_fortran_env, only: dp => real64`; declare reals as `real(dp)` and prefer `1.0d0` literals.
 - Declarations belong at the start of each scope; none inside branches or loops.
-- Prefer `allocatable`; avoid pointers unless explicitly required. Do not manually deallocate; rely on scope exit and `move_alloc()` for transfers.
+- Prefer `allocatable`; avoid pointers unless explicitly required. Usually rely on automatic deallocation at scope exit and `move_alloc()` for transfers; explicit `deallocate` is permitted when needed for special purposes such as early memory release.
 - Avoid returning allocatables from functions; provide deep-copy assignment for nested components.
 - Name derived types `<name>_t`.
 - Mark procedures `pure`/`elemental` when appropriate; ensure every dummy argument has `intent(in|out|inout)`.
@@ -103,6 +103,27 @@ Feature branches (MANDATORY):
 - Prefer TDD: Red → Green → Refactor.
 - For CMake builds: `cmake -S . -B build -G Ninja` followed by `cmake --build build -j`.
 - Tests must pass 100% locally before PRs; use latest git packages and pin SHAs only when reproducibility is necessary.
+
+## NVHPC/nvfortran Setup
+When using NVHPC (nvfortran) for OpenACC GPU offloading:
+
+**CUDA auto-detection**: CMake auto-detects CUDA at `/opt/cuda` or `/usr/local/cuda` and sets `NVHPC_CUDA_HOME`.
+
+**HPC-X MPI**: The stub wrapper at `comm_libs/hpcx/bin/mpifort` has strict CUDA version checks that may fail. Use the FULL HPC-X installation instead:
+```bash
+# Source HPC-X environment FIRST (required)
+source /opt/nvidia/hpc_sdk/Linux_x86_64/VERSION/comm_libs/13.0/hpcx/latest/hpcx-mt-init.sh
+hpcx_load
+export NVHPC_CUDA_HOME=/opt/cuda  # If not auto-detected
+
+# Use mpifort from the full HPC-X installation
+cmake -S . -B build -G Ninja \
+  -DCMAKE_Fortran_COMPILER=/opt/nvidia/hpc_sdk/Linux_x86_64/VERSION/comm_libs/13.0/hpcx/latest/ompi/bin/mpifort \
+  -DCMAKE_C_COMPILER=/opt/nvidia/hpc_sdk/Linux_x86_64/VERSION/compilers/bin/nvc \
+  -DFORCE_FETCH_DEPS=ON
+```
+
+**Dependency building**: NVHPC triggers auto-building of HDF5, NetCDF, FFTW from source due to ABI incompatibility with system libs compiled by gfortran.
 
 ## Test Execution Efficiency
 - NEVER run the full test suite twice. Run it ONCE and capture all output.
