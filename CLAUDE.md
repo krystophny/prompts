@@ -101,7 +101,8 @@ Feature branches (MANDATORY):
 ## Build & Test
 - Use repo-documented build and test scripts; cmake or fpm is standard. Keep tests behavioral and fast (≤120 s each).
 - Prefer TDD: Red → Green → Refactor.
-- For CMake builds: `cmake -S . -B build -G Ninja` followed by `cmake --build build -j`.
+- For CMake builds: `cmake -S . -B build -G Ninja` followed by `cmake --build build -j32`.
+- For Make builds: always use `make -j32`.
 - Tests must pass 100% locally before PRs; use latest git packages and pin SHAs only when reproducibility is necessary.
 
 ## NVHPC/nvfortran Setup
