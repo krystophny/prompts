@@ -32,4 +32,4 @@ Complete SPRINT BACKLOG items via max → implementer → reviewer → max with 
 
 **Success**: All SPRINT_BACKLOG items completed, CI passes, clean repository
 **Blocking**: Ready PRs, CI failures (structured handback required)
-- Each handoff enforces separation of concerns: max curates environment, implementers own a single slice of delivery, reviewers audit in isolation, and the final max pass merges; maintaining this weakly coupled chain prevents role bleed and keeps SRP intact throughout execution
+- Each handoff enforces separation of concerns: max curates environment, implementers own a single slice of delivery, reviewers assess in isolation, and the final max pass merges; maintaining this weakly coupled chain prevents role bleed and keeps SRP intact throughout execution

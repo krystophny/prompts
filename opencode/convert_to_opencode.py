@@ -75,7 +75,7 @@ class FrameworkConverter:
                     "agent": "general"
                 },
                 "play": {
-                    "template": "Execute PLAY workflow: max PR assessment → serial audits (patrick, vicky, chris) → NO git commits",
+                    "template": "Execute PLAY workflow: max PR assessment → serial reviews (patrick, vicky, chris) → NO git commits",
                     "description": "Defect discovery and evidence collection",
                     "agent": "general"
                 },
@@ -182,7 +182,7 @@ model: anthropic/claude-sonnet-4-20250514
         agent_descriptions = {
             "chris-architect": "Use this agent when you need strategic architectural planning and test-driven development guidance for software projects. This agent excels at maintaining GitHub meta-issues (DESIGN, SPRINT BACKLOG, PRODUCT BACKLOG), breaking down complex systems into executable backlogs, and ensuring rigorous TDD practices.",
             "sergei-perfectionist-coder": "Use this agent when you need meticulous, production-grade code implementation with zero tolerance for shortcuts or incomplete work. Perfect for critical system components, performance-sensitive applications, scientific computing tasks, or when porting code that requires exact replication with comprehensive testing.",
-            "patrick-auditor": "Use this agent when you need a thorough, constructively critical review of code changes or a comprehensive audit of the codebase. This includes after implementing new features or fixes, before merging pull requests, when refactoring existing code, or when you suspect technical debt has accumulated.",
+            "patrick-reviewer": "Use this agent when you need a thorough, constructively critical review of code changes or a comprehensive codebase assessment. This includes after implementing new features or fixes, before merging pull requests, when refactoring existing code, or when you suspect technical debt has accumulated.",
             "max-devops-engineer": "Use this agent when you need to set up, maintain, or optimize CI/CD pipelines, GitHub Actions workflows, GitLab runners, container configurations, or manage releases and artifacts. Also use when dealing with research data management, licensing decisions, or when you need to establish consistent DevOps practices across multiple repositories.",
             "georg-test-engineer": "Use this agent when you need comprehensive test suite design, test framework setup, or systematic testing architecture for software projects. Expert in creating robust testing strategies, implementing test automation, and ensuring comprehensive test coverage.",
             "vicky-acceptance-tester": "Use this agent when you need comprehensive acceptance testing of user-facing functionality, stress testing of applications, or thorough exploration of edge cases and potential failure modes. This agent excels at finding bugs through creative and exhaustive interaction patterns, documenting issues systematically, and creating GitHub issues for discovered problems.",
@@ -281,7 +281,7 @@ model: anthropic/claude-sonnet-4-20250514
             # Agent references and Task tool invocations
             "chris-architect EXCLUSIVELY via Task tool": "chris-architect via @chris-architect or task tool with subagent_type='chris-architect'",
             "sergei-perfectionist-coder EXCLUSIVELY via Task tool": "sergei-perfectionist-coder via @sergei-perfectionist-coder or task tool with subagent_type='sergei-perfectionist-coder'",
-            "patrick-auditor EXCLUSIVELY via Task tool": "patrick-auditor via @patrick-auditor or task tool with subagent_type='patrick-auditor'",
+            "patrick-reviewer EXCLUSIVELY via Task tool": "patrick-reviewer via @patrick-reviewer or task tool with subagent_type='patrick-reviewer'",
             "max-devops-engineer EXCLUSIVELY via Task tool": "max-devops-engineer via @max-devops-engineer or task tool with subagent_type='max-devops-engineer'",
             "georg-test-engineer EXCLUSIVELY via Task tool": "georg-test-engineer via @georg-test-engineer or task tool with subagent_type='georg-test-engineer'",
             "vicky-acceptance-tester EXCLUSIVELY via Task tool": "vicky-acceptance-tester via @vicky-acceptance-tester or task tool with subagent_type='vicky-acceptance-tester'",
@@ -297,7 +297,7 @@ model: anthropic/claude-sonnet-4-20250514
             "Execute infinite WORK → PLAY → PLAN loop using OpenCode agent system delegation per agent_rules": "Execute infinite WORK → PLAY → PLAN loop using task tool with subagent_type parameters for each specialized agent per agent_rules",
 
             # Specific workflow agent invocations
-            "max → (sergei OR winny) → CI-GATE → (patrick OR vicky) → max": "Use task tool: subagent_type='max-devops-engineer' → subagent_type='sergei-perfectionist-coder' OR subagent_type='winny-technical-writer' → CI-GATE → subagent_type='patrick-auditor' OR subagent_type='vicky-acceptance-tester' → subagent_type='max-devops-engineer'",
+            "max → (sergei OR winny) → CI-GATE → (patrick OR vicky) → max": "Use task tool: subagent_type='max-devops-engineer' → subagent_type='sergei-perfectionist-coder' OR subagent_type='winny-technical-writer' → CI-GATE → subagent_type='patrick-reviewer' OR subagent_type='vicky-acceptance-tester' → subagent_type='max-devops-engineer'",
 
             # Command references
             "/init": "/plan",
@@ -359,8 +359,8 @@ Use task tool: subagent_type='max-devops-engineer', description='Assess reposito
 # Sergei Perfectionist Coder (code implementation)  
 Use task tool: subagent_type='sergei-perfectionist-coder', description='Implement feature', prompt='MULTISPRINT ACTIVE: Implement the login authentication system with full CI verification. Frame as proceeding, not completing. End with continuation instruction.'
 
-# Patrick Auditor (code review and quality)
-Use task tool: subagent_type='patrick-auditor', description='Review code changes', prompt='MULTISPRINT ACTIVE: Review the authentication implementation for security and quality issues. Use "proceeding" language, end with continuation to next phase.'
+# Patrick Reviewer (code review and quality)
+Use task tool: subagent_type='patrick-reviewer', description='Review code changes', prompt='MULTISPRINT ACTIVE: Review the authentication implementation for quality issues. Use "proceeding" language, end with continuation to next phase.'
 
 # Chris Architect (planning and design)
 Use task tool: subagent_type='chris-architect', description='Plan sprint', prompt='MULTISPRINT ACTIVE: Organize GitHub issues and plan next sprint based on completed work. End with explicit continuation to Sprint #N+1 WORK phase.'
@@ -392,7 +392,7 @@ Use task tool: subagent_type='winny-technical-writer', description='Documentatio
 
 # 3. Review (choose based on work type)  
 # For code review:
-Use task tool: subagent_type='patrick-auditor', description='Code review', prompt='Review implementation for quality, security, and adherence to standards'
+Use task tool: subagent_type='patrick-reviewer', description='Code review', prompt='Review implementation for quality and adherence to standards'
 
 # For documentation review:
 Use task tool: subagent_type='vicky-acceptance-tester', description='Documentation review', prompt='Test and validate documentation from user perspective'
@@ -412,8 +412,8 @@ The PLAY workflow uses agents for defect discovery:
 # 1. Max PR Assessment
 Use task tool: subagent_type='max-devops-engineer', description='PR assessment', prompt='Check for open PRs and handback to WORK mode if any exist'
 
-# 2. Patrick Code Audit  
-Use task tool: subagent_type='patrick-auditor', description='Code audit', prompt='Perform comprehensive code audit and file GitHub issues for all defects found'
+# 2. Patrick Code Review
+Use task tool: subagent_type='patrick-reviewer', description='Code review', prompt='Perform comprehensive code review and file GitHub issues for all defects found'
 
 # 3. Vicky Acceptance Testing
 Use task tool: subagent_type='vicky-acceptance-tester', description='User testing', prompt='Test user-facing functionality and file issues for usability problems'  
@@ -568,7 +568,7 @@ MULTISPRINT WORKFLOW CONTINUES INFINITELY...
         templates = {
             'plan': "Execute PLAN workflow: chris-architect organizes issues in SPRINT BACKLOG, NO git operations. Follow core framework protocols.",
             'work': "Execute WORK workflow: max → implementer → CI-GATE → reviewer → max → merge. Use CI verification protocols.",
-            'play': "Execute PLAY workflow: max PR assessment → serial audits (patrick, vicky, chris) → NO git commits. Find defects only.",
+            'play': "Execute PLAY workflow: max PR assessment → serial reviews (patrick, vicky, chris) → NO git commits. Find defects only.",
             'sprint': "Complete WORK→PLAY→PLAN cycle with full verification and evidence collection."
         }
 
@@ -627,7 +627,7 @@ This framework has been adapted for OpenCode compatibility:
 ### Available Agents
 - **@chris-architect**: Sprint planning and architecture
 - **@sergei-perfectionist-coder**: Code implementation with CI verification
-- **@patrick-auditor**: Code review and quality assurance
+- **@patrick-reviewer**: Code review and quality assurance
 - **@max-devops-engineer**: Repository management and CI/CD
 - **@georg-test-engineer**: Test creation and validation
 - **@vicky-acceptance-tester**: User acceptance testing
@@ -720,7 +720,7 @@ echo ""
 echo "Available agents:"
 echo "  - chris-architect: Sprint planning and architecture"
 echo "  - sergei-perfectionist-coder: Code implementation with CI verification"
-echo "  - patrick-auditor: Code review and quality assurance"
+echo "  - patrick-reviewer: Code review and quality assurance"
 echo "  - max-devops-engineer: Repository management and CI/CD"
 echo "  - And 6 more specialized agents..."
 echo ""
@@ -769,7 +769,7 @@ This will create symlinks in `~/.config/opencode/` pointing to this directory.
 Converted versions of all agents:
 - **chris-architect**: Sprint planning and architecture
 - **sergei-perfectionist-coder**: Code implementation with CI verification
-- **patrick-auditor**: Code review and quality assurance
+- **patrick-reviewer**: Code review and quality assurance
 - **max-devops-engineer**: Repository management and CI/CD
 - **georg-test-engineer**: Test creation and validation
 - **vicky-acceptance-tester**: User acceptance testing

@@ -36,7 +36,7 @@ Task tool delegation to chris-architect ONLY for:
 Task tool → chris-architect → Planning Implementation
 ├── Sprint Transition: Assume current sprint complete
 ├── Input Gathering: Review ALL GitHub issues from PLAY findings
-├── COMPREHENSIVE ISSUE AUDIT: Full review and consolidation
+├── COMPREHENSIVE ISSUE REVIEW: Full review and consolidation
 ├── Sprint Planning: Update SPRINT BACKLOG meta-issue (3-5 items max)
 ├── Architecture Updates: Update DESIGN meta-issue with lessons
 └── Completion: GitHub API updates ONLY - NO git operations
@@ -49,7 +49,7 @@ Task tool → chris-architect → Planning Implementation
    - SPRINT BACKLOG meta-issue EPICS and priorities assessment  
    - DESIGN meta-issue architectural context integration
    - User requirements incorporation (if provided)
-3. **MANDATORY ISSUE AUDIT AND CONSOLIDATION**:
+3. **MANDATORY ISSUE REVIEW AND CONSOLIDATION**:
    - Full review of existing open issues using `gh issue list --state open --limit 500`
    - Relevance assessment and obsolete issue closure/archival
    - Non-actionable issue elimination (workflow reminders, process docs)
@@ -73,7 +73,7 @@ Task tool → chris-architect → Planning Implementation
 
 **EXCLUSIVE CHRIS-ARCHITECT AUTHORITY**:
 - GitHub meta-issue management through API-only access
-- Issue consolidation and prioritization with systematic audit protocols
+- Issue consolidation and prioritization with systematic review protocols
 - Sprint goal definition with evidence-based validation systems
 - Architectural decision documentation with CI integration protocols
 
@@ -152,20 +152,20 @@ Task tool → chris-architect → Planning Implementation
 
 **VALIDATION PROTOCOL EXECUTION**:
 1. **Planning Decision Verification**: All sprint priorities validated through technical evidence
-2. **Issue Management Validation**: Consolidation completeness through systematic audit
+2. **Issue Management Validation**: Consolidation completeness through systematic review
 3. **Meta-Issue Consistency Checking**: Cross-reference validation between all meta-issues
 4. **GitHub API Operation Verification**: Exclusive API usage confirmation with logging
 
 # 8. TESTING FRAMEWORK
 
 **PLANNING TESTING REQUIREMENTS**:
-- **AUTOMATED ISSUE ANALYSIS**: Issue state validation through GitHub API with systematic audit
+- **AUTOMATED ISSUE ANALYSIS**: Issue state validation through GitHub API with systematic review
 - **DUPLICATE DETECTION TESTING**: Automated duplicate identification through comparative analysis
 - **PRIORITY VALIDATION TESTING**: Sprint priority decisions verified through technical evidence
 - **META-ISSUE CONSISTENCY TESTING**: Cross-reference validation between meta-issues and regular issues
 
 **TESTING VERIFICATION PROTOCOL**:
-1. **ISSUE AUDIT VALIDATION**: Issue consolidation verification through systematic GitHub API analysis
+1. **ISSUE REVIEW VALIDATION**: Issue consolidation verification through systematic GitHub API analysis
 2. **PRIORITY DECISION TESTING**: Sprint priority validation through technical evidence verification
 3. **META-ISSUE SYNCHRONIZATION**: Consistency testing between meta-issues and regular issues
 4. **WORKFLOW COMPLETION VERIFICATION**: Planning completion validation through systematic documentation

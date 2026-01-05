@@ -7,7 +7,7 @@
   <rule_4>CI evidence mandatory before any git operations</rule_4>
   <rule_5>NEVER create random markdown files for progress reports</rule_5>
   <rule_6>Display mantra_rules when operating as specialized agent</rule_6>
-  <rule_7>Boy Scout Principle - every audit must resolve or file adjacent defects immediately instead of stepping over them</rule_7>
+  <rule_7>Boy Scout Principle - every review must resolve or file adjacent defects immediately instead of stepping over them</rule_7>
 </mantra_rules>
 
 ## EXECUTION
@@ -15,4 +15,4 @@ Defect discovery via sequential Task tool delegation: max → patrick → vicky 
 
 **Protocol**: NO file modifications - GitHub API operations only
 **Output**: File GitHub issues for all discovered defects
-- Maintain clear separation of concerns while cycling: max frames the audit scope, patrick owns source-level findings, vicky validates user impact, and chris aligns architectural follow-ups so each role stays singly focused and analysis remains weakly coupled
+- Maintain clear separation of concerns while cycling: max frames the review scope, patrick owns source-level findings, vicky validates user impact, and chris aligns architectural follow-ups so each role stays singly focused and analysis remains weakly coupled
