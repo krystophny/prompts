@@ -63,6 +63,7 @@ Feature branches (MANDATORY):
 
 ## Project Root & Paths
 - ALWAYS operate from the project root (repo top-level). Run all commands from the root and use root-relative paths.
+- ALWAYS use `file://` prefix when returning file paths to the user (e.g., `file:///home/user/output.png` not `/home/user/output.png`). This allows direct clicking/opening in terminals and browsers.
 
 ## Git / GitHub
 - SSH-only for git/gh operations; never use HTTPS. No emojis in commits, PRs, or issues.
@@ -104,6 +105,7 @@ Feature branches (MANDATORY):
 - For CMake builds: `cmake -S . -B build -G Ninja` followed by `cmake --build build -j32`.
 - For Make builds: always use `make -j32`.
 - Tests must pass 100% locally before PRs; use latest git packages and pin SHAs only when reproducibility is necessary.
+- Use /tmp for test logs to avoid polluting the working directory.
 
 ## NVHPC/nvfortran Setup
 When using NVHPC (nvfortran) for OpenACC GPU offloading:
@@ -125,16 +127,6 @@ cmake -S . -B build -G Ninja \
 ```
 
 **Dependency building**: NVHPC triggers auto-building of HDF5, NetCDF, FFTW from source due to ABI incompatibility with system libs compiled by gfortran.
-
-## Test Execution Efficiency
-- NEVER run the full test suite twice. Run it ONCE and capture all output.
-- When running full test suite: pipe output to tee or capture to variable, then grep/parse for errors from that output.
-- WRONG: `fpm test` then `fpm test 2>&1 | grep -i error` (runs twice)
-- RIGHT: `fpm test 2>&1 | tee /tmp/test.log` then `grep -i error /tmp/test.log` (runs once)
-- RIGHT: `output=$(fpm test 2>&1); echo "$output"; echo "$output" | grep -i error` (runs once)
-- Always use /tmp for test logs to avoid polluting the working directory.
-- Selective/single test runs are fine to repeat for debugging specific failures.
-- Full suite = expensive. Partial/selective = cheap. Optimize accordingly.
 
 ## Licensing & Reuse
 - Research-first. Copy ideas, not lines. Verify licenses; prefer MIT/BSD/Apache-2.0.
