@@ -187,3 +187,9 @@ cmake -S . -B build -G Ninja \
   - Watch latest run: `gh run watch`
   - Rerun failed jobs: `gh run rerun <run-id> --failed`
   - Dispatch a workflow: `gh workflow run "<workflow name>" --ref <branch>`
+- Image Attachments in PR/Issue Comments
+  - GitHub CLI cannot upload images directly. Use catbox.moe as intermediary:
+  - Upload image: `curl -F "reqtype=fileupload" -F "fileToUpload=@/path/to/image.png" https://catbox.moe/user/api.php`
+  - Returns URL like: `https://files.catbox.moe/xxxxx.png`
+  - Use in comment: `gh pr comment <number> --body "![description](https://files.catbox.moe/xxxxx.png)"`
+  - Or edit existing: `gh pr comment <number> --edit-last --body "..."`
