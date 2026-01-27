@@ -7,12 +7,23 @@ You are operating on a PR with failing CI.
 Task: Diagnose the CI failures, read GitHub Actions logs, fix issues locally, push commits, and re-trigger CI until green.
 
 Steps:
-1) Inspect latest CI runs for the branch: `gh run list --branch "$BRANCH" --event pull_request --json databaseId,workflowName,status,conclusion,url --limit 5` and view logs for failed jobs using `gh run view <run-id> --json jobs --log`.
+1) Get latest run and check for already-failed jobs immediately (even if run is still in_progress):
+   ```bash
+   RUN_ID=$(gh run list --branch "$BRANCH" --event pull_request --json databaseId --jq '.[0].databaseId' --limit 1)
+   gh run view $RUN_ID --json jobs --jq '.jobs[] | select(.conclusion == "failure") | "\(.name): \(.conclusion)"'
+   gh run view $RUN_ID --log-failed 2>&1 | head -100
+   ```
+   **DO NOT just report "in progress" - failed jobs have logs available immediately.**
 2) Reproduce locally (run tests/linters/build) and fix the root cause thoroughly.
 3) Add/adjust tests as needed to prevent regression; run locally to green.
 4) Stage specific files only; commit with clear message; push.
 5) If there is nothing actionable (external flake), document minimal retry (e.g., rebase to retrigger) and proceed.
-6) Monitor PR checks until completion with: `gh pr checks <PR#> --watch` (prefer this over generic "wait for CI on GitHub").
+6) Monitor PR checks - check for failed jobs first before watching:
+   ```bash
+   FAILED=$(gh run view $RUN_ID --json jobs --jq '[.jobs[] | select(.conclusion == "failure")] | length')
+   [ "$FAILED" -gt 0 ] && gh run view $RUN_ID --log-failed 2>&1 | head -100
+   gh run watch $RUN_ID --exit-status || gh run view $RUN_ID --log-failed 2>&1 | head -100
+   ```
 
 ABSOLUTE RULES - ZERO TOLERANCE:
 - MANDATORY: Validate compliance with ALL CLAUDE.md/AGENTS.md rules - ANY violation is FORBIDDEN

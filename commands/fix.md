@@ -23,16 +23,29 @@ gh api repos/lfortran/lfortran/pulls/$ARGUMENTS/comments --jq '.[] | "\(.user.lo
 **STOP HERE if reviewer requested specific approach. Follow it EXACTLY.**
 **Do NOT add workarounds reviewer explicitly rejected.**
 
-### 2. GET BRANCH AND CI STATUS
+### 2. GET BRANCH AND FIND FAILED JOBS
 ```bash
 BRANCH=$(gh pr view $ARGUMENTS --repo lfortran/lfortran --json headRefName --jq '.headRefName')
-gh run list --repo lfortran/lfortran --branch $BRANCH --limit 3
+
+# List runs - look for any with conclusion=failure OR status=in_progress (may have failed jobs)
+gh run list --repo lfortran/lfortran --branch $BRANCH --limit 5 --json databaseId,status,conclusion,workflowName
+
+# Get the latest run ID (even if in_progress - it may have failed jobs already)
+RUN_ID=$(gh run list --repo lfortran/lfortran --branch $BRANCH --limit 1 --json databaseId --jq '.[0].databaseId')
+
+# Check individual job statuses - shows which jobs failed even if run is still in_progress
+gh run view $RUN_ID --repo lfortran/lfortran --json jobs --jq '.jobs[] | select(.conclusion == "failure") | "\(.name): \(.conclusion)"'
 ```
 
-### 3. GET ERROR FROM FAILED RUN
+### 3. GET ERROR LOGS FROM FAILED JOBS IMMEDIATELY
 ```bash
-gh run view <run-id> --repo lfortran/lfortran --log-failed 2>&1 | grep -E "error:|Error:|FAILED" | head -30
+# This works even if the overall run is still in_progress - fetches logs from completed failed jobs
+gh run view $RUN_ID --repo lfortran/lfortran --log-failed 2>&1 | grep -E "error:|Error:|FAILED|fatal:" | head -50
+
+# If no output, the failed jobs may not have actionable errors yet - check job details
+gh run view $RUN_ID --repo lfortran/lfortran --json jobs --jq '.jobs[] | select(.conclusion == "failure") | {name: .name, steps: [.steps[] | select(.conclusion == "failure") | .name]}'
 ```
+**DO NOT wait for "in progress" runs to complete. Failed jobs have logs available immediately.**
 
 ### 4. REPRODUCE LOCALLY
 ```bash
@@ -64,10 +77,23 @@ git -C lfortran push
 ### 8. UPDATE PR DESCRIPTION (if implementation approach changed)
 Ensure PR description accurately reflects what was done.
 
-### 9. WAIT FOR CI TO PASS
+### 9. MONITOR CI - CHECK FOR FAILURES FIRST
 ```bash
-gh run watch --repo lfortran/lfortran
+# Get latest run for this branch
+RUN_ID=$(gh run list --repo lfortran/lfortran --branch $BRANCH --limit 1 --json databaseId --jq '.[0].databaseId')
+
+# Check if any jobs already failed (even if run is still in_progress)
+FAILED=$(gh run view $RUN_ID --repo lfortran/lfortran --json jobs --jq '[.jobs[] | select(.conclusion == "failure")] | length')
+if [ "$FAILED" -gt 0 ]; then
+  echo "Jobs already failed - fetching logs immediately"
+  gh run view $RUN_ID --repo lfortran/lfortran --log-failed 2>&1 | head -100
+  # Go back to step 3 to diagnose
+fi
+
+# Only watch if no failures yet
+gh run watch $RUN_ID --repo lfortran/lfortran --exit-status || gh run view $RUN_ID --repo lfortran/lfortran --log-failed 2>&1 | head -100
 ```
+**DO NOT just report "in progress" - check for already-failed jobs first.**
 **Only report success when status is `completed` + `success`.**
 **If CI fails again, repeat from step 3.**
 
