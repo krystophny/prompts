@@ -1,4 +1,4 @@
-# /pr-fix - Fix Failing PR Checks
+# /fix - Fix Failing PR Checks
 
 Execute when PR CI checks fail. Requires PR number as argument.
 

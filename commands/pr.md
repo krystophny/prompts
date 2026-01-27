@@ -1,4 +1,4 @@
-# /pr-new - Start New Bug Fix
+# /pr - Start New Bug Fix
 
 Start a new bug fix from scratch. Argument is the branch name suffix.
 

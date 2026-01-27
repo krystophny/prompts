@@ -1,4 +1,4 @@
-# /pr-comments - Check & Address PR Comments
+# /comments - Check & Address PR Comments
 
 Review and address all comments on a PR. Requires PR number as argument.
 
