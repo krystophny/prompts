@@ -261,6 +261,95 @@ end do
 ```
 Use `-check arg_temp_created` (Intel) or `-Warray-temporaries` (gfortran) to detect hidden temporaries.
 
+## Profiling (MANDATORY before optimization)
+
+**Compile with debug symbols** - required for meaningful profiles:
+```bash
+# gfortran: -g keeps symbols, -O2/O3 for realistic optimization
+gfortran -g -O2 -fopenmp -o myapp main.f90
+
+# ifort/ifx: same principle
+ifx -g -O2 -qopenmp -o myapp main.f90
+```
+
+**perf (Linux, low overhead, sampling-based)**:
+```bash
+# Record profile (F=99 samples/sec, -g for call graph)
+perf record -F 99 -g ./myapp
+
+# Interactive TUI - navigate with arrow keys, Enter to zoom
+perf report
+
+# Flat profile - top functions by CPU time
+perf report --stdio --sort=overhead
+
+# Annotate hot function with source lines
+perf annotate function_name_
+
+# What to look for:
+# - Functions consuming >10% time are optimization targets
+# - Deep call stacks suggest abstraction overhead
+# - malloc/free in hot path indicates allocation issues
+```
+
+**callgrind (Valgrind, instruction-level, high overhead)**:
+```bash
+# Run under callgrind (10-50x slower)
+valgrind --tool=callgrind --callgrind-out-file=callgrind.out ./myapp
+
+# Visualize with kcachegrind (GUI)
+kcachegrind callgrind.out
+
+# CLI summary
+callgrind_annotate callgrind.out | head -50
+
+# What to look for in kcachegrind:
+# - Ir (instruction reads) = total instructions executed
+# - Self vs Inclusive cost: self=function only, inclusive=with callees
+# - Red = hot, find the reddest boxes in call graph
+# - Cache misses (D1mr, DLmr) indicate memory access patterns
+# - Branch mispredictions (Bc, Bcm) suggest unpredictable conditionals
+```
+
+**perf cache analysis**:
+```bash
+# L1 data cache misses
+perf stat -e L1-dcache-load-misses,L1-dcache-loads ./myapp
+
+# Last-level cache misses (memory bound indicator)
+perf stat -e LLC-load-misses,LLC-loads ./myapp
+
+# All useful events at once
+perf stat -e cycles,instructions,cache-references,cache-misses,branches,branch-misses ./myapp
+
+# What to look for:
+# - IPC (instructions per cycle) < 1.0 suggests memory bound
+# - Cache miss rate >5% indicates poor locality
+# - Branch miss rate >2% suggests unpredictable branches
+```
+
+**OpenMP profiling**:
+```bash
+# Set thread count
+export OMP_NUM_THREADS=8
+
+# Intel/AMD: use likwid for hardware counters per thread
+likwid-perfctr -C 0-7 -g MEM ./myapp
+
+# GNU: basic timing
+export OMP_DISPLAY_ENV=TRUE
+time ./myapp
+```
+
+**Common hotspots and fixes**:
+| Symptom | Likely cause | Fix |
+|---------|--------------|-----|
+| malloc/free in profile | allocation in loop | preallocate scratch |
+| High cache misses | wrong loop order | column-major (i innermost) |
+| memcpy in profile | array temporaries | explicit loops or check flags |
+| Low IPC, high LLC miss | memory bound | blocking/tiling, SoA layout |
+| Single thread hot | missing OpenMP | add parallel do directive |
+
 ## Build & Test
 - Use repo-documented build and test scripts; cmake or fpm is standard. Keep tests behavioral and fast (≤120 s each).
 - Prefer TDD: Red → Green → Refactor.
