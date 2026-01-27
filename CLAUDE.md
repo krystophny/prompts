@@ -263,16 +263,56 @@ Use `-check arg_temp_created` (Intel) or `-Warray-temporaries` (gfortran) to det
 
 ## Profiling (MANDATORY before optimization)
 
-**Compile with debug symbols** - required for meaningful profiles:
+**Compile flags for profiling**:
 ```bash
-# gfortran: -g keeps symbols, -O2/O3 for realistic optimization
+# gprof (Linux + macOS): add -pg for instrumentation
+gfortran -pg -g -O2 -fopenmp -o myapp main.f90
+
+# Debug symbols only (no gprof): -g keeps symbols, -O2 for realistic timing
 gfortran -g -O2 -fopenmp -o myapp main.f90
 
-# ifort/ifx: same principle
-ifx -g -O2 -qopenmp -o myapp main.f90
+# ifort/ifx (Linux): same principle
+ifx -pg -g -O2 -qopenmp -o myapp main.f90
 ```
 
-**perf (Linux, low overhead, sampling-based)**:
+**gprof (Linux + macOS, compile-time instrumentation)**:
+```bash
+# Compile with -pg, run normally, generates gmon.out
+./myapp
+gprof ./myapp gmon.out | head -80
+
+# Flat profile: time per function
+gprof -p ./myapp gmon.out | head -40
+
+# Call graph: who calls whom
+gprof -q ./myapp gmon.out | head -80
+
+# What to look for:
+# - %time column: functions consuming most time
+# - calls column: hot functions called millions of times
+# - self ms/call: cost per invocation (high = optimize body)
+# - cumulative: time including callees
+```
+
+**sample (macOS only, no recompile needed)**:
+```bash
+# Sample process for 5 seconds at 1ms interval
+sample ./myapp 5 -file /tmp/sample.txt
+
+# Or attach to running PID
+sample <PID> 5 -file /tmp/sample.txt
+
+# Parse output - look for heavy stack traces
+grep -A 20 "Call graph:" /tmp/sample.txt
+grep -E "^\s+[0-9]+" /tmp/sample.txt | sort -rn | head -20
+
+# What to look for:
+# - Deepest/widest stack branches = hot paths
+# - Function names with high sample counts
+# - _malloc/_free in stacks = allocation overhead
+```
+
+**perf (Linux only, low overhead, sampling-based)**:
 ```bash
 # Record profile (F=99 samples/sec, -g for call graph)
 perf record -F 99 -g ./myapp
@@ -293,29 +333,7 @@ perf annotate --stdio function_name_ | head -100
 # - GOMP_parallel = OpenMP overhead (should be small vs work)
 ```
 
-**callgrind (Valgrind, instruction-level, high overhead)**:
-```bash
-# Run under callgrind (10-50x slower)
-valgrind --tool=callgrind --callgrind-out-file=callgrind.out ./myapp
-
-# Top functions by instruction count
-callgrind_annotate callgrind.out | head -60
-
-# Annotate specific source file
-callgrind_annotate callgrind.out src/hotmodule.f90
-
-# Include cache simulation (even slower but shows misses)
-valgrind --tool=callgrind --cache-sim=yes --callgrind-out-file=callgrind.out ./myapp
-
-# Output columns to look for:
-# - Ir = instructions executed (main cost metric)
-# - Dr/Dw = data reads/writes
-# - D1mr/D1mw = L1 data cache read/write misses
-# - DLmr/DLmw = last-level cache misses (memory accesses)
-# High DLmr relative to Dr = poor cache locality
-```
-
-**perf cache analysis**:
+**perf cache/branch analysis (Linux only)**:
 ```bash
 # L1 data cache misses
 perf stat -e L1-dcache-load-misses,L1-dcache-loads ./myapp
@@ -332,18 +350,58 @@ perf stat -e cycles,instructions,cache-references,cache-misses,branches,branch-m
 # - Branch miss rate >2% suggests unpredictable branches
 ```
 
-**OpenMP profiling**:
+**callgrind (Linux only, macOS unsupported on ARM/newer versions)**:
 ```bash
-# Set thread count
-export OMP_NUM_THREADS=8
+# Run under callgrind (10-50x slower)
+valgrind --tool=callgrind --callgrind-out-file=callgrind.out ./myapp
 
-# Intel/AMD: use likwid for hardware counters per thread
-likwid-perfctr -C 0-7 -g MEM ./myapp
+# Top functions by instruction count
+callgrind_annotate callgrind.out | head -60
 
-# GNU: basic timing
-export OMP_DISPLAY_ENV=TRUE
-time ./myapp
+# Annotate specific source file
+callgrind_annotate callgrind.out src/hotmodule.f90
+
+# Include cache simulation (even slower but shows misses)
+valgrind --tool=callgrind --cache-sim=yes --callgrind-out-file=callgrind.out ./myapp
+
+# Output columns:
+# - Ir = instructions executed (main cost metric)
+# - D1mr/D1mw = L1 cache misses, DLmr/DLmw = LLC misses
 ```
+
+**dtrace (macOS, requires SIP disabled or entitled binary)**:
+```bash
+# Count function calls (needs root)
+sudo dtrace -n 'pid$target::*function_name*:entry { @[probefunc] = count(); }' -c ./myapp
+
+# Profile on-CPU time by function
+sudo dtrace -n 'profile-997 /pid == $target/ { @[ustack()] = count(); }' -c ./myapp
+```
+
+**OpenMP profiling (Linux + macOS)**:
+```bash
+export OMP_NUM_THREADS=8
+export OMP_DISPLAY_ENV=TRUE
+
+# Basic timing
+time ./myapp
+
+# Linux only: likwid for hardware counters per thread
+likwid-perfctr -C 0-7 -g MEM ./myapp
+```
+
+**Tool availability summary**:
+| Tool | Linux | macOS | Recompile? | Overhead |
+|------|-------|-------|------------|----------|
+| gprof | Yes | Yes | Yes (-pg) | Medium |
+| sample | No | Yes | No | Low |
+| perf | Yes | No | No | Low |
+| callgrind | Yes | No* | No | High |
+| dtrace | Yes | Partial** | No | Low |
+| likwid | Yes | No | No | Low |
+
+\* Valgrind unsupported on macOS ARM and unreliable on recent x86 macOS
+\** dtrace on macOS requires SIP disabled or entitled binary
 
 **Common hotspots and fixes**:
 | Symptom | Likely cause | Fix |
