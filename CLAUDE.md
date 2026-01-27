@@ -277,19 +277,20 @@ ifx -g -O2 -qopenmp -o myapp main.f90
 # Record profile (F=99 samples/sec, -g for call graph)
 perf record -F 99 -g ./myapp
 
-# Interactive TUI - navigate with arrow keys, Enter to zoom
-perf report
+# Top functions by CPU time (CLI output)
+perf report --stdio --sort=overhead | head -40
 
-# Flat profile - top functions by CPU time
-perf report --stdio --sort=overhead
+# With call graph (callers/callees)
+perf report --stdio --sort=overhead -g --no-children | head -80
 
 # Annotate hot function with source lines
-perf annotate function_name_
+perf annotate --stdio function_name_ | head -100
 
 # What to look for:
-# - Functions consuming >10% time are optimization targets
-# - Deep call stacks suggest abstraction overhead
-# - malloc/free in hot path indicates allocation issues
+# - Overhead% >10% = optimization target
+# - malloc/free/memcpy in top = allocation/copy overhead
+# - __intel_ssse3_rep_memcpy = array temporary copies
+# - GOMP_parallel = OpenMP overhead (should be small vs work)
 ```
 
 **callgrind (Valgrind, instruction-level, high overhead)**:
@@ -297,18 +298,21 @@ perf annotate function_name_
 # Run under callgrind (10-50x slower)
 valgrind --tool=callgrind --callgrind-out-file=callgrind.out ./myapp
 
-# Visualize with kcachegrind (GUI)
-kcachegrind callgrind.out
+# Top functions by instruction count
+callgrind_annotate callgrind.out | head -60
 
-# CLI summary
-callgrind_annotate callgrind.out | head -50
+# Annotate specific source file
+callgrind_annotate callgrind.out src/hotmodule.f90
 
-# What to look for in kcachegrind:
-# - Ir (instruction reads) = total instructions executed
-# - Self vs Inclusive cost: self=function only, inclusive=with callees
-# - Red = hot, find the reddest boxes in call graph
-# - Cache misses (D1mr, DLmr) indicate memory access patterns
-# - Branch mispredictions (Bc, Bcm) suggest unpredictable conditionals
+# Include cache simulation (even slower but shows misses)
+valgrind --tool=callgrind --cache-sim=yes --callgrind-out-file=callgrind.out ./myapp
+
+# Output columns to look for:
+# - Ir = instructions executed (main cost metric)
+# - Dr/Dw = data reads/writes
+# - D1mr/D1mw = L1 data cache read/write misses
+# - DLmr/DLmw = last-level cache misses (memory accesses)
+# High DLmr relative to Dr = poor cache locality
 ```
 
 **perf cache analysis**:
