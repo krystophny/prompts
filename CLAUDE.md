@@ -99,6 +99,168 @@ Feature branches (MANDATORY):
 - In if conditionals, do not rely on short-circuiting, Fortran does not support it.
 - Do not use quotes in comments; write examples without quotation marks.
 
+## Fortran Performance Patterns (MANDATORY)
+
+**Column-major loop order** - leftmost index innermost for cache efficiency:
+```fortran
+! CORRECT: row (i) varies fastest in inner loop
+do k = 1, nz
+    do j = 1, ny
+        do i = 1, nx
+            a(i, j, k) = b(i, j, k) + c(i, j, k)
+        end do
+    end do
+end do
+
+! WRONG: column-major violation, cache thrashing
+do i = 1, nx
+    do j = 1, ny
+        do k = 1, nz
+            a(i, j, k) = b(i, j, k) + c(i, j, k)
+        end do
+    end do
+end do
+```
+
+**Structure-of-Arrays (SoA)** - keeps data contiguous per field:
+```fortran
+! CORRECT: Structure-of-Arrays
+type :: particles_t
+    real(dp), allocatable :: x(:), y(:), z(:)
+    real(dp), allocatable :: vx(:), vy(:), vz(:)
+    real(dp), allocatable :: mass(:)
+end type
+
+! WRONG: Array-of-Structures, poor cache utilization
+type :: particle_t
+    real(dp) :: x, y, z, vx, vy, vz, mass
+end type
+type(particle_t), allocatable :: particles(:)
+```
+
+**OpenMP parallel loops** - collapse for nested loops, schedule for load balance:
+```fortran
+! static: uniform work per iteration, minimal overhead
+!$omp parallel do collapse(2) private(i, j, k) schedule(static)
+do k = 1, nz
+    do j = 1, ny
+        do i = 1, nx
+            a(i, j, k) = b(i, j, k) * factor
+        end do
+    end do
+end do
+!$omp end parallel do
+
+! dynamic: variable work per iteration, better load balance
+!$omp parallel do schedule(dynamic, 16) private(i)
+do i = 1, n
+    call variable_cost_work(i)
+end do
+!$omp end parallel do
+
+! guided: decreasing chunk sizes, good for unknown load patterns
+!$omp parallel do schedule(guided) private(i)
+do i = 1, n
+    call unpredictable_work(i)
+end do
+!$omp end parallel do
+```
+
+**OpenMP reduction** - for accumulating values:
+```fortran
+total = 0.0d0
+!$omp parallel do reduction(+:total) private(i)
+do i = 1, n
+    total = total + x(i) * y(i)
+end do
+!$omp end parallel do
+```
+
+**Contiguous arrays** - required for assumed-shape in hot paths:
+```fortran
+subroutine process_field(field, nx, ny, nz)
+    integer, intent(in) :: nx, ny, nz
+    real(dp), intent(inout), contiguous :: field(:,:,:)
+    integer :: i, j, k
+
+    !$omp parallel do collapse(2) private(i, j, k)
+    do k = 1, nz
+        do j = 1, ny
+            do i = 1, nx
+                field(i, j, k) = field(i, j, k) * 2.0d0
+            end do
+        end do
+    end do
+    !$omp end parallel do
+end subroutine
+
+! Runtime check before assigning non-contiguous data
+if (is_contiguous(array_slice)) then
+    contiguous_ptr => array_slice
+end if
+```
+Prefer `allocatable` over `pointer` - pointers risk aliasing and force compiler temporaries.
+
+**Preallocated scratch arrays** - avoid allocation in hot loops:
+```fortran
+! CORRECT: allocate once, reuse
+real(dp), allocatable :: scratch(:)
+allocate(scratch(n))
+do iter = 1, max_iter
+    call compute_step(data, scratch, n)
+end do
+
+! WRONG: allocation inside loop
+do iter = 1, max_iter
+    allocate(scratch(n))
+    call compute_step(data, scratch, n)
+    deallocate(scratch)
+end do
+```
+
+**Loop blocking/tiling** - for matmul and large arrays exceeding cache:
+```fortran
+! Matrix multiply: j-k-i order keeps B(k,j) in cache, A(i,k) stride-1
+do j = 1, n
+    do k = 1, n
+        do i = 1, n
+            c(i, j) = c(i, j) + a(i, k) * b(k, j)
+        end do
+    end do
+end do
+
+! Blocked version for large matrices
+integer, parameter :: bs = 64
+do jj = 1, n, bs
+    do kk = 1, n, bs
+        do j = jj, min(jj + bs - 1, n)
+            do k = kk, min(kk + bs - 1, n)
+                do i = 1, n
+                    c(i, j) = c(i, j) + a(i, k) * b(k, j)
+                end do
+            end do
+        end do
+    end do
+end do
+```
+
+**Array syntax vs explicit loops** - simple ops vectorize well, complex RHS may create temporaries:
+```fortran
+! GOOD: simple array syntax vectorizes efficiently
+c = a + b
+y = y + alpha * x
+
+! RISKY: complex RHS may allocate temporary arrays
+! Compiler must evaluate entire RHS before assignment
+c = a + b * sin(d) + e * exp(f)  ! up to 3 temporaries possible
+
+! SAFER for complex expressions: explicit loop avoids temporaries
+do i = 1, n
+    c(i) = a(i) + b(i) * sin(d(i)) + e(i) * exp(f(i))
+end do
+```
+Use `-check arg_temp_created` (Intel) or `-Warray-temporaries` (gfortran) to detect hidden temporaries.
+
 ## Build & Test
 - Use repo-documented build and test scripts; cmake or fpm is standard. Keep tests behavioral and fast (≤120 s each).
 - Prefer TDD: Red → Green → Refactor.
