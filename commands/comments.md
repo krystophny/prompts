@@ -4,49 +4,91 @@ Review and address all comments on a PR. Requires PR number as argument.
 
 ## Usage
 ```
-/pr-comments <pr-number>
+/comments <pr-number>
+```
+
+## AGENT DELEGATION
+
+```
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! MANDATORY: Spawn sergei-perfectionist-coder for code changes         !!
+!! The agent enforces clean code and prevents technical debt            !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ```
 
 ## CHECKLIST (Execute in Order)
 
-### 1. LIST ALL COMMENTS
-```bash
-gh pr view $ARGUMENTS --repo lfortran/lfortran --comments
+```
+[ ] 1. LIST ALL COMMENTS
+      gh pr view $ARGUMENTS --repo <owner>/<repo> --comments
+
+[ ] 2. CHECK REVIEW STATUS
+      gh pr view $ARGUMENTS --repo <owner>/<repo> --json reviews --jq '.reviews[] | "\(.author.login): \(.state)"'
+
+[ ] 3. GET INLINE COMMENTS
+      gh api repos/<owner>/<repo>/pulls/$ARGUMENTS/comments --jq '.[] | "[\(.path):\(.line)] \(.user.login): \(.body)"'
+
+[ ] 4. FOR EACH COMMENT (spawn sergei-perfectionist-coder if code change needed):
+      - Read carefully
+      - If code change needed -> make the change (NO technical debt)
+      - If clarification needed -> reply to comment
+      - If disagreement -> discuss respectfully, don't ignore
+
+[ ] 5. CLEAN CODE VERIFICATION
+      - [ ] Functions < 100 lines (hard limit)
+      - [ ] No copy-paste code
+      - [ ] No magic numbers
+      - [ ] No TODO/FIXME without GitHub issues
+      - [ ] No commented-out code
+      - [ ] No suppression pragmas
+
+[ ] 6. BUILD AND TEST
+      # Build project
+      # Run tests - ALL must pass (100%)
+
+[ ] 7. COMMIT & PUSH
+      git add <specific-files>
+      git commit -m "fix: address review feedback"
+      git push
+
+[ ] 8. REPLY TO COMMENTS
+      Confirm resolution by replying to each addressed comment.
+
+[ ] 9. REQUEST RE-REVIEW (if needed)
+      gh pr edit $ARGUMENTS --repo <owner>/<repo> --add-reviewer <reviewer>
 ```
 
-### 2. CHECK REVIEW STATUS
-```bash
-gh pr view $ARGUMENTS --repo lfortran/lfortran --json reviews --jq '.reviews[] | "\(.author.login): \(.state)"'
-```
+## TECHNICAL DEBT CHECK (BLOCKING)
 
-### 3. GET INLINE COMMENTS
-```bash
-gh api repos/lfortran/lfortran/pulls/$ARGUMENTS/comments --jq '.[] | "[\(.path):\(.line)] \(.user.login): \(.body)"'
-```
+Before committing any changes, verify:
 
-### 4. FOR EACH COMMENT:
-- Read carefully
-- If code change needed → make the change
-- If clarification needed → reply to comment
-- If disagreement → discuss respectfully, don't ignore
+| Pattern | Severity | Action |
+|---------|----------|--------|
+| TODO/FIXME without issue | CRITICAL | REJECT - create GitHub issue first |
+| Commented-out code | CRITICAL | REJECT - delete it |
+| Suppression pragmas | CRITICAL | REJECT - fix the underlying issue |
+| Copy-paste duplication | MAJOR | REJECT - extract shared code |
+| Magic numbers | MAJOR | REJECT - use named constants |
+| Functions >100 lines | MAJOR | REJECT - split function |
 
-### 5. AFTER ADDRESSING ALL:
-```bash
-scripts/lf.sh build
-scripts/lf.sh test
-```
+## REPORT TEMPLATE
 
-### 6. COMMIT & PUSH
-```bash
-git -C lfortran add <specific-files>
-git -C lfortran commit -m "fix: address review feedback"
-git -C lfortran push
-```
+```markdown
+# PR Comments Addressed
 
-### 7. REPLY TO COMMENTS
-Confirm resolution by replying to each addressed comment.
+## Comments Processed
+- [ ] Comment 1: [summary] - [action taken]
+- [ ] Comment 2: [summary] - [action taken]
 
-### 8. REQUEST RE-REVIEW (if needed)
-```bash
-gh pr edit $ARGUMENTS --repo lfortran/lfortran --add-reviewer <reviewer>
+## Clean Code Verification
+- Function size: [PASS/FAIL]
+- No duplication: [PASS/FAIL]
+- No magic numbers: [PASS/FAIL]
+- No tech debt: [PASS/FAIL]
+
+## Tests
+- Status: [ALL PASS / FAILURES]
+
+## Next Steps
+[Ready for re-review | More changes needed]
 ```

@@ -100,3 +100,113 @@ PLAY: max → patrick (static analysis) → vicky → max → chris
 - NEVER approve partial pass rates (100% or handback)
 - ALWAYS provide solutions with criticism
 - ALWAYS check for test manipulation via static analysis
+
+## CLEAN CODE ENFORCEMENT (MANDATORY)
+
+### Principles Checklist
+
+```
+[ ] SRP - Single Responsibility Principle
+    - Each module has ONE reason to change
+    - Each function does ONE thing
+    - REJECT: god objects, multi-purpose functions
+
+[ ] Meaningful Names
+    - Variables describe what they hold
+    - Functions describe what they do
+    - REJECT: cryptic abbreviations, single letters (except i,j,k,n)
+
+[ ] Small Functions
+    - < 50 lines: PASS
+    - 50-100 lines: WARNING
+    - > 100 lines: REJECT
+
+[ ] DRY - Don't Repeat Yourself
+    - No copy-paste code blocks
+    - Similar patterns extracted
+    - REJECT: duplicated logic
+
+[ ] YAGNI - You Aren't Gonna Need It
+    - No speculative code
+    - No unused parameters
+    - REJECT: "just in case" features
+
+[ ] KISS - Keep It Simple
+    - Simplest solution that works
+    - No unnecessary abstraction
+    - REJECT: over-engineering
+```
+
+## TECHNICAL DEBT DETECTION (BLOCKING)
+
+```
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! TECHNICAL DEBT IS STRICTLY FORBIDDEN                                  !!
+!! ANY debt detected = IMMEDIATE HANDBACK                                !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+```
+
+### Zero Tolerance Items
+
+| Pattern | Severity | Action |
+|---------|----------|--------|
+| TODO/FIXME without issue | CRITICAL | REJECT |
+| Commented-out code | CRITICAL | REJECT |
+| Suppression pragmas | CRITICAL | REJECT |
+| Copy-paste duplication | MAJOR | REJECT |
+| Magic numbers | MAJOR | REJECT |
+| Functions >100 lines | MAJOR | REJECT |
+| Temporary workarounds | CRITICAL | REJECT |
+
+### Debt Detection Checklist
+
+```
+[ ] 1. SCAN FOR FORBIDDEN PATTERNS
+      - grep -E "TODO|FIXME|HACK|XXX" in diff
+      - Check for new suppression comments
+      - Check for commented-out code blocks
+
+[ ] 2. CHECK FOR DUPLICATION
+      - Compare new code with existing codebase
+      - Flag copy-paste patterns
+
+[ ] 3. VERIFY SIZE LIMITS
+      - Functions < 100 lines
+      - Modules < 1000 lines
+      - Parameters < 5 per function
+
+[ ] 4. ASSESS WORKAROUNDS
+      - Is this a proper fix or a workaround?
+      - Does it belong in earliest pipeline stage?
+```
+
+### Review Output Format
+
+```markdown
+## PATRICK REVIEW COMPLETE
+
+**Status:** [APPROVED | HANDBACK]
+
+### Clean Code
+| Principle | Status |
+|-----------|--------|
+| SRP | PASS/FAIL |
+| Names | PASS/FAIL |
+| Size | PASS/FAIL |
+| DRY | PASS/FAIL |
+| YAGNI | PASS/FAIL |
+
+### Technical Debt
+**Status:** [NONE | DETECTED]
+**Details:** [list if any]
+
+### CI Evidence
+**Valid:** Yes/No
+**Tests:** Clean/Manipulated
+
+### Issues (if any)
+- file:line - description - severity
+
+### Verdict
+[APPROVED -> handoff to max | HANDBACK -> fix required]
+```
