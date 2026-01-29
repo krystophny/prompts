@@ -263,154 +263,14 @@ Use `-check arg_temp_created` (Intel) or `-Warray-temporaries` (gfortran) to det
 
 ## Profiling (MANDATORY before optimization)
 
-**Compile flags for profiling**:
-```bash
-# gprof (Linux + macOS): add -pg for instrumentation
-gfortran -pg -g -O2 -fopenmp -o myapp main.f90
+| Tool | Platform | Command |
+|------|----------|---------|
+| gprof | Linux/macOS | `gfortran -pg -g -O2 app.f90 && ./a.out && gprof ./a.out gmon.out` |
+| sample | macOS | `sample ./app 5 -file /tmp/sample.txt` |
+| perf | Linux | `perf record -F 99 -g ./app && perf report --stdio` |
+| callgrind | Linux | `valgrind --tool=callgrind ./app && callgrind_annotate callgrind.out` |
 
-# Debug symbols only (no gprof): -g keeps symbols, -O2 for realistic timing
-gfortran -g -O2 -fopenmp -o myapp main.f90
-
-# ifort/ifx (Linux): same principle
-ifx -pg -g -O2 -qopenmp -o myapp main.f90
-```
-
-**gprof (Linux + macOS, compile-time instrumentation)**:
-```bash
-# Compile with -pg, run normally, generates gmon.out
-./myapp
-gprof ./myapp gmon.out | head -80
-
-# Flat profile: time per function
-gprof -p ./myapp gmon.out | head -40
-
-# Call graph: who calls whom
-gprof -q ./myapp gmon.out | head -80
-
-# What to look for:
-# - %time column: functions consuming most time
-# - calls column: hot functions called millions of times
-# - self ms/call: cost per invocation (high = optimize body)
-# - cumulative: time including callees
-```
-
-**sample (macOS only, no recompile needed)**:
-```bash
-# Sample process for 5 seconds at 1ms interval
-sample ./myapp 5 -file /tmp/sample.txt
-
-# Or attach to running PID
-sample <PID> 5 -file /tmp/sample.txt
-
-# Parse output - look for heavy stack traces
-grep -A 20 "Call graph:" /tmp/sample.txt
-grep -E "^\s+[0-9]+" /tmp/sample.txt | sort -rn | head -20
-
-# What to look for:
-# - Deepest/widest stack branches = hot paths
-# - Function names with high sample counts
-# - _malloc/_free in stacks = allocation overhead
-```
-
-**perf (Linux only, low overhead, sampling-based)**:
-```bash
-# Record profile (F=99 samples/sec, -g for call graph)
-perf record -F 99 -g ./myapp
-
-# Top functions by CPU time (CLI output)
-perf report --stdio --sort=overhead | head -40
-
-# With call graph (callers/callees)
-perf report --stdio --sort=overhead -g --no-children | head -80
-
-# Annotate hot function with source lines
-perf annotate --stdio function_name_ | head -100
-
-# What to look for:
-# - Overhead% >10% = optimization target
-# - malloc/free/memcpy in top = allocation/copy overhead
-# - __intel_ssse3_rep_memcpy = array temporary copies
-# - GOMP_parallel = OpenMP overhead (should be small vs work)
-```
-
-**perf cache/branch analysis (Linux only)**:
-```bash
-# L1 data cache misses
-perf stat -e L1-dcache-load-misses,L1-dcache-loads ./myapp
-
-# Last-level cache misses (memory bound indicator)
-perf stat -e LLC-load-misses,LLC-loads ./myapp
-
-# All useful events at once
-perf stat -e cycles,instructions,cache-references,cache-misses,branches,branch-misses ./myapp
-
-# What to look for:
-# - IPC (instructions per cycle) < 1.0 suggests memory bound
-# - Cache miss rate >5% indicates poor locality
-# - Branch miss rate >2% suggests unpredictable branches
-```
-
-**callgrind (Linux only, macOS unsupported on ARM/newer versions)**:
-```bash
-# Run under callgrind (10-50x slower)
-valgrind --tool=callgrind --callgrind-out-file=callgrind.out ./myapp
-
-# Top functions by instruction count
-callgrind_annotate callgrind.out | head -60
-
-# Annotate specific source file
-callgrind_annotate callgrind.out src/hotmodule.f90
-
-# Include cache simulation (even slower but shows misses)
-valgrind --tool=callgrind --cache-sim=yes --callgrind-out-file=callgrind.out ./myapp
-
-# Output columns:
-# - Ir = instructions executed (main cost metric)
-# - D1mr/D1mw = L1 cache misses, DLmr/DLmw = LLC misses
-```
-
-**dtrace (macOS, requires SIP disabled or entitled binary)**:
-```bash
-# Count function calls (needs root)
-sudo dtrace -n 'pid$target::*function_name*:entry { @[probefunc] = count(); }' -c ./myapp
-
-# Profile on-CPU time by function
-sudo dtrace -n 'profile-997 /pid == $target/ { @[ustack()] = count(); }' -c ./myapp
-```
-
-**OpenMP profiling (Linux + macOS)**:
-```bash
-export OMP_NUM_THREADS=8
-export OMP_DISPLAY_ENV=TRUE
-
-# Basic timing
-time ./myapp
-
-# Linux only: likwid for hardware counters per thread
-likwid-perfctr -C 0-7 -g MEM ./myapp
-```
-
-**Tool availability summary**:
-| Tool | Linux | macOS | Recompile? | Overhead |
-|------|-------|-------|------------|----------|
-| gprof | Yes | Yes | Yes (-pg) | Medium |
-| sample | No | Yes | No | Low |
-| perf | Yes | No | No | Low |
-| callgrind | Yes | No* | No | High |
-| dtrace | Yes | Partial** | No | Low |
-| likwid | Yes | No | No | Low |
-
-\* Valgrind unsupported on macOS ARM and unreliable on recent x86 macOS
-\** dtrace on macOS requires SIP disabled or entitled binary
-
-**Common hotspots and fixes**:
-| Symptom | Likely cause | Fix |
-|---------|--------------|-----|
-| malloc/free in profile | allocation in loop | preallocate scratch |
-| High cache misses | wrong loop order | column-major (i innermost) |
-| memcpy in profile | array temporaries | explicit loops or check flags |
-| Low IPC, high LLC miss | memory bound | blocking/tiling, SoA layout |
-| Single thread hot | missing OpenMP | add parallel do directive |
+**Hotspot diagnosis**: malloc/free → preallocate; cache misses → fix loop order; memcpy → explicit loops; low IPC → blocking/tiling
 
 ## Build & Test
 - Use repo-documented build and test scripts; cmake or fpm is standard. Keep tests behavioral and fast (≤120 s each).
@@ -421,25 +281,7 @@ likwid-perfctr -C 0-7 -g MEM ./myapp
 - Use /tmp for test logs to avoid polluting the working directory.
 
 ## NVHPC/nvfortran Setup
-When using NVHPC (nvfortran) for OpenACC GPU offloading:
-
-**CUDA auto-detection**: CMake auto-detects CUDA at `/opt/cuda` or `/usr/local/cuda` and sets `NVHPC_CUDA_HOME`.
-
-**HPC-X MPI**: The stub wrapper at `comm_libs/hpcx/bin/mpifort` has strict CUDA version checks that may fail. Use the FULL HPC-X installation instead:
-```bash
-# Source HPC-X environment FIRST (required)
-source /opt/nvidia/hpc_sdk/Linux_x86_64/VERSION/comm_libs/13.0/hpcx/latest/hpcx-mt-init.sh
-hpcx_load
-export NVHPC_CUDA_HOME=/opt/cuda  # If not auto-detected
-
-# Use mpifort from the full HPC-X installation
-cmake -S . -B build -G Ninja \
-  -DCMAKE_Fortran_COMPILER=/opt/nvidia/hpc_sdk/Linux_x86_64/VERSION/comm_libs/13.0/hpcx/latest/ompi/bin/mpifort \
-  -DCMAKE_C_COMPILER=/opt/nvidia/hpc_sdk/Linux_x86_64/VERSION/compilers/bin/nvc \
-  -DFORCE_FETCH_DEPS=ON
-```
-
-**Dependency building**: NVHPC triggers auto-building of HDF5, NetCDF, FFTW from source due to ABI incompatibility with system libs compiled by gfortran.
+For OpenACC GPU offloading: source HPC-X environment first (`hpcx-mt-init.sh && hpcx_load`), use full HPC-X `mpifort` (not stub wrapper), set `NVHPC_CUDA_HOME` if needed. NVHPC auto-builds HDF5/NetCDF/FFTW due to ABI incompatibility with gfortran-compiled libs.
 
 ## Licensing & Reuse
 - Research-first. Copy ideas, not lines. Verify licenses; prefer MIT/BSD/Apache-2.0.
@@ -460,18 +302,23 @@ cmake -S . -B build -G Ninja \
 - Review phases MUST validate compliance against BOTH project CLAUDE.md AND user CLAUDE.md STRICTLY
 - ZERO tolerance for ANY rule violations - ALL violations MUST be corrected immediately
 
+## MERGE HYGIENE - ZERO TOLERANCE
+- **Workarounds**: Code with "workaround/temporary/should be removed" MUST have issue number in same line
+- **Improve-later**: If reviewer says "improve later" → GitHub issue MUST exist before merge
+- **Requested issues**: If reviewer says "create issue for X" → verify issue exists before merge
+- **No skipping**: NEVER skip/disable tests to pass CI; "skipped for now" = REJECT
+- **No noise comments**: Comments explain WHY not WHAT; no "bug fix for X" in test registration
+- **Test validity**: Test MUST fail on main AND pass on branch; identical behavior = invalid test
+- **New backends**: New test backend/config MUST have CI coverage OR tracking issue
+
 ## CHECKLIST BEFORE COMPLETION
 1. Followed ALL Fortran rules (88-col, intents, allocatable/move_alloc, dp)?
-2. Respected ALL size limits?
-3. Provided concrete evidence for ALL claims?
-4. Avoided ALL stubs/placeholders/suppressions?
-5. Followed Git/GitHub discipline?
-6. Validated against project CLAUDE.md?
-7. Validated against user CLAUDE.md?
-8. ZERO tolerance policy enforced - ALL violations corrected?
-9. 100% test pass rate achieved by fixing CODE (not tests)?
-10. NEVER claimed tests were pre-existing failures (including from agent/tool reports)?
-11. NEVER weakened/changed/removed tests to achieve pass rate?
+2. Respected ALL size limits? Provided concrete evidence for ALL claims?
+3. Avoided ALL stubs/placeholders/suppressions? Followed Git/GitHub discipline?
+4. 100% test pass rate by fixing CODE (not tests)? Test fails on main, passes on branch?
+5. All workarounds have issue numbers? All "improve later" items tracked in issues?
+6. All reviewer-requested issues created? No tests skipped/disabled?
+7. No noise comments? New backends have CI coverage or tracking issue?
 
 ## GitHub CLI Examples
 - Issues

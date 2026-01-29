@@ -34,13 +34,16 @@ Review and address all comments on a PR. Requires PR number as argument.
       - If clarification needed -> reply to comment
       - If disagreement -> discuss respectfully, don't ignore
 
+[ ] 4.5 FOLLOW-UP TRACKING
+      - [ ] If reviewer requested issue creation → verify issue exists (gh issue view)
+      - [ ] If "improve later/refine later" → GitHub issue created with specifics
+      - [ ] Link issue numbers in PR comment as confirmation
+      - [ ] Missing tracking = DO NOT PROCEED
+
 [ ] 5. CLEAN CODE VERIFICATION
-      - [ ] Functions < 100 lines (hard limit)
-      - [ ] No copy-paste code
-      - [ ] No magic numbers
-      - [ ] No TODO/FIXME without GitHub issues
-      - [ ] No commented-out code
-      - [ ] No suppression pragmas
+      - [ ] Functions < 100 lines; No copy-paste code; No magic numbers
+      - [ ] No TODO/FIXME without issues; No commented-out code
+      - [ ] No noise comments; Workarounds have issue numbers
 
 [ ] 6. BUILD AND TEST
       # Build project

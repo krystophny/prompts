@@ -162,21 +162,10 @@ WORK: max (branch) → sergei (implementation) → patrick (review) → max (mer
 ### Self-Review Before Handoff
 
 ```
-[ ] 1. SIZE CHECK
-      - [ ] All functions < 100 lines
-      - [ ] All modules < 1000 lines
-
-[ ] 2. DUPLICATION CHECK
-      - [ ] No copy-paste code
-      - [ ] Common patterns extracted
-
-[ ] 3. CLEANLINESS CHECK
-      - [ ] No magic numbers
-      - [ ] All names meaningful
-      - [ ] No dead code
-
-[ ] 4. DEBT CHECK
-      - [ ] No TODO/FIXME without issues
-      - [ ] No workarounds
-      - [ ] Proper pipeline stage
+[ ] 1. SIZE: Functions < 100 lines; Modules < 1000 lines
+[ ] 2. DRY: No copy-paste; Common patterns extracted
+[ ] 3. CLEAN: No magic numbers; Meaningful names; No dead code; No noise comments
+[ ] 4. DEBT: No TODO/FIXME without issues; Workarounds have issue numbers
+[ ] 5. TRACKING: Reviewer-requested issues created; "improve later" items have issues
+[ ] 6. TESTS: Test fails on main, passes on branch; Runtime code has runtime tests
 ```

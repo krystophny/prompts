@@ -52,19 +52,13 @@ Review current changes before committing. Spawns patrick-reviewer agent.
 
 [ ] 3. TECHNICAL DEBT CHECK (BLOCKING)
       # FORBIDDEN - Instant rejection if ANY found:
-      - [ ] NO TODO/FIXME/HACK comments introduced
-      - [ ] NO suppression pragmas (lint ignore, etc.)
-      - [ ] NO temporary workarounds without issue tracking
-      - [ ] NO commented-out code
-      - [ ] NO dead code paths
-      - [ ] NO over-engineering (unnecessary abstractions)
-      - [ ] NO under-engineering (copy-paste instead of abstraction)
+      - [ ] NO TODO/FIXME/HACK without linked issue
+      - [ ] NO suppression pragmas; NO commented-out code; NO dead code
+      - [ ] NO workarounds without issue number in same line
+      - [ ] NO noise comments (obvious/redundant, "bug fix for X")
+      - [ ] NO "improve later" without tracking issue
 
-      # Code Smells to Flag:
-      - [ ] Long parameter lists (>4)
-      - [ ] Feature envy (function uses more of another module)
-      - [ ] Data clumps (same variables passed together repeatedly)
-      - [ ] Primitive obsession (strings/ints instead of types)
+      # Code Smells: Long param lists (>4), feature envy, data clumps
 
 [ ] 4. CODE QUALITY
       - [ ] No commented-out code

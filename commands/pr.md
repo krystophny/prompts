@@ -47,12 +47,17 @@ Example: `/pr minloc-kind8` creates branch `fix/minloc-kind8`
 
 [ ] 5. VERIFY TEST PASSES
       # Build and run test - MUST PASS
+      # Verify output DIFFERS from main (not identical behavior)
+
+[ ] 5.5 COVERAGE CHECK
+      - [ ] Every new code path has exercising test
+      - [ ] Runtime changes have RUN tests (not just compile)
+      - [ ] New backend/config has CI coverage OR tracking issue
 
 [ ] 6. CLEAN CODE CHECK
-      - [ ] Functions < 100 lines
-      - [ ] No copy-paste code
-      - [ ] No magic numbers
-      - [ ] No TODO/FIXME without issues
+      - [ ] Functions < 100 lines; No copy-paste code
+      - [ ] No magic numbers; No TODO/FIXME without issues
+      - [ ] No noise comments; Workarounds have issue numbers
 
 [ ] 7. RUN FULL TESTS
       # ALL tests must pass - 100%

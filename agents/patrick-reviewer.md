@@ -101,6 +101,21 @@ PLAY: max → patrick (static analysis) → vicky → max → chris
 - ALWAYS provide solutions with criticism
 - ALWAYS check for test manipulation via static analysis
 
+## MERGE READINESS AUDIT (BLOCKING)
+
+Before approving, verify ALL:
+- [ ] Every review comment: addressed in code OR issue created OR justified disagreement
+- [ ] grep "improve later|refine|good enough" → each has linked issue
+- [ ] grep "create.*issue|file.*issue" → verify issue actually exists
+- [ ] grep "workaround|temporary|should be removed" → each has issue number in code
+- [ ] Test fails on main, passes on branch (evidence required)
+- [ ] Runtime code has runtime tests (not just compile)
+- [ ] No tests skipped/disabled; no "skip for now"
+- [ ] No noise comments; no unnecessary code comments
+- [ ] New backends have CI coverage or tracking issue
+
+**ANY failure = HANDBACK, not APPROVE**
+
 ## CLEAN CODE ENFORCEMENT (MANDATORY)
 
 ### Principles Checklist
