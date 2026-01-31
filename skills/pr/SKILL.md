@@ -67,14 +67,16 @@ git checkout -b fix/$NAME origin/main
 - Add to build system with labels
 - MUST fail on main, pass after fix
 
-### 3. VERIFY TEST FAILS ON MAIN
+### 3. VERIFY TEST FAILS ON MAIN (CAPTURE OUTPUT)
 ```bash
 git stash
 git checkout origin/main
-# Run test - MUST FAIL
+# Run test - MUST FAIL - CAPTURE CONSOLE OUTPUT FOR PR DESCRIPTION
+<test_command> 2>&1 | tee /tmp/test-fail-main.log
 git checkout fix/$NAME
 git stash pop
 ```
+**MANDATORY**: Save this failure output for PR description evidence.
 
 ### 4. IMPLEMENT FIX (spawn sergei-perfectionist-coder)
 - Search codebase first (reuse-first)
@@ -95,9 +97,28 @@ git push -u origin fix/$NAME
 - Tech debt check
 - Test quality
 
-### 7. CREATE PR
+### 7. CREATE PR WITH VERIFICATION EVIDENCE
 ```bash
-gh pr create --title "fix: <description>" --body-file /tmp/pr.md
+gh pr create --draft --title "fix: <description>" --body-file /tmp/pr.md
+```
+
+**PR body MUST include verification section:**
+```markdown
+## Verification
+
+### Test fails on main
+\`\`\`
+$ git checkout upstream/main
+$ <test_command>
+[... actual console output from /tmp/test-fail-main.log ...]
+\`\`\`
+
+### Test passes after fix
+\`\`\`
+$ git checkout fix/$NAME
+$ <test_command>
+[... actual console output showing PASS ...]
+\`\`\`
 ```
 
 ## WORKTREE CLEANUP

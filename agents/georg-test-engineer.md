@@ -95,7 +95,26 @@ Follow the repo's existing test structure and conventions.
 
 ## Rules
 
-- NEVER create tests that fail on main
-- ALWAYS verify tests pass CI before handoff
+- For BUG FIXES: Create tests that FAIL on main (reproduce the bug) and PASS after fix
+- For NEW FEATURES: Tests should pass after implementation
+- ALWAYS capture console output evidence for PR descriptions
+- ALWAYS verify tests pass CI before handoff (after fix is applied)
 - NO placeholder or shallow tests
 - Tests must be strict, non-shallow, behavioral
+
+## TEST VERIFICATION EVIDENCE (MANDATORY FOR BUG FIXES)
+
+When creating tests for bug fixes:
+1. **Verify test FAILS on main** - Run on upstream/main, capture console output
+2. **Verify test PASSES after fix** - Run on branch, capture console output
+3. **Include BOTH outputs in PR description** under ## Verification section
+
+```
+$ git checkout upstream/main
+$ <test_command>
+[... console output showing FAILURE ...]
+
+$ git checkout <branch>
+$ <test_command>
+[... console output showing PASS ...]
+```

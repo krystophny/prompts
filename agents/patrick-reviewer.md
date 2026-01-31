@@ -108,13 +108,29 @@ Before approving, verify ALL:
 - [ ] grep "improve later|refine|good enough" → each has linked issue
 - [ ] grep "create.*issue|file.*issue" → verify issue actually exists
 - [ ] grep "workaround|temporary|should be removed" → each has issue number in code
-- [ ] Test fails on main, passes on branch (evidence required)
+- [ ] **TEST EVIDENCE IN PR DESCRIPTION**: Console output showing test FAILS on main
+- [ ] **TEST EVIDENCE IN PR DESCRIPTION**: Console output showing test PASSES after fix
 - [ ] Runtime code has runtime tests (not just compile)
 - [ ] No tests skipped/disabled; no "skip for now"
 - [ ] No noise comments; no unnecessary code comments
 - [ ] New backends have CI coverage or tracking issue
 
 **ANY failure = HANDBACK, not APPROVE**
+
+## TEST VERIFICATION EVIDENCE CHECK (MANDATORY)
+
+```
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! REJECT PRs WITHOUT CONSOLE OUTPUT EVIDENCE IN DESCRIPTION            !!
+!!                                                                       !!
+!! PR description MUST contain:                                         !!
+!! - ## Verification section                                            !!
+!! - Console output of test FAILING on upstream/main                    !!
+!! - Console output of test PASSING on the PR branch                    !!
+!!                                                                       !!
+!! Claims like "test fails on main" without output = HANDBACK           !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+```
 
 ## CLEAN CODE ENFORCEMENT (MANDATORY)
 

@@ -153,4 +153,19 @@ WORK: max (branch) → sergei (implementation) → patrick (review) → max (mer
 [ ] 4. DEBT: No TODO/FIXME without issues; Workarounds have issue numbers
 [ ] 5. TRACKING: Reviewer-requested issues created; "improve later" items have issues
 [ ] 6. TESTS: Test fails on main, passes on branch; Runtime code has runtime tests
+[ ] 7. EVIDENCE: PR description includes console output of test failing on main AND passing after fix
+```
+
+## TEST VERIFICATION EVIDENCE (MANDATORY)
+
+```
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! PR DESCRIPTIONS MUST INCLUDE CONSOLE OUTPUT EVIDENCE                 !!
+!!                                                                       !!
+!! 1. Checkout upstream/main, run test, capture FAILURE output          !!
+!! 2. Checkout branch, run test, capture PASS output                    !!
+!! 3. Include BOTH in PR description under ## Verification section      !!
+!!                                                                       !!
+!! NO EXCEPTIONS - claims without evidence = REJECT by patrick          !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ```

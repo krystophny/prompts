@@ -175,8 +175,47 @@ y = a + b * sin(d)
 - **Requested issues**: If reviewer says "create issue for X" → verify issue exists before merge
 - **No skipping**: NEVER skip/disable tests to pass CI; "skipped for now" = REJECT
 - **No noise comments**: Comments explain WHY not WHAT; no "bug fix for X" in test registration
-- **Test validity**: Test MUST fail on main AND pass on branch; identical behavior = invalid test
 - **New backends**: New test backend/config MUST have CI coverage OR tracking issue
+
+## TEST VERIFICATION EVIDENCE - MANDATORY FOR ALL PRs
+
+```
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! PR DESCRIPTIONS MUST INCLUDE CONSOLE OUTPUT EVIDENCE                 !!
+!!                                                                       !!
+!! 1. Test FAILS on upstream/main (checkout main, run test, show FAIL)  !!
+!! 2. Test PASSES after fix (checkout branch, run test, show PASS)      !!
+!!                                                                       !!
+!! NO EXCEPTIONS - claims without evidence = REJECT                     !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+```
+
+**Required PR description format:**
+
+```markdown
+## Verification
+
+### Test fails on main
+```
+$ git checkout upstream/main
+$ <run test command>
+[... actual console output showing FAILURE ...]
+```
+
+### Test passes after fix
+```
+$ git checkout <branch>
+$ <run test command>
+[... actual console output showing PASS ...]
+```
+```
+
+**Rules:**
+- Console output MUST be real, not fabricated
+- Test name and commands MUST be reproducible
+- Use the repo's established test runner (see project CLAUDE.md)
+- For new tests: show the test exercising the fixed behavior
+- For existing tests: show regression fixed
 
 ## CHECKLIST BEFORE COMPLETION
 1. Followed repo's established style and conventions? (For Fortran: 88-col, intents, allocatable/move_alloc, dp)
