@@ -1,6 +1,11 @@
-# /claude - Autonomous Claude Code Execution
+---
+name: autonomous
+description: Execute tasks using Claude Code CLI in autonomous mode. Handles single prompts and multi-step TODO lists with iterative review, commit, and push. Use when running autonomous Claude execution from Codex CLI.
+argument-hint: "[prompt or file or issue-number]"
+disable-model-invocation: true
+---
 
-## COMMAND PURPOSE
+# Autonomous Claude Code Execution
 
 Execute tasks using Claude Code CLI in autonomous mode. Handles both single prompts and multi-step TODO lists, with iterative review, commit, and push after each completion.
 
@@ -16,7 +21,7 @@ Execute tasks using Claude Code CLI in autonomous mode. Handles both single prom
 ### Mode 1: Single Prompt Execution
 User provides an explicit task as a string argument.
 
-Example: `/claude "Add error handling to the parser module"`
+Example: `/autonomous "Add error handling to the parser module"`
 
 The command will:
 1. Construct `claude` CLI invocation with prompt
@@ -30,7 +35,7 @@ The command will:
 ### Mode 2: TODO List Execution
 User provides path to markdown file or GitHub issue with actionable TODO items.
 
-Example: `/claude tasks/refactor-module.md` or `/claude 42`
+Example: `/autonomous tasks/refactor-module.md` or `/autonomous 42`
 
 The command will:
 1. Parse all TODO items from source
@@ -55,9 +60,9 @@ The command will:
 ## INPUT DETECTION
 
 Automatically detect input type:
-1. Check if input is a file path (exists on disk) → Mode 2
-2. Check if input is numeric or GitHub issue URL → Mode 2
-3. Otherwise treat as explicit prompt string → Mode 1
+1. Check if input is a file path (exists on disk) -> Mode 2
+2. Check if input is numeric or GitHub issue URL -> Mode 2
+3. Otherwise treat as explicit prompt string -> Mode 1
 
 ## ARCHITECTURAL PRINCIPLES
 
@@ -233,11 +238,11 @@ After every execution (single or per TODO item), review ALL changes:
 - [ ] Inner loops over leftmost (fastest-varying) index
 - [ ] Obsolete/dead code removed
 
-### Testing & Build
+### Testing and Build
 - [ ] **MANDATORY: 100% test pass rate - NO EXCEPTIONS - ALL tests MUST pass**
 - [ ] **CRITICAL: ALL regressions are YOUR fault - main branch ALWAYS has 100% passing tests**
 - [ ] **FORBIDDEN: Never assume tests were failing on main - ALWAYS 100% pass on main**
-- [ ] Test duration ≤120s each
+- [ ] Test duration <=120s each
 - [ ] Build commands execute successfully
 - [ ] Linter/formatter applied if repo requires it
 
@@ -345,75 +350,11 @@ If Claude CLI execution fails:
      - Evidence of failure
      - Attempted resolutions
 
-## EXAMPLE EXECUTIONS
-
-### Example 1: Single Prompt
-```
-User: /claude "Add comprehensive error handling to parser module"
-
-Execution:
-1. Detects string input → Mode 1
-2. Executes: claude --print --dangerously-skip-permissions "Add comprehensive error handling to parser module"
-3. Claude modifies parser files, runs tests
-4. Review: module 287 lines ✓, style correct ✓, tests pass ✓
-5. No fixes needed
-6. Stages: git add src/parser.go tests/parser_test.go
-7. Commits: "Add error handling to parser module"
-8. Pushes to remote
-9. Reports: "Added error handling to parser. All tests pass. Module size: 287 lines. Committed and pushed."
-```
-
-### Example 2: TODO List with Fixes
-```
-User: /claude tasks/optimization.md
-
-Execution:
-1. Detects file path → Mode 2
-2. Loads tasks/optimization.md
-3. Parses 3 TODO items
-
-Step 1/3:
-- Executes: claude --print --dangerously-skip-permissions "Profile code to identify bottlenecks"
-- Claude creates profiler script, runs it, generates report
-- Review: script 245 lines ✓, all checks pass ✓
-- Updates TODO: ✅ Profile code (evidence: profile.txt)
-- Commits: "Profile code and identify bottlenecks (step 1/3)"
-- Pushes
-- Reports: "Step 1/3 complete: Profiled code. Bottlenecks in solver loop. Evidence: profile.txt. Proceeding to step 2."
-
-Step 2/3:
-- Executes: claude --print --dangerously-skip-permissions "Optimize hot loops identified in profile.txt"
-- Claude modifies solver, optimizes allocations
-- Review: all checks pass ✓
-- No fixes needed
-- Updates TODO: ✅ Optimize hot loops
-- Commits: "Optimize solver hot loops (step 2/3)"
-- Pushes
-- Reports: "Step 2/3 complete: Optimized allocations. 1.5x speedup. Tests pass. Proceeding to step 3."
-
-Step 3/3:
-- Executes: claude --print --dangerously-skip-permissions "Refactor data structures for cache efficiency"
-- Claude refactors data structures
-- Review: module 892 lines ✗ (exceeds 500 soft limit, under 1000 hard limit, acceptable)
-- Review: function copy_data 127 lines ✗ (exceeds 100 hard limit!)
-- Fix: splits copy_data into smaller functions
-- Re-runs tests: **ALL 100% PASS** ✓ - NO regression tolerance, ALL failures are YOUR responsibility to fix
-- Updates TODO: ✅ Refactor data structures (split copy_data to meet size limit)
-- Commits: "Refactor data structures, split oversized function (step 3/3)"
-- Pushes
-- Reports: "Step 3/3 complete: Refactored for cache efficiency. 2.1x total speedup. Proceeding to final report."
-
-Final:
-- All 3 items complete
-- 3 commits pushed
-- Reports: "All 3 tasks complete. 3 commits pushed. Achieved 2.1x speedup. Ready for benchmarking."
-```
-
 ## RELATIONSHIP WITH /codex COMMAND
 
 **Key distinction:**
 
 - **`/codex`**: Runs FROM Claude Code, uses Codex CLI, delegates to codex agent
-- **`/claude`**: Runs FROM Codex CLI, uses Claude Code CLI, self-contained logic
+- **`/autonomous`**: Runs FROM Codex CLI, uses Claude Code CLI, self-contained logic
 
 Both commands support dual modes (single prompt / TODO list) with identical autonomous execution guarantees and review standards.

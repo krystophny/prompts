@@ -1,4 +1,11 @@
-# /commit - Create Git Commit
+---
+name: commit
+description: Create a git commit following CLAUDE.md rules. Verifies tests pass and stages files explicitly.
+argument-hint: "[optional message]"
+disable-model-invocation: true
+---
+
+# Create Git Commit
 
 Create a commit following CLAUDE.md git rules. Optional argument: commit message.
 

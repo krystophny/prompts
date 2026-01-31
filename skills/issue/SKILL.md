@@ -1,4 +1,11 @@
-# /issue - Create GitHub Issue
+---
+name: issue
+description: Create a properly formatted GitHub issue with MRE and version info.
+argument-hint: "[issue title]"
+disable-model-invocation: true
+---
+
+# Create GitHub Issue
 
 Create a properly formatted GitHub issue. Argument: issue title.
 

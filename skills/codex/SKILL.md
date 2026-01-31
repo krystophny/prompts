@@ -1,6 +1,11 @@
-# /codex - Stepwise Codex Orchestration
+---
+name: codex
+description: Execute tasks by invoking the codex agent. Handles single prompts and multi-step task documents. Use for stepwise Codex orchestration with autonomous execution.
+argument-hint: "[prompt or file or issue-number]"
+disable-model-invocation: true
+---
 
-## COMMAND PURPOSE
+# Stepwise Codex Orchestration
 
 Execute tasks by invoking the `codex` agent. Handles both single prompts and multi-step task documents (markdown files or GitHub issues). Processes actions sequentially and continues autonomously until all work is complete or an unresolvable blocker is encountered.
 
@@ -73,9 +78,9 @@ When user invokes `/codex`:
 ## INPUT DETECTION
 
 The command automatically detects the input type:
-1. Check if input is a file path (exists on disk) → Mode 2: Multi-Step
-2. Check if input is numeric or GitHub issue URL → Mode 2: Multi-Step
-3. Otherwise treat as explicit prompt string → Mode 1: Single Prompt
+1. Check if input is a file path (exists on disk) -> Mode 2: Multi-Step
+2. Check if input is numeric or GitHub issue URL -> Mode 2: Multi-Step
+3. Otherwise treat as explicit prompt string -> Mode 1: Single Prompt
 
 ## STEP-BY-STEP PROCEDURE
 
@@ -210,60 +215,6 @@ If a step cannot be completed autonomously:
      - Attempted resolutions
      - Required user action
 
-## EXAMPLE EXECUTION FLOWS
-
-### Example 1: Single Prompt
-```
-User: /codex "Add comprehensive error handling to parser.f90"
-
-Command:
-1. Detects string input → Mode 1
-2. Creates temp task doc with single item
-3. Invokes codex agent
-   - Agent creates draft
-   - Agent calls Codex CLI
-   - Agent reviews and fixes issues
-   - Agent commits and pushes
-   - Agent returns success + test evidence
-4. Reports: "Added error handling to parser.f90. All tests pass.
-            Module size: 287 lines. Intents verified. Committed and pushed."
-```
-
-### Example 2: Multi-Step Task Document
-```
-User: /codex tasks/add-feature-x.md implementation
-
-Command:
-1. Detects file path → Mode 2
-2. Loads tasks/add-feature-x.md
-3. Parses 5 task items
-4. Invokes codex agent for step 1
-   - Agent creates draft, calls Codex, reviews, fixes, commits, pushes
-   - Returns success + test evidence
-   - Command updates task doc metadata
-5. Reports: "Step 1/5 complete: Added module foo. Tests pass (fpm test output). Proceeding to step 2."
-6. Invokes codex agent for step 2 (no pause)
-   - Agent creates draft, calls Codex, reviews, fixes, commits, pushes
-   - Returns success + build evidence
-   - Command updates task doc metadata
-7. Reports: "Step 2/5 complete: Integrated foo into main. Build succeeds. Proceeding to step 3."
-8. Continues through steps 3, 4, 5 without stopping
-9. Final report: "All 5 tasks complete. 5 commits pushed. Feature X ready for testing."
-```
-
-### Example 3: GitHub Issue
-```
-User: /codex 42
-
-Command:
-1. Detects numeric input → Mode 2
-2. Fetches issue #42 via gh CLI
-3. Parses TODO checklist from issue body
-4. Executes each item autonomously
-5. Updates issue description with evidence
-6. Final report with all commits listed
-```
-
 ## ALIGNMENT WITH CODEX AGENT
 
 The `codex` agent (agents/codex.md) handles:
@@ -283,7 +234,7 @@ This command handles:
 - Blocker escalation decisions
 
 The division ensures:
-- Agent does ALL the work for one step (draft → codex → review → fix → commit)
+- Agent does ALL the work for one step (draft -> codex -> review -> fix -> commit)
 - Command orchestrates multiple steps and updates task metadata
 - No duplication of responsibilities
-- Clear handoff protocol (command → agent → command)
+- Clear handoff protocol (command -> agent -> command)
