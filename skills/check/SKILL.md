@@ -1,24 +1,64 @@
 ---
 name: check
-description: Check current changes before committing. Spawns patrick-reviewer for clean code and tech debt detection.
+description: Review changes before commit. Supports multiple PRs in parallel via worktrees. No args = current changes or PR.
+argument-hint: "[pr-number...]"
 disable-model-invocation: true
 ---
 
 # Pre-Commit Check
 
-Check current changes before committing. Spawns patrick-reviewer agent.
+Review changes before committing. Supports multiple PRs in parallel using git worktrees.
 
 ## Usage
 ```
-/check
+/check                   # Current changes or current PR
+/check 123               # Review PR #123
+/check 123 456 789       # Multiple PRs in parallel worktrees
+```
+
+## MODE DETECTION (when no arguments)
+
+```bash
+# 1. Check for uncommitted changes
+if [ -n "$(git status --porcelain)" ]; then
+  echo "Reviewing uncommitted changes"
+  MODE="local"
+else
+  # 2. Check if current branch has open PR
+  CURRENT_PR=$(gh pr view --json number --jq '.number' 2>/dev/null)
+  if [ -n "$CURRENT_PR" ]; then
+    echo "Reviewing PR #$CURRENT_PR"
+    MODE="pr"
+    PR=$CURRENT_PR
+  else
+    echo "No changes and no PR - nothing to review"
+    exit 0
+  fi
+fi
+```
+
+## PARALLEL EXECUTION (multiple PRs)
+
+```bash
+for PR in $ARGUMENTS; do
+  BRANCH=$(gh pr view $PR --json headRefName --jq '.headRefName')
+  WORKTREE="/tmp/worktree-$PR"
+
+  if [ ! -d "$WORKTREE" ]; then
+    git worktree add "$WORKTREE" "$BRANCH"
+  fi
+
+  # Spawn patrick-reviewer agent in background for this worktree
+done
+
+# Wait for all agents, collect results
 ```
 
 ## AGENT DELEGATION
 
-**MANDATORY**: Spawn patrick-reviewer agent to perform this review.
-The agent has specialized clean code and tech debt detection.
+**MANDATORY**: Spawn patrick-reviewer for review.
 
-## REVIEW CHECKLIST
+## LOCAL CHANGES REVIEW
 
 ### 1. SHOW CHANGES
 ```bash
@@ -27,92 +67,82 @@ git diff --stat
 git diff
 ```
 
-### 2. CLEAN CODE PRINCIPLES
-
-**SRP - Single Responsibility**
-- [ ] Each module has ONE reason to change
-- [ ] Each function does ONE thing
-- [ ] No god objects (>3 responsibilities)
-
-**Meaningful Names**
-- [ ] Variables describe what they hold
-- [ ] Functions describe what they do
-- [ ] No cryptic abbreviations (except: i, j, k, n, dp)
-
-**Small Functions**
-- [ ] Functions < 50 lines (soft limit)
-- [ ] Functions < 100 lines (hard limit - REJECT if exceeded)
-- [ ] Max 4 parameters per function
-
-**DRY - Do Not Repeat Yourself**
-- [ ] No copy-paste code blocks
-- [ ] Similar patterns extracted to shared procedures
-- [ ] Constants extracted, no magic numbers
-
-**YAGNI - You Are Not Gonna Need It**
-- [ ] No speculative generalization
-- [ ] No unused parameters or return values
-- [ ] No "just in case" code paths
-
-### 3. TECHNICAL DEBT CHECK (BLOCKING)
-
-FORBIDDEN - Instant rejection if ANY found:
-- [ ] NO TODO/FIXME/HACK without linked issue
-- [ ] NO suppression pragmas; NO commented-out code; NO dead code
-- [ ] NO workarounds without issue number in same line
-- [ ] NO noise comments (obvious/redundant, "bug fix for X")
-- [ ] NO "improve later" without tracking issue
-
-Code Smells: Long param lists (>4), feature envy, data clumps
-
-### 4. CODE QUALITY
-- [ ] No commented-out code
-- [ ] No debug print statements
-- [ ] No hardcoded secrets/paths
-- [ ] Functions < 100 lines (hard limit)
-- [ ] Modules < 1000 lines (hard limit)
-
-### 5. FORTRAN SPECIFIC (if applicable)
-- [ ] 88-column limit
-- [ ] implicit none present
-- [ ] All arguments have intent(in|out|inout)
-- [ ] Uses real(dp) not real*8
-- [ ] allocatable preferred over pointer
-
-### 6. GIT HYGIENE
-- [ ] No unrelated changes mixed in
-- [ ] No generated files staged
-- [ ] No .mod files staged
-
-### 7. RUN TESTS
+### 2. COMPARE TO MAIN
 ```bash
-# Use project-specific test command
-# ALL tests must pass - no exceptions
+git diff main...HEAD --stat
+git log main..HEAD --oneline
 ```
 
-### 8. REPORT
+## PR REVIEW
+
+### 1. GET PR DIFF
+```bash
+cd $WORKTREE  # or current dir
+gh pr diff $PR
+gh pr view $PR --json additions,deletions,changedFiles
+```
+
+### 2. CHECK CI STATUS
+```bash
+gh pr checks $PR
+```
+
+## REVIEW CHECKLIST
+
+### Clean Code Principles
+- [ ] SRP: Each function does ONE thing
+- [ ] Functions < 100 lines (hard limit)
+- [ ] No copy-paste code blocks
+- [ ] No magic numbers
+- [ ] No cryptic abbreviations
+
+### Technical Debt (BLOCKING)
+- [ ] NO TODO/FIXME without linked issue
+- [ ] NO commented-out code
+- [ ] NO suppression pragmas
+- [ ] NO workarounds without issue number
+
+### Code Quality
+- [ ] No debug print statements
+- [ ] No hardcoded secrets/paths
+- [ ] Modules < 1000 lines
+
+### Fortran Specific
+- [ ] 88-column limit
+- [ ] implicit none present
+- [ ] All arguments have intent
+
+## AUTO-CREATE PR (if local changes, no PR)
+
+If reviewing local changes and they pass:
+```bash
+# Offer to create PR
+BRANCH="review/$(date +%Y%m%d-%H%M%S)"
+git checkout -b "$BRANCH"
+git add <specific-files>
+git commit -m "<type>: <description>"
+git push -u origin "$BRANCH"
+gh pr create --title "<title>" --body "<body>"
+```
+
+## WORKTREE CLEANUP
+
+```bash
+for PR in $ARGUMENTS; do
+  git worktree remove "/tmp/worktree-$PR" 2>/dev/null
+done
+```
 
 ## REPORT TEMPLATE
 
 ```markdown
-# Code Review
+# Review: [PR #N | Local Changes]
 
-## Status: [PASSED | ISSUES FOUND | NEEDS WORK]
+## Status: [PASSED | ISSUES FOUND]
 
-### Clean Code
-- SRP: [PASS/FAIL]
-- Naming: [PASS/FAIL]
-- Function Size: [PASS/FAIL]
-- DRY: [PASS/FAIL]
-- YAGNI: [PASS/FAIL]
+### Clean Code: [PASS/FAIL]
+### Tech Debt: [NONE/FOUND]
+### Issues: [list if any]
 
-### Technical Debt
-- Status: [NONE DETECTED | DEBT INTRODUCED]
-- Details: [list if any]
-
-### Issues (if any)
-- file:line - description
-
-### Verdict
-[Ready to commit | Needs fixes first]
+## Verdict: [Ready | Needs fixes]
 ```

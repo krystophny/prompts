@@ -1,20 +1,51 @@
 ---
 name: pr
-description: Start a new bug fix from scratch using agent pipeline. Creates branch, MRE test, implements fix, reviews.
-argument-hint: "<short-name>"
+description: Start new bug fix. Supports multiple in parallel via worktrees. No args = create from current changes.
+argument-hint: "[branch-name...]"
 disable-model-invocation: true
 ---
 
 # Start New Bug Fix
 
-Start a new bug fix from scratch. Uses agent pipeline.
+Create new bug fix branches. Supports multiple in parallel using git worktrees.
 
 ## Usage
 ```
-/pr <short-name>
+/pr                      # Create from current changes vs main
+/pr minloc-fix           # Create fix/minloc-fix branch
+/pr fix1 fix2 fix3       # Multiple branches in parallel worktrees
 ```
 
-Example: `/pr minloc-kind8` creates branch `fix/minloc-kind8`
+## MODE DETECTION (when no arguments)
+
+```bash
+# Check for uncommitted changes vs main
+CHANGES=$(git diff main --stat)
+
+if [ -n "$CHANGES" ]; then
+  echo "Creating PR from changes vs main"
+  BRANCH="fix/$(git rev-parse --abbrev-ref HEAD)-$(date +%H%M%S)"
+else
+  echo "No changes vs main - provide branch name"
+  exit 1
+fi
+```
+
+## PARALLEL EXECUTION (multiple branches)
+
+```bash
+for NAME in $ARGUMENTS; do
+  BRANCH="fix/$NAME"
+  WORKTREE="/tmp/worktree-$NAME"
+
+  # Create worktree with new branch from main
+  git worktree add -b "$BRANCH" "$WORKTREE" origin/main
+
+  # Spawn agent pipeline in background
+done
+
+# Wait for all agents, collect results
+```
 
 ## AGENT PIPELINE
 
@@ -22,105 +53,83 @@ Example: `/pr minloc-kind8` creates branch `fix/minloc-kind8`
 2. **sergei-perfectionist-coder**: Implement fix
 3. **patrick-reviewer**: Review before PR
 
-## CHECKLIST (Execute in Order)
+## SINGLE BRANCH WORKFLOW
 
 ### 1. SETUP BRANCH
 ```bash
-git fetch upstream
-git checkout -b fix/$ARGUMENTS upstream/main
+cd $WORKTREE  # or current dir
+git fetch origin
+git checkout -b fix/$NAME origin/main
 ```
 
 ### 2. CREATE MRE TEST (spawn georg-test-engineer)
-- File: integration_tests/<category>/<name>_NN.f90
-- Add to CMakeLists.txt with labels
+- Create minimal reproducing test
+- Add to build system with labels
 - MUST fail on main, pass after fix
 
 ### 3. VERIFY TEST FAILS ON MAIN
 ```bash
 git stash
-git checkout upstream/main
-# Build and run test - MUST FAIL
+git checkout origin/main
+# Run test - MUST FAIL
+git checkout fix/$NAME
+git stash pop
 ```
 
 ### 4. IMPLEMENT FIX (spawn sergei-perfectionist-coder)
-```bash
-git checkout fix/$ARGUMENTS
-git stash pop
-```
 - Search codebase first (reuse-first)
 - Fix in earliest pipeline stage
 - Minimal changes only
-- NO technical debt
 
-### 5. VERIFY TEST PASSES
+### 5. VERIFY AND PUSH
 ```bash
-# Build and run test - MUST PASS
-# Verify output DIFFERS from main (not identical behavior)
+# Run test - MUST PASS
+# Run full suite - ALL must pass (100%)
+git add <specific-files>
+git commit -m "fix: <description>"
+git push -u origin fix/$NAME
 ```
 
-### 5.5 COVERAGE CHECK
-- [ ] Every new code path has exercising test
-- [ ] Runtime changes have RUN tests (not just compile)
-- [ ] New backend/config has CI coverage OR tracking issue
-
-### 6. CLEAN CODE CHECK
-- [ ] Functions < 100 lines; No copy-paste code
-- [ ] No magic numbers; No TODO/FIXME without issues
-- [ ] No noise comments; Workarounds have issue numbers
-
-### 7. RUN FULL TESTS
-```bash
-# ALL tests must pass - 100%
-```
-
-### 8. REVIEW (spawn patrick-reviewer)
+### 6. REVIEW (spawn patrick-reviewer)
 - Clean code compliance
 - Tech debt check
 - Test quality
 
-### 9. COMMIT AND PUSH
+### 7. CREATE PR
 ```bash
-git add <specific-files>
-git commit -m "fix: <description>"
-git push -u origin fix/$ARGUMENTS
+gh pr create --title "fix: <description>" --body-file /tmp/pr.md
 ```
 
-### 10. CREATE DRAFT PR (only if requested)
+## WORKTREE CLEANUP
+
 ```bash
-gh pr create --draft --repo <owner>/<repo> \
-  --title "fix: <description>" --body-file /tmp/pr.md
+for NAME in $ARGUMENTS; do
+  git worktree remove "/tmp/worktree-$NAME" 2>/dev/null
+done
 ```
 
 ## TECHNICAL DEBT PREVENTION
 
-Before any commit, verify:
-
 | Check | Requirement |
 |-------|-------------|
-| Function size | < 100 lines (hard limit) |
-| Module size | < 1000 lines (hard limit) |
-| TODO/FIXME | Must have linked GitHub issue |
+| Function size | < 100 lines |
+| Module size | < 1000 lines |
+| TODO/FIXME | Must have linked issue |
 | Commented code | Must be deleted |
-| Copy-paste | Must be extracted to shared code |
-| Magic numbers | Must use named constants |
 
 ## AGENT RESPONSIBILITIES
 
 ### georg-test-engineer
 - Create minimal reproducing test
-- Ensure test is strict (not shallow/tautological)
-- Add proper CMakeLists.txt integration
+- Ensure test is strict (not shallow)
 - Verify test fails on main
 
 ### sergei-perfectionist-coder
 - Search codebase before implementing
-- Enhance existing code (reuse-first)
-- Implement minimal fix at correct pipeline stage
-- Ensure no technical debt introduced
-- Run full test suite (100% pass required)
+- Implement minimal fix
+- Run full test suite (100% pass)
 
 ### patrick-reviewer
 - Verify clean code principles
 - Detect technical debt
-- Check test quality
-- Approve or handback with specific feedback
+- Approve or handback

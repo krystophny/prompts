@@ -1,137 +1,120 @@
 ---
 name: fix
-description: Fix failing PR CI checks. Spawns sergei-perfectionist-coder for implementation.
-argument-hint: "<pr-number>"
+description: Fix failing PR CI checks. Supports multiple PRs in parallel via worktrees. No args = current PR or create new.
+argument-hint: "[pr-number...]"
 disable-model-invocation: true
 ---
 
 # Fix Failing PR Checks
 
-Execute when PR CI checks fail. Requires PR number as argument.
+Fix failing CI checks. Supports multiple PRs in parallel using git worktrees.
 
 ## Usage
 ```
-/fix <pr-number>
+/fix                     # Current PR, or create new from changes
+/fix 123                 # Single PR
+/fix 123 456 789         # Multiple PRs in parallel worktrees
+```
+
+## PR DETECTION (when no arguments)
+
+```bash
+# 1. Check if current branch has open PR
+CURRENT_PR=$(gh pr view --json number --jq '.number' 2>/dev/null)
+
+if [ -n "$CURRENT_PR" ]; then
+  echo "Working on current PR #$CURRENT_PR"
+  # Continue with PR workflow
+else
+  # 2. Check for uncommitted changes
+  if [ -n "$(git status --porcelain)" ]; then
+    echo "Creating new PR from current changes"
+    BRANCH="fix/$(date +%Y%m%d-%H%M%S)"
+    git checkout -b "$BRANCH"
+    # Stage, commit, push, create PR
+  else
+    echo "No PR and no changes - nothing to do"
+    exit 0
+  fi
+fi
+```
+
+## PARALLEL EXECUTION (multiple PRs)
+
+For each PR number, create a worktree and spawn parallel agent:
+
+```bash
+for PR in $ARGUMENTS; do
+  BRANCH=$(gh pr view $PR --json headRefName --jq '.headRefName')
+  WORKTREE="/tmp/worktree-$PR"
+
+  # Create worktree if not exists
+  if [ ! -d "$WORKTREE" ]; then
+    git worktree add "$WORKTREE" "$BRANCH"
+  fi
+
+  # Spawn agent in background for this worktree
+  # Each agent works independently in its worktree
+done
+
+# Wait for all agents to complete
+# Collect and report results
 ```
 
 ## AGENT DELEGATION
 
 **MANDATORY**: Spawn sergei-perfectionist-coder for implementation.
-The agent enforces clean code and prevents technical debt.
 
-## SUCCESS CRITERIA (ALL must be true before reporting success)
-- [ ] CI status is `completed` + `success` (NOT "in progress", NOT "queued")
-- [ ] All reviewer comments addressed (not ignored)
-- [ ] New changes committed AND pushed
-- [ ] PR description matches actual implementation (no contradictions)
-- [ ] No technical debt introduced
-
-## CHECKLIST (Execute in Order)
+## SINGLE PR WORKFLOW
 
 ### 1. CHECK PR COMMENTS FIRST (BLOCKING)
 ```bash
-gh pr view $ARGUMENTS --repo <owner>/<repo> --comments
-gh api repos/<owner>/<repo>/pulls/$ARGUMENTS/comments --jq '.[] | "\(.user.login): \(.body)"'
+gh pr view $PR --comments
+gh api repos/{owner}/{repo}/pulls/$PR/comments --jq '.[] | "\(.user.login): \(.body)"'
 ```
 
-STOP HERE if reviewer requested specific approach. Follow it EXACTLY.
-Do NOT add workarounds reviewer explicitly rejected.
+STOP if reviewer requested specific approach. Follow it EXACTLY.
 
-### 2. GET BRANCH AND FIND FAILED JOBS
+### 2. GET FAILED JOBS
 ```bash
-BRANCH=$(gh pr view $ARGUMENTS --repo <owner>/<repo> --json headRefName --jq '.headRefName')
-
-# List runs - look for any with conclusion=failure OR status=in_progress
-gh run list --repo <owner>/<repo> --branch $BRANCH --limit 5 --json databaseId,status,conclusion,workflowName
-
-# Get the latest run ID
-RUN_ID=$(gh run list --repo <owner>/<repo> --branch $BRANCH --limit 1 --json databaseId --jq '.[0].databaseId')
-
-# Check individual job statuses
-gh run view $RUN_ID --repo <owner>/<repo> --json jobs --jq '.jobs[] | select(.conclusion == "failure") | "\(.name): \(.conclusion)"'
+BRANCH=$(gh pr view $PR --json headRefName --jq '.headRefName')
+RUN_ID=$(gh run list --branch $BRANCH --limit 1 --json databaseId --jq '.[0].databaseId')
+gh run view $RUN_ID --log-failed 2>&1 | grep -E "error:|Error:|FAILED|fatal:" | head -50
 ```
 
-### 3. GET ERROR LOGS FROM FAILED JOBS IMMEDIATELY
+### 3. REPRODUCE AND FIX
 ```bash
-gh run view $RUN_ID --repo <owner>/<repo> --log-failed 2>&1 | grep -E "error:|Error:|FAILED|fatal:" | head -50
+cd $WORKTREE  # or current dir if single PR
+git pull origin $BRANCH
+# Build and run failing test
+# Implement fix (spawn sergei-perfectionist-coder)
 ```
 
-DO NOT wait for "in progress" runs. Failed jobs have logs available immediately.
-
-### 4. REPRODUCE LOCALLY
+### 4. VERIFY AND PUSH
 ```bash
-git fetch origin
-git checkout $BRANCH
-# Build and run exact command/test that CI failed on
-```
-
-### 5. IMPLEMENT FIX (spawn sergei-perfectionist-coder)
-- Follow reviewer guidance EXACTLY
-- Fix in correct pipeline stage
-- Minimal changes only
-- NO technical debt (see checklist below)
-
-### 6. CLEAN CODE VERIFICATION
-- [ ] Functions < 100 lines (hard limit)
-- [ ] No copy-paste code
-- [ ] No magic numbers
-- [ ] No TODO/FIXME without GitHub issues
-- [ ] No commented-out code
-- [ ] No suppression pragmas
-
-### 7. VERIFY FIX LOCALLY
-```bash
-# Build and run tests
-# ALL tests must pass - 100%
-```
-
-### 8. COMMIT AND PUSH (MANDATORY - not optional)
-```bash
+# Run tests - ALL must pass (100%)
 git add <specific-files>
 git commit -m "fix: <description>"
 git push
 ```
 
-If nothing to commit, the fix failed - go back to step 5.
-
-### 9. UPDATE PR DESCRIPTION (if implementation approach changed)
-Ensure PR description accurately reflects what was done.
-
-### 10. MONITOR CI - CHECK FOR FAILURES FIRST
+### 5. MONITOR CI
 ```bash
-RUN_ID=$(gh run list --repo <owner>/<repo> --branch $BRANCH --limit 1 --json databaseId --jq '.[0].databaseId')
-
-# Check if any jobs already failed
-FAILED=$(gh run view $RUN_ID --repo <owner>/<repo> --json jobs --jq '[.jobs[] | select(.conclusion == "failure")] | length')
-if [ "$FAILED" -gt 0 ]; then
-  echo "Jobs already failed - fetching logs immediately"
-  gh run view $RUN_ID --repo <owner>/<repo> --log-failed 2>&1 | head -100
-  # Go back to step 3 to diagnose
-fi
-
-# Only watch if no failures yet
-gh run watch $RUN_ID --repo <owner>/<repo> --exit-status || gh run view $RUN_ID --repo <owner>/<repo> --log-failed 2>&1 | head -100
+gh run watch $RUN_ID --exit-status
 ```
 
-DO NOT just report "in progress" - check for already-failed jobs first.
-Only report success when status is `completed` + `success`.
-If CI fails again, repeat from step 3.
+## WORKTREE CLEANUP
 
-## TECHNICAL DEBT CHECK (BLOCKING)
+After completion:
+```bash
+for PR in $ARGUMENTS; do
+  WORKTREE="/tmp/worktree-$PR"
+  git worktree remove "$WORKTREE" 2>/dev/null
+done
+```
 
-| Pattern | Severity | Action |
-|---------|----------|--------|
-| TODO/FIXME without issue | CRITICAL | REJECT - create GitHub issue first |
-| Commented-out code | CRITICAL | REJECT - delete it |
-| Suppression pragmas | CRITICAL | REJECT - fix the underlying issue |
-| Copy-paste duplication | MAJOR | REJECT - extract shared code |
-| Magic numbers | MAJOR | REJECT - use named constants |
-| Functions >100 lines | MAJOR | REJECT - split function |
-
-## FAILURE CONDITIONS (report failure, not success)
-- CI still running or queued
-- Nothing committed/pushed
-- Reviewer comments ignored
-- Workarounds added that reviewer rejected
-- PR description contradicts implementation
-- Technical debt introduced
+## SUCCESS CRITERIA
+- [ ] CI status is `completed` + `success`
+- [ ] All reviewer comments addressed
+- [ ] Changes committed AND pushed
+- [ ] No technical debt introduced

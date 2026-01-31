@@ -1,41 +1,70 @@
 ---
 name: debug
-description: Investigate and fix a failing test. Spawns sergei-perfectionist-coder for implementation.
-argument-hint: "<test_name or path>"
+description: Debug failing tests. Supports multiple tests in parallel. No args = all failing tests.
+argument-hint: "[test-name...]"
 disable-model-invocation: true
 ---
 
-# Debug Failing Test
+# Debug Failing Tests
 
-Investigate and fix a failing test. Argument: test name or file path.
+Investigate and fix failing tests. Supports multiple tests in parallel.
 
 ## Usage
 ```
-/debug <test_name>
-/debug path/to/test.f90
+/debug                   # All currently failing tests
+/debug test_foo          # Single test
+/debug test_a test_b     # Multiple tests in parallel
+```
+
+## MODE DETECTION (when no arguments)
+
+```bash
+# Run test suite, capture failing tests
+FAILING=$(make test 2>&1 | grep -E "FAIL|FAILED|ERROR" | head -20)
+
+if [ -n "$FAILING" ]; then
+  echo "Found failing tests:"
+  echo "$FAILING"
+  # Extract test names and debug each
+else
+  echo "All tests passing"
+  exit 0
+fi
+```
+
+## PARALLEL EXECUTION (multiple tests)
+
+```bash
+for TEST in $ARGUMENTS; do
+  # Spawn sergei-perfectionist-coder agent for each test
+  # Agents work in parallel
+done
+
+# Wait for all agents, collect results
 ```
 
 ## AGENT DELEGATION
 
 **MANDATORY**: Spawn sergei-perfectionist-coder for fix implementation.
-The agent enforces clean code and prevents technical debt.
 
-## CHECKLIST (Execute in Order)
+## SINGLE TEST WORKFLOW
 
 ### 1. RUN THE TEST
-Use project-specific test command with the test name/file.
-Capture full output including error messages.
+```bash
+# Run specific test, capture full output
+make test TEST=$TEST 2>&1 | tee /tmp/test-$TEST.log
+```
 
 ### 2. CAPTURE ERROR
 - Exact error message
 - Line numbers
-- Stack trace (if available)
+- Stack trace
 - Context around failure
 
 ### 3. READ RELEVANT CODE
-- Read the test file
+- Read test file
 - Read related source files
-- Understand expected vs actual behavior
+- Understand expected vs actual
 
 ### 4. CHECK RECENT CHANGES
 ```bash
@@ -43,78 +72,53 @@ git log --oneline -10
 git diff HEAD~5 -- <relevant-files>
 ```
 
-### 5. CREATE MINIMAL REPRODUCER
-If test is complex, create simpler MRE in /tmp:
-```bash
-# Create minimal code that triggers the bug
-# Run and verify it reproduces the issue
-```
-
-### 6. IDENTIFY ROOT CAUSE
-- Which pipeline stage? (Parser, Semantics, ASR, Passes, Codegen)
-- What is the expected vs actual behavior?
+### 5. IDENTIFY ROOT CAUSE
+- Which stage? (Parser, Semantics, Codegen, Runtime)
+- Expected vs actual behavior?
 - Why is this happening?
 
-### 7. IMPLEMENT FIX (spawn sergei-perfectionist-coder)
+### 6. IMPLEMENT FIX (spawn sergei-perfectionist-coder)
 - Fix in earliest appropriate stage
 - Search codebase first (reuse-first)
 - Minimal changes only
-- NO technical debt
 
-### 8. CLEAN CODE VERIFICATION
-- [ ] Functions < 100 lines (hard limit)
-- [ ] No copy-paste code
-- [ ] No magic numbers
-- [ ] No TODO/FIXME without GitHub issues
-- [ ] No commented-out code
-- [ ] No suppression pragmas
-
-### 9. VERIFY FIX
+### 7. VERIFY FIX
 ```bash
 # Run original test - MUST PASS
-# Run full test suite - ALL must pass (100%)
+make test TEST=$TEST
+
+# Run full suite - ALL must pass (100%)
+make test
 ```
 
-### 10. REPORT
+### 8. COMMIT
+```bash
+git add <specific-files>
+git commit -m "fix: <description>"
+```
 
-## TECHNICAL DEBT CHECK (BLOCKING)
+## CLEAN CODE CHECK
 
-Before committing the fix, verify:
-
-| Pattern | Severity | Action |
-|---------|----------|--------|
-| TODO/FIXME without issue | CRITICAL | REJECT - create GitHub issue first |
-| Commented-out code | CRITICAL | REJECT - delete it |
-| Suppression pragmas | CRITICAL | REJECT - fix the underlying issue |
-| Copy-paste duplication | MAJOR | REJECT - extract shared code |
-| Magic numbers | MAJOR | REJECT - use named constants |
-| Functions >100 lines | MAJOR | REJECT - split function |
+- [ ] Functions < 100 lines
+- [ ] No copy-paste code
+- [ ] No TODO/FIXME without issues
+- [ ] No commented-out code
 
 ## REPORT TEMPLATE
 
 ```markdown
-# Debug Report
-
-## Test
-- Name: [test name]
-- File: [file path]
+# Debug: $TEST
 
 ## Root Cause
-- Stage: [Parser/Semantics/ASR/Passes/Codegen]
+- Stage: [Parser/Semantics/Codegen/Runtime]
 - Issue: [description]
 - Location: [file:line]
 
 ## Fix
-- Files changed: [list]
+- Files: [list]
 - Approach: [description]
-
-## Clean Code Verification
-- Function size: [PASS/FAIL]
-- No duplication: [PASS/FAIL]
-- No magic numbers: [PASS/FAIL]
-- No tech debt: [PASS/FAIL]
 
 ## Verification
 - Original test: [PASS/FAIL]
-- Full test suite: [PASS/FAIL]
+- Full suite: [PASS/FAIL]
 ```

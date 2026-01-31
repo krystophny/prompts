@@ -1,110 +1,106 @@
 ---
 name: comments
-description: Review and address all comments on a PR. Spawns sergei-perfectionist-coder for code changes.
-argument-hint: "<pr-number>"
+description: Address PR comments. Supports multiple PRs in parallel via worktrees. No args = current PR.
+argument-hint: "[pr-number...]"
 disable-model-invocation: true
 ---
 
-# Check and Address PR Comments
+# Address PR Comments
 
-Review and address all comments on a PR. Requires PR number as argument.
+Review and address comments on PRs. Supports multiple PRs in parallel using git worktrees.
 
 ## Usage
 ```
-/comments <pr-number>
+/comments                # Current PR
+/comments 123            # Single PR
+/comments 123 456 789    # Multiple PRs in parallel worktrees
+```
+
+## PR DETECTION (when no arguments)
+
+```bash
+# Check if current branch has open PR
+CURRENT_PR=$(gh pr view --json number --jq '.number' 2>/dev/null)
+
+if [ -n "$CURRENT_PR" ]; then
+  echo "Working on current PR #$CURRENT_PR"
+else
+  echo "No open PR on current branch"
+  exit 1
+fi
+```
+
+## PARALLEL EXECUTION (multiple PRs)
+
+```bash
+for PR in $ARGUMENTS; do
+  BRANCH=$(gh pr view $PR --json headRefName --jq '.headRefName')
+  WORKTREE="/tmp/worktree-$PR"
+
+  # Create worktree if not exists
+  if [ ! -d "$WORKTREE" ]; then
+    git worktree add "$WORKTREE" "$BRANCH"
+  fi
+
+  # Spawn agent in background for this worktree
+done
+
+# Wait for all agents, collect results
 ```
 
 ## AGENT DELEGATION
 
 **MANDATORY**: Spawn sergei-perfectionist-coder for code changes.
-The agent enforces clean code and prevents technical debt.
 
-## CHECKLIST (Execute in Order)
+## SINGLE PR WORKFLOW
 
-### 1. LIST ALL COMMENTS
+### 1. GET ALL COMMENTS
 ```bash
-gh pr view $ARGUMENTS --repo <owner>/<repo> --comments
+gh pr view $PR --comments
+gh pr view $PR --json reviews --jq '.reviews[] | "\(.author.login): \(.state)"'
+gh api repos/{owner}/{repo}/pulls/$PR/comments --jq '.[] | "[\(.path):\(.line)] \(.user.login): \(.body)"'
 ```
 
-### 2. CHECK REVIEW STATUS
-```bash
-gh pr view $ARGUMENTS --repo <owner>/<repo> --json reviews --jq '.reviews[] | "\(.author.login): \(.state)"'
-```
-
-### 3. GET INLINE COMMENTS
-```bash
-gh api repos/<owner>/<repo>/pulls/$ARGUMENTS/comments --jq '.[] | "[\(.path):\(.line)] \(.user.login): \(.body)"'
-```
-
-### 4. FOR EACH COMMENT (spawn sergei-perfectionist-coder if code change needed)
+### 2. FOR EACH COMMENT
 - Read carefully
-- If code change needed -> make the change (NO technical debt)
-- If clarification needed -> reply to comment
-- If disagreement -> discuss respectfully, do not ignore
+- Code change needed -> spawn sergei-perfectionist-coder
+- Clarification needed -> reply to comment
+- Disagreement -> discuss respectfully
 
-### 4.5 FOLLOW-UP TRACKING
-- [ ] If reviewer requested issue creation -> verify issue exists (gh issue view)
-- [ ] If "improve later/refine later" -> GitHub issue created with specifics
-- [ ] Link issue numbers in PR comment as confirmation
-- [ ] Missing tracking = DO NOT PROCEED
+### 3. FOLLOW-UP TRACKING
+- [ ] Reviewer requested issue -> verify exists
+- [ ] "Improve later" -> GitHub issue created
+- [ ] Link issue numbers in PR comment
 
-### 5. CLEAN CODE VERIFICATION
-- [ ] Functions < 100 lines; No copy-paste code; No magic numbers
-- [ ] No TODO/FIXME without issues; No commented-out code
-- [ ] No noise comments; Workarounds have issue numbers
-
-### 6. BUILD AND TEST
+### 4. VERIFY AND PUSH
 ```bash
-# Build project
-# Run tests - ALL must pass (100%)
-```
-
-### 7. COMMIT AND PUSH
-```bash
+cd $WORKTREE  # or current dir
+# Build and test - ALL must pass (100%)
 git add <specific-files>
 git commit -m "fix: address review feedback"
 git push
 ```
 
-### 8. REPLY TO COMMENTS
+### 5. REPLY TO COMMENTS
 Confirm resolution by replying to each addressed comment.
 
-### 9. REQUEST RE-REVIEW (if needed)
+### 6. REQUEST RE-REVIEW
 ```bash
-gh pr edit $ARGUMENTS --repo <owner>/<repo> --add-reviewer <reviewer>
+gh pr edit $PR --add-reviewer <reviewer>
 ```
 
-## TECHNICAL DEBT CHECK (BLOCKING)
+## WORKTREE CLEANUP
 
-Before committing any changes, verify:
-
-| Pattern | Severity | Action |
-|---------|----------|--------|
-| TODO/FIXME without issue | CRITICAL | REJECT - create GitHub issue first |
-| Commented-out code | CRITICAL | REJECT - delete it |
-| Suppression pragmas | CRITICAL | REJECT - fix the underlying issue |
-| Copy-paste duplication | MAJOR | REJECT - extract shared code |
-| Magic numbers | MAJOR | REJECT - use named constants |
-| Functions >100 lines | MAJOR | REJECT - split function |
-
-## REPORT TEMPLATE
-
-```markdown
-# PR Comments Addressed
-
-## Comments Processed
-- [ ] Comment 1: [summary] - [action taken]
-- [ ] Comment 2: [summary] - [action taken]
-
-## Clean Code Verification
-- Function size: [PASS/FAIL]
-- No duplication: [PASS/FAIL]
-- No magic numbers: [PASS/FAIL]
-- No tech debt: [PASS/FAIL]
-
-## Tests
-- Status: [ALL PASS / FAILURES]
-
-## Next Steps
-[Ready for re-review | More changes needed]
+```bash
+for PR in $ARGUMENTS; do
+  git worktree remove "/tmp/worktree-$PR" 2>/dev/null
+done
 ```
+
+## TECHNICAL DEBT CHECK
+
+| Pattern | Action |
+|---------|--------|
+| TODO/FIXME without issue | REJECT |
+| Commented-out code | REJECT |
+| Functions >100 lines | REJECT |
