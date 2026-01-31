@@ -25,10 +25,11 @@
       "Read(**/*secret*)"
     ]
   },
-  "preferences": {
-    "includeCoAuthoredBy": false,
-    "includePRFooter": false
+  "attribution": {
+    "commit": "",
+    "pr": ""
   },
+  "includeCoAuthoredBy": false,
   "enabledPlugins": {
     "clangd-lsp@claude-plugins-official": true
   }
