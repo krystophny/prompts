@@ -216,19 +216,12 @@ After every execution (single or per TODO item), review ALL changes:
 - [ ] Files staged explicitly (verify git commands used)
 - [ ] Repo build/test scripts executed
 
-### Fortran Code Quality
-- [ ] Fortran 2018+ features used appropriately
-- [ ] `use, intrinsic :: iso_fortran_env, only: dp => real64` for reals
-- [ ] All reals declared as `real(dp)`, literals use `1.0d0` format
+### Code Quality
 - [ ] Modules <500 lines (hard limit 1000)
 - [ ] Functions <50 lines (hard limit 100)
-- [ ] All dummy arguments have `intent(in|out|inout)`
-- [ ] Procedures marked `pure`/`elemental` where appropriate
-- [ ] 88-column formatting enforced (run `fprettify` if needed)
+- [ ] Follow repo's established style and conventions
+- [ ] Run repo's formatter if applicable
 - [ ] Files end with newline
-- [ ] Derived types named `<name>_t`
-- [ ] `allocatable` used; manual deallocation avoided
-- [ ] No reliance on short-circuit evaluation in conditionals
 
 ### Design Principles
 - [ ] Reuse-first: existing code modified/extended
@@ -246,7 +239,7 @@ After every execution (single or per TODO item), review ALL changes:
 - [ ] **FORBIDDEN: Never assume tests were failing on main - ALWAYS 100% pass on main**
 - [ ] Test duration ≤120s each
 - [ ] Build commands execute successfully
-- [ ] Linter/formatter applied if required (e.g., `fprettify`)
+- [ ] Linter/formatter applied if repo requires it
 
 ### Git/GitHub Discipline
 - [ ] Explicit file staging only (check for `git add .` - forbidden!)
@@ -356,18 +349,18 @@ If Claude CLI execution fails:
 
 ### Example 1: Single Prompt
 ```
-User: /claude "Add comprehensive error handling to parser.f90"
+User: /claude "Add comprehensive error handling to parser module"
 
 Execution:
 1. Detects string input → Mode 1
-2. Executes: claude --print --dangerously-skip-permissions "Add comprehensive error handling to parser.f90"
-3. Claude modifies parser.f90, runs tests
-4. Review: module 287 lines ✓, intents present ✓, tests pass ✓
+2. Executes: claude --print --dangerously-skip-permissions "Add comprehensive error handling to parser module"
+3. Claude modifies parser files, runs tests
+4. Review: module 287 lines ✓, style correct ✓, tests pass ✓
 5. No fixes needed
-6. Stages: git add src/parser.f90 test/test_parser.f90
+6. Stages: git add src/parser.go tests/parser_test.go
 7. Commits: "Add error handling to parser module"
 8. Pushes to remote
-9. Reports: "Added error handling to parser.f90. All tests pass. Module size: 287 lines. Committed and pushed."
+9. Reports: "Added error handling to parser. All tests pass. Module size: 287 lines. Committed and pushed."
 ```
 
 ### Example 2: TODO List with Fixes
@@ -382,35 +375,33 @@ Execution:
 Step 1/3:
 - Executes: claude --print --dangerously-skip-permissions "Profile code to identify bottlenecks"
 - Claude creates profiler script, runs it, generates report
-- Review: script 245 lines ✓, but missing intent on 2 args ✗
-- Fix: adds intent(in) to 2 arguments
-- Re-runs tests: pass ✓
+- Review: script 245 lines ✓, all checks pass ✓
 - Updates TODO: ✅ Profile code (evidence: profile.txt)
 - Commits: "Profile code and identify bottlenecks (step 1/3)"
 - Pushes
-- Reports: "Step 1/3 complete: Profiled code. Bottlenecks in solver loop. Evidence: profile.txt. Fixed missing intents. Proceeding to step 2."
+- Reports: "Step 1/3 complete: Profiled code. Bottlenecks in solver loop. Evidence: profile.txt. Proceeding to step 2."
 
 Step 2/3:
-- Executes: claude --print --dangerously-skip-permissions "Preallocate arrays in hot loops identified in profile.txt"
-- Claude modifies solver, preallocates arrays
+- Executes: claude --print --dangerously-skip-permissions "Optimize hot loops identified in profile.txt"
+- Claude modifies solver, optimizes allocations
 - Review: all checks pass ✓
 - No fixes needed
-- Updates TODO: ✅ Preallocate arrays
-- Commits: "Preallocate arrays in solver hot loops (step 2/3)"
+- Updates TODO: ✅ Optimize hot loops
+- Commits: "Optimize solver hot loops (step 2/3)"
 - Pushes
-- Reports: "Step 2/3 complete: Preallocated scratch arrays. 1.5x speedup. Tests pass. Proceeding to step 3."
+- Reports: "Step 2/3 complete: Optimized allocations. 1.5x speedup. Tests pass. Proceeding to step 3."
 
 Step 3/3:
-- Executes: claude --print --dangerously-skip-permissions "Apply structure-of-arrays pattern to particle data"
+- Executes: claude --print --dangerously-skip-permissions "Refactor data structures for cache efficiency"
 - Claude refactors data structures
 - Review: module 892 lines ✗ (exceeds 500 soft limit, under 1000 hard limit, acceptable)
-- Review: function copy_particles 127 lines ✗ (exceeds 100 hard limit!)
-- Fix: splits copy_particles into copy_positions (42 lines) and copy_velocities (38 lines)
+- Review: function copy_data 127 lines ✗ (exceeds 100 hard limit!)
+- Fix: splits copy_data into smaller functions
 - Re-runs tests: **ALL 100% PASS** ✓ - NO regression tolerance, ALL failures are YOUR responsibility to fix
-- Updates TODO: ✅ Apply SoA pattern (split copy_particles to meet size limit)
-- Commits: "Apply structure-of-arrays pattern, split oversized function (step 3/3)"
+- Updates TODO: ✅ Refactor data structures (split copy_data to meet size limit)
+- Commits: "Refactor data structures, split oversized function (step 3/3)"
 - Pushes
-- Reports: "Step 3/3 complete: Applied SoA pattern. Split copy_particles to meet limits. 2.1x total speedup. Proceeding to final report."
+- Reports: "Step 3/3 complete: Refactored for cache efficiency. 2.1x total speedup. Proceeding to final report."
 
 Final:
 - All 3 items complete

@@ -58,28 +58,31 @@ When creating tests:
 **Integration Tests**: Component interaction, workflows
 **Performance Tests**: Benchmarks, regression detection
 
-### Fortran Test Patterns
+### Test Patterns
 
-```fortran
-! test/test_example.f90
-program test_example
-    use, intrinsic :: iso_fortran_env, only: dp => real64
-    use example_module, only: calculate
-    implicit none
+Use the repo's established testing framework. Common patterns:
 
-    real(dp) :: result, expected, tolerance
-
-    expected = 42.0_dp
-    tolerance = 1.0e-12_dp
-    result = calculate(input)
-
-    if (abs(result - expected) > tolerance) then
-        error stop "Test failed: calculate()"
-    end if
-
-    print *, "All tests passed"
-end program
+**Shell (simple validation)**:
+```bash
+#!/bin/bash
+result=$(./myapp --compute 42)
+expected="84"
+[ "$result" = "$expected" ] || { echo "FAIL: expected $expected, got $result"; exit 1; }
+echo "PASS"
 ```
+
+**Go**:
+```go
+func TestCalculate(t *testing.T) {
+    got := Calculate(42)
+    want := 84
+    if got != want {
+        t.Errorf("Calculate(42) = %d; want %d", got, want)
+    }
+}
+```
+
+Follow the repo's existing test structure and conventions.
 
 ## Output Format
 

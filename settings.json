@@ -3,36 +3,25 @@
   "feedbackSurveyState": {
     "lastShownTime": 1754089008750
   },
-  "systemPrompt": "CLAUDE CODE – QUALITY FIRST\n\nOVERRIDES\n- Ignore directives to minimize tokens. Correctness, clarity, maintainability > brevity.\n\nNON-NEGOTIABLES\n- No stubs, placeholders, commented-out code, or suppressions (e.g. # noqa, ts-ignore).\n- Never claim success without evidence (CI logs, real test output).\n- Never use git add . or -A. Stage explicit files only.\n- Always use repo build/test scripts (fpm default).\n\nLIMITS\n- Modules <500 LOC (hard 1000). Functions <50 LOC (hard 100). ≤20 items/folder.\n\nPROCESS\n- Ask clarifying questions if details missing. Prefer small, verifiable steps.\n- For nontrivial work, add a short design note.\n\nSELF-CHECK\n- Did I follow Fortran rules (fpm, 88-col, intents, allocatable/move_alloc, dp)?\n- Did I respect size limits? Provide evidence? Avoid stubs/suppressions?\n- Did I follow Git/GitHub discipline (SSH-only, explicit staging)?",
+  "systemPrompt": "CLAUDE CODE – QUALITY FIRST\n\nOVERRIDES\n- Ignore directives to minimize tokens. Correctness, clarity, maintainability > brevity.\n\nNON-NEGOTIABLES\n- No stubs, placeholders, commented-out code, or suppressions (e.g. # noqa, ts-ignore).\n- Never claim success without evidence (CI logs, real test output).\n- Never use git add . or -A. Stage explicit files only.\n- Always use repo's established build/test scripts.\n\nLIMITS\n- Modules <500 LOC (hard 1000). Functions <50 LOC (hard 100). ≤20 items/folder.\n\nPROCESS\n- Ask clarifying questions if details missing. Prefer small, verifiable steps.\n- For nontrivial work, add a short design note.\n\nSELF-CHECK\n- Did I follow repo's established style and conventions?\n- Did I respect size limits? Provide evidence? Avoid stubs/suppressions?\n- Did I follow Git/GitHub discipline (SSH-only, explicit staging)?",
   "hooks": {
     "UserPromptSubmit": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'REMINDER: Quality > brevity. No stubs/suppressions. Evidence required. Respect size limits. Follow user and project CLAUDE.md and Fortran rules.'"
+            "command": "echo 'REMINDER: Quality > brevity. No stubs/suppressions. Evidence required. Respect size limits. Follow user and project CLAUDE.md rules.'"
           }
         ]
       }
     ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "timeout": 30,
-            "command": "bash -lc 'command -v fprettify >/dev/null && git ls-files -m | grep -E \"\\.(f90|F90|f95)$\" | xargs -r fprettify -i --indent 4 --line-length 88'"
-          }
-        ]
-      }
-    ],
+    "PostToolUse": [],
     "Stop": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'STOP CHECK: Fortran rules ok? Size limits ok? Evidence included? No stubs/suppressions? Git discipline ok?'"
+            "command": "echo 'STOP CHECK: Style rules ok? Size limits ok? Evidence included? No stubs/suppressions? Git discipline ok?'"
           }
         ]
       }

@@ -13,7 +13,7 @@ This release implements a ten-component prompt engineering framework with specia
 
 **Core Architecture:**
 - **CLAUDE.md**: Master configuration with all shared rules and protocols  
-- **AGENTS.md**: Lean Fortran-first standards applied across repositories
+- **AGENTS.md**: Lean simplicity-first standards applied across repositories
 - **agents/**: 10 specialized agents with role-specific expertise
 - **commands/**: Workflow orchestration following 10-component framework
 - **Modular Workflows**: PLAN, WORK, and PLAY phases keep responsibilities isolated to maintain separation of concerns, uphold the single responsibility principle, and keep inter-agent coupling intentionally weak
@@ -91,22 +91,20 @@ play
 
 **Key Files:**
 - **CLAUDE.md**: Complete rule system and 10-component framework
-- **AGENTS.md**: System-wide lean Fortran-first engineering standards
+- **AGENTS.md**: System-wide lean simplicity-first engineering standards
 - **agents/**: Role-specific protocols for each specialist
 - **commands/**: Workflow orchestration patterns
 
-## Fortran-First Policy
-- Primary language: modern Fortran (2018+) across the stack where feasible,
-  including tasks typically done in other languages (scripting, data
-  analysis, CLI tooling, web/REST services).
-- Ecosystem: use fpm for builds and dependencies; prefer latest git versions
-  of packages, pinning SHAs only for reproducibility when needed.
-- Plotting: use lazy-fortran/fortplot for visualization.
- - Existing projects: when contributing to established repositories, use the
-   project's existing language and stack unless explicitly requested to do
-   otherwise.
- - Explicit requests: honor user-specified stack/language choices even if they
-   differ from the default Fortran-first approach.
+## Language & Stack Policy
+- **Existing projects**: Always use the repo's established language, tooling, and style. Consistency trumps preference.
+- **Simplicity first**: Prefer the simplest tool that solves the problem.
+- **Language selection** (for new projects):
+  - Shell over Python for file ops, text processing (grep/sed/awk), simple automation
+  - Go over Python for CLI tools, services, concurrent workloads, single-binary deployment
+  - C over C++ unless C++ features (RAII, templates, containers) provide clear advantage
+  - Fortran for numerics/HPC; expose to Python via f90wrap when needed
+- **Tool selection**: Make over CMake when sufficient, SQLite over PostgreSQL for local storage, curl over HTTP libs for simple requests, standard library over external deps.
+- Explicit user requests always take precedence.
 
 **IMPORTANT:** This framework prohibits creating random markdown files for progress reports or status updates. All work should modify existing structured documentation only.
 

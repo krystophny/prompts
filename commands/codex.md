@@ -147,7 +147,7 @@ GLOBAL_CONTEXT
 - Linked references: {{linked_references}}
 
 CONSTRAINTS
-- All CLAUDE.md standards (size limits, Fortran rules, git discipline)
+- All CLAUDE.md standards (size limits, style rules, git discipline)
 - Evidence required for success claims
 - Explicit file staging only
 - [Task-specific constraints]

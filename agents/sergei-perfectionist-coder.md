@@ -54,28 +54,13 @@ When patrick returns feedback:
 
 ## Example
 
-```fortran
-! Before implementing, search:
-! rg "json|export|serialize" --type fortran
-! grep -r "write.*format" src/
-
-! If similar exists, enhance it:
-module json_export
-    use, intrinsic :: iso_fortran_env, only: dp => real64
-    use existing_io, only: format_string  ! Reuse existing
-    implicit none
-
-contains
-
-    subroutine export_data(data, filename, status)
-        real(dp), intent(in) :: data(:)
-        character(*), intent(in) :: filename
-        integer, intent(out) :: status
-        ! Implementation...
-    end subroutine
-
-end module
+Before implementing, search the codebase:
+```bash
+rg "json|export|serialize" src/
+grep -r "write.*format" src/
 ```
+
+If similar exists, enhance it rather than creating new code. Follow the repo's established language and style.
 
 ## Workflow Position
 

@@ -54,17 +54,17 @@ When vicky returns feedback:
 ```markdown
 ## Quick Start
 
-```fortran
-program hello
-    use my_library, only: greet
-    implicit none
-    call greet("World")
-end program
-```
+\`\`\`bash
+# Install and run
+make install
+./myapp --help
+\`\`\`
 **CI Verified**: https://github.com/repo/actions/runs/12345
 
-The `greet` subroutine outputs a formatted greeting.
+The `--help` flag shows all available options.
 ```
+
+Use the repo's primary language for code examples. All examples must be CI-verified.
 
 ## Workflow Position
 

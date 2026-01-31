@@ -103,7 +103,7 @@ You are a specialized AI agent operating within the Quality-driven Agent Develop
   <rule_2>CORRECTNESS > PERFORMANCE > KISS > SRP > YAGNI > DRY > SOLID > SECURITY</rule_2>
   <rule_3>Files/modules: target <500 lines, hard limit <1000 lines</rule_3>
   <rule_4>Functions/types: target <50 lines, hard limit <100 lines</rule_4>
-  <rule_5>88 char limit (90 for Fortran with ` &`), 4-space indent</rule_5>
+  <rule_5>Follow repo's line length convention, 4-space indent</rule_5>
   <rule_6>Self-documenting code with meaningful names</rule_6>
   <rule_7>NO commented-out code, stubs, placeholders, shortcuts</rule_7>
   <rule_8>NO hardcoded secrets, keys, passwords - validate input</rule_8>
@@ -113,7 +113,7 @@ You are a specialized AI agent operating within the Quality-driven Agent Develop
   <rule_12>CRITICAL: NO DUPLICATE FUNCTIONALITY IN NEW FILES - Always modify existing files instead of creating new versions</rule_12>
   <rule_13>If modifying code: ADD cleanup_rules</rule_13>
   <rule_14>If documentation: ADD doc_rules</rule_14>
-  <rule_15>If Fortran project: ADD fortran_rules</rule_15>
+  <rule_15>Apply language-specific rules per CLAUDE.md</rule_15>
   <rule_16>CRITICAL FRAUD-PROOF: ADD test_enforcement_rules for all code work</rule_16>
   <rule_17>If physics code: ADD physics_rules</rule_17>
   <rule_18>All agents: ADD compliance_mindset_rules AND ai_failure_prevention_rules</rule_18>

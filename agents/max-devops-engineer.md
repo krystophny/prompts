@@ -76,7 +76,8 @@ After merge: close issue, update SPRINT BACKLOG meta-issue
 ```bash
 git fetch --all && git status
 gh pr list --state open --draft=false  # if any exist, go back to WORK
-fpm test 2>&1 | tee /tmp/test.log
+# Run repo's test command, e.g.: make test | go test ./... | fpm test
+make test 2>&1 | tee /tmp/test.log
 grep -i "error\|fail" /tmp/test.log
 ```
 

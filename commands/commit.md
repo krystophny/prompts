@@ -12,38 +12,39 @@ Create a commit following CLAUDE.md git rules. Optional argument: commit message
 
 ### 1. CHECK STATUS
 ```bash
-git -C lfortran status
-git -C lfortran diff --stat
+git status
+git diff --stat
 ```
 
 ### 2. REVIEW CHANGES
 ```bash
-git -C lfortran diff
+git diff
 ```
 Ensure no secrets, large binaries, or unintended changes.
 
 ### 3. VERIFY TESTS PASS
 ```bash
-scripts/lf.sh test
+# Run repo's test command
+make test  # or: go test ./... | fpm test | pytest
 ```
 NEVER commit if tests fail.
 
 ### 4. STAGE FILES EXPLICITLY
 ```bash
-git -C lfortran add <specific-file-1> <specific-file-2>
+git add <specific-file-1> <specific-file-2>
 ```
 NEVER use `git add .` or `git add -A`.
 
 ### 5. CREATE COMMIT
 If message provided:
 ```bash
-git -C lfortran commit -m "$ARGUMENTS"
+git commit -m "$ARGUMENTS"
 ```
 
 If no message, generate one based on changes:
 ```bash
-git -C lfortran log --oneline -5  # Check style
-git -C lfortran commit -m "$(cat <<'EOF'
+git log --oneline -5  # Check style
+git commit -m "$(cat <<'EOF'
 <type>: <description>
 
 <optional body>
@@ -55,8 +56,8 @@ Types: fix, feat, refactor, test, docs, chore
 
 ### 6. VERIFY COMMIT
 ```bash
-git -C lfortran log -1 --stat
-git -C lfortran status
+git log -1 --stat
+git status
 ```
 
 ## RULES

@@ -56,7 +56,7 @@ codex exec -C "{{repo_root}}" \
   - Duplicate code (5+ similar lines)
   - Shallow wrappers, verbose comments
   - Over-engineering, defensive bloat
-- **Apply CLAUDE.md** (88-col, size limits, git discipline)
+- **Apply CLAUDE.md** (size limits, git discipline, repo style)
 - **Fix ALL issues autonomously**
 - Clean up temp files, commit, push
 
@@ -83,10 +83,9 @@ Gaps marked with TODO/STUB/GAP comments.
 {{gaps_list_detailed}}
 
 ## PROFESSIONALIZATION
-- fprettify 88-column
-- intent declarations
-- error handling
-- remove TODO/STUB/GAP markers
+- Apply repo's code formatter
+- Proper error handling
+- Remove TODO/STUB/GAP markers
 
 ## CLEANUP TARGETS
 {{cleanup_targets}}
@@ -94,7 +93,7 @@ Eliminate: duplicates, verbose docs, dead code, shallow wrappers.
 
 ## CONSTRAINTS
 - Modules <500 lines, functions <50 lines
-- Fortran 2018+, intents on all args
+- Follow repo's established style
 - Explicit staging, no emojis
 - Evidence required
 

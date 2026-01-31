@@ -4,7 +4,7 @@ Create a properly formatted GitHub issue. Argument: issue title.
 
 ## Usage
 ```
-/issue "Bug: minloc returns wrong type with kind=8"
+/issue "Bug: function returns wrong result"
 ```
 
 ## CHECKLIST (Execute in Order)
@@ -13,20 +13,18 @@ Create a properly formatted GitHub issue. Argument: issue title.
 - What is the bug/feature?
 - Steps to reproduce (MRE)
 - Expected vs actual behavior
-- LFortran version: `lfortran --version`
+- Version info: relevant tool versions
 
 ### 2. CREATE MRE
-```fortran
-! Minimal reproducing example
-program mre
-  ! Smallest code that shows the issue
-end program
+```
+# Minimal reproducing example
+# Smallest code/steps that shows the issue
 ```
 
 ### 3. VERIFY MRE
 ```bash
-scripts/lf.sh run /tmp/mre.f90
-gfortran /tmp/mre.f90 -o /tmp/mre_gfortran && /tmp/mre_gfortran
+# Run MRE and confirm it reproduces the issue
+./mre_script.sh
 ```
 
 ### 4. WRITE ISSUE BODY
@@ -36,8 +34,8 @@ Save to /tmp/issue.md:
 <1-2 sentences describing the issue>
 
 ## MRE
-\`\`\`fortran
-<minimal code>
+\`\`\`
+<minimal code/steps>
 \`\`\`
 
 ## Expected Behavior
@@ -48,13 +46,13 @@ Save to /tmp/issue.md:
 
 ## Version
 \`\`\`
-<lfortran --version output>
+<version info>
 \`\`\`
 ```
 
 ### 5. CREATE ISSUE
 ```bash
-gh issue create --repo lfortran/lfortran \
+gh issue create \
   --title "$ARGUMENTS" \
   --body-file /tmp/issue.md \
   --label bug
@@ -65,6 +63,6 @@ Provide the issue URL.
 
 ## RULES
 - Always include MRE
-- Always verify MRE compiles with gfortran (unless gfortran bug)
+- Always verify MRE reproduces the issue
 - No emojis in title or body
 - Use appropriate labels: bug, enhancement, documentation

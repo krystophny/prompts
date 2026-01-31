@@ -1,4 +1,4 @@
-# AGENTS.md (Lean, Fortran-First Framework)
+# AGENTS.md (Lean, Simplicity-First Framework)
 
 ## ABSOLUTE HARD RULES - ZERO TOLERANCE POLICY
 EVERY point below is a MANDATORY requirement that MUST be followed WITHOUT EXCEPTION under ALL circumstances EXCEPT the USER asks you to do it DIFFERENTLY.
@@ -12,7 +12,7 @@ EVERY point below is a MANDATORY requirement that MUST be followed WITHOUT EXCEP
 - PROHIBITED: stubs, placeholders, commented-out code, random markdowns, variants, backups, or suppressions
 - FORBIDDEN: claiming success without tangible evidence (CI logs, real test output)
 - REQUIRED: explicit file staging only - NEVER use `git add .` or `git add -A`
-- MANDATORY: use repo build/test scripts - fpm is the default toolchain
+- MANDATORY: use repo's established build/test scripts and tooling
 - FORBIDDEN: spamming working directory with process documentation in Markdown files
 - MANDATORY: Boy Scout Principle - leave every file, test, and workflow better than you found it by fixing issues you encounter immediately
 
@@ -54,12 +54,24 @@ Feature branches (MANDATORY):
 - ALL regressions are YOUR FAULT - YOU fix CODE
 
 ## Language & Stack
-- Primary: modern Fortran (2018+). Prefer Fortran even for scripting/CLI/web when feasible.
-- Existing projects: stick to the project's established stack unless explicitly directed otherwise.
-- Explicit requests: if asked, follow the specified stack even if non-Fortran.
-- Interop: keep non-Fortran glue minimal; core logic remains Fortran.
-- Build/deps: use cmake or fpm; prefer latest git packages, pin SHAs only when reproducibility is required.
-- Plotting: use lazy-fortran/fortplot.
+- **Existing projects**: ALWAYS stick to the project's established stack, tooling, and style. Consistency with the repo trumps personal preference.
+- **Simplicity first**: Prefer the simplest tool that solves the problem. Avoid over-engineering.
+- **Language selection** (for new projects or when choice exists):
+  - **Shell (bash/POSIX sh)**: Prefer over Python for file operations, process orchestration, text processing (grep/sed/awk), and simple automation.
+  - **Python**: Only when shell becomes unwieldy - complex data structures, ML, APIs with good Python SDKs, or heavy string/JSON manipulation.
+  - **Go**: Prefer over Python for CLI tools, web services, concurrent workloads, or anything needing single-binary deployment.
+  - **C**: Prefer over C++ for systems code, embedded, or libraries unless C++ features (RAII, templates, std containers) provide clear advantage.
+  - **Fortran (2018+)**: For numerics/HPC; expose to Python via f90wrap when interactive use needed.
+- **Tool selection** (prefer simpler options):
+  - **Make** over CMake/Meson when plain Make suffices
+  - **SQLite** over PostgreSQL/MySQL for local or embedded storage
+  - **Static HTML/CSS** over JS frameworks for simple pages
+  - **curl/wget** in shell over HTTP libraries for simple requests
+  - **cron** over complex schedulers for periodic tasks
+  - **rsync** over custom sync solutions
+  - **Standard library** over external dependencies when possible
+- **Avoid**: TypeScript when JS suffices, Rust when C/Go suffices, YAML when JSON works, ORMs when raw SQL is clearer, microservices when a monolith works.
+- **Build/deps**: Use the repo's established build system. For new projects, prefer simple tools (make, cmake, go build, fpm for Fortran). Pin dependency versions only when reproducibility is required.
 
 ## Project Root & Paths
 - ALWAYS operate from the project root (repo top-level). Run all commands from the root and use root-relative paths.
@@ -84,7 +96,7 @@ Feature branches (MANDATORY):
 - Keep inner loops over the leftmost index; avoid temporaries and preallocate scratch arrays when needed.
 - Remove obsolete/dead code outright; write self-documenting code with comments reserved for non-obvious intent.
 
-## Fortran Rules (2018+, 88-col)
+## Fortran Rules (when working with Fortran code)
 - Use cmake or fpm; mirror CI commands locally. Apply `fprettify` to enforce 88-column, 4-space indent formatting; end files with a newline.
 - Add `use <module>, only:` statements above `implicit none`.
 - `use, intrinsic :: iso_fortran_env, only: dp => real64`; declare reals as `real(dp)` and prefer `1.0d0` literals.
@@ -99,7 +111,7 @@ Feature branches (MANDATORY):
 - In if conditionals, do not rely on short-circuiting, Fortran does not support it.
 - Do not use quotes in comments; write examples without quotation marks.
 
-## Fortran Performance Patterns (MANDATORY)
+## Fortran Performance Patterns (when working with Fortran code)
 
 **Column-major loop order** - leftmost index innermost for cache efficiency:
 ```fortran
@@ -273,14 +285,17 @@ Use `-check arg_temp_created` (Intel) or `-Warray-temporaries` (gfortran) to det
 **Hotspot diagnosis**: malloc/free → preallocate; cache misses → fix loop order; memcpy → explicit loops; low IPC → blocking/tiling
 
 ## Build & Test
-- Use repo-documented build and test scripts; cmake or fpm is standard. Keep tests behavioral and fast (≤120 s each).
+- Use repo-documented build and test scripts. Keep tests behavioral and fast (≤120 s each).
 - Prefer TDD: Red → Green → Refactor.
-- For CMake builds: `cmake -S . -B build -G Ninja` followed by `cmake --build build -j32`.
-- For Make builds: always use `make -j32`.
-- Tests must pass 100% locally before PRs; use latest git packages and pin SHAs only when reproducibility is necessary.
+- Common build patterns:
+  - CMake: `cmake -S . -B build -G Ninja && cmake --build build -j$(nproc)`
+  - Make: `make -j$(nproc)`
+  - Go: `go build ./... && go test ./...`
+  - Fortran (fpm): `fpm build && fpm test`
+- Tests must pass 100% locally before PRs; pin dependency versions only when reproducibility is necessary.
 - Use /tmp for test logs to avoid polluting the working directory.
 
-## NVHPC/nvfortran Setup
+## NVHPC/nvfortran Setup (for Fortran GPU work)
 For OpenACC GPU offloading: source HPC-X environment first (`hpcx-mt-init.sh && hpcx_load`), use full HPC-X `mpifort` (not stub wrapper), set `NVHPC_CUDA_HOME` if needed. NVHPC auto-builds HDF5/NetCDF/FFTW due to ABI incompatibility with gfortran-compiled libs.
 
 ## Licensing & Reuse
@@ -312,7 +327,7 @@ For OpenACC GPU offloading: source HPC-X environment first (`hpcx-mt-init.sh && 
 - **New backends**: New test backend/config MUST have CI coverage OR tracking issue
 
 ## CHECKLIST BEFORE COMPLETION
-1. Followed ALL Fortran rules (88-col, intents, allocatable/move_alloc, dp)?
+1. Followed repo's established style and conventions? (For Fortran: 88-col, intents, allocatable/move_alloc, dp)
 2. Respected ALL size limits? Provided concrete evidence for ALL claims?
 3. Avoided ALL stubs/placeholders/suppressions? Followed Git/GitHub discipline?
 4. 100% test pass rate by fixing CODE (not tests)? Test fails on main, passes on branch?
