@@ -143,6 +143,30 @@ y = a + b * sin(d)
 - Cache: use blocking/tiling for large working sets (e.g., matmul).
 - Detect hidden temporaries with `-Warray-temporaries` (gfortran) or `-check arg_temp_created` (Intel).
 
+## Code Navigation with cscope (C projects)
+
+Index a C project:
+```bash
+find src include -name '*.c' -o -name '*.h' > cscope.files
+cscope -b -q
+```
+
+Query from CLI (non-interactive, batch mode):
+```bash
+cscope -d -L0 symbol       # find symbol
+cscope -d -L1 symbol       # find definition
+cscope -d -L2 func         # find functions called BY func
+cscope -d -L3 func         # find callers OF func (most useful)
+cscope -d -L4 text         # grep for text
+cscope -d -L6 pattern      # egrep pattern
+cscope -d -L7 file         # find file
+cscope -d -L8 file         # find files #including file
+```
+
+Add `cscope.out*` and `cscope.files` to `.gitignore`. Rebuild index after significant changes.
+
+Works well for pure C (liric). For C++ projects, prefer `clangd` + `compile_commands.json` (via `bear` or cmake `-DCMAKE_EXPORT_COMPILE_COMMANDS=ON`).
+
 ## Profiling (MANDATORY before optimization)
 
 | Tool | Platform | Command |

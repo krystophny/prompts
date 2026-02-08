@@ -1,4 +1,9 @@
 {
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
       "Bash(git *)",
@@ -25,11 +30,6 @@
       "Read(**/*secret*)"
     ]
   },
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
-  "includeCoAuthoredBy": false,
   "enabledPlugins": {
     "clangd-lsp@claude-plugins-official": true
   }
