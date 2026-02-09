@@ -24,6 +24,8 @@
 #     [--worker-disable-features f1,f2] [--reviewer-disable-features f1,f2]
 # Env:
 #   TEST_CMD         Optional local test command (e.g., "make test-ci"), used in prompts
+#   BATCH_MODE       Batch execution mode (1=true default, 0=false single-pass)
+#   DEBUG            Debug output mode (1=true default, 0=false)
 #   WORKER_TOOL      Tool for implementation work (claude, codex, gemini); default: codex
 #   REVIEWER_TOOL    Tool for reviews (claude, codex, gemini); default: codex
 #   WORKER_MODEL     Model override for worker tool (e.g., o3, claude-sonnet-4-20250514)
@@ -59,7 +61,8 @@ Usage:
 
 Options:
   --label NAME                     Process only issues with label
-  --all                            Auto-merge mode for iterative processing
+  --all                            Enable batch mode (default; exits when no open issues remain)
+  --single-pass                    Disable batch mode and run one pass
   --limit N                        Max issue passes in --all mode
   --squash|--rebase|--merge        Merge strategy (default: --squash)
   --repo OWNER/NAME                Override GH target repo
@@ -76,11 +79,14 @@ Options:
   --reviewer-enable-features LIST  Comma-separated Codex feature flags to enable
   --worker-disable-features LIST   Comma-separated Codex feature flags to disable
   --reviewer-disable-features LIST Comma-separated Codex feature flags to disable
-  --debug                          Enable debug tracing
+  --debug                          Enable debug tracing (default)
+  --no-debug                       Disable debug tracing
   -h, --help                       Show this help
 
 Defaults:
   - Worker and reviewer both use Codex.
+  - Batch mode is enabled.
+  - Debug output is enabled.
   - Model/effort/profile are inherited from ~/.codex/config.toml unless overridden.
   - Reviewer mode auto: uses codex review when reviewer=codex, otherwise exec behavior.
 EOF
@@ -102,11 +108,8 @@ if [[ -z "$repo_root" ]]; then
 fi
 cd "$repo_root"
 
-# Debug flag (can be toggled via --debug or DEBUG=1)
-debug=${DEBUG:-0}
-if [[ $debug -eq 1 ]]; then
-  set -x
-fi
+# Debug flag (enabled by default; can be disabled via --no-debug or DEBUG=0)
+debug=${DEBUG:-1}
 
 # shellcheck disable=SC2034
 label=""     # default: all open issues (filtered by --label when provided)
@@ -115,7 +118,13 @@ limit=999999
 # shellcheck disable=SC2034
 merge_method="--squash"
 repo_override=""
-auto_merge=false
+batch_mode="${BATCH_MODE:-1}"
+if [[ "$batch_mode" == "0" ]]; then
+  auto_merge=false
+else
+  auto_merge=true
+fi
+all_explicit=false
 single_issue=""
 worker_tool="${WORKER_TOOL:-codex}"
 reviewer_tool="${REVIEWER_TOOL:-codex}"
@@ -146,6 +155,11 @@ while [[ $# -gt 0 ]]; do
       # shellcheck disable=SC2034
       label=""
       auto_merge=true
+      all_explicit=true
+      shift 1
+      ;;
+    --single-pass)
+      auto_merge=false
       shift 1
       ;;
     --limit)
@@ -163,6 +177,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --repo) repo_override="$2"; shift 2;;
     --debug) debug=1; shift 1;;
+    --no-debug) debug=0; shift 1;;
     --worker)
       if [[ ! "$2" =~ ^(claude|codex|gemini)$ ]]; then
         echo "Invalid --worker value: $2 (must be claude, codex, or gemini)" >&2
@@ -275,7 +290,7 @@ if [[ -z "$reviewer_disable_features" && "$reviewer_tool" == "$worker_tool" && -
   reviewer_disable_features="$worker_disable_features"
 fi
 
-if [[ -n "$single_issue" && "$auto_merge" == true ]]; then
+if [[ -n "$single_issue" && "$all_explicit" == true ]]; then
   echo "[orchestrate] Warning: ignoring --all when a specific ISSUE_NUMBER is provided." >&2
   auto_merge=false
 fi
@@ -318,7 +333,7 @@ export REVIEWER_ENABLE_FEATURES="$reviewer_enable_features"
 export WORKER_DISABLE_FEATURES="$worker_disable_features"
 export REVIEWER_DISABLE_FEATURES="$reviewer_disable_features"
 
-echo "[orchestrate] Using $worker_tool${worker_model:+ model=$worker_model}${worker_profile:+ profile=$worker_profile}${worker_effort:+ effort=$worker_effort} for work, $reviewer_tool${reviewer_model:+ model=$reviewer_model}${reviewer_profile:+ profile=$reviewer_profile}${reviewer_effort:+ effort=$reviewer_effort}${reviewer_mode:+ mode=$reviewer_mode} for review" >&2
+echo "[orchestrate] Using $worker_tool${worker_model:+ model=$worker_model}${worker_profile:+ profile=$worker_profile}${worker_effort:+ effort=$worker_effort} for work, $reviewer_tool${reviewer_model:+ model=$reviewer_model}${reviewer_profile:+ profile=$reviewer_profile}${reviewer_effort:+ effort=$reviewer_effort}${reviewer_mode:+ mode=$reviewer_mode} for review (debug=${debug}, batch=${auto_merge})" >&2
 
 # Ensure Ctrl+C (SIGINT) reaches child processes run under `timeout`.
 # Use `--foreground` when available so users can abort cleanly.
@@ -395,23 +410,23 @@ else
         ((passes_done+=1))
         idle_attempts=0
         if (( passes_done >= limit )); then
-          echo "Reached --limit $limit; exiting (--all)." >&2
+          echo "Reached --limit $limit; exiting (batch mode)." >&2
           break
         fi
         if ! issues_remaining; then
-          echo "No open issues remain that match criteria; exiting (--all)." >&2
+          echo "No open issues remain that match criteria; exiting (batch mode)." >&2
           break
         fi
         continue
       fi
 
       if ! issues_remaining; then
-        echo "No open issues remain that match criteria; exiting (--all)." >&2
+        echo "No open issues remain that match criteria; exiting (batch mode)." >&2
         break
       fi
 
       ((idle_attempts+=1))
-      echo "No actionable PR found this pass; retrying (--all)." >&2
+      echo "No actionable PR found this pass; retrying (batch mode)." >&2
       sleep 5
     done
     exit 0
