@@ -14,7 +14,7 @@
 # AND user CLAUDE.md/AGENTS.md with ZERO tolerance for ANY violations
 #
 # Usage:
-#   scripts/issue_orchestrate_auto.sh [ISSUE_NUMBER] [--label <name>|--all] [--limit N] [--squash|--rebase|--merge] [--repo owner/name]
+#   scripts/orchestrate.sh [ISSUE_NUMBER] [--label <name>|--all] [--limit N] [--squash|--rebase|--merge] [--repo owner/name]
 #     [--worker claude|codex|gemini] [--reviewer claude|codex|gemini]
 #     [--worker-model MODEL] [--reviewer-model MODEL]
 #     [--reviewer-mode auto|exec|review]
@@ -42,7 +42,7 @@
 
 # Prevent accidental sourcing (which would cause 'exit' to close the caller shell)
 if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
-  echo "This script must be executed, not sourced. Run: scripts/issue_orchestrate_auto.sh [ISSUE_NUMBER] [--label <name>|--all] [--limit N] [--squash|--rebase|--merge]" >&2
+  echo "This script must be executed, not sourced. Run: scripts/orchestrate.sh [ISSUE_NUMBER] [--label <name>|--all] [--limit N] [--squash|--rebase|--merge]" >&2
   return 2
 fi
 
@@ -55,7 +55,7 @@ trap 'rc=$?; echo "[orchestrate][ERR] exit=$rc at line ${LINENO}; last cmd: \"${
 usage() {
   cat <<'EOF'
 Usage:
-  scripts/issue_orchestrate_auto.sh [ISSUE_NUMBER|--issue N] [options]
+  scripts/orchestrate.sh [ISSUE_NUMBER|--issue N] [options]
 
 Options:
   --label NAME                     Process only issues with label
