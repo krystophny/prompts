@@ -17,10 +17,83 @@ fi
 # jq filter for Claude stream-json: extracts text, thinking, tool use, results
 _JQ_STREAM='if .type == "assistant" then .message.content[]? | if .type == "thinking" then "[thinking] " + .thinking elif .type == "text" then .text elif .type == "tool_use" then "[tool:" + .name + "] " + (.input | tostring)[:300] else empty end elif .type == "user" then .message.content[]? | if .type == "tool_result" then (if .is_error then "[error] " else "[ok] " end) + ((.content // "")[:200]) else empty end else empty end'
 
+append_csv_flags() {
+  local -n out_arr="$1"
+  local flag="$2" csv="$3"
+  local item
+  local -a items=()
+  IFS=',' read -r -a items <<<"$csv"
+  for item in "${items[@]}"; do
+    item="${item#"${item%%[![:space:]]*}"}"
+    item="${item%"${item##*[![:space:]]}"}"
+    [[ -z "$item" ]] && continue
+    out_arr+=("$flag" "$item")
+  done
+}
+
+build_codex_global_args() {
+  local role="$1" model="$2"
+  local profile effort enable_features disable_features
+  case "$role" in
+    reviewer)
+      profile="${REVIEWER_PROFILE:-}"
+      effort="${REVIEWER_EFFORT:-}"
+      enable_features="${REVIEWER_ENABLE_FEATURES:-}"
+      disable_features="${REVIEWER_DISABLE_FEATURES:-}"
+      ;;
+    *)
+      profile="${WORKER_PROFILE:-}"
+      effort="${WORKER_EFFORT:-}"
+      enable_features="${WORKER_ENABLE_FEATURES:-}"
+      disable_features="${WORKER_DISABLE_FEATURES:-}"
+      ;;
+  esac
+
+  local -a args=()
+  [[ -n "$profile" ]] && args+=(--profile "$profile")
+  [[ -n "$model" ]] && args+=(--model "$model")
+  [[ -n "$effort" ]] && args+=(--config "model_reasoning_effort=\"$effort\"")
+  append_csv_flags args "--enable" "$enable_features"
+  append_csv_flags args "--disable" "$disable_features"
+  printf '%s\0' "${args[@]}"
+}
+
+build_codex_exec_args() {
+  local role="$1" model="$2"
+  local -a args=()
+  mapfile -d '' -t args < <(build_codex_global_args "$role" "$model")
+  args+=(exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root")
+  printf '%s\0' "${args[@]}"
+}
+
+resolve_codex_review_mode() {
+  local role="$1" tool="$2"
+  local mode="${REVIEWER_MODE:-auto}"
+  if [[ "$role" != "reviewer" ]]; then
+    echo "exec"
+    return 0
+  fi
+  case "$mode" in
+    auto)
+      if [[ "$tool" == "codex" ]]; then
+        echo "review"
+      else
+        echo "exec"
+      fi
+      ;;
+    exec|review)
+      echo "$mode"
+      ;;
+    *)
+      echo "exec"
+      ;;
+  esac
+}
+
 # Run tool with timeout
-# Args: timeout_duration, tool, model, prompt
+# Args: timeout_duration, tool, model, prompt, role(worker|reviewer)
 run_tool_with_timeout() {
-  local dur="$1" tool="$2" model="$3" prompt="$4"
+  local dur="$1" tool="$2" model="$3" prompt="$4" role="${5:-worker}"
   case "$tool" in
     claude)
       if [[ "${debug:-0}" -eq 1 ]]; then
@@ -31,19 +104,25 @@ run_tool_with_timeout() {
       fi
       ;;
     codex)
-      "${TIMEOUT[@]}" "$dur" codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" ${model:+--model "$model"} -- "$prompt" < /dev/null
+      local -a codex_args=()
+      mapfile -d '' -t codex_args < <(build_codex_exec_args "$role" "$model")
+      "${TIMEOUT[@]}" "$dur" codex "${codex_args[@]}" -- "$prompt" < /dev/null
       ;;
     gemini)
-      "${TIMEOUT[@]}" "$dur" gemini --yolo ${model:+--model "$model"} ${debug:+--debug} "$prompt"
+      if [[ "${debug:-0}" -eq 1 ]]; then
+        "${TIMEOUT[@]}" "$dur" gemini --yolo ${model:+--model "$model"} --debug "$prompt"
+      else
+        "${TIMEOUT[@]}" "$dur" gemini --yolo ${model:+--model "$model"} "$prompt"
+      fi
       ;;
     *) echo "[run_tool] Unknown: $tool" >&2; return 1 ;;
   esac
 }
 
 # Run tool and capture output (for parsing)
-# Args: tool, model, prompt
+# Args: tool, model, prompt, role(worker|reviewer)
 run_tool_capture() {
-  local tool="$1" model="$2" prompt="$3"
+  local tool="$1" model="$2" prompt="$3" role="${4:-worker}"
   case "$tool" in
     claude)
       if [[ "${debug:-0}" -eq 1 ]]; then
@@ -55,10 +134,27 @@ run_tool_capture() {
       fi
       ;;
     codex)
-      codex exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root" ${model:+--model "$model"} -- "$prompt" < /dev/null
+      local review_mode
+      review_mode=$(resolve_codex_review_mode "$role" "$tool")
+      if [[ "$review_mode" == "review" ]]; then
+        local -a codex_review_args=()
+        local review_base="${REVIEW_BASE:-}"
+        mapfile -d '' -t codex_review_args < <(build_codex_global_args "$role" "$model")
+        codex_review_args+=(review)
+        [[ -n "$review_base" ]] && codex_review_args+=(--base "$review_base")
+        codex "${codex_review_args[@]}" -- "$prompt" < /dev/null
+      else
+        local -a codex_args=()
+        mapfile -d '' -t codex_args < <(build_codex_exec_args "$role" "$model")
+        codex "${codex_args[@]}" -- "$prompt" < /dev/null
+      fi
       ;;
     gemini)
-      gemini --yolo ${model:+--model "$model"} ${debug:+--debug} "$prompt"
+      if [[ "${debug:-0}" -eq 1 ]]; then
+        gemini --yolo ${model:+--model "$model"} --debug "$prompt"
+      else
+        gemini --yolo ${model:+--model "$model"} "$prompt"
+      fi
       ;;
     *) echo "[run_tool_capture] Unknown: $tool" >&2; return 1 ;;
   esac
@@ -136,7 +232,7 @@ rebase_and_resolve_conflicts() {
     conflicted=$(git diff --name-only --diff-filter=U || true)
     prompt=$(load_prompt rebase_conflicts.prompt)
     CONFLICTED_FILES="$conflicted" BRANCH="$branch" BASE="$base" \
-      run_tool_with_timeout "${CODEX_REBASE_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
+      run_tool_with_timeout "${CODEX_REBASE_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt" "worker"
     if rebase_in_progress; then
       if git rebase --continue; then :; fi
     fi
@@ -166,7 +262,7 @@ ensure_clean_main() {
 }
 
 list_open_non_draft_codex_prs() {
-  gh pr list --state open --json number,headRefName,isDraft \
+  gh pr list --state open --limit 500 --json number,headRefName,isDraft \
     --jq '.[] | select(.headRefName|test("^fix/issue-")) | select(.isDraft|not) | .number' \
     2>/dev/null || true
 }
@@ -199,7 +295,7 @@ codex_address_review_feedback() {
   local prompt
   prompt=$(load_prompt review_feedback.prompt)
   PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" BRANCH="$branch" \
-    run_tool_with_timeout "${CODEX_PR_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
+    run_tool_with_timeout "${CODEX_PR_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt" "worker"
 
   if ! git diff --quiet || ! git diff --cached --quiet; then
     while IFS= read -r -d '' rec; do
@@ -365,14 +461,15 @@ Links
 Notes
 - References use the merge commit to ensure stable, permanent links to the exact content merged.
 MD
-  sed -i '' \
+  sed \
     -e "s|__PR_URL__|${pr_url//|/\|}|g" \
     -e "s|__SHA_SHORT__|${sha_short//|/\|}|g" \
     -e "s|__MERGE_COMMIT_URL__|${merge_commit_url//|/\|}|g" \
     -e "s|__PR_COMMITS_URL__|${pr_commits_url//|/\|}|g" \
     -e "s|__PR_FILES_URL__|${pr_files_url//|/\|}|g" \
     -e "s|__CHECKS_URL__|${checks_url//|/\|}|g" \
-    -e "s|__FILE_LINKS__|${file_links//$'\n'/'\\n'}|g" "$tmp"
+    -e "s|__FILE_LINKS__|${file_links//$'\n'/'\\n'}|g" "$tmp" > "${tmp}.rendered"
+  mv "${tmp}.rendered" "$tmp"
 
   local issue_state
   issue_state=$(gh issue view "$issue_num" --json state --jq '.state' 2>/dev/null || echo "")
@@ -408,7 +505,7 @@ infer_issue_from_current_branch() {
     return 0
   fi
   local pr_json
-  pr_json=$(gh pr list --head "$cur" --json number,title,body --limit 1 2>/dev/null || true)
+  pr_json=$(gh pr list --head "$cur" --limit 500 --json number,title,body 2>/dev/null || true)
   if [[ -n "$pr_json" && "$pr_json" != "[]" ]]; then
     local ref
     ref=$(echo "$pr_json" | jq -r '.[0] | ((.title // "") + "\n" + (.body // ""))' | grep -Eo '#[0-9]+' | head -n1 | tr -d '#')
@@ -441,7 +538,7 @@ progress_current_branch_if_needed() {
   fi
 
   local pr_json pr_number pr_url pr_is_draft
-  pr_json=$(gh pr list --head "$cur" --json number,isDraft,url --limit 1 2>/dev/null || echo '[]')
+  pr_json=$(gh pr list --head "$cur" --limit 500 --json number,isDraft,url 2>/dev/null || echo '[]')
   pr_number=$(jq -r '.[0].number // ""' <<<"$pr_json" 2>/dev/null || echo "")
   pr_url=$(jq -r '.[0].url // ""' <<<"$pr_json" 2>/dev/null || echo "")
   pr_is_draft=$(jq -r '.[0].isDraft // false' <<<"$pr_json" 2>/dev/null || echo "false")
@@ -478,7 +575,7 @@ progress_current_branch_if_needed() {
   json=$(codex_implement_current_branch "$inum" | tail -n 1 || true)
   new_url=$(printf "%s" "$json" | jq -r '.url // empty' 2>/dev/null || true)
   if [[ -z "$new_url" ]]; then
-    new_url=$(gh pr list --head "$cur" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
+    new_url=$(gh pr list --head "$cur" --limit 500 --json url --jq '.[0].url' 2>/dev/null || echo "")
   fi
   if [[ -n "$new_url" ]]; then
     echo "PR: $new_url" >&2
@@ -503,14 +600,14 @@ codex_implement_current_branch() {
   prompt="${prompt//__INUM__/$inum}"
   prompt="${prompt//__TEST_CMD__/${TEST_CMD:-}}"
   ISSUE_NUM="${inum:-}" BRANCH="$cur" \
-    run_tool_with_timeout "${CODEX_FIX_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
+    run_tool_with_timeout "${CODEX_FIX_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt" "worker"
 }
 
 codex_implement_issue_single_prompt() {
   local prompt
   prompt=$(load_prompt implement_issue_single.prompt)
   prompt="${prompt//__TEST_CMD__/${TEST_CMD:-}}"
-  run_tool_with_timeout "${CODEX_BOOTSTRAP_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
+  run_tool_with_timeout "${CODEX_BOOTSTRAP_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt" "worker"
 }
 
 codex_unified_review() {
@@ -518,17 +615,27 @@ codex_unified_review() {
 
   echo "[Unified Review] Reviewing PR #$pr_num with $REVIEWER_TOOL (impl by $WORKER_TOOL)" >&2
 
-  local template prompt tmpfile
+  local template prompt
   template=$(load_prompt unified_review.prompt)
-  tmpfile=$(mktemp)
-  printf '%s' "${template//__PR__/$pr_num}" > "$tmpfile"
+  prompt="${template//__PR__/$pr_num}"
+
+  local review_base_ref review_base
+  review_base_ref=$(gh pr view "$pr_num" --json baseRefName --jq '.baseRefName' 2>/dev/null || echo "")
+  if [[ -n "$review_base_ref" ]]; then
+    review_base="origin/$review_base_ref"
+  else
+    review_base=""
+  fi
 
   local output status
   set +e
-  output=$(run_tool_capture "$REVIEWER_TOOL" "$REVIEWER_MODEL" "$(cat "$tmpfile")" < /dev/null)
+  if [[ -n "$review_base" ]]; then
+    output=$(REVIEW_BASE="$review_base" run_tool_capture "$REVIEWER_TOOL" "$REVIEWER_MODEL" "$prompt" "reviewer" < /dev/null)
+  else
+    output=$(run_tool_capture "$REVIEWER_TOOL" "$REVIEWER_MODEL" "$prompt" "reviewer" < /dev/null)
+  fi
   status=$?
   set -e
-  rm -f "$tmpfile"
 
   if (( status != 0 )); then
     echo "[review] Review execution failed with status $status." >&2
@@ -620,7 +727,7 @@ codex_ci_fix_loop() {
   while (( attempt <= max_attempts )); do
     echo "[CI Fix] Attempt $attempt on PR #$pr_num (branch $branch)" >&2
     PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" \
-      run_tool_with_timeout "${CODEX_CI_FIX_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt"
+      run_tool_with_timeout "${CODEX_CI_FIX_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt" "worker"
 
     if ! git diff --quiet || ! git diff --cached --quiet; then
       while IFS= read -r -d '' rec; do
@@ -675,7 +782,7 @@ run_specific_issue_pass() {
   fi
 
   branch=$(git rev-parse --abbrev-ref HEAD)
-  pr_number=$(gh pr list --head "$branch" --json number,isDraft --limit 1 --jq '.[0].number' 2>/dev/null || true)
+  pr_number=$(gh pr list --head "$branch" --limit 500 --json number,isDraft --jq '.[0].number' 2>/dev/null || true)
   if [[ -n "$pr_number" ]]; then
     is_draft=$(gh pr view "$pr_number" --json isDraft --jq '.isDraft' 2>/dev/null || echo "false")
     if [[ "$is_draft" == "true" ]]; then
@@ -696,7 +803,7 @@ run_specific_issue_pass() {
   json=$(codex_implement_current_branch "$inum" | tail -n 1 || true)
   pr_url=$(printf "%s" "$json" | jq -r '.url // empty' 2>/dev/null || true)
   if [[ -z "$pr_url" ]]; then
-    pr_url=$(gh pr list --head "$branch" --json url --limit 1 --jq '.[0].url' 2>/dev/null || echo "")
+    pr_url=$(gh pr list --head "$branch" --limit 500 --json url --jq '.[0].url' 2>/dev/null || echo "")
   fi
   if [[ -z "$pr_url" ]]; then
     echo "Could not resolve PR for issue #${inum:-} on branch $branch" >&2
@@ -745,11 +852,11 @@ run_issue_pass() {
     fi
   fi
   local before_json after_json pr_number branch pr_url inum
-  before_json=$(gh pr list --state open --json number,headRefName,updatedAt,isDraft 2>/dev/null || echo '[]')
+  before_json=$(gh pr list --state open --limit 500 --json number,headRefName,updatedAt,isDraft 2>/dev/null || echo '[]')
 
   codex_implement_issue_single_prompt || true
 
-  after_json=$(gh pr list --state open --json number,headRefName,updatedAt,url,isDraft 2>/dev/null || echo '[]')
+  after_json=$(gh pr list --state open --limit 500 --json number,headRefName,updatedAt,url,isDraft 2>/dev/null || echo '[]')
   pr_number=$(jq -r --argjson before "$before_json" '
     ( .[] | select(.headRefName|test("^fix/issue-")) | select(.isDraft|not) ) as $after
     | if ([ $before[]?.headRefName ] | index($after.headRefName)) then empty else $after.number end
@@ -777,7 +884,7 @@ run_issue_pass() {
 
 issues_remaining() {
   local args json count
-  args=(issue list --state open --json number --limit 200)
+  args=(issue list --state open --json number --limit 500)
   if [[ -n "$label" ]]; then
     args+=(--label "$label")
   fi

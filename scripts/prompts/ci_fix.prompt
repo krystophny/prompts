@@ -5,11 +5,12 @@
 You are operating on a PR with failing CI.
 
 Task: Diagnose the CI failures, read GitHub Actions logs, fix issues locally, push commits, and re-trigger CI until green.
+Use a concise plan-first flow and reuse available Codex skills when relevant; keep token use focused on root-cause diagnosis and verified fixes.
 
 Steps:
 1) Get latest run and check for already-failed jobs immediately (even if run is still in_progress):
    ```bash
-   RUN_ID=$(gh run list --branch "$BRANCH" --event pull_request --json databaseId --jq '.[0].databaseId' --limit 1)
+   RUN_ID=$(gh run list --branch "$BRANCH" --event pull_request --json databaseId --jq '.[0].databaseId' --limit 500)
    gh run view $RUN_ID --json jobs --jq '.jobs[] | select(.conclusion == "failure") | "\(.name): \(.conclusion)"'
    gh run view $RUN_ID --log-failed 2>&1 | head -100
    ```

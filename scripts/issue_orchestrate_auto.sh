@@ -17,12 +17,27 @@
 #   scripts/issue_orchestrate_auto.sh [ISSUE_NUMBER] [--label <name>|--all] [--limit N] [--squash|--rebase|--merge] [--repo owner/name]
 #     [--worker claude|codex|gemini] [--reviewer claude|codex|gemini]
 #     [--worker-model MODEL] [--reviewer-model MODEL]
+#     [--reviewer-mode auto|exec|review]
+#     [--worker-profile PROFILE] [--reviewer-profile PROFILE]
+#     [--worker-effort low|medium|high|xhigh] [--reviewer-effort low|medium|high|xhigh]
+#     [--worker-enable-features f1,f2] [--reviewer-enable-features f1,f2]
+#     [--worker-disable-features f1,f2] [--reviewer-disable-features f1,f2]
 # Env:
 #   TEST_CMD         Optional local test command (e.g., "make test-ci"), used in prompts
 #   WORKER_TOOL      Tool for implementation work (claude, codex, gemini); default: codex
-#   REVIEWER_TOOL    Tool for reviews (claude, codex, gemini); default: claude
+#   REVIEWER_TOOL    Tool for reviews (claude, codex, gemini); default: codex
 #   WORKER_MODEL     Model override for worker tool (e.g., o3, claude-sonnet-4-20250514)
 #   REVIEWER_MODEL   Model override for reviewer tool
+#                    When unset with Codex, ~/.codex/config.toml defaults are used.
+#   REVIEWER_MODE    Reviewer execution mode for Codex: auto|exec|review (default: auto)
+#   WORKER_PROFILE   Codex config profile for worker tool (when worker is codex)
+#   REVIEWER_PROFILE Codex config profile for reviewer tool (when reviewer is codex)
+#   WORKER_EFFORT    Codex reasoning effort override for worker (low|medium|high|xhigh)
+#   REVIEWER_EFFORT  Codex reasoning effort override for reviewer (low|medium|high|xhigh)
+#   WORKER_ENABLE_FEATURES  Comma-separated Codex feature flags to enable for worker
+#   REVIEWER_ENABLE_FEATURES Comma-separated Codex feature flags to enable for reviewer
+#   WORKER_DISABLE_FEATURES Comma-separated Codex feature flags to disable for worker
+#   REVIEWER_DISABLE_FEATURES Comma-separated Codex feature flags to disable for reviewer
 #
 
 # Prevent accidental sourcing (which would cause 'exit' to close the caller shell)
@@ -36,6 +51,41 @@ rc=0
 trap 'echo "[orchestrate] Interrupted by user (Ctrl+C)." >&2; exit 130' INT
 # Helpful error trap to diagnose unexpected exits under set -e
 trap 'rc=$?; echo "[orchestrate][ERR] exit=$rc at line ${LINENO}; last cmd: \"${BASH_COMMAND}\"" >&2' ERR
+
+usage() {
+  cat <<'EOF'
+Usage:
+  scripts/issue_orchestrate_auto.sh [ISSUE_NUMBER|--issue N] [options]
+
+Options:
+  --label NAME                     Process only issues with label
+  --all                            Auto-merge mode for iterative processing
+  --limit N                        Max issue passes in --all mode
+  --squash|--rebase|--merge        Merge strategy (default: --squash)
+  --repo OWNER/NAME                Override GH target repo
+  --worker TOOL                    Implementer tool: claude|codex|gemini (default: codex)
+  --reviewer TOOL                  Reviewer tool: claude|codex|gemini (default: codex)
+  --worker-model MODEL             Worker model override
+  --reviewer-model MODEL           Reviewer model override
+  --reviewer-mode MODE             Codex reviewer mode: auto|exec|review (default: auto)
+  --worker-profile PROFILE         Codex worker profile override
+  --reviewer-profile PROFILE       Codex reviewer profile override
+  --worker-effort LEVEL            Codex worker reasoning: low|medium|high|xhigh
+  --reviewer-effort LEVEL          Codex reviewer reasoning: low|medium|high|xhigh
+  --worker-enable-features LIST    Comma-separated Codex feature flags to enable
+  --reviewer-enable-features LIST  Comma-separated Codex feature flags to enable
+  --worker-disable-features LIST   Comma-separated Codex feature flags to disable
+  --reviewer-disable-features LIST Comma-separated Codex feature flags to disable
+  --debug                          Enable debug tracing
+  -h, --help                       Show this help
+
+Defaults:
+  - Worker and reviewer both use Codex.
+  - Model/effort/profile are inherited from ~/.codex/config.toml unless overridden.
+  - Reviewer mode auto: uses codex review when reviewer=codex, otherwise exec behavior.
+EOF
+}
+
 self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 scripts_dir="$self_dir"
 # Resolve repository root preference order:
@@ -68,12 +118,25 @@ repo_override=""
 auto_merge=false
 single_issue=""
 worker_tool="${WORKER_TOOL:-codex}"
-reviewer_tool="${REVIEWER_TOOL:-claude}"
+reviewer_tool="${REVIEWER_TOOL:-codex}"
 worker_model="${WORKER_MODEL:-}"
 reviewer_model="${REVIEWER_MODEL:-}"
+reviewer_mode="${REVIEWER_MODE:-auto}"
+worker_profile="${WORKER_PROFILE:-}"
+reviewer_profile="${REVIEWER_PROFILE:-}"
+worker_effort="${WORKER_EFFORT:-}"
+reviewer_effort="${REVIEWER_EFFORT:-}"
+worker_enable_features="${WORKER_ENABLE_FEATURES:-}"
+reviewer_enable_features="${REVIEWER_ENABLE_FEATURES:-}"
+worker_disable_features="${WORKER_DISABLE_FEATURES:-}"
+reviewer_disable_features="${REVIEWER_DISABLE_FEATURES:-}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    -h|--help)
+      usage
+      exit 0
+      ;;
     --label)
       # shellcheck disable=SC2034
       label="$2"
@@ -124,6 +187,42 @@ while [[ $# -gt 0 ]]; do
       reviewer_model="$2"
       shift 2
       ;;
+    --reviewer-mode)
+      reviewer_mode="$2"
+      shift 2
+      ;;
+    --worker-profile)
+      worker_profile="$2"
+      shift 2
+      ;;
+    --reviewer-profile)
+      reviewer_profile="$2"
+      shift 2
+      ;;
+    --worker-effort)
+      worker_effort="$2"
+      shift 2
+      ;;
+    --reviewer-effort)
+      reviewer_effort="$2"
+      shift 2
+      ;;
+    --worker-enable-features)
+      worker_enable_features="$2"
+      shift 2
+      ;;
+    --reviewer-enable-features)
+      reviewer_enable_features="$2"
+      shift 2
+      ;;
+    --worker-disable-features)
+      worker_disable_features="$2"
+      shift 2
+      ;;
+    --reviewer-disable-features)
+      reviewer_disable_features="$2"
+      shift 2
+      ;;
     --issue) single_issue="$2"; shift 2;;
     --) shift; break;;
     -*) echo "Unknown arg: $1" >&2; exit 2;;
@@ -136,6 +235,45 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+validate_effort() {
+  local role="$1" effort="$2"
+  if [[ -z "$effort" ]]; then
+    return 0
+  fi
+  if [[ ! "$effort" =~ ^(low|medium|high|xhigh)$ ]]; then
+    echo "Invalid --${role}-effort value: $effort (must be low, medium, high, or xhigh)" >&2
+    exit 2
+  fi
+}
+
+validate_effort "worker" "$worker_effort"
+validate_effort "reviewer" "$reviewer_effort"
+
+if [[ ! "$reviewer_mode" =~ ^(auto|exec|review)$ ]]; then
+  echo "Invalid --reviewer-mode value: $reviewer_mode (must be auto, exec, or review)" >&2
+  exit 2
+fi
+if [[ "$reviewer_mode" == "review" && "$reviewer_tool" != "codex" ]]; then
+  echo "--reviewer-mode review is only valid when --reviewer codex" >&2
+  exit 2
+fi
+
+if [[ -z "$reviewer_model" && "$reviewer_tool" == "$worker_tool" && -n "$worker_model" ]]; then
+  reviewer_model="$worker_model"
+fi
+if [[ -z "$reviewer_profile" && "$reviewer_tool" == "$worker_tool" && -n "$worker_profile" ]]; then
+  reviewer_profile="$worker_profile"
+fi
+if [[ -z "$reviewer_effort" && "$reviewer_tool" == "$worker_tool" && -n "$worker_effort" ]]; then
+  reviewer_effort="$worker_effort"
+fi
+if [[ -z "$reviewer_enable_features" && "$reviewer_tool" == "$worker_tool" && -n "$worker_enable_features" ]]; then
+  reviewer_enable_features="$worker_enable_features"
+fi
+if [[ -z "$reviewer_disable_features" && "$reviewer_tool" == "$worker_tool" && -n "$worker_disable_features" ]]; then
+  reviewer_disable_features="$worker_disable_features"
+fi
 
 if [[ -n "$single_issue" && "$auto_merge" == true ]]; then
   echo "[orchestrate] Warning: ignoring --all when a specific ISSUE_NUMBER is provided." >&2
@@ -170,8 +308,17 @@ export WORKER_TOOL="$worker_tool"
 export REVIEWER_TOOL="$reviewer_tool"
 export WORKER_MODEL="$worker_model"
 export REVIEWER_MODEL="$reviewer_model"
+export REVIEWER_MODE="$reviewer_mode"
+export WORKER_PROFILE="$worker_profile"
+export REVIEWER_PROFILE="$reviewer_profile"
+export WORKER_EFFORT="$worker_effort"
+export REVIEWER_EFFORT="$reviewer_effort"
+export WORKER_ENABLE_FEATURES="$worker_enable_features"
+export REVIEWER_ENABLE_FEATURES="$reviewer_enable_features"
+export WORKER_DISABLE_FEATURES="$worker_disable_features"
+export REVIEWER_DISABLE_FEATURES="$reviewer_disable_features"
 
-echo "[orchestrate] Using $worker_tool${worker_model:+ ($worker_model)} for work, $reviewer_tool${reviewer_model:+ ($reviewer_model)} for review" >&2
+echo "[orchestrate] Using $worker_tool${worker_model:+ model=$worker_model}${worker_profile:+ profile=$worker_profile}${worker_effort:+ effort=$worker_effort} for work, $reviewer_tool${reviewer_model:+ model=$reviewer_model}${reviewer_profile:+ profile=$reviewer_profile}${reviewer_effort:+ effort=$reviewer_effort}${reviewer_mode:+ mode=$reviewer_mode} for review" >&2
 
 # Ensure Ctrl+C (SIGINT) reaches child processes run under `timeout`.
 # Use `--foreground` when available so users can abort cleanly.

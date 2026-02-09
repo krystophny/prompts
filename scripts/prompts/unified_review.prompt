@@ -5,6 +5,7 @@
 You are reviewing PR #__PR__.
 
 Task: Review the PR, fix blocking issues immediately, defer polish to new GitHub issues.
+Use concise plan-first execution and reuse existing Codex skills where relevant. Avoid verbose restatement of policy; focus tokens on concrete findings and fixes.
 
 Process:
 1) Inspect PR: `gh pr view $PR_NUM --json files,commits,body,number,baseRefName,headRefName,url`

@@ -6,6 +6,11 @@ You are operating with GitHub CLI in a Git repository.
 
 Objective: In ONE session (single continuous context), autonomously select the next relevant issue, implement the solution end-to-end, and only at the end open a non-draft PR ready for review.
 
+Execution mode:
+- Plan-first: define a minimal step plan and execute it directly.
+- Reuse available project/user Codex skills when they fit, instead of re-creating generic workflow text.
+- Keep responses concise and evidence-driven to maximize quality per token.
+
 Selection & priority:
 - Discover open issues yourself using gh (do not rely on any provided lists). Use:
   - Step 1 (lightweight): gh issue list --state open --limit 500 \
