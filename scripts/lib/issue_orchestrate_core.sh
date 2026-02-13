@@ -618,6 +618,7 @@ codex_unified_review() {
   local template prompt
   template=$(load_prompt unified_review.prompt)
   prompt="${template//__PR__/$pr_num}"
+  prompt="${prompt//__INUM__/$inum}"
 
   local review_base_ref review_base
   review_base_ref=$(gh pr view "$pr_num" --json baseRefName --jq '.baseRefName' 2>/dev/null || echo "")
