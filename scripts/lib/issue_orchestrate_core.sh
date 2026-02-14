@@ -161,14 +161,40 @@ run_tool_capture() {
 }
 
 pr_has_open_feedback() {
-  local pr_num="$1" json unresolved_threads pending_reviews
-  json=$(gh pr view "$pr_num" --json reviewThreads,reviews 2>/dev/null || echo '{}')
+  local pr_num="$1" json unresolved_threads review_decision
+  json=$(gh pr view "$pr_num" --json reviewThreads,reviewDecision 2>/dev/null || echo '{}')
   unresolved_threads=$(jq -r '[.reviewThreads[]? | select(.isResolved|not)] | length' <<<"$json" 2>/dev/null || echo '0')
-  pending_reviews=$(jq -r '[.reviews[]? | select(.state == "CHANGES_REQUESTED" or .state == "PENDING")] | length' <<<"$json" 2>/dev/null || echo '0')
-  if (( unresolved_threads > 0 || pending_reviews > 0 )); then
+  review_decision=$(jq -r '.reviewDecision // ""' <<<"$json" 2>/dev/null || echo "")
+  if (( unresolved_threads > 0 )); then
     return 0
   fi
-  return 1
+  [[ "$review_decision" == "CHANGES_REQUESTED" ]]
+}
+
+stage_commit_push_if_needed() {
+  local commit_msg="$1"
+  if ! has_mods && ! has_untracked; then
+    return 0
+  fi
+
+  while IFS= read -r -d '' rec; do
+    local code path
+    code=${rec:0:2}
+    path=${rec:3}
+    case "$code" in
+      D*|*D) git rm -- "$path" || true ;;
+      R*)
+        IFS= read -r -d '' newpath || true
+        [[ -n "$newpath" ]] && { git rm -- "$path" || true; git add -- "$newpath" || true; }
+        ;;
+      *) git add -- "$path" || true ;;
+    esac
+  done < <(git status --porcelain -z)
+
+  if ! git diff --cached --quiet; then
+    git commit -m "$commit_msg"
+    git push
+  fi
 }
 
 has_untracked() { [[ -n "$(git ls-files --others --exclude-standard)" ]]; }
@@ -296,25 +322,7 @@ codex_address_review_feedback() {
   prompt=$(load_prompt review_feedback.prompt)
   PR_NUM="${pr_num:-}" ISSUE_NUM="${inum:-}" BRANCH="$branch" \
     run_tool_with_timeout "${CODEX_PR_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt" "worker"
-
-  if ! git diff --quiet || ! git diff --cached --quiet; then
-    while IFS= read -r -d '' rec; do
-      local code path
-      code=${rec:0:2}
-      path=${rec:3}
-      case "$code" in
-        D*|*D) git rm -- "$path" || true ;;
-        R*) IFS= read -r -d '' newpath || true
-            [[ -n "$newpath" ]] && { git rm -- "$path" || true; git add -- "$newpath" || true; }
-            ;;
-        *) git add -- "$path" || true ;;
-      esac
-    done < <(git status --porcelain -z)
-    if ! git diff --cached --quiet; then
-      git commit -m "fix(review): address reviewer feedback on PR #${pr_num:-unknown}"
-      git push
-    fi
-  fi
+  stage_commit_push_if_needed "fix(review): address reviewer feedback on PR #${pr_num:-unknown}"
 }
 
 process_existing_pr() {
@@ -323,10 +331,9 @@ process_existing_pr() {
   # Fetch PR metadata once upfront
   local pr_meta
   pr_meta=$(gh pr view "$pr_number" --json isDraft,mergeStateStatus,baseRefName 2>/dev/null || echo '{}')
-  local is_draft merge_state base_ref
+  local is_draft merge_state
   is_draft=$(jq -r '.isDraft // false' <<<"$pr_meta")
   merge_state=$(jq -r '.mergeStateStatus // ""' <<<"$pr_meta")
-  base_ref=$(jq -r '.baseRefName // "main"' <<<"$pr_meta")
 
   # Mark ready if draft
   if [[ "$is_draft" == "true" ]]; then
@@ -340,9 +347,22 @@ process_existing_pr() {
       ;;
   esac
 
-  # Review (will see and address any feedback)
-  echo "[review] Running unified review for PR #$pr_number." >&2
-  codex_unified_review "$pr_number" "$inum" "$branch" || true
+  local review_attempt=1 max_review_attempts=5
+  while (( review_attempt <= max_review_attempts )); do
+    echo "[review] Running unified review for PR #$pr_number (pass $review_attempt/$max_review_attempts)." >&2
+    codex_unified_review "$pr_number" "$inum" "$branch" || true
+    if ! pr_has_open_feedback "$pr_number"; then
+      break
+    fi
+    echo "[review] PR #$pr_number still has requested changes/open threads; handing back to implementer." >&2
+    codex_address_review_feedback "$pr_number" "$inum" "$branch"
+    ((review_attempt+=1))
+  done
+
+  if pr_has_open_feedback "$pr_number"; then
+    echo "[review] PR #$pr_number still has unresolved review feedback after $max_review_attempts pass(es); leaving open." >&2
+    return
+  fi
 
   # Wait for CI
   echo "Waiting for CI on PR #$pr_number." >&2
@@ -355,6 +375,11 @@ process_existing_pr() {
       cleanup_pr "$pr_number"
       return
     fi
+  fi
+
+  if pr_has_open_feedback "$pr_number"; then
+    echo "[review] CI is green but PR #$pr_number still has open feedback; leaving open for implementer follow-up." >&2
+    return
   fi
 
   # Check for thumbs-up approval
@@ -643,24 +668,7 @@ codex_unified_review() {
     return 1
   fi
 
-  if ! git diff --quiet || ! git diff --cached --quiet; then
-    while IFS= read -r -d '' rec; do
-      local code path
-      code=${rec:0:2}
-      path=${rec:3}
-      case "$code" in
-        D*|*D) git rm -- "$path" || true ;;
-        R*) IFS= read -r -d '' newpath || true
-            [[ -n "$newpath" ]] && { git rm -- "$path" || true; git add -- "$newpath" || true; }
-            ;;
-        *) git add -- "$path" || true ;;
-      esac
-    done < <(git status --porcelain -z)
-    if ! git diff --cached --quiet; then
-      git commit -m "fix: address review findings (#${pr_num:-unknown})"
-      git push
-    fi
-  fi
+  stage_commit_push_if_needed "fix: address review findings (#${pr_num:-unknown})"
 
   local review_status
   review_status=$(sed -n 's/^FINAL_REVIEW_STATUS:[[:space:]]*//p' <<<"$output" | tail -n 1 | tr '[:upper:]' '[:lower:]' | tr -d '\r')
@@ -730,24 +738,7 @@ codex_ci_fix_loop() {
     PR_NUM="${pr_num:-}" ISSUE_NUM="$inum" BRANCH="$branch" \
       run_tool_with_timeout "${CODEX_CI_FIX_TIMEOUT}" "$WORKER_TOOL" "$WORKER_MODEL" "$prompt" "worker"
 
-    if ! git diff --quiet || ! git diff --cached --quiet; then
-      while IFS= read -r -d '' rec; do
-        local code path
-        code=${rec:0:2}
-        path=${rec:3}
-        case "$code" in
-          D*|*D) git rm -- "$path" || true ;;
-          R*) IFS= read -r -d '' newpath || true
-              [[ -n "$newpath" ]] && { git rm -- "$path" || true; git add -- "$newpath" || true; }
-              ;;
-          *) git add -- "$path" || true ;;
-        esac
-      done < <(git status --porcelain -z)
-      if ! git diff --cached --quiet; then
-        git commit -m "fix(ci): address CI failures on PR #${pr_num:-unknown}"
-        git push
-      fi
-    fi
+    stage_commit_push_if_needed "fix(ci): address CI failures on PR #${pr_num:-unknown}"
 
     echo "Waiting for CI after attempt $attempt..." >&2
     if gh pr checks "${pr_num:-}" --watch; then
