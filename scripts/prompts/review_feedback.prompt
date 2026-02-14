@@ -12,7 +12,7 @@ Steps:
    - Read each review (state, body) and comment text; scan diffs where referenced.
 2) MANDATORY COMPLIANCE CHECK: Validate feedback and changes against project CLAUDE.md/AGENTS.md AND user CLAUDE.md/AGENTS.md STRICTLY
 3) For each actionable item, make the necessary code/test/doc changes to satisfy the request.
-4) Run local tests/linters/build to verify. Ensure changes are correct, well-tested, and clean.
+4) Run local tests/linters/build to verify. Ensure changes are correct, well-tested, and clean. Keep concise evidence for each feedback item you resolved.
 5) Stage only related files explicitly; commit with a clear message; push.
 6) Stop when there is no more actionable feedback.
 
@@ -24,3 +24,4 @@ ABSOLUTE RULES - ZERO TOLERANCE:
 - Aim for production-ready quality; update what's required to resolve the feedback thoroughly. Markdown only in PR/issue per policy.
 - Keep functions small and follow project style. Do not skip tests.
 - NEVER run full test suite twice. Capture output once: `cmd 2>&1 | tee /tmp/test.log` then grep errors from log. Selective single-test reruns for debugging are fine.
+- REQUIRED: provide concrete evidence that each addressed feedback item is resolved (tests/commands/output excerpts/artifacts as applicable).

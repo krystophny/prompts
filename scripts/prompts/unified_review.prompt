@@ -18,7 +18,8 @@ Process:
    - The fix matches the expected behavior described in the issue
    - Edge cases or reproduction steps mentioned in comments are covered
    - Nothing was added that the issue did not ask for (no scope creep)
-   If ANYTHING is missing, incomplete, or deviates from what the issue requested: STOP, do NOT fix it yourself, set FINAL_REVIEW_STATUS to request_changes with a specific list of what is missing or wrong relative to the issue requirements, and hand the PR back to the implementer.
+   - PR verification includes requirement-by-requirement evidence (tests/commands/output excerpts/artifact paths) proving each issue requirement is resolved
+   If ANYTHING is missing, incomplete, deviates from what the issue requested, or lacks concrete evidence of full resolution: STOP, do NOT fix it yourself, set FINAL_REVIEW_STATUS to request_changes with a specific list of what is missing or wrong relative to the issue requirements, and hand the PR back to the implementer.
 4) Review code for correctness, compliance, and quality. Do NOT run tests or build - CI handles that; baseline is always green per repo policy.
 5) MANDATORY COMPLIANCE CHECK: Validate against project CLAUDE.md/AGENTS.md AND user CLAUDE.md/AGENTS.md STRICTLY
 6) Classify findings:
@@ -41,5 +42,5 @@ ABSOLUTE RULES - ZERO TOLERANCE:
 - FORBIDDEN: stubs, placeholders, commented-out code, random markdowns, variants, backups
 - FORBIDDEN: spamming working directory with process documentation in Markdown files
 - REQUIRED: explicit file staging only - NEVER `git add .`
-- Approve ONLY when the PR fully resolves every requirement from the issue (description + comments) AND no blocking issues remain.
+- Approve ONLY when the PR fully resolves every requirement from the issue (description + comments), includes concrete requirement-by-requirement evidence of full resolution, AND no blocking issues remain.
 - request_changes whenever ANY issue requirement is unaddressed, incomplete, or incorrectly implemented - hand back to the implementer, do NOT fix requirement gaps yourself.

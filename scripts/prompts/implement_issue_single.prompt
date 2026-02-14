@@ -28,9 +28,9 @@ Selection & priority:
 Implementation:
 - Create/checkout branch: fix/issue-<num>-<slug>.
 - Implement the solution with thorough tests; introduce or update coverage as needed.
-- Run tests ONLY AFTER making changes (never before as baseline - main is always green per repo CI policy). Use `__TEST_CMD__` if provided; otherwise detect make/pytest/fpm/npm. Include artifact verification for output-affecting fixes and capture concise evidence for the PR body.
+- Run tests ONLY AFTER making changes (never before as baseline - main is always green per repo CI policy). Use `__TEST_CMD__` if provided; otherwise detect make/pytest/fpm/npm. Capture concise evidence proving each issue requirement is resolved; for output-affecting fixes also include artifact verification.
 - Stage files explicitly (no `git add .`). Use Conventional Commit: `fix: <desc> (fixes #<num>)`.
-- Only as the final step, open a PR (not draft) to main (reuse if exists). Title: "fix: <issue title truncated to 64> (fixes #<num>)". Include a short "Verification" section with commands, output excerpts, and artifact paths. Do not open a PR earlier.
+- Only as the final step, open a PR (not draft) to main (reuse if exists). Title: "fix: <issue title truncated to 64> (fixes #<num>)". Include a short "Verification" section mapping each issue requirement to concrete evidence (command + output excerpt/test + artifact path when applicable). Do not open a PR earlier.
 
 ABSOLUTE RULES - ZERO TOLERANCE:
 - MANDATORY: Validate compliance with ALL CLAUDE.md/AGENTS.md rules - ANY violation is FORBIDDEN
@@ -39,6 +39,7 @@ ABSOLUTE RULES - ZERO TOLERANCE:
 - REQUIRED: explicit file staging only - NEVER `git add .`
 - Minimal output; markdown only in PR/issue per policy.
 - NEVER run full test suite twice. Capture output once: `cmd 2>&1 | tee /tmp/test.log` then grep errors from log. Selective single-test reruns for debugging are fine.
+- REQUIRED: include requirement-by-requirement evidence in the PR verification section; claims without evidence are forbidden.
 
 Deliverable:
 - Leave the branch pushed and a non-draft PR open and linked to the issue.
