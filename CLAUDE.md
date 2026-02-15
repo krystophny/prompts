@@ -1,79 +1,90 @@
 # AGENTS.md / CLAUDE.md / GEMINI.md ... Lean, Simplicity-First Framework
 
-## ABSOLUTE HARD RULES - ZERO TOLERANCE POLICY
+## Non-Negotiables
 All rules below are mandatory unless the user explicitly instructs otherwise.
 
-## Mandatory Requirements
-- PROHIBITED: stubs, placeholders, commented-out code, random markdowns, variants, backups, or suppressions
-- FORBIDDEN: claiming success without tangible evidence (CI logs, real test output)
-- MANDATORY: use repo's established build/test scripts and tooling
-- FORBIDDEN: spamming working directory with process documentation in Markdown files
-- MANDATORY: Boy Scout Principle - leave every file, test, and workflow better than you found it by fixing issues you encounter immediately
-- MANDATORY: Remove obsolete/dead code outright; write self-documenting code with VERY FEW comments reserved for non-obvious intent.
+- Prohibited: stubs, placeholders, commented-out code, random markdown, variants, backups, suppressions.
+- Forbidden: claiming success without tangible evidence (CI logs, real test output).
+- Mandatory: use the repo's established build/test scripts and tooling.
+- Forbidden: spamming the working directory with process markdown files.
+- Mandatory: follow the Boy Scout Principle; leave files/tests/workflows better than you found them.
+- Mandatory: remove dead/obsolete code; prefer self-documenting code with minimal comments for non-obvious intent.
 
 ## Test Pass Rate
-Main branch:
+Main branch policy:
 - Assume main always has 100% passing tests.
-- Do not claim baseline main failures or rerun main to check them; treat reported pre-existing failures as regressions.
+- Never claim main had baseline failures.
+- Never rerun main to check baseline.
+- Treat any claimed pre-existing failures as regressions.
 
-Feature branches:
-- Maintain 100% passing tests by fixing code, never weakening tests.
-- Tests must remain strict, non-shallow, and non-tautological.
-- Any regression is your responsibility to fix.
+Feature branch policy:
+- Keep 100% passing tests by fixing code, never by weakening tests.
+- Tests must be strict, non-shallow, and non-tautological.
+- Keep fixing code until all tests pass; partial pass rates are failure.
+- All regressions are your responsibility to fix.
 
-## Language & Stack
-- **Existing projects**: ALWAYS stick to the project's established stack, tooling, and style. Consistency with the repo trumps personal preference.
-- **Simplicity first**: Prefer the simplest tool that solves the problem. Avoid over-engineering.
-- **Language selection** (for new projects or when choice exists):
-  - **Shell (bash/POSIX sh)**: Prefer over Python for file operations, process orchestration, text processing (grep/sed/awk), and simple automation.
-  - **Python**: Only when shell becomes unwieldy - complex data structures, ML, APIs with good Python SDKs, or heavy string/JSON manipulation.
-  - **Go**: Prefer over Python for CLI tools, web services, concurrent workloads, or anything needing single-binary deployment.
-  - **C**: Prefer over C++ for systems code, embedded, or libraries unless C++ features (RAII, templates, std containers) provide clear advantage.
-  - **Fortran (2018+)**: For numerics/HPC; expose to Python via f90wrap when interactive use needed.
-- **Build/deps**: Use the repo's established build system. For new projects, prefer simple tools (make, cmake, go build, fpm for Fortran). Pin dependency versions only when reproducibility is required.
+## Language and Stack
+- Existing projects: match the repo's stack, tooling, and style.
+- Simplicity first: use the simplest tool that solves the problem.
+- Language preference when choice exists:
+  - Shell (bash/POSIX sh) over Python for file/process/text automation.
+  - Python when shell becomes unwieldy (complex data, ML, API SDKs, heavy JSON/string work).
+  - Go over Python for CLIs, services, concurrency, and single-binary deployment.
+  - C over C++ unless C++ features clearly justify it.
+  - Fortran (2023+) for numerics/HPC; expose via f90wrap when interactive use is needed.
+- Build/deps: use the repo's build system. For new projects prefer make/cmake/go build/fpm; pin versions only when reproducibility requires it.
 
-## Project Root & Paths
+## Project Root and Paths
 - Run all commands from repo root using root-relative paths.
-- Return paths as file URIs (e.g., `file:///home/user/output.png`).
+- Return file paths as `file://` URIs (for example `file:///home/user/output.png`).
 
-## Git / GitHub
-- SSH-only for git/gh operations; never use HTTPS. No emojis in commits, PRs, or issues.
-- Git and gh CLI commands are explicitly permitted for all repo workflows.
-- Stage files explicitly; NEVER rely on blanket staging commands `git add .` or `git add -A`.
-- Always run repo build/test scripts locally before creating or updating PRs; CI must pass before merge.
-- Edit issue descriptions with `gh issue edit --body`; avoid comment edits for canonical info.
+## Git and GitHub
+- Use SSH only for git/gh; never HTTPS. No emojis in commits, PRs, or issues.
+- Git and gh CLI are permitted for repo workflows.
+- Stage files explicitly; never use blanket staging (`git add .`, `git add -A`).
+- Run local build/tests before creating/updating PRs; CI must pass before merge.
+- Update canonical issue descriptions with `gh issue edit --body` (not comment edits).
 - Use `--limit 500` on all gh list commands.
-- Thumbs-up reaction on PR = approval to merge.
+- A thumbs-up reaction on a PR equals merge approval.
 
-## Implementation & Design
+## Implementation and Design
 - Keep modules <500 lines (hard limit 1000); functions <50 lines (hard limit 100).
-- Keep <=20 items per folder (hard limit 50); reorganize earlier when possible.
-- Reuse-first: modify/extend existing code; eliminate nearby duplication.
-- Validate inputs; trust upstream contracts instead of adding defensive indirection.
-- Avoid shallow interfaces or wrappers; let callers handle small control sections rather than over-abstracting.
-- No hardcoded secrets/keys/passwords.
+- Keep <=20 items per folder (hard limit 50); reorganize early.
+- Reuse first: modify/extend existing code and remove duplication.
+- Validate inputs; trust upstream contracts instead of defensive indirection.
+- Avoid shallow wrappers/interfaces.
+- Never hardcode secrets/keys/passwords.
 - Prefer structure-of-arrays over array-of-structures.
-- Keep inner loops over the leftmost index; avoid temporaries and preallocate scratch arrays when needed.
+- In array code, keep the leftmost index in the innermost loop; avoid temporaries and preallocate scratch arrays.
 
-## Fortran Rules (when working with Fortran code)
-- Use CMake if present; otherwise use fpm. If multiple build systems exist, prefer CMake.
-- Apply `fprettify` to enforce 88-column, 4-space indent formatting; end files with a newline.
-- Add `use <module>, only:` statements above `implicit none`.
-- `use, intrinsic :: iso_fortran_env, only: dp => real64`; declare reals as `real(dp)` and prefer `1.0d0` literals.
-- Declarations belong at the start of each scope; none inside branches or loops.
-- Prefer `allocatable` over pointers unless required; rely on scope deallocation and use `move_alloc()` for transfers. Use explicit `deallocate` only when needed.
+## Fortran Rules
+- Build system: use CMake if present; otherwise use fpm. If multiple systems exist, prefer CMake.
+- Format with `fprettify` (88 columns, 4-space indent); end files with newline.
+- Put `use <module>, only:` above `implicit none`.
+- Use `use, intrinsic :: iso_fortran_env, only: dp => real64`; declare reals as `real(dp)` and prefer `1.0d0` literals.
+- Put declarations at scope start only (not inside branches/loops).
+- Prefer `allocatable`; avoid pointers unless required; rely on scope deallocation and use `move_alloc()` for transfers; use explicit `deallocate` only when needed.
 - Avoid returning allocatables from functions; provide deep-copy assignment for nested components.
 - Name derived types `<name>_t`.
-- Mark procedures `pure`/`elemental` whenever possible; every argument must have `intent(in|out|inout)`.
-- Use `associate` to create local aliases rather than modifying inputs directly.
-- Add `contiguous` WHENEVER POSSIBLE; avoid noncontiguous slices in hot loops.
-- Column-major arrays and loops over the leftmost index; delete stale `*.mod` files if right parentheses errors occur.
-- In if conditionals, do not rely on short-circuiting, Fortran does not support it.
-- Do not use quotes in comments; write examples without quotation marks.
+- Use `pure`/`elemental` whenever possible; all args must declare `intent(in|out|inout)`.
+- Use `associate` for local aliases instead of mutating inputs directly.
+- Add `contiguous` whenever possible on hot assumed-shape arrays; avoid noncontiguous slices.
+- Respect column-major access: leftmost index innermost.
+- If stale module files cause parse issues, delete `*.mod`.
+- Do not rely on short-circuit evaluation in `if` conditionals.
+- In comments, avoid quotation marks in examples.
 
-### Fortran Performance Patterns (when working with Fortran code)
+### Fortran Performance Patterns
+- Loop order: leftmost index innermost.
+- Data layout: prefer structure-of-arrays in hot paths.
+- Hot loops: do not allocate/deallocate inside loops; avoid expression forms that create temporaries.
+- OpenMP: use `parallel do`; use `collapse(n)` for nested loops; choose `schedule(static|dynamic|guided)` by workload balance.
+- Reductions: use OpenMP `reduction(...)` for accumulators.
+- Contiguity: use `contiguous`; check `is_contiguous()` before pointer association.
+- Cache: use blocking/tiling for large working sets.
+- Detect hidden temporaries with `-Warray-temporaries` (gfortran) or `-check arg_temp_created` (Intel).
 
-**Column-major loop order** (leftmost index innermost):
+Loop order example:
 ```fortran
 ! CORRECT
 do k = 1, nz
@@ -94,21 +105,21 @@ do i = 1, nx
 end do
 ```
 
-**Data layout** (prefer Structure-of-Arrays in hot paths):
+Data layout example:
 ```fortran
-! CORRECT: Structure-of-Arrays
+! CORRECT: structure of arrays
 type :: particles_t
   real(dp), allocatable :: x(:), y(:), z(:)
 end type
 
-! WRONG: Array-of-Structures
+! WRONG: array of structures
 type :: particle_t
   real(dp) :: x, y, z
 end type
 type(particle_t), allocatable :: particles(:)
 ```
 
-**Avoid allocation & temporaries in hot loops**:
+Hot-loop allocation example:
 ```fortran
 ! CORRECT: allocate once, reuse
 real(dp), allocatable :: scratch(:)
@@ -117,54 +128,38 @@ do iter = 1, max_iter
   call step(x, scratch)
 end do
 
-! WRONG: allocate/free inside loop
+! WRONG: allocate/deallocate inside loop
 do iter = 1, max_iter
   allocate(scratch(n))
   call step(x, scratch)
   deallocate(scratch)
 end do
-
-! CORRECT: explicit loop for complex RHS (avoids temporaries)
-do i = 1, n
-  y(i) = a(i) + b(i) * sin(d(i))
-end do
-
-! WRONG: complex array RHS may allocate temporaries
-y = a + b * sin(d)
 ```
 
-- OpenMP: use `parallel do`, add `collapse(n)` for nested loops, choose `schedule(static|dynamic|guided)` based on work balance.
-- Reductions: use `reduction(+:var)` (or appropriate operator) for accumulators.
-- Contiguity: mark hot assumed-shape arrays `contiguous` and avoid noncontiguous slices; check `is_contiguous()` before associating pointers.
-- Cache: use blocking/tiling for large working sets (e.g., matmul).
-- Detect hidden temporaries with `-Warray-temporaries` (gfortran) or `-check arg_temp_created` (Intel).
-
 ## Code Navigation with cscope (C projects)
-
-Index a C project:
+Index:
 ```bash
 find src include -name '*.c' -o -name '*.h' > cscope.files
 cscope -b -q
 ```
 
-Query from CLI (non-interactive, batch mode):
+Queries:
 ```bash
 cscope -d -L0 symbol       # find symbol
 cscope -d -L1 symbol       # find definition
 cscope -d -L2 func         # find functions called BY func
-cscope -d -L3 func         # find callers OF func (most useful)
+cscope -d -L3 func         # find callers OF func
 cscope -d -L4 text         # grep for text
 cscope -d -L6 pattern      # egrep pattern
 cscope -d -L7 file         # find file
-cscope -d -L8 file         # find files #including file
+cscope -d -L8 file         # find files including file
 ```
 
-Add `cscope.out*` and `cscope.files` to `.gitignore`. Rebuild index after significant changes.
+- Add `cscope.out*` and `cscope.files` to `.gitignore`.
+- Rebuild index after significant changes.
+- cscope is best for pure C (liric); for C++, prefer `clangd` + `compile_commands.json` (`bear` or `cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON`).
 
-Works well for pure C (liric). For C++ projects, prefer `clangd` + `compile_commands.json` (via `bear` or cmake `-DCMAKE_EXPORT_COMPILE_COMMANDS=ON`).
-
-## Profiling (MANDATORY before optimization)
-
+## Profiling (required before optimization)
 | Tool | Platform | Command |
 |------|----------|---------|
 | gprof | Linux/macOS | `gfortran -pg -g -O2 app.f90 && ./a.out && gprof ./a.out gmon.out` |
@@ -172,36 +167,40 @@ Works well for pure C (liric). For C++ projects, prefer `clangd` + `compile_comm
 | perf | Linux | `perf record -F 99 -g ./app && perf report --stdio` |
 | callgrind | Linux | `valgrind --tool=callgrind ./app && callgrind_annotate callgrind.out` |
 
-**Hotspot diagnosis**: malloc/free → preallocate; cache misses → fix loop order; memcpy → explicit loops; low IPC → blocking/tiling
+Hotspot diagnosis: malloc/free -> preallocate; cache misses -> fix loop order; memcpy -> explicit loops; low IPC -> blocking/tiling.
 
-## Build & Test
-- Use repo-documented build and test scripts. Keep tests behavioral and fast (≤120 s each).
-- Prefer TDD: Red → Green → Refactor.
+## Build and Test
+- Use repo-documented build/test scripts.
+- Keep tests behavioral and fast (<=120 s each).
+- Prefer TDD: Red -> Green -> Refactor.
 - Common build patterns:
   - CMake (preferred): `cmake -S . -B build -G Ninja && cmake --build build -j$(nproc)`
   - Make: `make -j$(nproc)`
   - Go: `go build ./... && go test ./...`
-  - Fortran (in case cmake is not used): `fpm build && fpm test`
-- Tests must pass 100% locally before PRs; pin dependency versions only when reproducibility is necessary.
-- Use /tmp for test logs to avoid polluting the working directory.
+  - Fortran (if not using CMake): `fpm build && fpm test`
+- Tests must pass 100% locally before PRs.
+- Pin dependency versions only when reproducibility is required.
+- Write test logs to `/tmp` to avoid polluting the working directory.
 
-## Licensing & Reuse
-- Research-first. Copy ideas, not lines. Verify licenses; prefer MIT/BSD/Apache-2.0.
-- Explicit line-by-line ports only when requested; preserve notices and isolate as needed.
+## Licensing and Reuse
+- Research first. Copy ideas, not lines.
+- Verify licenses; prefer MIT/BSD/Apache-2.0.
+- Do explicit line-by-line ports only when requested; preserve notices and isolate as needed.
 
-## MERGE HYGIENE - ZERO TOLERANCE
-- **Workarounds**: Code with "workaround/temporary/should be removed" MUST have issue number in same line
-- **Improve-later**: If reviewer says "improve later" → GitHub issue MUST exist before merge
-- **Requested issues**: If reviewer says "create issue for X" → verify issue exists before merge
-- **No skipping**: NEVER skip/disable tests to pass CI; "skipped for now" = REJECT
-- **No noise comments**: Comments explain WHY not WHAT; no "bug fix for X" in test registration
-- **New backends**: New test backend/config MUST have CI coverage OR tracking issue
+## Merge Hygiene
+- Workarounds marked as workaround/temporary/should be removed must include an issue number on the same line.
+- If review says improve later, create a GitHub issue before merge.
+- If review requests an issue, verify that issue exists before merge.
+- Never skip/disable tests to pass CI.
+- Comments should explain why, not what; avoid noise such as bug fix for X in test registration.
+- New test backend/config requires CI coverage or a tracking issue.
 
-## TEST VERIFICATION EVIDENCE - MANDATORY FOR ALL PRs
+## Test Verification Evidence (mandatory for all PRs)
+PR descriptions must include console evidence showing:
+1. Test fails on `upstream/main`.
+2. Test passes after the fix.
 
-PR descriptions must include console evidence showing the test fails on `upstream/main` and passes after the fix.
-
-**Required PR description format:**
+Required PR description format:
 
 ```markdown
 ## Verification
@@ -221,21 +220,21 @@ $ <run test command>
 ```
 ```
 
-**Rules:**
-- Console output must be real, not fabricated.
+Rules:
+- Console output must be real (not fabricated).
 - Test names and commands must be reproducible.
 - Use the repo's established test runner.
-- For new tests, show the test exercising the fixed behavior.
+- For new tests, show the test exercising fixed behavior.
 - For existing tests, show the regression fixed.
 
-## CHECKLIST BEFORE COMPLETION
-1. Followed repo's established style and conventions? (For Fortran: 88-col, intents, allocatable/move_alloc, dp)
-2. Respected ALL size limits? Provided concrete evidence for ALL claims?
-3. Avoided ALL stubs/placeholders/suppressions? Followed Git/GitHub discipline?
-4. 100% test pass rate by fixing CODE (not tests)? Test fails on main, passes on branch?
-5. All workarounds have issue numbers? All "improve later" items tracked in issues?
-6. All reviewer-requested issues created? No tests skipped/disabled?
-7. No noise comments? New backends have CI coverage or tracking issue?
+## Checklist Before Completion
+1. Followed repo conventions and style (Fortran: 88-col, intents, allocatable/move_alloc, dp)?
+2. Respected size limits and provided concrete evidence for claims?
+3. Avoided stubs/placeholders/suppressions and followed Git/GitHub discipline?
+4. Reached 100% pass rate by fixing code (not tests), with fail-on-main and pass-on-branch evidence?
+5. Added issue numbers for workarounds and tracked improve-later items?
+6. Created all reviewer-requested issues and avoided skipped/disabled tests?
+7. Avoided noise comments; ensured new backends have CI coverage or tracking issues?
 
 ## GitHub CLI Examples
 - Image upload: `curl -F "reqtype=fileupload" -F "fileToUpload=@/path/to/image.png" https://catbox.moe/user/api.php`
