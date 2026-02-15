@@ -1,9 +1,9 @@
 # AGENTS.md / CLAUDE.md / GEMINI.md ... Lean, Simplicity-First Framework
 
 ## ABSOLUTE HARD RULES - ZERO TOLERANCE POLICY
-EVERY point below is a MANDATORY requirement that MUST be followed WITHOUT EXCEPTION under ALL circumstances EXCEPT the USER asks you to do it DIFFERENTLY.
+All rules below are mandatory unless the user explicitly instructs otherwise.
 
-## MANDATORY REQUIREMENTS - NO EXCEPTIONS
+## Mandatory Requirements
 - PROHIBITED: stubs, placeholders, commented-out code, random markdowns, variants, backups, or suppressions
 - FORBIDDEN: claiming success without tangible evidence (CI logs, real test output)
 - MANDATORY: use repo's established build/test scripts and tooling
@@ -11,19 +11,15 @@ EVERY point below is a MANDATORY requirement that MUST be followed WITHOUT EXCEP
 - MANDATORY: Boy Scout Principle - leave every file, test, and workflow better than you found it by fixing issues you encounter immediately
 - MANDATORY: Remove obsolete/dead code outright; write self-documenting code with VERY FEW comments reserved for non-obvious intent.
 
-## TEST PASS RATE - ZERO TOLERANCE
-Main branch truth (ABSOLUTE):
-- Main branch ALWAYS has 100% passing tests - this is GIVEN
-- NEVER claim tests were failing on main
-- NEVER rerun tests on main to check baseline
-- If agent/tool claims pre-existing failures, IGNORE and treat as regressions
+## Test Pass Rate
+Main branch:
+- Assume main always has 100% passing tests.
+- Do not claim baseline main failures or rerun main to check them; treat reported pre-existing failures as regressions.
 
-Feature branches (MANDATORY):
-- Maintain 100% pass rate by FIXING CODE - NEVER weaken tests
-- Tests MUST be strict, non-shallow, non-tautological
-- Keep fixing CODE until ALL tests pass
-- Partial pass rates are COMPLETE FAILURE - only 100% acceptable
-- ALL regressions are YOUR FAULT - YOU fix CODE
+Feature branches:
+- Maintain 100% passing tests by fixing code, never weakening tests.
+- Tests must remain strict, non-shallow, and non-tautological.
+- Any regression is your responsibility to fix.
 
 ## Language & Stack
 - **Existing projects**: ALWAYS stick to the project's established stack, tooling, and style. Consistency with the repo trumps personal preference.
@@ -37,8 +33,8 @@ Feature branches (MANDATORY):
 - **Build/deps**: Use the repo's established build system. For new projects, prefer simple tools (make, cmake, go build, fpm for Fortran). Pin dependency versions only when reproducibility is required.
 
 ## Project Root & Paths
-- ALWAYS operate from the project root (repo top-level). Run all commands from the root and use root-relative paths.
-- ALWAYS use `file://` prefix when returning file paths to the user (e.g., `file:///home/user/output.png` not `/home/user/output.png`). This allows direct clicking/opening in terminals and browsers.
+- Run all commands from repo root using root-relative paths.
+- Return paths as file URIs (e.g., `file:///home/user/output.png`).
 
 ## Git / GitHub
 - SSH-only for git/gh operations; never use HTTPS. No emojis in commits, PRs, or issues.
@@ -60,15 +56,15 @@ Feature branches (MANDATORY):
 - Keep inner loops over the leftmost index; avoid temporaries and preallocate scratch arrays when needed.
 
 ## Fortran Rules (when working with Fortran code)
-- Use cmake if already exists in the repo, otherwise, and in new projects, fpm. If multiple build systems exist, always prefer cmake
+- Use CMake if present; otherwise use fpm. If multiple build systems exist, prefer CMake.
 - Apply `fprettify` to enforce 88-column, 4-space indent formatting; end files with a newline.
 - Add `use <module>, only:` statements above `implicit none`.
 - `use, intrinsic :: iso_fortran_env, only: dp => real64`; declare reals as `real(dp)` and prefer `1.0d0` literals.
 - Declarations belong at the start of each scope; none inside branches or loops.
-- Prefer `allocatable`; avoid pointers unless explicitly required. Usually rely on automatic deallocation at scope exit and `move_alloc()` for transfers; explicit `deallocate` is permitted when needed for special purposes such as early memory release.
+- Prefer `allocatable` over pointers unless required; rely on scope deallocation and use `move_alloc()` for transfers. Use explicit `deallocate` only when needed.
 - Avoid returning allocatables from functions; provide deep-copy assignment for nested components.
 - Name derived types `<name>_t`.
-- Mark procedures `pure`/`elemental` WHENEVER POSSIBLE; every argument MUST have `intent(in|out|inout)`.
+- Mark procedures `pure`/`elemental` whenever possible; every argument must have `intent(in|out|inout)`.
 - Use `associate` to create local aliases rather than modifying inputs directly.
 - Add `contiguous` WHENEVER POSSIBLE; avoid noncontiguous slices in hot loops.
 - Column-major arrays and loops over the leftmost index; delete stale `*.mod` files if right parentheses errors occur.
@@ -203,16 +199,7 @@ Works well for pure C (liric). For C++ projects, prefer `clangd` + `compile_comm
 
 ## TEST VERIFICATION EVIDENCE - MANDATORY FOR ALL PRs
 
-```
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!! PR DESCRIPTIONS MUST INCLUDE CONSOLE OUTPUT EVIDENCE                 !!
-!!                                                                       !!
-!! 1. Test FAILS on upstream/main (checkout main, run test, show FAIL)  !!
-!! 2. Test PASSES after fix (checkout branch, run test, show PASS)      !!
-!!                                                                       !!
-!! NO EXCEPTIONS - claims without evidence = REJECT                     !!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-```
+PR descriptions must include console evidence showing the test fails on `upstream/main` and passes after the fix.
 
 **Required PR description format:**
 
@@ -235,11 +222,11 @@ $ <run test command>
 ```
 
 **Rules:**
-- Console output MUST be real, not fabricated
-- Test name and commands MUST be reproducible
-- Use the repo's established test runner (see project CLAUDE.md)
-- For new tests: show the test exercising the fixed behavior
-- For existing tests: show regression fixed
+- Console output must be real, not fabricated.
+- Test names and commands must be reproducible.
+- Use the repo's established test runner.
+- For new tests, show the test exercising the fixed behavior.
+- For existing tests, show the regression fixed.
 
 ## CHECKLIST BEFORE COMPLETION
 1. Followed repo's established style and conventions? (For Fortran: 88-col, intents, allocatable/move_alloc, dp)
@@ -251,17 +238,12 @@ $ <run test command>
 7. No noise comments? New backends have CI coverage or tracking issue?
 
 ## GitHub CLI Examples
-- Image attachments (catbox.moe intermediary)
-  - Upload image: `curl -F "reqtype=fileupload" -F "fileToUpload=@/path/to/image.png" https://catbox.moe/user/api.php`
-  - Temporary upload (litterbox, auto-expiring): `curl -F "reqtype=fileupload" -F "time=1h" -F "fileToUpload=@/path/to/image.png" https://litterbox.catbox.moe/resources/internals/api.php`
-  - Use in PR comment: `gh pr comment <number> --body "![description](https://files.catbox.moe/xxxxx.png)"`
-
-- CI: see failures immediately (even while other checks still running)
-  - Show current check status (no waiting): `gh pr checks <number>`
-  - Watch checks, but stop on first failure: `gh pr checks <number> --watch --fail-fast`
-  - Show only failing checks right now: `gh pr checks <number> --json name,bucket,link --jq '.[] | select(.bucket=="fail")'`
-
-- CI: jump straight to the failing logs
-  - Find a failing workflow run on your branch: `gh run list --branch <branch> --status failure -L 10`
-  - Show only failed steps from a run: `gh run view <run-id> --log-failed`
-  - Watch a run in compact mode: `gh run watch <run-id> --compact --exit-status`
+- Image upload: `curl -F "reqtype=fileupload" -F "fileToUpload=@/path/to/image.png" https://catbox.moe/user/api.php`
+- Temporary image upload (1h): `curl -F "reqtype=fileupload" -F "time=1h" -F "fileToUpload=@/path/to/image.png" https://litterbox.catbox.moe/resources/internals/api.php`
+- PR comment with image: `gh pr comment <number> --body "![description](https://files.catbox.moe/xxxxx.png)"`
+- CI status now: `gh pr checks <number>`
+- CI watch fail-fast: `gh pr checks <number> --watch --fail-fast`
+- CI failing checks only: `gh pr checks <number> --json name,bucket,link --jq '.[] | select(.bucket=="fail")'`
+- List failed workflow runs: `gh run list --branch <branch> --status failure -L 10`
+- Failed steps from run: `gh run view <run-id> --log-failed`
+- Watch run compact with exit status: `gh run watch <run-id> --compact --exit-status`
