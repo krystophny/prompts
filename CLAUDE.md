@@ -9,7 +9,7 @@ All rules below are mandatory unless the user explicitly instructs otherwise.
 - Forbidden: spamming the working directory with process markdown files.
 - Mandatory: follow the Boy Scout Principle; leave files/tests/workflows better than you found them.
 - Mandatory: remove dead/obsolete code; prefer self-documenting code with minimal comments for non-obvious intent.
-- Experimental-phase default: when asked to change code or tidy up, you are explicitly allowed and encouraged to change public-facing APIs and aggressively prune legacy variants unless the user requests backward compatibility.
+- When asked to change code or tidy up, you are explicitly allowed and encouraged to change not only internals but also public-facing APIs, and aggressively prune legacy variants unless the user requests backward compatibility.
 
 ## Test Pass Rate
 Main branch policy:
