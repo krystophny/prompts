@@ -3,7 +3,18 @@
     "commit": "",
     "pr": ""
   },
+  "enabledPlugins": {
+    "clangd-lsp@claude-plugins-official": true
+  },
   "includeCoAuthoredBy": false,
+  "mcpServers": {
+    "helpy": {
+      "url": "http://127.0.0.1:8090/mcp"
+    },
+    "tabula": {
+      "url": "http://127.0.0.1:9420/mcp"
+    }
+  },
   "permissions": {
     "allow": [
       "Bash(git *)",
@@ -29,9 +40,6 @@
       "Read(**/credentials*)",
       "Read(**/*secret*)"
     ]
-  },
-  "enabledPlugins": {
-    "clangd-lsp@claude-plugins-official": true
   },
   "skipDangerousModePermissionPrompt": true
 }
