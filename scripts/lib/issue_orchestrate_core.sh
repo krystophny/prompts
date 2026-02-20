@@ -66,30 +66,6 @@ build_codex_exec_args() {
   printf '%s\0' "${args[@]}"
 }
 
-resolve_codex_review_mode() {
-  local role="$1" tool="$2"
-  local mode="${REVIEWER_MODE:-auto}"
-  if [[ "$role" != "reviewer" ]]; then
-    echo "exec"
-    return 0
-  fi
-  case "$mode" in
-    auto)
-      if [[ "$tool" == "codex" ]]; then
-        echo "review"
-      else
-        echo "exec"
-      fi
-      ;;
-    exec|review)
-      echo "$mode"
-      ;;
-    *)
-      echo "exec"
-      ;;
-  esac
-}
-
 # Run tool with timeout
 # Args: timeout_duration, tool, model, prompt, role(worker|reviewer)
 run_tool_with_timeout() {
@@ -134,20 +110,9 @@ run_tool_capture() {
       fi
       ;;
     codex)
-      local review_mode
-      review_mode=$(resolve_codex_review_mode "$role" "$tool")
-      if [[ "$review_mode" == "review" ]]; then
-        local -a codex_review_args=()
-        local review_base="${REVIEW_BASE:-}"
-        mapfile -d '' -t codex_review_args < <(build_codex_global_args "$role" "$model")
-        codex_review_args+=(review)
-        [[ -n "$review_base" ]] && codex_review_args+=(--base "$review_base")
-        codex "${codex_review_args[@]}" -- "$prompt" < /dev/null
-      else
-        local -a codex_args=()
-        mapfile -d '' -t codex_args < <(build_codex_exec_args "$role" "$model")
-        codex "${codex_args[@]}" -- "$prompt" < /dev/null
-      fi
+      local -a codex_args=()
+      mapfile -d '' -t codex_args < <(build_codex_exec_args "$role" "$model")
+      codex "${codex_args[@]}" -- "$prompt" < /dev/null
       ;;
     gemini)
       if [[ "${debug:-0}" -eq 1 ]]; then
@@ -645,21 +610,9 @@ codex_unified_review() {
   prompt="${template//__PR__/$pr_num}"
   prompt="${prompt//__INUM__/$inum}"
 
-  local review_base_ref review_base
-  review_base_ref=$(gh pr view "$pr_num" --json baseRefName --jq '.baseRefName' 2>/dev/null || echo "")
-  if [[ -n "$review_base_ref" ]]; then
-    review_base="origin/$review_base_ref"
-  else
-    review_base=""
-  fi
-
   local output status
   set +e
-  if [[ -n "$review_base" ]]; then
-    output=$(REVIEW_BASE="$review_base" run_tool_capture "$REVIEWER_TOOL" "$REVIEWER_MODEL" "$prompt" "reviewer" < /dev/null)
-  else
-    output=$(run_tool_capture "$REVIEWER_TOOL" "$REVIEWER_MODEL" "$prompt" "reviewer" < /dev/null)
-  fi
+  output=$(run_tool_capture "$REVIEWER_TOOL" "$REVIEWER_MODEL" "$prompt" "reviewer" < /dev/null)
   status=$?
   set -e
 

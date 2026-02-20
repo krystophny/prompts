@@ -17,7 +17,6 @@
 #   scripts/orchestrate.sh [ISSUE_NUMBER] [--label <name>|--all] [--limit N] [--squash|--rebase|--merge] [--repo owner/name]
 #     [--worker claude|codex|gemini] [--reviewer claude|codex|gemini]
 #     [--worker-model MODEL] [--reviewer-model MODEL]
-#     [--reviewer-mode auto|exec|review]
 #     [--worker-profile PROFILE] [--reviewer-profile PROFILE]
 #     [--worker-effort low|medium|high|xhigh] [--reviewer-effort low|medium|high|xhigh]
 #     [--worker-enable-features f1,f2] [--reviewer-enable-features f1,f2]
@@ -31,7 +30,6 @@
 #   WORKER_MODEL     Model override for worker tool (e.g., o3, claude-sonnet-4-20250514)
 #   REVIEWER_MODEL   Model override for reviewer tool
 #                    When unset with Codex, ~/.codex/config.toml defaults are used.
-#   REVIEWER_MODE    Reviewer execution mode for Codex: auto|exec|review (default: auto)
 #   WORKER_PROFILE   Codex config profile for worker tool (when worker is codex)
 #   REVIEWER_PROFILE Codex config profile for reviewer tool (when reviewer is codex)
 #   WORKER_EFFORT    Codex reasoning effort override for worker (low|medium|high|xhigh)
@@ -70,7 +68,6 @@ Options:
   --reviewer TOOL                  Reviewer tool: claude|codex|gemini (default: codex)
   --worker-model MODEL             Worker model override
   --reviewer-model MODEL           Reviewer model override
-  --reviewer-mode MODE             Codex reviewer mode: auto|exec|review (default: auto)
   --worker-profile PROFILE         Codex worker profile override
   --reviewer-profile PROFILE       Codex reviewer profile override
   --worker-effort LEVEL            Codex worker reasoning: low|medium|high|xhigh
@@ -88,7 +85,6 @@ Defaults:
   - Batch mode is enabled.
   - Debug output is enabled.
   - Model/effort/profile are inherited from ~/.codex/config.toml unless overridden.
-  - Reviewer mode auto: uses codex review when reviewer=codex, otherwise exec behavior.
 EOF
 }
 
@@ -130,7 +126,6 @@ worker_tool="${WORKER_TOOL:-codex}"
 reviewer_tool="${REVIEWER_TOOL:-codex}"
 worker_model="${WORKER_MODEL:-}"
 reviewer_model="${REVIEWER_MODEL:-}"
-reviewer_mode="${REVIEWER_MODE:-auto}"
 worker_profile="${WORKER_PROFILE:-}"
 reviewer_profile="${REVIEWER_PROFILE:-}"
 worker_effort="${WORKER_EFFORT:-}"
@@ -202,10 +197,6 @@ while [[ $# -gt 0 ]]; do
       reviewer_model="$2"
       shift 2
       ;;
-    --reviewer-mode)
-      reviewer_mode="$2"
-      shift 2
-      ;;
     --worker-profile)
       worker_profile="$2"
       shift 2
@@ -265,15 +256,6 @@ validate_effort() {
 validate_effort "worker" "$worker_effort"
 validate_effort "reviewer" "$reviewer_effort"
 
-if [[ ! "$reviewer_mode" =~ ^(auto|exec|review)$ ]]; then
-  echo "Invalid --reviewer-mode value: $reviewer_mode (must be auto, exec, or review)" >&2
-  exit 2
-fi
-if [[ "$reviewer_mode" == "review" && "$reviewer_tool" != "codex" ]]; then
-  echo "--reviewer-mode review is only valid when --reviewer codex" >&2
-  exit 2
-fi
-
 if [[ -z "$reviewer_model" && "$reviewer_tool" == "$worker_tool" && -n "$worker_model" ]]; then
   reviewer_model="$worker_model"
 fi
@@ -323,7 +305,6 @@ export WORKER_TOOL="$worker_tool"
 export REVIEWER_TOOL="$reviewer_tool"
 export WORKER_MODEL="$worker_model"
 export REVIEWER_MODEL="$reviewer_model"
-export REVIEWER_MODE="$reviewer_mode"
 export WORKER_PROFILE="$worker_profile"
 export REVIEWER_PROFILE="$reviewer_profile"
 export WORKER_EFFORT="$worker_effort"
@@ -333,7 +314,7 @@ export REVIEWER_ENABLE_FEATURES="$reviewer_enable_features"
 export WORKER_DISABLE_FEATURES="$worker_disable_features"
 export REVIEWER_DISABLE_FEATURES="$reviewer_disable_features"
 
-echo "[orchestrate] Using $worker_tool${worker_model:+ model=$worker_model}${worker_profile:+ profile=$worker_profile}${worker_effort:+ effort=$worker_effort} for work, $reviewer_tool${reviewer_model:+ model=$reviewer_model}${reviewer_profile:+ profile=$reviewer_profile}${reviewer_effort:+ effort=$reviewer_effort}${reviewer_mode:+ mode=$reviewer_mode} for review (debug=${debug}, batch=${auto_merge})" >&2
+echo "[orchestrate] Using $worker_tool${worker_model:+ model=$worker_model}${worker_profile:+ profile=$worker_profile}${worker_effort:+ effort=$worker_effort} for work, $reviewer_tool${reviewer_model:+ model=$reviewer_model}${reviewer_profile:+ profile=$reviewer_profile}${reviewer_effort:+ effort=$reviewer_effort} for review (debug=${debug}, batch=${auto_merge})" >&2
 
 # Ensure Ctrl+C (SIGINT) reaches child processes run under `timeout`.
 # Use `--foreground` when available so users can abort cleanly.
