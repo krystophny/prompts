@@ -11,18 +11,23 @@ All rules below are mandatory unless the user explicitly instructs otherwise.
 - Mandatory: remove dead/obsolete code; prefer self-documenting code with minimal comments for non-obvious intent.
 - When asked to change code or tidy up, you are explicitly allowed and encouraged to change not only internals but also public-facing APIs, and aggressively prune legacy variants unless the user requests backward compatibility.
 
-## Test Pass Rate
-Main branch policy:
-- Assume main always has 100% passing tests.
-- Never claim main had baseline failures.
-- Never rerun main to check baseline.
-- Treat any claimed pre-existing failures as regressions.
+## Test Failures
 
-Feature branch policy:
-- Keep 100% passing tests by fixing code, never by weakening tests.
+Any failing test you encounter MUST be fixed immediately by correcting the code. No exceptions.
+
+Forbidden actions:
+- NEVER check out main/upstream to compare test results.
+- NEVER run tests on another branch to establish a "baseline."
+- NEVER use the words "pre-existing", "unrelated", "baseline", or "flaky" to describe a failing test.
+- NEVER skip, disable, weaken, or delete a failing test.
+- NEVER dismiss failures with "N pre-existing failures" or "unrelated to this change."
+- NEVER claim a failure exists on main — you have not checked and you will not check.
+
+Required actions:
+- When tests fail, fix the code until they pass. All of them.
+- Partial pass rates are failure. 98/100 passing = failure.
+- Keep fixing until the test runner reports zero failures.
 - Tests must be strict, non-shallow, and non-tautological.
-- Keep fixing code until all tests pass; partial pass rates are failure.
-- All regressions are your responsibility to fix.
 
 ## Language and Stack
 - Existing projects: match the repo's stack, tooling, and style.
