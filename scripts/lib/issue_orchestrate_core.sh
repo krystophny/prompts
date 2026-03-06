@@ -18,16 +18,16 @@ fi
 _JQ_STREAM='if .type == "assistant" then .message.content[]? | if .type == "thinking" then "[thinking] " + .thinking elif .type == "text" then .text elif .type == "tool_use" then "[tool:" + .name + "] " + (.input | tostring)[:300] else empty end elif .type == "user" then .message.content[]? | if .type == "tool_result" then (if .is_error then "[error] " else "[ok] " end) + ((.content // "")[:200]) else empty end else empty end'
 
 append_csv_flags() {
-  local -n out_arr="$1"
-  local flag="$2" csv="$3"
+  local flag="$1" csv="$2"
   local item
   local -a items=()
+  APPEND_CSV_FLAGS_RESULT=()
   IFS=',' read -r -a items <<<"$csv"
   for item in "${items[@]}"; do
     item="${item#"${item%%[![:space:]]*}"}"
     item="${item%"${item##*[![:space:]]}"}"
     [[ -z "$item" ]] && continue
-    out_arr+=("$flag" "$item")
+    APPEND_CSV_FLAGS_RESULT+=("$flag" "$item")
   done
 }
 
@@ -49,21 +49,21 @@ build_codex_global_args() {
       ;;
   esac
 
-  local -a args=()
-  [[ -n "$profile" ]] && args+=(--profile "$profile")
-  [[ -n "$model" ]] && args+=(--model "$model")
-  [[ -n "$effort" ]] && args+=(--config "model_reasoning_effort=\"$effort\"")
-  append_csv_flags args "--enable" "$enable_features"
-  append_csv_flags args "--disable" "$disable_features"
-  printf '%s\0' "${args[@]}"
+  CODEX_GLOBAL_ARGS=()
+  [[ -n "$profile" ]] && CODEX_GLOBAL_ARGS+=(--profile "$profile")
+  [[ -n "$model" ]] && CODEX_GLOBAL_ARGS+=(--model "$model")
+  [[ -n "$effort" ]] && CODEX_GLOBAL_ARGS+=(--config "model_reasoning_effort=\"$effort\"")
+  append_csv_flags "--enable" "$enable_features"
+  CODEX_GLOBAL_ARGS+=("${APPEND_CSV_FLAGS_RESULT[@]}")
+  append_csv_flags "--disable" "$disable_features"
+  CODEX_GLOBAL_ARGS+=("${APPEND_CSV_FLAGS_RESULT[@]}")
 }
 
 build_codex_exec_args() {
   local role="$1" model="$2"
-  local -a args=()
-  mapfile -d '' -t args < <(build_codex_global_args "$role" "$model")
-  args+=(exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root")
-  printf '%s\0' "${args[@]}"
+  build_codex_global_args "$role" "$model"
+  CODEX_EXEC_ARGS=("${CODEX_GLOBAL_ARGS[@]}")
+  CODEX_EXEC_ARGS+=(exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root")
 }
 
 # Run tool with timeout
@@ -81,7 +81,8 @@ run_tool_with_timeout() {
       ;;
     codex)
       local -a codex_args=()
-      mapfile -d '' -t codex_args < <(build_codex_exec_args "$role" "$model")
+      build_codex_exec_args "$role" "$model"
+      codex_args=("${CODEX_EXEC_ARGS[@]}")
       "${TIMEOUT[@]}" "$dur" codex "${codex_args[@]}" -- "$prompt" < /dev/null
       ;;
     gemini)
@@ -111,7 +112,8 @@ run_tool_capture() {
       ;;
     codex)
       local -a codex_args=()
-      mapfile -d '' -t codex_args < <(build_codex_exec_args "$role" "$model")
+      build_codex_exec_args "$role" "$model"
+      codex_args=("${CODEX_EXEC_ARGS[@]}")
       codex "${codex_args[@]}" -- "$prompt" < /dev/null
       ;;
     gemini)
