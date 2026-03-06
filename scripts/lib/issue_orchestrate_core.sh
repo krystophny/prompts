@@ -23,12 +23,14 @@ append_csv_flags() {
   local -a items=()
   APPEND_CSV_FLAGS_RESULT=()
   IFS=',' read -r -a items <<<"$csv"
-  for item in "${items[@]}"; do
-    item="${item#"${item%%[![:space:]]*}"}"
-    item="${item%"${item##*[![:space:]]}"}"
-    [[ -z "$item" ]] && continue
-    APPEND_CSV_FLAGS_RESULT+=("$flag" "$item")
-  done
+  if ((${#items[@]})); then
+    for item in "${items[@]}"; do
+      item="${item#"${item%%[![:space:]]*}"}"
+      item="${item%"${item##*[![:space:]]}"}"
+      [[ -z "$item" ]] && continue
+      APPEND_CSV_FLAGS_RESULT+=("$flag" "$item")
+    done
+  fi
 }
 
 build_codex_global_args() {
@@ -54,15 +56,22 @@ build_codex_global_args() {
   [[ -n "$model" ]] && CODEX_GLOBAL_ARGS+=(--model "$model")
   [[ -n "$effort" ]] && CODEX_GLOBAL_ARGS+=(--config "model_reasoning_effort=\"$effort\"")
   append_csv_flags "--enable" "$enable_features"
-  CODEX_GLOBAL_ARGS+=("${APPEND_CSV_FLAGS_RESULT[@]}")
+  if ((${#APPEND_CSV_FLAGS_RESULT[@]})); then
+    CODEX_GLOBAL_ARGS+=("${APPEND_CSV_FLAGS_RESULT[@]}")
+  fi
   append_csv_flags "--disable" "$disable_features"
-  CODEX_GLOBAL_ARGS+=("${APPEND_CSV_FLAGS_RESULT[@]}")
+  if ((${#APPEND_CSV_FLAGS_RESULT[@]})); then
+    CODEX_GLOBAL_ARGS+=("${APPEND_CSV_FLAGS_RESULT[@]}")
+  fi
 }
 
 build_codex_exec_args() {
   local role="$1" model="$2"
   build_codex_global_args "$role" "$model"
-  CODEX_EXEC_ARGS=("${CODEX_GLOBAL_ARGS[@]}")
+  CODEX_EXEC_ARGS=()
+  if ((${#CODEX_GLOBAL_ARGS[@]})); then
+    CODEX_EXEC_ARGS=("${CODEX_GLOBAL_ARGS[@]}")
+  fi
   CODEX_EXEC_ARGS+=(exec --dangerously-bypass-approvals-and-sandbox --cd "$repo_root")
 }
 
@@ -82,7 +91,9 @@ run_tool_with_timeout() {
     codex)
       local -a codex_args=()
       build_codex_exec_args "$role" "$model"
-      codex_args=("${CODEX_EXEC_ARGS[@]}")
+      if ((${#CODEX_EXEC_ARGS[@]})); then
+        codex_args=("${CODEX_EXEC_ARGS[@]}")
+      fi
       "${TIMEOUT[@]}" "$dur" codex "${codex_args[@]}" -- "$prompt" < /dev/null
       ;;
     gemini)
@@ -113,7 +124,9 @@ run_tool_capture() {
     codex)
       local -a codex_args=()
       build_codex_exec_args "$role" "$model"
-      codex_args=("${CODEX_EXEC_ARGS[@]}")
+      if ((${#CODEX_EXEC_ARGS[@]})); then
+        codex_args=("${CODEX_EXEC_ARGS[@]}")
+      fi
       codex "${codex_args[@]}" -- "$prompt" < /dev/null
       ;;
     gemini)
